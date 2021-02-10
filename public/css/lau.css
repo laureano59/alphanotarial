@@ -1,0 +1,36 @@
+@import url("//harvesthq.github.io/chosen/chosen.css");
+body {
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background: #eee;
+}
+
+.container {
+  width: 80%;
+  margin: 1em auto;
+  padding: 1em 5%;
+  background: #fff;
+}
+h1, h2 {
+  margin-bottom: .5em;
+}
+h1 {
+  font-size: 2em;
+}
+h2 {
+  font-size: 1.6em;
+}
+
+p {
+  margin-bottom: 1em;
+}
+select {
+  width: 300px;
+}
+.chosen-container {
+  width: 250px;
+}
+.chosen-container-multi .chosen-choices li.search-field input[type="text"]{
+  height: 30px !important;
+}

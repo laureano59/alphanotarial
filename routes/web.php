@@ -1,0 +1,157 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::resource('radicacion', 'RadicacionController');
+Route::resource('liquidacion', 'LiqderechoController');
+Route::resource('facturacion', 'FacturacionController');
+Route::resource('facturaelectronica', 'FacturaelectronicaController');
+Route::resource('actas_deposito', 'ActasdepositoController');
+Route::resource('guardarcertificadortf', 'Certificado_rtfController');
+Route::resource('escrituracion', 'EscrituraController');
+Route::resource('actosradica', 'ActosclienteradicaController');
+Route::resource('clientes', 'ClienteController');
+Route::resource('otorgante', 'OtorganteController');
+Route::resource('notaria', 'NotariaController');
+Route::resource('compareciente', 'ComparecienteController');
+Route::resource('liqderechos', 'LiqderechoController');
+Route::resource('liqconceptos', 'LiqconceptosController');
+Route::resource('liqrecaudos', 'LiqrecaudosController');
+Route::resource('tipofactura', 'OpcionesdefacturaController');
+Route::resource('mantenimiento', 'MantenimientoController');
+Route::resource('depositos', 'ActasdepositoController');
+Route::resource('egresos', 'EgresoactasdepositoController');
+Route::resource('actasdeposito', 'OpcionesdeactasController');
+Route::resource('egreso', 'EgresoactasdepositoController');
+
+Route::resource('notascreditofact', 'NotascreditofacturaController');
+Route::resource('notacreditocajarapida', 'NotacreditocajarapidaController');
+Route::resource('notasdebitofact', 'NotasdebitoController');
+Route::resource('detallenotadebito', 'DetallenotadebitoController');
+Route::resource('cpanelreportes', 'PanelreporteController');
+Route::resource('configuracion', 'ConfiguracionController');
+Route::resource('configurarfechas', 'ConfigurarfechasController');
+Route::resource('consultas', 'ConsultasController');
+//Route::resource('Einvoice', 'EinvoiceController');
+Route::resource('reportes', 'ReportesController');
+Route::resource('cartera', 'CarteraController');
+Route::resource('cajarapida', 'CajarapidaController');
+Route::resource('cpanelcajarapida', 'Panel_cajarapidaController');
+Route::resource('facturacajarapida', 'FacturascajarapidaController');
+Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController');
+
+
+
+Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vendedores');
+Route::get('liberarradicacion', 'RadicacionController@Liberar_Radicacion');
+Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
+Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
+Route::get('anombrede', 'FacturacionController@AnombreDe');
+Route::get('validarradicacion', 'ValidacionesController@ValidarRadicacion');
+Route::get('validartotalfactliq', 'ValidacionesController@TotalFact_TotalLiq');
+Route::get('validarfacturacion', 'ValidacionesController@ValidarRadicacionFact');
+Route::get('validaractadeposito', 'ValidacionesController@Validar_Actas_Factura');
+Route::get('validarrtfmaycero', 'ValidacionesController@ValidarRtfMayCero');
+Route::get('existefactura', 'ValidacionesController@ExisteFactura');
+Route::get('existefacturacajarapida', 'ValidacionesController@ExisteFacturaCajaRapida');
+Route::get('validareditarfacturacajarapida', 'ValidacionesController@ValidarparaEditarFacturaCajaRapida');
+Route::get('validarexixtefact', 'ValidacionesController@ValidarRadFacturada');
+Route::get('validarciudad', 'ValidacionesController@ValidarCiudadCliente');
+Route::get('mostrarliq', 'LiqderechoController@Cargar_Derechos');
+Route::get('mostrarconcep', 'LiqconceptosController@Cargar_Conceptos');
+Route::get('mostrarrecaud', 'LiqrecaudosController@Cargar_Recaudos');
+Route::get('sessiones', 'SesionesController@Sessiones');
+Route::get('sessionescajarapida', 'SesionesController@Sessiones_cajarapida');
+Route::get('conceptos', 'ConceptosController@ConceptoActo');
+Route::get('traeconceptosporid', 'ConceptosController@TraeConceptoPorId');
+Route::get('traeconceptos', 'ConceptosController@Conceptos_All');
+Route::get('valorconceptos', 'ConceptosController@ValorConceptos');
+Route::get('verprincipales', 'PrincipalesController@listingprincipales');
+Route::get('detalleradica', 'ActosclienteradicaController@listing');
+Route::get('principales', 'PrincipalesController@existecliente');
+Route::get('derechos', 'LiqderechoController@derechos');
+Route::get('validaractos', 'ValidaractosController@Validar');
+Route::get('recaudos', 'RecaudosController@Recaudos');
+Route::get('tarifas', 'TarifasController@Tarifas');
+Route::get('ciudad', 'CiudadController@ciudad');
+Route::get('buscaracta', 'ActasdepositoController@BuscarActa');
+Route::get('buscarcartera', 'CarteraController@BuscarCartera');
+Route::get('rastrearradicacion', 'ConsultasController@Rastrear_Radicacion');
+Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
+Route::get('cargarfacturanotadebito', 'NotasdebitoController@CargarFactura');
+
+Route::get('cargarfacturaelectronica', 'FacturaelectronicaController@CargarFacturas');
+Route::get('enviarfactura', 'EinvoiceController@index');
+Route::get('enviarfacturacajarapida', 'EnvoicecajarapidaController@index');
+Route::get('enviarnotadebito', 'EinvoicenotadebitoController@index');
+
+
+Route::get('cargartiporeporte', 'ReportesController@CargarTipoReporte');
+Route::get('cargarfechas', 'ReportesController@FechaReporte');
+Route::get('cajadiario', 'ReportesController@Caja_Diario');
+Route::get('libroindice', 'ReportesController@Libro_Indice');
+Route::get('relacionnotacredito', 'ReportesController@Relacion_Nota_Credito');
+Route::get('ingresoporconceptos', 'ReportesController@Ingreso_Conceptos');
+Route::get('informecartera', 'ReportesController@Informe_Cartera');
+Route::get('informerecaudos', 'ReportesController@Informe_Recaudos');
+
+Route::get('sessionabonos', 'CarteraController@SessionFact');
+
+
+Route::get('certificadortf','PdfController@PdfCertificadoRetecncionenlaFuente');
+Route::get('copiacertificadortf','PdfController@PdfCopiaCertificadoRetecncionenlaFuente');
+Route::get('reporteradicacion', 'PdfController@PdfRadicacion');
+Route::get('notacreditopdf', 'PdfController@PdfNotaCreditoFact');
+
+Route::get('imprimirabonos', 'PdfController@PdfAbonosCartera');
+
+
+Route::get('copianotacreditopdf', 'PdfController@PdfNotaCreditoFactCopia');
+Route::get('copianotacreditocajarapidapdf', 'PdfController@PdfNotaCreditoFacturaCajaRapida');
+Route::get('copiafactura', 'PdfController@PdfCopiaFactura');
+
+Route::get('copiafacturacajarapida', 'PdfController@PdfCopiaFacturaCajaRapida');
+
+
+Route::get('factunicapdf', 'PdfController@pdf');
+Route::get('facturacajarapidapdf', 'PdfController@FacturaCajaRapida');
+Route::get('actasdepositopdf', 'PdfController@PdfActaDeposito');
+Route::get('cajadiariopdf', 'PdfController@PdfCajaDiarioGeneral');
+Route::get('liquidacionpdf', 'PdfController@PdfLiquidacion');
+Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
+Route::get('informe_ron', 'ReportesController@Ron');
+Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
+
+
+Route::get('enlacespdf', 'PdfController@PdfEnlaces');
+Route::get('libroindicepdf', 'PdfController@PdfLibroIndiceNotarial');
+Route::get('relnotacreditopdf', 'PdfController@PdfRelacionNotaCredito');
+Route::get('printinformecartera', 'PdfController@PdfInformeCartera');
+Route::get('relacionporconceptospdf', 'PdfController@PdfRelaciondeFacturasPorConceptos');
+Route::get('informederecaudospdf', 'PdfController@PdfInformeRecaudos');
+
+Route::get('Imprimircomprobante_Egreso', 'PdfController@PdfComprobante_Egreso');
+
+Route::get('seguimiento', 'ConsultasController@Consultar');
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+//Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

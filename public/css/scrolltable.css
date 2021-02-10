@@ -1,0 +1,21 @@
+.wrap {
+    width: 692px;
+}
+
+.wrap table {
+    width: 640px;
+    table-layout: fixed;
+}
+
+table tr td {
+
+}
+
+table.head tr td {
+    background: #EEEEEE;
+}
+
+.inner_table {
+    height: 200px;
+    overflow-y: auto;
+}

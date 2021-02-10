@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" 
+		      xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" 
+		      xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+		      xmlns:sts="dian:gov:co:facturaelectronica:Structures-2-1"xmlns:xades="http://uri.etsi.org/01903/v1.3.2#"
+		      xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#"xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		      xsi:schemaLocation="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2     
+		      http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-Invoice-2.1.xsd">
+
+
+<ext:UBLExtension> 
+	<ext:ExtensionContent> 
+		<sts:DianExtensions> 
+			<sts:InvoiceControl>
+				<sts:InvoiceAuthorization>$InvoiceAuthorization</sts:InvoiceAuthorization>
+				<sts:AuthorizationPeriod> <cbc:StartDate>$StartDate</cbc:StartDate>
+            <cbc:EndDate>$EndDate</cbc:EndDate> </sts:AuthorizationPeriod>
+            <sts:AuthorizedInvoices> <sts:Prefix>$Prefix</sts:Prefix>
+            <sts:From>$From</sts:From>$InvoiceAuthorization <sts:To>$To</sts:To>
+            </sts:AuthorizedInvoices> </sts:InvoiceControl>
+            <sts:InvoiceSource> <cbc:IdentificationCode listAgencyID='6' listAgencyName='United Nations Economic Commission for Europe' listSchemeURI='urn:oasis:names:specification:ubl:codelist:gc:CountryIdentificationCode-2.1'>CO</cbc:IdentificationCode>
+            </sts:InvoiceSource> <sts:SoftwareProvider> <sts:ProviderID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)' schemeID='4' schemeName='31'>$Nitempresa</sts:ProviderID>
+            <sts:SoftwareID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)'>$SoftwareID</sts:SoftwareID>
+            </sts:SoftwareProvider> <sts:SoftwareSecurityCode schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)'>$SoftwareSecurityCode</sts:SoftwareSecurityCode>
+            <sts:AuthorizationProvider> <sts:AuthorizationProviderID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)' schemeID='4' schemeName='31'>$AuthorizationProviderID</sts:AuthorizationProviderID>
+            </sts:AuthorizationProvider> <sts:QRCode>$QRCode</sts:QRCode>
+            </sts:DianExtensions> </ext:ExtensionContent> </ext:UBLExtension>
+
+
+            <cbc:UBLVersionID>UBL 2.1</cbc:UBLVersionID>
+      		<cbc:CustomizationID>$CustomizationID</cbc:CustomizationID>
+      		<cbc:ProfileID>DIAN 2.1</cbc:ProfileID> <cbc:ProfileExecutionID>$ProfileExecutionID</cbc:ProfileExecutionID>
+      		<cbc:ID>$ID</cbc:ID> <cbc:UUID schemeID='2' schemeName='CUFE-SHA384'>
+         	$UUID </cbc:UUID> <cbc:IssueDate>$IssueDate</cbc:IssueDate>
+      		<cbc:IssueTime>$IssueTime</cbc:IssueTime> <cbc:InvoiceTypeCode>$InvoiceTypeCode</cbc:InvoiceTypeCode>
+      		<cbc:Note>$Note</cbc:Note> <cbc:DocumentCurrencyCode listAgencyID='6' listAgencyName='United Nations Economic Commission for Europe' listID='ISO 4217 Alpha'>
+         	USD </cbc:DocumentCurrencyCode> <cbc:LineCountNumeric>$LineCountNumeric</cbc:LineCountNumeric>
+      		<cac:InvoicePeriod> <cbc:StartDate>$InvoiceStartDate</cbc:StartDate>
+         	<cbc:EndDate>$InvoiceEndDate</cbc:EndDate> </cac:InvoicePeriod>
+
+
+         	<cac:AccountingSupplierParty>
+         	<cbc:AdditionalAccountID>$AdditionalAccountID</cbc:AdditionalAccountID>
+         	<cac:Party> <cbc:IndustryClasificationCode>$IndustryClasificationCode</cbc:IndustryClasificationCode>
+            <cac:PartyName> <cbc:Name>$Name</cbc:Name> </cac:PartyName>
+            <cac:PhysicalLocation> <cac:Address> <cbc:ID>$CodigoPostalCity</cbc:ID>
+            <cbc:CityName>$CityName</cbc:CityName> <cbc:CountrySubentity>$DeptoName</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode>$CodigoPostalDpto</cbc:CountrySubentityCode>
+            <cac:AddressLine> <cbc:Line>$Direccion_empresa</cbc:Line> </cac:AddressLine>
+            <cac:Country> <cbc:IdentificationCode>CO</cbc:IdentificationCode>
+            <cbc:Name languageID='es'>Colombia</cbc:Name> </cac:Country>
+            </cac:Address> </cac:PhysicalLocation> <cac:PartyTaxScheme>
+            <cbc:RegistrationName>$RegistrationName</cbc:RegistrationName>
+            <cbc:CompanyID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)' schemeID='4' schemeName='31'>$Nitempresa</cbc:CompanyID>
+            <cbc:TaxLevelCode listName='05'>$TaxLevelCode</cbc:TaxLevelCode> <cac:RegistrationAddress>
+            <cbc:ID>$CodigoPostalCity</cbc:ID> <cbc:CityName>$CityName</cbc:CityName>
+            <cbc:CountrySubentity>$DeptoName</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode>$CodigoPostalDpto</cbc:CountrySubentityCode>
+            <cac:AddressLine> <cbc:Line>$Direccion_empresa</cbc:Line> </cac:AddressLine>
+            <cac:Country> <cbc:IdentificationCode>CO</cbc:IdentificationCode>
+            <cbc:Name languageID='es'>Colombia</cbc:Name> </cac:Country> </cac:RegistrationAddress>
+            <cac:TaxScheme> <cbc:ID>$TaxSchemeId</cbc:ID> <cbc:Name>$TaxSchemeName</cbc:Name>
+            </cac:TaxScheme> </cac:PartyTaxScheme> <cac:PartyLegalEntity>
+            <cbc:RegistrationName>$Name</cbc:RegistrationName> <cbc:CompanyID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)'
+            schemeID='4' schemeName='31'>$Nitempresa</cbc:CompanyID> </cac:PartyLegalEntity>
+         	</cac:Party> </cac:AccountingSupplierParty>
+
+
+         	<cac:AccountingCustomerParty>
+         	<cbc:AdditionalAccountID>$AdditionalAccountID</cbc:AdditionalAccountID>
+         	<cac:Party> <cac:PartyName> <cbc:Name>$ClienteName</cbc:Name> </cac:PartyName>
+            <cac:PhysicalLocation> <cac:Address> <cbc:ID>$CodigoPostalCiud_cliente</cbc:ID>
+            <cbc:CityName>$CiudadNameCliente</cbc:CityName> <cbc:CountrySubentity>$DeptoNameCliente</cbc:CountrySubentity>
+            <cbc:CountrySubentityCode>$CodigoPostalDptoCliente</cbc:CountrySubentityCode>
+            <cac:AddressLine> <cbc:Line>$DireccionCliente</cbc:Line> </cac:AddressLine>
+            <cac:Country> <cbc:IdentificationCode>CO</cbc:IdentificationCode>
+            <cbc:Name languageID='es'>Colombia</cbc:Name> </cac:Country> </cac:Address>
+            </cac:PhysicalLocation> <cac:PartyTaxScheme>
+            <cbc:RegistrationName>$ClienteName</cbc:RegistrationName>
+            <cbc:CompanyID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)' 
+            schemeName='$CodIdentificacionFiscal'> $IdentificacionCliente </cbc:CompanyID>
+            <cac:TaxScheme> <cbc:ID>ZY</cbc:ID> <cbc:Name>No Causa</cbc:Name> </cac:TaxScheme>
+            </cac:PartyTaxScheme> <cac:PartyLegalEntity> <cbc:RegistrationName>$ClienteName</cbc:RegistrationName>
+            <cbc:CompanyID schemeAgencyID='195' schemeAgencyName='CO, DIAN (Dirección de Impuestos y Aduanas Nacionales)' 
+            schemeName='$CodIdentificacionFiscal'> $IdentificacionCliente </cbc:CompanyID>
+            </cac:PartyLegalEntity> </cac:Party> </cac:AccountingCustomerParty>
+
+            <cac:PaymentMeans> <cbc:ID>$TipoPago</cbc:ID> <cbc:PaymentMeansCode>$PaymentMeansCode</cbc:PaymentMeansCode>
+      		</cac:PaymentMeans> <cac:TaxTotal> <cac:TaxSubtotal> <cbc:TaxableAmount currencyID='COP'>$TaxableAmount</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountIva</cbc:TaxAmount> <cac:TaxCategory>
+            <cbc:Percent>$PercentIva</cbc:Percent> <cac:TaxScheme> <cbc:ID>01</cbc:ID>
+            <cbc:Name>IVA</cbc:Name> </cac:TaxScheme> </cac:TaxCategory> </cac:TaxSubtotal>
+         	<cac:TaxSubtotal> <cbc:TaxableAmount currencyID='COP'>$TaxableAmount</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountReteIca</cbc:TaxAmount> <cac:TaxCategory>
+            <cbc:Percent>$PercentReteIca</cbc:Percent> <cac:TaxScheme> <cbc:ID>03</cbc:ID>
+            <cbc:Name>ICA</cbc:Name> </cac:TaxScheme> </cac:TaxCategory> </cac:TaxSubtotal>
+         	<cac:TaxSubtotal> <cbc:TaxableAmount currencyID='COP'>$TaxAmountIva</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountReteIva</cbc:TaxAmount> <cac:TaxCategory>
+            <cbc:Percent>$PercentReteIva</cbc:Percent> <cac:TaxScheme> <cbc:ID>05</cbc:ID>
+            <cbc:Name>ReteIVA</cbc:Name> </cac:TaxScheme> </cac:TaxCategory> </cac:TaxSubtotal>
+         	<cac:TaxSubtotal> <cbc:TaxableAmount currencyID='COP'>$TaxableAmount</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountReteRtf</cbc:TaxAmount>
+            <cac:TaxCategory> <cbc:Percent>$PercentReteRtf</cbc:Percent> <cac:TaxScheme>
+            <cbc:ID>06</cbc:ID> <cbc:Name>ReteRenta</cbc:Name> </cac:TaxScheme>
+            </cac:TaxCategory> </cac:TaxSubtotal> </cac:TaxTotal> <cac:TaxSubtotal>
+            <cbc:TaxableAmount currencyID='COP'>$TaxableAmountCuantia</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountRtf</cbc:TaxAmount> <cac:TaxCategory>
+            <cbc:Percent>$PercentRtf</cbc:Percent> <cac:TaxScheme> <cbc:ID>06</cbc:ID>
+            <cbc:Name>ReteRenta</cbc:Name> </cac:TaxScheme> </cac:TaxCategory> </cac:TaxSubtotal>
+      		<cac:LegalMonetaryTotal> <cbc:LineExtensionAmount currencyID='COP'>$LineExtensionAmount</cbc:LineExtensionAmount>
+         	<cbc:AllowanceTotalAmount currencyID='COP'>$AllowanceTotalAmount</cbc:TaxExclusiveAmount>
+         	<cbc:TaxExclusiveAmount currencyID='COP'>$TaxExclusiveAmount</cbc:TaxExclusiveAmount>
+         	<cbc:TaxInclusiveAmount currencyID='COP'>$TaxInclusiveAmount</cbc:TaxInclusiveAmount>
+         	<cbc:PayableAmount currencyID='COP'>$PayableAmount</cbc:PayableAmount>
+      		</cac:LegalMonetaryTotal>
+
+      		<cac:InvoiceLine>
+         <cbc:ID>$item</cbc:ID>
+         <cbc:InvoicedQuantity unitCode='NIU'>1.000000</cbc:InvoicedQuantity>
+         <cbc:LineExtensionAmount currencyID='USD'>$valor_item</cbc:LineExtensionAmount>
+         <cac:TaxTotal>
+            <cbc:TaxAmount currencyID='USD'>$valor_iva</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+               <cbc:TaxableAmount currencyID='USD'>$valor_item</cbc:TaxableAmount>
+               <cbc:TaxAmount currencyID='USD'>$valor_iva</cbc:TaxAmount>
+               <cac:TaxCategory>
+                  <cbc:Percent>$iva</cbc:Percent>
+                  <cac:TaxScheme>
+                     <cbc:ID>01</cbc:ID>
+                     <cbc:Name>IVA</cbc:Name>
+                  </cac:TaxScheme>
+               </cac:TaxCategory>
+            </cac:TaxSubtotal>
+         </cac:TaxTotal>
+         <cac:Item>
+            <cbc:Description>$concepto</cbc:Description>
+         </cac:Item>
+         <cac:Price>
+            <cbc:PriceAmount currencyID='USD'>$valor_item</cbc:PriceAmount>
+            <cbc:BaseQuantity unitCode='EA'>$cantidad</cbc:BaseQuantity>
+         </cac:Price>
+      </cac:InvoiceLine>
+
+      </Invoice>
+
+

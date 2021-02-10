@@ -1,0 +1,120 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\mail\FacturaElectronica;
+use ZipArchive;
+use File;
+use Illuminate\Support\Facades\Mail;
+
+class EnviaremailController extends Controller
+{
+     public function enviarfactura(Request $request){
+     	$opcion = $request->opcion;
+          $opcion2 = $request->opcion2;
+
+          if($opcion2 == 1){
+               if($opcion == 'F1'){
+                    $titulo = "FACTURA No.";
+          }else if($opcion == 'NC'){
+               $titulo = "Nota Credito No.";
+          }else if($opcion == 'ND'){
+               $titulo = "Nota Debito No.";
+          }
+          $nombre_factura = $request->num_fact.'_'.$opcion.'.pdf';
+          $nombre_xml = $request->num_fact.'_'.$opcion.'_AttachedDocument'.'.xml';
+
+          $zip = new ZipArchive();
+          $paquete_zip = "cliente/".$request->num_fact.'.zip';
+
+          $zip = new ZipArchive();
+
+          $archivo = "cliente/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
+
+          sleep(10);//da tiempo de generar el PDF
+          
+          if($zip->open(public_path($archivo), ZipArchive::CREATE)== true){
+               $files = File::files(public_path('cliente'));
+               foreach ($files as $key => $value) {
+                    $relativeName = basename($value);
+                    $ext = pathinfo($relativeName, PATHINFO_EXTENSION);
+                    if($ext != 'zip'){
+                         $zip->addFile($value, $relativeName);
+                    }
+                    
+               }
+               $zip->close();
+
+          }else{
+
+          }
+
+          unlink(public_path('cliente/').$nombre_factura);
+          unlink(public_path('cliente/').$nombre_xml);
+
+    
+          $Enviar = array();
+          $Enviar = [
+               'num_fact' => $request->num_fact.'_'.$opcion,
+               'titulo' => $titulo,
+               'archivo' => $archivo
+          ];
+          
+          Mail::to($request->email_cliente)->queue(new FacturaElectronica($Enviar));
+
+          }else if($opcion2 == 2){
+
+          if($opcion == 'F1'){
+               $titulo = "FACTURA No.";
+          }else if($opcion == 'NC'){
+               $titulo = "Nota Credito No.";
+          }else if($opcion == 'ND'){
+               $titulo = "Nota Debito No.";
+          }
+          $nombre_factura = $request->num_fact.'_'.$opcion.'.pdf';
+          $nombre_xml = $request->num_fact.'_'.$opcion.'_AttachedDocument'.'.xml';
+
+
+          $zip = new ZipArchive();
+          $paquete_zip = "cliente_cajarapida/".$request->num_fact.'.zip';
+
+          $zip = new ZipArchive();
+
+          $archivo = "cliente_cajarapida/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
+
+          sleep(10);//da tiempo de generar el PDF
+          
+          if($zip->open(public_path($archivo), ZipArchive::CREATE)== true){
+               $files = File::files(public_path('cliente_cajarapida'));
+               foreach ($files as $key => $value) {
+                    $relativeName = basename($value);
+                    $ext = pathinfo($relativeName, PATHINFO_EXTENSION);
+                    if($ext != 'zip'){
+                         $zip->addFile($value, $relativeName);
+                    }
+                    
+               }
+               $zip->close();
+
+          }else{
+
+          }
+
+          unlink(public_path('cliente_cajarapida/').$nombre_factura);
+          unlink(public_path('cliente_cajarapida/').$nombre_xml);
+
+    
+          $Enviar = array();
+          $Enviar = [
+               'num_fact' => $request->num_fact.'_'.$opcion,
+               'titulo' => $titulo,
+               'archivo' => $archivo
+          ];
+          
+          Mail::to($request->email_cliente)->queue(new FacturaElectronica($Enviar));
+
+          }
+
+     }
+}

@@ -1,0 +1,294 @@
+            
+      
+      <cac:InvoiceLine>
+         <cbc:ID>$item</cbc:ID>
+         <cbc:InvoicedQuantity unitCode="NIU">1.000000</cbc:InvoicedQuantity>
+         <cbc:LineExtensionAmount currencyID="USD">$valor_item</cbc:LineExtensionAmount>
+         <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="USD">$valor_iva</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+               <cbc:TaxableAmount currencyID="USD">$valor_item</cbc:TaxableAmount>
+               <cbc:TaxAmount currencyID="USD">$valor_iva</cbc:TaxAmount>
+               <cac:TaxCategory>
+                  <cbc:Percent>$iva</cbc:Percent>
+                  <cac:TaxScheme>
+                     <cbc:ID>01</cbc:ID>
+                     <cbc:Name>IVA</cbc:Name>
+                  </cac:TaxScheme>
+               </cac:TaxCategory>
+            </cac:TaxSubtotal>
+         </cac:TaxTotal>
+         <cac:Item>
+            <cbc:Description>$value['concepto']</cbc:Description>
+         </cac:Item>
+         <cac:Price>
+            <cbc:PriceAmount currencyID="USD">$valor_item</cbc:PriceAmount>
+            <cbc:BaseQuantity unitCode="EA">1.000000</cbc:BaseQuantity>
+         </cac:Price>
+      </cac:InvoiceLine>
+
+      
+      
+
+
+
+
+
+      <cac:InvoiceLine>
+         <cbc:ID>2</cbc:ID>
+         <cbc:Note>Contrato de servicios AIU por concepto de:</cbc:Note>
+         <cbc:InvoicedQuantity unitCode="NIU">1.000000</cbc:InvoicedQuantity>
+         <cbc:LineExtensionAmount currencyID="USD">0.00</cbc:LineExtensionAmount>
+         <cbc:FreeOfChargeIndicator>true</cbc:FreeOfChargeIndicator>
+         <cac:DocumentReference>
+            <cbc:ID>TST1543623</cbc:ID>
+            <cbc:IssueDate>2019-03-02</cbc:IssueDate>
+            <cbc:DocumentTypeCode>1001-A</cbc:DocumentTypeCode>
+            <cbc:DocumentType>Bienes Propios</cbc:DocumentType>
+         </cac:DocumentReference>
+         <cac:DocumentReference>
+            <cbc:ID>GR8713461</cbc:ID>
+            <cbc:IssueDate>2019-03-02</cbc:IssueDate>
+            <cbc:DocumentTypeCode>AR</cbc:DocumentTypeCode>
+         </cac:DocumentReference>
+         <cac:PricingReference>
+            <cac:AlternativeConditionPrice>
+               <cbc:PriceAmount currencyID="USD">100.00</cbc:PriceAmount>
+               <cbc:PriceTypeCode>03</cbc:PriceTypeCode>
+               <cbc:PriceType>Otro valor</cbc:PriceType>
+            </cac:AlternativeConditionPrice>
+         </cac:PricingReference>
+         <cac:Delivery>
+            <cac:DeliveryLocation>
+               <cbc:ID schemeID="999" schemeName="EAN">613124312412</cbc:ID>
+            </cac:DeliveryLocation>
+         </cac:Delivery>
+         <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="USD">30.00</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+               <cbc:TaxableAmount currencyID="USD">187.50</cbc:TaxableAmount>
+               <cbc:TaxAmount currencyID="USD">30.00</cbc:TaxAmount>
+               <cac:TaxCategory>
+                  <cbc:Percent>16.00</cbc:Percent>
+                  <cac:TaxScheme>
+                     <cbc:ID>01</cbc:ID>
+                     <cbc:Name>IVA</cbc:Name>
+                  </cac:TaxScheme>
+               </cac:TaxCategory>
+            </cac:TaxSubtotal>
+         </cac:TaxTotal>
+         <cac:Item>
+            <cbc:Description>Bolsa</cbc:Description>
+            <cac:SellersItemIdentification>
+               <cbc:ID>91412012412</cbc:ID>
+            </cac:SellersItemIdentification>
+            <cac:StandardItemIdentification>
+               <cbc:ID schemeAgencyID="10" schemeID="001" schemeName="UNSPSC">18937100-7</cbc:ID>
+            </cac:StandardItemIdentification>
+         </cac:Item>
+         <cac:Price>
+            <cbc:PriceAmount currencyID="USD">0.00</cbc:PriceAmount>
+            <cbc:BaseQuantity unitCode="NIU">1.000000</cbc:BaseQuantity>
+         </cac:Price>
+      </cac:InvoiceLine>
+
+
+      
+   </Invoice>
+
+
+
+   -----------------------------------------------------
+
+<cac:PaymentMeans> <cbc:ID>$TipoPago</cbc:ID> 
+      <cbc:PaymentMeansCode>$PaymentMeansCode</cbc:PaymentMeansCode>
+            </cac:PaymentMeans> 
+            <cac:TaxTotal> 
+               <cac:TaxSubtotal> 
+                  <cbc:TaxableAmount currencyID='COP'>$TaxableAmount</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountIva</cbc:TaxAmount> 
+            <cac:TaxCategory>
+            <cbc:Percent>$PercentIva</cbc:Percent> 
+            <cac:TaxScheme> <cbc:ID>01</cbc:ID>
+            <cbc:Name>IVA</cbc:Name> </cac:TaxScheme> 
+         </cac:TaxCategory> </cac:TaxSubtotal>
+
+         <cac:TaxSubtotal>
+         <cbc:TaxableAmount currencyID='COP'>$CuantiaRecaudos</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID='COP'>$TaxAmountSuper</cbc:TaxAmount> 
+         <cac:TaxCategory>
+            <cbc:Percent>$PercentSuper</cbc:Percent> 
+            <cac:TaxScheme>
+               <cbc:ID>ZZ</cbc:ID>
+               <cbc:Name>Superintendencia de Notariado</cbc:Name> 
+            </cac:TaxScheme> 
+         </cac:TaxCategory> 
+       </cac:TaxSubtotal>
+
+       <cac:TaxSubtotal>
+         <cbc:TaxableAmount currencyID='COP'>$CuantiaRecaudos</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID='COP'>$TaxAmountFondo</cbc:TaxAmount> 
+         <cac:TaxCategory>
+            <cbc:Percent>$PercentFondo</cbc:Percent> 
+            <cac:TaxScheme>
+               <cbc:ID>ZZ</cbc:ID>
+               <cbc:Name>Fondo Nacional de Notariado</cbc:Name> 
+            </cac:TaxScheme> 
+         </cac:TaxCategory> 
+       </cac:TaxSubtotal>
+
+       <cac:TaxSubtotal>
+         <cbc:TaxableAmount currencyID='COP'>$cuantia_retencion</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID='COP'>$TaxAmountRtf</cbc:TaxAmount> 
+         <cac:TaxCategory>
+            <cbc:Percent>$PercentRtf</cbc:Percent> 
+            <cac:TaxScheme>
+               <cbc:ID>ZZ</cbc:ID>
+               <cbc:Name>Retención en la Fuente</cbc:Name> 
+            </cac:TaxScheme> 
+         </cac:TaxCategory> 
+       </cac:TaxSubtotal>
+
+
+
+            
+      <cac:TaxSubtotal>
+         <cbc:TaxableAmount currencyID='COP'>$TaxableAmount</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID='COP'>$TaxAmountReteIca</cbc:TaxAmount> 
+         <cac:TaxCategory>
+            <cbc:Percent>$PercentReteIca</cbc:Percent> 
+            <cac:TaxScheme>
+               <cbc:ID>03</cbc:ID>
+               <cbc:Name>ICA</cbc:Name> 
+            </cac:TaxScheme> 
+         </cac:TaxCategory> 
+      </cac:TaxSubtotal>
+
+      <cac:TaxSubtotal> 
+         <cbc:TaxableAmount currencyID='COP'>$TaxAmountIva</cbc:TaxableAmount>
+         <cbc:TaxAmount currencyID='COP'>$TaxAmountReteIva</cbc:TaxAmount> 
+         <cac:TaxCategory>
+            <cbc:Percent>$PercentReteIva</cbc:Percent> 
+            <cac:TaxScheme> 
+               <cbc:ID>05</cbc:ID>
+               <cbc:Name>ReteIVA</cbc:Name> 
+            </cac:TaxScheme> 
+         </cac:TaxCategory> 
+      </cac:TaxSubtotal>
+
+            <cac:TaxSubtotal> 
+               <cbc:TaxableAmount currencyID='COP'>$TaxableAmount</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountReteRtf</cbc:TaxAmount>
+            <cac:TaxCategory> 
+               <cbc:Percent>$PercentReteRtf</cbc:Percent> 
+               <cac:TaxScheme>
+            <cbc:ID>06</cbc:ID> 
+            <cbc:Name>ReteRenta</cbc:Name> </cac:TaxScheme>
+            </cac:TaxCategory> 
+         </cac:TaxSubtotal> </cac:TaxTotal> 
+         <cac:TaxSubtotal>
+            <cbc:TaxableAmount currencyID='COP'>$TaxableAmountCuantia</cbc:TaxableAmount>
+            <cbc:TaxAmount currencyID='COP'>$TaxAmountRtf</cbc:TaxAmount> 
+            <cac:TaxCategory>
+            <cbc:Percent>$PercentRtf</cbc:Percent> 
+            <cac:TaxScheme> 
+               <cbc:ID>06</cbc:ID>
+            <cbc:Name>ReteRenta</cbc:Name> </cac:TaxScheme> </cac:TaxCategory> 
+         </cac:TaxSubtotal>
+            <cac:LegalMonetaryTotal> 
+               <cbc:LineExtensionAmount currencyID='COP'>$LineExtensionAmount</cbc:LineExtensionAmount>
+            <cbc:AllowanceTotalAmount currencyID='COP'>$AllowanceTotalAmount</cbc:TaxExclusiveAmount>
+            <cbc:TaxExclusiveAmount currencyID='COP'>$TaxExclusiveAmount</cbc:TaxExclusiveAmount>
+            <cbc:TaxInclusiveAmount currencyID='COP'>$TaxInclusiveAmount</cbc:TaxInclusiveAmount>
+            <cbc:PayableAmount currencyID='COP'>$PayableAmount</cbc:PayableAmount>
+            </cac:LegalMonetaryTotal>
+   
+
+--------------------------------------------------------
+
+FIRMA DIGITAL
+
+<ext:UBLExtension>
+   <ext:ExtensionContent> 
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315"> 
+         <ds:SignedInfo> 
+            <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /> 
+            <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /> 
+            <ds:Reference Id="xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315-ref0" URI="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"> 
+               <ds:Transforms> 
+                  <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /> 
+               </ds:Transforms> 
+               <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /> 
+               <ds:DigestValue>X7ljIhw4uXRrOM7kuELArC+6IM7lBCeC7g14Sf5Gn7I=</ds:DigestValue> 
+            </ds:Reference> 
+            <ds:Reference Id="xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315-ref1" URI="#KeyInfo"> 
+               <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /> 
+               <ds:DigestValue>7OcSfrwVui2ggrX5b1viwrPEWQIDYhAUB8Feguz/l1E=</ds:DigestValue> 
+            </ds:Reference> 
+            <ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315-signedprops"> 
+               <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /> 
+               <ds:DigestValue>1DcLYWjFWOf7f4k6zXkTVk8ftsqj67ZRFFdfEYOD0i8=</ds:DigestValue> 
+            </ds:Reference> 
+         </ds:SignedInfo> 
+         <ds:SignatureValue Id="xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315-sigvalue"> 
+                  iTbrT/J42KPkln7rObSKl7CfzhltIrpOvRwFc3r3McllGcanXhWJYN2bQwMI/dmWuiqqBZ/FK0uJ
+                  heN04pe5hQpyOEAq7dpf6NFo4fOuTHtTcIhpWn7v5kQ6NAXY8hkYi40izPF/9r1Ywbv60rO3+cmd
+                  uAH9MIc/8hHNkqOiyPbg2x8rEG3i4FeA/fQbbEnIWRhXWsoDYCr6oMec0pUXcK/NbW1QEgnPKRAI
+                  xT+qPAbCKsVX29M4UagiZVViQopZtOsK4ygAAjFrgXE7qK+l0Po6xO2HtnyZ7FgYdWoRamLvKDjo
+                  J1CCCdSolwXWND4dwdvv/LSzCFWYR8pSSF7SFg==
+         </ds:SignatureValue> 
+         <ds:KeyInfo Id="KeyInfo"> 
+            <ds:X509Data> 
+               <ds:X509Certificate>
+                        MIIIVjCCBj6gAwIBAgIIVnRSEbhA69kwDQYJKoZIhvcNAQELBQAwgbQxIzAhBgkqhkiG9w0BCQEW
+                        FGluZm9AYW5kZXNzY2QuY29tLmNvMSMwIQYDVQQDExpDQSBBTkRFUyBTQ0QgUy5BLiBDbGFzZSBJ
+                        STEwMC4GA1UECxMnRGl2aXNpb24gZGUgY2VydGlmaWNhY2lvbiBlbnRpZGFkIGZpbmFsMRMwEQYD
+                        VQQKEwpBbmRlcyBTQ0QuMRQwEgYDVQQHEwtCb2dvdGEgRC5DLjELMAkGA1UEBhMCQ08wHhcNMTgw
+                        ODI0MTkzODAwWhcNMTkwODI0MTkzNzAwWjCCARQxGzAZBgNVBAkTEkFWIENSIDQ1ICAxMDMgLSA0
+                        MDEvMC0GCSqGSIb3DQEJARYgbW9uaWNhLm1vbnRlc0Bzb3V0aGNvbnN1bHRpbmcuY28xMjAwBgNV
+                        BAMTKVNJR05BVFVSRSBTT1VUSCBDT05TVUxUSU5HIENPTE9NQklBIFMuQS5TMRMwEQYDVQQFEwo5
+                        MDA1MDg5MDg5MRkwFwYDVQQMExBQRVJTT05BIEpVUklESUNBMSswKQYDVQQLEyJFbWl0aWRvIHBv
+                        ciBBbmRlcyBTQ0QgQ3JhIDI3IDg2IDQzMQ8wDQYDVQQHEwZCT0dPVEExFTATBgNVBAgTDENVTkRJ
+                        TkFNQVJDQTELMAkGA1UEBhMCQ08wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC64lNa
+                        oyLyIOg6+HmCLquL4Bs3EINo1oa4m1AIvMnoVI0KzOvatKaleCDkOhlvNE/R0kKodK8XjQkr1r+W
+                        8que2kS6qSeQcV/Aq3jmL0sIABKtQh1Yi6KFUSxLtkXPVLJtAL2oAVQ/qjBiyUGsOpDNssSuMd6G
+                        F353vdoCW1InLBsuC1p66N7OOuGJsvvXDEB6F2EermxmhJuiXwu369xbzW0o9cpDGcirh9r8TrN+
+                        HaC0C/H32dbxaFOG9EYNg2817pDowUa0d8cWAbDGTE/Im6e2VM7Ez3zNVJlqNcAyhkBNuSTzN9PU
+                        6oA10OTZSE4S7gQUsSUTkr6yp7aUCb5BAgMBAAGjggMHMIIDAzAMBgNVHRMBAf8EAjAAMB8GA1Ud
+                        IwQYMBaAFKhLtPQLp7Zb1KAohRCdBBMzxKf3MDcGCCsGAQUFBwEBBCswKTAnBggrBgEFBQcwAYYb
+                        aHR0cDovL29jc3AuYW5kZXNzY2QuY29tLmNvMCsGA1UdEQQkMCKBIG1vbmljYS5tb250ZXNAc291
+                        dGhjb25zdWx0aW5nLmNvMIIB4wYDVR0gBIIB2jCCAdYwggHSBg0rBgEEAYH0SAECCQIIMIIBvzBB
+                        BggrBgEFBQcCARY1aHR0cDovL3d3dy5hbmRlc3NjZC5jb20uY28vZG9jcy9EUENfQW5kZXNTQ0Rf
+                        VjIuOS5wZGYwggF4BggrBgEFBQcCAjCCAWoeggFmAEwAYQAgAHUAdABpAGwAaQB6AGEAYwBpAPMA
+                        bgAgAGQAZQAgAGUAcwB0AGUAIABjAGUAcgB0AGkAZgBpAGMAYQBkAG8AIABlAHMAdADhACAAcwB1
+                        AGoAZQB0AGEAIABhACAAbABhAHMAIABQAG8AbADtAHQAaQBjAGEAcwAgAGQAZQAgAEMAZQByAHQA
+                        aQBmAGkAYwBhAGQAbwAgAGQAZQAgAFAAZQByAHMAbwBuAGEAIABKAHUAcgDtAGQAaQBjAGEAIAAo
+                        AFAAQwApACAAeQAgAEQAZQBjAGwAYQByAGEAYwBpAPMAbgAgAGQAZQAgAFAAcgDhAGMAdABpAGMA
+                        YQBzACAAZABlACAAQwBlAHIAdABpAGYAaQBjAGEAYwBpAPMAbgAgACgARABQAEMAKQAgAGUAcwB0
+                        AGEAYgBsAGUAYwBpAGQAYQBzACAAcABvAHIAIABBAG4AZABlAHMAIABTAEMARDAdBgNVHSUEFjAU
+                        BggrBgEFBQcDAgYIKwYBBQUHAwQwNwYDVR0fBDAwLjAsoCqgKIYmaHR0cDovL2NybC5hbmRlc3Nj
+                        ZC5jb20uY28vQ2xhc2VJSS5jcmwwHQYDVR0OBBYEFMIvQ2lNThwW0ThnLIWXurCzkrfyMA4GA1Ud
+                        DwEB/wQEAwIE8DANBgkqhkiG9w0BAQsFAAOCAgEASKXwA/xuszt4PGoLtF2WbaQbLZ4S2uKj4SV7
+                        4AGaWzogwg852Y39QZhgWTOPDfgwGy7tNAcflPHI5Tk/X8fPxKouYywm6Tj0U3/yp3TO+ZDnDLCw
+                        qKxd1Qt0WybmMjmuvsDOvCXaazEmbc3DcTSJGe8ZOSsXtpLmsmbTmLZ66VrpSyr0rAphsb3457UP
+                        huSxRc5M+wFdL35Sy+t93SYZRbHP0ZyUWC14hwhj0RdxPvwh58h8BUSqCmeOvUnkRlpfI7Z3X/kg
+                        SzYcJJiMAIdpuYn4IZlLDNA1oVhSs9+sLwxFuwp5Al9UozX3lGEc4Vbd0kWNsKHrWXjjD6hYW8OS
+                        zDWoUXFN3fpkOcWdYmH4t6BpN8bN6m4e73r6wmOQyBGkeAgNM76nGm7Xb+KhiW1/1CDlklPjRi6P
+                        Y/Xs9LSXtaXcwrKi0Tk7BXbK7fBCfFHyhcsZk+GobgJMkgC84fTF+y3jNI6IoQPbmJJLg6ErG811
+                        413xcta79wlbc5NcMIqqIexOJa/T6ivKKwYe+/jic9vpF8IM9pXjpZXuu7ivlWSQ9m0xaVkvPuEx
+                        /OaZwzH78dud93i1/4or5sF3yLHoAAtpDGY8+cMnrCNynRmnaoQQbq/O4nDG2kze3Qi42zyQxOaj
+                        /Z5+SFh3y/P0xBD+4MMkXrB/7y3W7WJfa/GQETI=
+               </ds:X509Certificate>
+            </ds:X509Data>
+         </ds:KeyInfo> 
+         <ds:Object>
+            <xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:xades141="http://uri.etsi.org/01903/v1.4.1#" Target="#xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315"><xades:SignedProperties Id="xmldsig-dd0b6f4c-4470-4013-a428-af0090d3c315-signedprops"><xades:SignedSignatureProperties><xades:SigningTime>2019-01-24T17:09:54.316+00:00</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>oEsyOEeUGTXr45Jr0jHJx3l/9CxcsxPMOTarEiXOclY=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=CO,L=Bogota D.C.,O=Andes SCD,OU=Division de certificacion,CN=ROOT CA ANDES SCD S.A.,1.2.840.113549.1.9.1=#1614696e666f40616e6465737363642e636f6d2e636f</ds:X509IssuerName><ds:X509SerialNumber>8136867327090815624</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>Nn6nlU4uZZraLRasqx/1tzd4syojGEr+LeJixKcvLSc=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=CO,L=Bogota D.C.,O=Andes SCD.,OU=Division de certificacion entidad final,CN=CA ANDES SCD S.A. Clase II,1.2.840.113549.1.9.1=#1614696e666f40616e6465737363642e636f6d2e636f</ds:X509IssuerName><ds:X509SerialNumber>6229694420619422681</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>Cs7emRwtXWVYHJrqS9eXEXfUcFyJJBqFhDFOetHu8ts=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>C=CO,L=Bogota D.C.,O=Andes SCD,OU=Division de certificacion,CN=ROOT CA ANDES SCD S.A.,1.2.840.113549.1.9.1=#1614696e666f40616e6465737363642e636f6d2e636f</ds:X509IssuerName><ds:X509SerialNumber>3184328748892787122</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyId><xades:SigPolicyId><xades:Identifier>https://facturaelectronica.dian.gov.co/politicadefirma/v2/politicadefirmav2.pdf</xades:Identifier></xades:SigPolicyId><xades:SigPolicyHash><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><ds:DigestValue>dMoMvtcG5aIzgYo0tIsSQeVJBDnUnfSOfBpxXrmor0Y=</ds:DigestValue></xades:SigPolicyHash></xades:SignaturePolicyId></xades:SignaturePolicyIdentifier><xades:SignerRole><xades:ClaimedRoles><xades:ClaimedRole>third party</xades:ClaimedRole>
+         </xades:ClaimedRoles>
+      </xades:SignerRole>
+   </xades:SignedSignatureProperties>
+      </xades:SignedProperties>
+   </xades:QualifyingProperties>
+</ds:Object>
+</ds:Signature>
+</ext:ExtensionContent>
+</ext:UBLExtension>
