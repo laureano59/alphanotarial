@@ -119,6 +119,17 @@ class RadicacionController extends Controller
     public function update(Request $request, $id)
     {
 
+      $anio_radica = $request->anio_radica;
+      $id_proto = $request->id_proto;
+
+      $radicacion = Radicacion::where("anio_radica","=",$anio_radica)->find($id);
+
+      $radicacion->id_proto = $request->input('id_proto');
+      $radicacion->save();
+      return response()->json([
+           "validar"=> 1,
+           "mensaje"=> "Muy bien!. Se actualizó el protocolista de la radicación"
+         ]);
     }
 
     /**

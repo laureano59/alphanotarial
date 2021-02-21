@@ -145,7 +145,7 @@
 				    </li>
 
 					  <li>
-					    <a href="#">
+					    <a href="/panel_protocolistas">
 								<i class="menu-icon"><img src="{{ asset('images/protocolistas.png') }}" width="30 px" height="30 px"></i>
 					    	<span class="menu-text"> Protocolistas </span>
   			        <b class="arrow fa fa-angle-down"></b>

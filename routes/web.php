@@ -19,6 +19,8 @@ Route::resource('radicacion', 'RadicacionController');
 Route::resource('liquidacion', 'LiqderechoController');
 Route::resource('facturacion', 'FacturacionController');
 Route::resource('facturaelectronica', 'FacturaelectronicaController');
+Route::resource('panel_protocolistas', 'ProtocolistasController');
+
 Route::resource('actas_deposito', 'ActasdepositoController');
 Route::resource('guardarcertificadortf', 'Certificado_rtfController');
 Route::resource('escrituracion', 'EscrituraController');
@@ -56,6 +58,7 @@ Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController
 
 
 Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vendedores');
+
 Route::get('liberarradicacion', 'RadicacionController@Liberar_Radicacion');
 Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
@@ -74,6 +77,7 @@ Route::get('mostrarliq', 'LiqderechoController@Cargar_Derechos');
 Route::get('mostrarconcep', 'LiqconceptosController@Cargar_Conceptos');
 Route::get('mostrarrecaud', 'LiqrecaudosController@Cargar_Recaudos');
 Route::get('sessiones', 'SesionesController@Sessiones');
+Route::get('sessiones_protocolista', 'SesionesController@Sessiones_protocolistas');
 Route::get('sessionescajarapida', 'SesionesController@Sessiones_cajarapida');
 Route::get('conceptos', 'ConceptosController@ConceptoActo');
 Route::get('traeconceptosporid', 'ConceptosController@TraeConceptoPorId');

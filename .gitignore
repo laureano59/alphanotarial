@@ -10,7 +10,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-cliente
-cliente_cajarapida
-dian
-dian_cajarapida
+/public/cliente
+/public/cliente_cajarapida
+/public/dian
+/public/dian_cajarapida

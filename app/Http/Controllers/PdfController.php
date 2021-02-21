@@ -106,7 +106,7 @@ class PdfController extends Controller
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -114,13 +114,13 @@ class PdfController extends Controller
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
@@ -144,12 +144,12 @@ class PdfController extends Controller
             $dataconcept[$i]['concepto'] = $atributo;
             $dataconcept[$i]['cantidad'] = $conc[$hojasatributo];
             $dataconcept[$i]['total'] = $conc[$totalatributo];
-              $i = $i + 1;
+            $i = $i + 1;
           }
 
         }
       }
-        $contdataconcept = count ($dataconcept, 0);
+      $contdataconcept = count ($dataconcept, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -300,27 +300,27 @@ class PdfController extends Controller
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -374,7 +374,7 @@ class PdfController extends Controller
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -383,7 +383,7 @@ class PdfController extends Controller
 
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                    direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
@@ -391,7 +391,7 @@ class PdfController extends Controller
 
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -408,7 +408,7 @@ class PdfController extends Controller
       foreach ($conceptos as $key => $conc) {
         foreach ($cantidades as $key => $cnt) {
           # code...
-        
+          
           foreach ($atributos as $key => $atri) {
             $atributo = $atri['nombre_concep'];
             $totalatributo = 'total'.$atri['atributo'];
@@ -417,7 +417,7 @@ class PdfController extends Controller
               $dataconcept[$i]['concepto'] = $atributo;
               $dataconcept[$i]['cantidad'] = $cnt[$hojasatributo];
               $dataconcept[$i]['total'] = $conc[$totalatributo];
-                $i = $i + 1;
+              $i = $i + 1;
             }
           }
         }
@@ -571,27 +571,27 @@ class PdfController extends Controller
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -647,7 +647,7 @@ class PdfController extends Controller
     }
 
     $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-    identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
     $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->get()->toArray();
     $contprincipales = count ($principales, 0);
 
@@ -686,19 +686,19 @@ class PdfController extends Controller
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         // "format" => "Letter en mm",
-        "format" => 'Letter',
-        'margin_bottom' => 10,
+      "format" => 'Letter',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -710,192 +710,192 @@ class PdfController extends Controller
 
 
 
-public function PdfCertificadoRetecncionenlaFuente(Request $request){
+  public function PdfCertificadoRetecncionenlaFuente(Request $request){
   //$id_cer = $request->session()->get('id_cer');
-  $id_radica = $request->session()->get('key');
-  $notaria = Notaria::find(1);
-  $anio_trabajo = $notaria->anio_trabajo;
-  $nombre_nota = $notaria->nombre_nota;
-  $nombre_notario = $notaria->nombre_notario;
-  $nit = $notaria->nit;
-  $direccion_nota = $notaria->direccion_nota;
-  $email = $notaria->email;
-  $num_escritura = $request->session()->get('num_esc');
-  $anio_gravable = $anio_trabajo;
-  $fecha_certificado = date("Y/m/d");
+    $id_radica = $request->session()->get('key');
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $nombre_nota = $notaria->nombre_nota;
+    $nombre_notario = $notaria->nombre_notario;
+    $nit = $notaria->nit;
+    $direccion_nota = $notaria->direccion_nota;
+    $email = $notaria->email;
+    $num_escritura = $request->session()->get('num_esc');
+    $anio_gravable = $anio_trabajo;
+    $fecha_certificado = date("Y/m/d");
 
-  $certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->get();
-  $i = 0;
-  $html = [];
-  foreach ($certificado_rtf as $cer) {
-    $fecha_escritura = $cer->fecha_escritura;
-    $ciudad = $cer->ciudad;
-    $nombre_contribuyente = $cer->nombre_contribuyente;
-    $identificacion_contribuyente = $cer->identificacion_contribuyente;
-    $prefijo_fact = $cer->prefijo;
-    $num_factura = $cer->num_factura;
-    $fecha_factura = $cer->fecha_factura;
-    $valor_venta = $cer->valor_venta;
-    $total_retenido = $cer->total_retenido;
-
-
-    $data['id_cer'] = $cer->id_cer;
-    $data['nombre_nota'] = $nombre_nota;
-    $data['nombre_notario'] = $nombre_notario;
-    $data['nit'] = $nit;
-    $data['direccion_nota'] = $direccion_nota;
-    $data['email'] = $email;
-    $data['num_escritura'] = $num_escritura;
-    $data['anio_gravable'] = $anio_gravable;
-    $data['fecha_escritura'] = $fecha_escritura;
-    $data['ciudad'] = $ciudad;
-    $data['nombre_contribuyente'] = $nombre_contribuyente;
-    $data['identificacion_contribuyente'] = $identificacion_contribuyente;
-    $data['prefijo_fact'] = $prefijo_fact;
-    $data['num_factura'] = $num_factura;
-    $data['fecha_factura'] = $fecha_factura;
-    $data['valor_venta'] = $valor_venta;
-    $data['total_retenido'] = $total_retenido;
-    $data['fecha_certificado'] = $fecha_certificado;
-    $html[$i] = view('pdf.certificadortf',$data)->render();
-    $i++;
-  }
+    $certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->get();
+    $i = 0;
+    $html = [];
+    foreach ($certificado_rtf as $cer) {
+      $fecha_escritura = $cer->fecha_escritura;
+      $ciudad = $cer->ciudad;
+      $nombre_contribuyente = $cer->nombre_contribuyente;
+      $identificacion_contribuyente = $cer->identificacion_contribuyente;
+      $prefijo_fact = $cer->prefijo;
+      $num_factura = $cer->num_factura;
+      $fecha_factura = $cer->fecha_factura;
+      $valor_venta = $cer->valor_venta;
+      $total_retenido = $cer->total_retenido;
 
 
-  $namefile = 'certifirtf_'.$fecha_certificado.'.pdf';
+      $data['id_cer'] = $cer->id_cer;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['nit'] = $nit;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['email'] = $email;
+      $data['num_escritura'] = $num_escritura;
+      $data['anio_gravable'] = $anio_gravable;
+      $data['fecha_escritura'] = $fecha_escritura;
+      $data['ciudad'] = $ciudad;
+      $data['nombre_contribuyente'] = $nombre_contribuyente;
+      $data['identificacion_contribuyente'] = $identificacion_contribuyente;
+      $data['prefijo_fact'] = $prefijo_fact;
+      $data['num_factura'] = $num_factura;
+      $data['fecha_factura'] = $fecha_factura;
+      $data['valor_venta'] = $valor_venta;
+      $data['total_retenido'] = $total_retenido;
+      $data['fecha_certificado'] = $fecha_certificado;
+      $html[$i] = view('pdf.certificadortf',$data)->render();
+      $i++;
+    }
 
-  $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-  $fontDirs = $defaultConfig['fontDir'];
 
-  $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-  $fontData = $defaultFontConfig['fontdata'];
-  $mpdf = new Mpdf([
+    $namefile = 'certifirtf_'.$fecha_certificado.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
       'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
+        public_path() . '/fonts',
       ]),
       'fontdata' => $fontData + [
-          'arial' => [
-              'R' => 'arial.ttf',
-              'B' => 'arialbd.ttf',
-          ],
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
       ],
       'default_font' => 'arial',
       // "format" => "Letter en mm",
       "format" => [216, 140],//Media Carta
       'margin_bottom' => 10,
-  ]);
+    ]);
 
-  $mpdf->defaultfooterfontsize=2;
-  $mpdf->SetTopMargin(5);
-  $mpdf->SetDisplayMode('fullpage');
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
 
-  $contador = count ($html, 0);
-  $contador = $contador - 1;
-  foreach ($html as $key => $value) {
-    $mpdf->WriteHTML($value);
-    if($contador > 0){
-      $mpdf->AddPage();
+    $contador = count ($html, 0);
+    $contador = $contador - 1;
+    foreach ($html as $key => $value) {
+      $mpdf->WriteHTML($value);
+      if($contador > 0){
+        $mpdf->AddPage();
+      }
+      $contador--;
     }
-    $contador--;
+
+    $mpdf->Output($namefile,"I");
+
+
+
   }
 
-  $mpdf->Output($namefile,"I");
 
-
-
-}
-
-
-public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
+  public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
   //$id_cer = $request->session()->get('id_cer');
-  
-  $notaria = Notaria::find(1);
-  $anio_trabajo = $notaria->anio_trabajo;
-  $nombre_nota = $notaria->nombre_nota;
-  $nombre_notario = $notaria->nombre_notario;
-  $nit = $notaria->nit;
-  $direccion_nota = $notaria->direccion_nota;
-  $email = $notaria->email;
-  $anio_gravable = $anio_trabajo;
-  $fecha_certificado = date("Y/m/d");
-  $identificacion = $request->identificacion;
+    
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $nombre_nota = $notaria->nombre_nota;
+    $nombre_notario = $notaria->nombre_notario;
+    $nit = $notaria->nit;
+    $direccion_nota = $notaria->direccion_nota;
+    $email = $notaria->email;
+    $anio_gravable = $anio_trabajo;
+    $fecha_certificado = date("Y/m/d");
+    $identificacion = $request->identificacion;
 
-  $certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->where("identificacion_contribuyente","=",$identificacion)->get();
-  $i = 0;
-  foreach ($certificado_rtf as $cer) {
-    $fecha_escritura = $cer->fecha_escritura;
-    $ciudad = $cer->ciudad;
-    $nombre_contribuyente = $cer->nombre_contribuyente;
-    $identificacion_contribuyente = $cer->identificacion_contribuyente;
-    $prefijo_fact = $cer->prefijo;
-    $num_factura = $cer->num_factura;
-    $fecha_factura = $cer->fecha_factura;
-    $valor_venta = $cer->valor_venta;
-    $total_retenido = $cer->total_retenido;
+    $certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->where("identificacion_contribuyente","=",$identificacion)->get();
+    $i = 0;
+    foreach ($certificado_rtf as $cer) {
+      $fecha_escritura = $cer->fecha_escritura;
+      $ciudad = $cer->ciudad;
+      $nombre_contribuyente = $cer->nombre_contribuyente;
+      $identificacion_contribuyente = $cer->identificacion_contribuyente;
+      $prefijo_fact = $cer->prefijo;
+      $num_factura = $cer->num_factura;
+      $fecha_factura = $cer->fecha_factura;
+      $valor_venta = $cer->valor_venta;
+      $total_retenido = $cer->total_retenido;
 
-    $data['id_cer'] = $cer->id_cer;
-    $data['nombre_nota'] = $nombre_nota;
-    $data['nombre_notario'] = $nombre_notario;
-    $data['nit'] = $nit;
-    $data['direccion_nota'] = $direccion_nota;
-    $data['email'] = $email;
-    $data['num_escritura'] = $num_escritura;
-    $data['anio_gravable'] = $anio_gravable;
-    $data['fecha_escritura'] = $fecha_escritura;
-    $data['ciudad'] = $ciudad;
-    $data['nombre_contribuyente'] = $nombre_contribuyente;
-    $data['identificacion_contribuyente'] = $identificacion_contribuyente;
-    $data['prefijo_fact'] = $prefijo_fact;
-    $data['num_factura'] = $num_factura;
-    $data['fecha_factura'] = $fecha_factura;
-    $data['valor_venta'] = $valor_venta;
-    $data['total_retenido'] = $total_retenido;
-    $data['fecha_certificado'] = $fecha_certificado;
-    $html[$i] = view('pdf.certificadortf',$data)->render();
-    $i++;
-  }
+      $data['id_cer'] = $cer->id_cer;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['nit'] = $nit;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['email'] = $email;
+      $data['num_escritura'] = $num_escritura;
+      $data['anio_gravable'] = $anio_gravable;
+      $data['fecha_escritura'] = $fecha_escritura;
+      $data['ciudad'] = $ciudad;
+      $data['nombre_contribuyente'] = $nombre_contribuyente;
+      $data['identificacion_contribuyente'] = $identificacion_contribuyente;
+      $data['prefijo_fact'] = $prefijo_fact;
+      $data['num_factura'] = $num_factura;
+      $data['fecha_factura'] = $fecha_factura;
+      $data['valor_venta'] = $valor_venta;
+      $data['total_retenido'] = $total_retenido;
+      $data['fecha_certificado'] = $fecha_certificado;
+      $html[$i] = view('pdf.certificadortf',$data)->render();
+      $i++;
+    }
 
 
-  $namefile = 'certifirtf_'.$fecha_certificado.'.pdf';
+    $namefile = 'certifirtf_'.$fecha_certificado.'.pdf';
 
-  $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-  $fontDirs = $defaultConfig['fontDir'];
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
 
-  $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-  $fontData = $defaultFontConfig['fontdata'];
-  $mpdf = new Mpdf([
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
       'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
+        public_path() . '/fonts',
       ]),
       'fontdata' => $fontData + [
-          'arial' => [
-              'R' => 'arial.ttf',
-              'B' => 'arialbd.ttf',
-          ],
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
       ],
       'default_font' => 'arial',
       // "format" => "Letter en mm",
       "format" => [216, 140],//TODO: Media Carta
       'margin_bottom' => 10,
-  ]);
+    ]);
 
-  $mpdf->defaultfooterfontsize=2;
-  $mpdf->SetTopMargin(5);
-  $mpdf->SetDisplayMode('fullpage');
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
 
-  $contador = count ($html, 0);
-  $contador = $contador - 1;
-  foreach ($html as $key => $value) {
-    $mpdf->WriteHTML($value);
-    if($contador > 0){
-      $mpdf->AddPage();
+    $contador = count ($html, 0);
+    $contador = $contador - 1;
+    foreach ($html as $key => $value) {
+      $mpdf->WriteHTML($value);
+      if($contador > 0){
+        $mpdf->AddPage();
+      }
+      $contador--;
     }
-    $contador--;
+
+    $mpdf->Output($namefile,"I");
+
   }
-
-  $mpdf->Output($namefile,"I");
-
-}
 
 
   /***************TODO:NOTA CREDITO FACTURA*******************/
@@ -946,7 +946,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente_otor = Cliente::where('identificacion_cli', $identificacioncli1_otor)->select($raw)->get();
       foreach ($cliente_otor as $key => $cli_otor) {
         $nombrecli1_otor = $cli_otor['fullname'];
@@ -954,14 +954,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                              direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(3)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -983,13 +983,13 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
             $dataconcept_otor[$i]['concepto'] = $atributo;
             $dataconcept_otor[$i]['cantidad'] = "";
             $dataconcept_otor[$i]['total'] = $conc1[$totalatributo];
-              $i = $i + 1;
+            $i = $i + 1;
           }
 
         }
       }
 
-        $contdataconcept_otor = count($dataconcept_otor, 0);
+      $contdataconcept_otor = count($dataconcept_otor, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -1117,14 +1117,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $deducciones_otor[$k]['total'] = $reteica_otor;
       }
 
-        if (isset($deducciones_otor)){
-          $contdeducciones = count ($deducciones_otor, 0);
-          $data_otor['deducciones'] = $deducciones_otor;
-          $data_otor['contdeducciones'] = $contdeducciones;
+      if (isset($deducciones_otor)){
+        $contdeducciones = count ($deducciones_otor, 0);
+        $data_otor['deducciones'] = $deducciones_otor;
+        $data_otor['contdeducciones'] = $contdeducciones;
 
-          $totaldeducciones = $reteiva_otor + $retertf_otor + $reteica_otor;
-          $data_otor['totaldeducciones'] = round($totaldeducciones);
-        }
+        $totaldeducciones = $reteiva_otor + $retertf_otor + $reteica_otor;
+        $data_otor['totaldeducciones'] = round($totaldeducciones);
+      }
 
       $html_otor = view('pdf.notacredito_fact',$data_otor)->render();
 
@@ -1138,29 +1138,29 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHeader('Factura '.'{PAGENO} de {nbpg}');
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -1201,7 +1201,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -1210,7 +1210,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                              direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       
       foreach ($a_cargo as $key => $acar) {
@@ -1218,7 +1218,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->get()->take(3)->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -1239,12 +1239,12 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
             $dataconcept[$i]['concepto'] = $atributo;
             $dataconcept[$i]['cantidad'] = $conc[$hojasatributo];
             $dataconcept[$i]['total'] = $conc[$totalatributo];
-              $i = $i + 1;
+            $i = $i + 1;
           }
 
         }
       }
-        $contdataconcept = count ($dataconcept, 0);
+      $contdataconcept = count ($dataconcept, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -1389,27 +1389,27 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -1421,7 +1421,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     }
   }
 
-   /***************COPIA NOTA CREDITO FACTURA*******************/
+  /***************COPIA NOTA CREDITO FACTURA*******************/
   public function PdfNotaCreditoFactCopia(Request $request){
     $notaria = Notaria::find(1);
     $prefijo_fact = $notaria->prefijo_fact;
@@ -1474,7 +1474,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente_otor = Cliente::where('identificacion_cli', $identificacioncli1_otor)->select($raw)->get();
       foreach ($cliente_otor as $key => $cli_otor) {
         $nombrecli1_otor = $cli_otor['fullname'];
@@ -1482,14 +1482,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                              direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(3)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -1511,13 +1511,13 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
             $dataconcept_otor[$i]['concepto'] = $atributo;
             $dataconcept_otor[$i]['cantidad'] = "";
             $dataconcept_otor[$i]['total'] = $conc1[$totalatributo];
-              $i = $i + 1;
+            $i = $i + 1;
           }
 
         }
       }
 
-        $contdataconcept_otor = count($dataconcept_otor, 0);
+      $contdataconcept_otor = count($dataconcept_otor, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -1645,14 +1645,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $deducciones_otor[$k]['total'] = $reteica_otor;
       }
 
-        if (isset($deducciones_otor)){
-          $contdeducciones = count ($deducciones_otor, 0);
-          $data_otor['deducciones'] = $deducciones_otor;
-          $data_otor['contdeducciones'] = $contdeducciones;
+      if (isset($deducciones_otor)){
+        $contdeducciones = count ($deducciones_otor, 0);
+        $data_otor['deducciones'] = $deducciones_otor;
+        $data_otor['contdeducciones'] = $contdeducciones;
 
-          $totaldeducciones = $reteiva_otor + $retertf_otor + $reteica_otor;
-          $data_otor['totaldeducciones'] = round($totaldeducciones);
-        }
+        $totaldeducciones = $reteiva_otor + $retertf_otor + $reteica_otor;
+        $data_otor['totaldeducciones'] = round($totaldeducciones);
+      }
 
       $html_otor = view('pdf.notacredito_fact',$data_otor)->render();
 
@@ -1666,29 +1666,29 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHeader('Factura '.'{PAGENO} de {nbpg}');
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -1729,7 +1729,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -1737,14 +1737,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                              direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->get()->take(3)->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -1765,12 +1765,12 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
             $dataconcept[$i]['concepto'] = $atributo;
             $dataconcept[$i]['cantidad'] = $conc[$hojasatributo];
             $dataconcept[$i]['total'] = $conc[$totalatributo];
-              $i = $i + 1;
+            $i = $i + 1;
           }
 
         }
       }
-        $contdataconcept = count ($dataconcept, 0);
+      $contdataconcept = count ($dataconcept, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -1915,27 +1915,27 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -2009,20 +2009,20 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         "format" => [216, 140],//TODO: Media Carta
         //"format" => 'Letter',
         'margin_bottom' => 10,
-    ]);
+      ]);
 
     $mpdf->defaultfooterfontsize=2;
     $mpdf->SetTopMargin(5);
@@ -2041,20 +2041,78 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $email = $notaria->email;
     $nombre_notario = $notaria->nombre_notario;
     $identificacion_not = $notaria->identificacion_not;
-    $anio_trabajo = $notaria->anio_trabajo;
+    //$anio_trabajo = $notaria->anio_trabajo;
     $fecha1 = $request->session()->get('fecha1');
     $fecha2 = $request->session()->get('fecha2');
+    $anio_trabajo = date("Y", strtotime($fecha1));
 
     
     /*----------  Consulta Radicaciones con un solo acto  ----------*/
     
-    $estadistico = Estadisticonotarial_unicas_view::whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
-       
+    //$estadistico = Estadisticonotarial_unicas_view::
+    //whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
+    //
+  
+            
+    $raw1 = \DB::raw("id_radica");
+      $subquery = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      ->groupBy('id_radica')
+      ->havingRaw('count(*) = 1')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+
+      $estadistico = [];
+      foreach ($subquery as $key => $sub) {
+        $id_radica = $sub['id_radica'];
+        $consulta = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+        ->where('id_radica', [$id_radica])->get()->toArray();
+
+        foreach ($consulta as $key2 => $con) {
+          $estadistico[$key]['id_actoperrad'] = $con['id_actoperrad'];
+          $estadistico[$key]['id_radica'] = $con['id_radica'];
+          $estadistico[$key]['fecha'] = $con['fecha'];
+          $estadistico[$key]['id_codigoagru'] = $con['id_codigoagru'];
+          $estadistico[$key]['id_gru'] = $con['id_gru'];
+          $estadistico[$key]['derechos'] = $con['derechos'];
+        }
+        
+      }
+
+         
+               
 
     /*----------  Consulta Radicaciones con varios actos  ----------*/
 
-    $estadistico_repe = Estadisticonotarial_repetidas_solo_radi_view::whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
+    //$estadistico_repe = Estadisticonotarial_repetidas_solo_radi_view::whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
+   
+    $raw2 = \DB::raw("id_radica");
+      $subquery2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      ->groupBy('id_radica')
+      ->havingRaw('count(*) > 1')
+      ->select($raw2)
+      ->get()
+      ->toArray();
 
+     
+      $estadistico_repe = [];
+      foreach ($subquery2 as $key => $sub2) {
+        $id_radica = $sub2['id_radica'];
+        $consulta2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+        ->where('id_radica', [$id_radica])->get()->toArray();
+
+        foreach ($consulta2 as $key2 => $con2) {
+          $estadistico_repe[$key]['id_actoperrad'] = $con2['id_actoperrad'];
+          $estadistico_repe[$key]['id_radica'] = $con2['id_radica'];
+          $estadistico_repe[$key]['fecha'] = $con2['fecha'];
+          $estadistico_repe[$key]['id_codigoagru'] = $con2['id_codigoagru'];
+          $estadistico_repe[$key]['id_gru'] = $con2['id_gru'];
+          $estadistico_repe[$key]['derechos'] = $con2['derechos'];
+        }
+        
+      }
+       
+        
     $cantventa = 0;
     $ingreventas = 0;
     $cantpermuta = 0;
@@ -2092,75 +2150,78 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $cantvip = 0;
     $ingrevip = 0;
 
-    
+        
     foreach ($estadistico as $key => $est) {
       $id_radica = $est['id_radica'];
       $id_codigoagru = $est['id_codigoagru'];
       $ingresos = round($est['derechos']);
 
-        if($id_codigoagru == 1){
-          $cantventa++;
-          $ingreventas += $ingresos;
-        }else if($id_codigoagru == 2){
-          $cantpermuta++;
-          $ingrepermuta += $ingresos;
-        }else if($id_codigoagru == 3){
-          $canthipoteca++;
-          $ingrehipoteca += $ingresos;
-        }else if($id_codigoagru == 4){
-          $cantcancelhipo++;
-          $ingrecancelhipo += $ingresos;
-        }else if($id_codigoagru == 5){
-          $cantventaconhipo++;
-          $ingreventaconhipo += $ingresos;
-        }else if($id_codigoagru == 6){
-          $cantconstisocie++;
-          $ingreconstisocie += $ingresos;
-        }else if($id_codigoagru == 7){
-          $cantliqsocie++;
-          $ingreliqsocie += $ingresos;
-        }else if($id_codigoagru == 8){
-          $cantreforsocial++;
-          $ingrereforsocial += $ingresos;
-        }else if($id_codigoagru == 9){
-          $cantsuce++;
-          $ingresuce += $ingresos;
-        }else if($id_codigoagru == 10){
-          $cantreglaproprefor++;
-          $ingrereglaprorefor += $ingresos;
-        }else if($id_codigoagru == 11){
-          $cantproto++;
-          $ingreproto += $ingresos;
-        }else if($id_codigoagru == 12){
-          $cantmatri++;
-          $ingrematri += $ingresos;
-        }else if($id_codigoagru == 13){
-          $cantcorrecregis++;
-          $ingrecorrecregis += $ingresos;
-        }else if($id_codigoagru == 14){
-          $cantvis++;
-          $ingrevis += $ingresos;
-        }else if($id_codigoagru == 15){
-          $cantdivor++;
-          $ingredivor += $ingresos;
-        }else if($id_codigoagru == 16){
-          $cantmismosexo++;
-          $ingremismosexo += $ingresos;
-        }else if($id_codigoagru == 17){
-          $cantotros++;
-          $ingreotros += $ingresos;
-        }else if($id_codigoagru == 18){
-          $cantvip++;
-          $ingrevip += $ingresos;
-        }
+      if($id_codigoagru == 1){
+        $cantventa++;
+        $ingreventas += $ingresos;
+      }else if($id_codigoagru == 2){
+        $cantpermuta++;
+        $ingrepermuta += $ingresos;
+      }else if($id_codigoagru == 3){
+        $canthipoteca++;
+        $ingrehipoteca += $ingresos;
+      }else if($id_codigoagru == 4){
+        $cantcancelhipo++;
+        $ingrecancelhipo += $ingresos;
+      }else if($id_codigoagru == 5){
+        $cantventaconhipo++;
+        $ingreventaconhipo += $ingresos;
+      }else if($id_codigoagru == 6){
+        $cantconstisocie++;
+        $ingreconstisocie += $ingresos;
+      }else if($id_codigoagru == 7){
+        $cantliqsocie++;
+        $ingreliqsocie += $ingresos;
+      }else if($id_codigoagru == 8){
+        $cantreforsocial++;
+        $ingrereforsocial += $ingresos;
+      }else if($id_codigoagru == 9){
+        $cantsuce++;
+        $ingresuce += $ingresos;
+      }else if($id_codigoagru == 10){
+        $cantreglaproprefor++;
+        $ingrereglaprorefor += $ingresos;
+      }else if($id_codigoagru == 11){
+        $cantproto++;
+        $ingreproto += $ingresos;
+      }else if($id_codigoagru == 12){
+        $cantmatri++;
+        $ingrematri += $ingresos;
+      }else if($id_codigoagru == 13){
+        $cantcorrecregis++;
+        $ingrecorrecregis += $ingresos;
+      }else if($id_codigoagru == 14){
+        $cantvis++;
+        $ingrevis += $ingresos;
+      }else if($id_codigoagru == 15){
+        $cantdivor++;
+        $ingredivor += $ingresos;
+      }else if($id_codigoagru == 16){
+        $cantmismosexo++;
+        $ingremismosexo += $ingresos;
+      }else if($id_codigoagru == 17){
+        $cantotros++;
+        $ingreotros += $ingresos;
+      }else if($id_codigoagru == 18){
+        $cantvip++;
+        $ingrevip += $ingresos;
+      }
     }//Fin del for estadisticonotarial
 
-   
+
+
     foreach ($estadistico_repe as $key => $esr) {
       $id_radica = $esr['id_radica'];
-      //$id_codigoagru = $esr['id_codigoagru'];
       $ingresos = round($esr['derechos']);
-      $estadistico_rad = Estadisticonotarial_repetidas_view::where('id_radica', [$id_radica])->get()->toArray();
+      $estadistico_rad = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      ->where('id_radica', [$id_radica])
+      ->get()
+      ->toArray();
 
       $i = 0;
       unset($arr_codigo);
@@ -2171,7 +2232,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $i++;
       }
 
-     
+      
 
       if (in_array("1", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo)) {
 
@@ -2182,123 +2243,123 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
       if (in_array("2", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("6", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("8", $arr_codigo) && !in_array("10", $arr_codigo) && !in_array("11", $arr_codigo) && !in_array("12", $arr_codigo) && !in_array("13", $arr_codigo) && !in_array("15", $arr_codigo) && !in_array("16", $arr_codigo) ) {
 
-          $cantpermuta++;
-          $ingrepermuta += $ingresos;
+        $cantpermuta++;
+        $ingrepermuta += $ingresos;
 
       }
 
       if (in_array("3", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
 
-            $canthipoteca++;
-            $ingrehipoteca += $ingresos;
+        $canthipoteca++;
+        $ingrehipoteca += $ingresos;
 
       }
 
       if (in_array("4", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("1", $arr_codigo)) {
 
-            $cantcancelhipo++;
-            $ingrecancelhipo += $ingresos;
+        $cantcancelhipo++;
+        $ingrecancelhipo += $ingresos;
 
       }
 
       if (in_array("1", $arr_codigo) && !in_array("18", $arr_codigo) && in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("14", $arr_codigo)) {
 
-            $cantventaconhipo++;
-            $ingreventaconhipo += $ingresos;
+        $cantventaconhipo++;
+        $ingreventaconhipo += $ingresos;
 
       }
 
-       if (in_array("6", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
+      if (in_array("6", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-            $cantconstisocie++;
-            $ingreconstisocie += $ingresos;
+        $cantconstisocie++;
+        $ingreconstisocie += $ingresos;
 
       }
 
 
       if (in_array("7", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-            $cantliqsocie++;
-            $ingreliqsocie += $ingresos;
+        $cantliqsocie++;
+        $ingreliqsocie += $ingresos;
       }
 
       if (in_array("8", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-            $cantreforsocial++;
-            $ingrereforsocial += $ingresos;
+        $cantreforsocial++;
+        $ingrereforsocial += $ingresos;
 
       }
 
       if (in_array("9", $arr_codigo) ) {
 
-            $cantsuce++;
-            $ingresuce += $ingresos;
+        $cantsuce++;
+        $ingresuce += $ingresos;
 
       }
 
 
       if (in_array("10", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-            $cantreglaproprefor++;
-            $ingrereglaprorefor += $ingresos;
+        $cantreglaproprefor++;
+        $ingrereglaprorefor += $ingresos;
 
       }
 
       if (in_array("11", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("1", $arr_codigo)) {
 
-              $cantproto++;
-              $ingreproto += $ingresos;
+        $cantproto++;
+        $ingreproto += $ingresos;
 
       }
 
       if (in_array("12", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-              $cantmatri++;
-              $ingrematri += $ingresos;
+        $cantmatri++;
+        $ingrematri += $ingresos;
 
       }
 
       if (in_array("13", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-              $cantcorrecregis++;
-              $ingrecorrecregis += $ingresos;
+        $cantcorrecregis++;
+        $ingrecorrecregis += $ingresos;
 
       }
 
       if (in_array("14", $arr_codigo)  && !in_array("9", $arr_codigo) ) {
 
-              $cantvis++;
-              $ingrevis += $ingresos;
+        $cantvis++;
+        $ingrevis += $ingresos;
 
       }
 
 
       if (in_array("15", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-              $cantdivor++;
-              $ingredivor += $ingresos;
+        $cantdivor++;
+        $ingredivor += $ingresos;
 
       }
 
       if (in_array("16", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
 
-              $cantmismosexo++;
-              $ingremismosexo += $ingresos;
+        $cantmismosexo++;
+        $ingremismosexo += $ingresos;
 
       }
 
 
       if (in_array("17", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("1", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("6", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("8", $arr_codigo) && !in_array("10", $arr_codigo) && !in_array("11", $arr_codigo) && !in_array("12", $arr_codigo) && !in_array("13", $arr_codigo) && !in_array("15", $arr_codigo) && !in_array("16", $arr_codigo)) {
 
-              $cantotros++;
-              $ingreotros += $ingresos;
+        $cantotros++;
+        $ingreotros += $ingresos;
 
       }
 
 
-       if (in_array("18", $arr_codigo)  && !in_array("9", $arr_codigo) ) {
-              $cantvip++;
-              $ingrevip += $ingresos;
+      if (in_array("18", $arr_codigo)  && !in_array("9", $arr_codigo) ) {
+        $cantvip++;
+        $ingrevip += $ingresos;
 
       }
 
@@ -2309,25 +2370,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $cantliqsocie + $cantreforsocial + $cantsuce + $cantreglaproprefor +
     $cantproto + $cantmatri + $cantcorrecregis + $cantvis + $cantdivor +
     $cantmismosexo + $cantotros + $cantvip;
-
-    /*$ingreventas = $ingreventas;
-    $ingrepermuta = $ingrepermuta;
-    $ingrehipoteca = $ingrehipoteca;
-    $ingrecancelhipo = $ingrecancelhipo;
-    $ingreventaconhipo = $ingreventaconhipo;
-    $ingreconstisocie = $ingreconstisocie;
-    $ingreliqsocie = $ingreliqsocie;
-    $ingrereforsocial = $ingrereforsocial;
-    $ingresuce = $ingresuce;
-    $ingrereglaprorefor = $ingrereglaprorefor;
-    $ingreproto = $ingreproto;
-    $ingrematri = $ingrematri;
-    $ingrecorrecregis = $ingrecorrecregis;
-    $ingrevis = $ingrevis;
-    $ingredivor = $ingredivor;
-    $ingremismosexo = $ingremismosexo;
-    $ingreotros = $ingreotros;
-    $ingrevipa = $ingrevipa;*/
+    
 
     $totalingresos = $ingreventas + $ingrepermuta + $ingrehipoteca +
     $ingrecancelhipo + $ingreventaconhipo + $ingreconstisocie +
@@ -2397,19 +2440,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -2470,19 +2513,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -2536,19 +2579,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -2625,19 +2668,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -2662,10 +2705,10 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $id_fact = $request->session()->get('abonos_fact');
 
     $abonos = Cartera_fact::where('id_fact', $id_fact)
-      ->where('prefijo', $prefijo)
-      ->orderBy('created_at')
-      ->get()
-      ->toArray();
+    ->where('prefijo', $prefijo)
+    ->orderBy('created_at')
+    ->get()
+    ->toArray();
     
     $total_abono = 0;
     foreach ($abonos as $key => $abn) {
@@ -2695,18 +2738,18 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
-        "format" => 'Letter',
-        'margin_bottom' => 10,
+      ],
+      'default_font' => 'arial',
+      "format" => 'Letter',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -2717,7 +2760,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
   }
 
-   public function PdfComprobante_Egreso(Request $request){
+  public function PdfComprobante_Egreso(Request $request){
     $notaria = Notaria::find(1);
     $nit = $notaria->nit;
     $prefijo = $notaria->prefijo_fact;
@@ -2730,28 +2773,28 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $fecha_reporte = date("Y/m/d");
     $id_egr = $request->session()->get('id_egr');
     $Egreso = Egreso_acta_deposito::where('id_egr', $id_egr)
-      ->get()
-      ->toArray();
+    ->get()
+    ->toArray();
 
-      foreach ($Egreso as $key => $eg) {
-        $id_egreso = $eg['id_egr'];
-        $id_acta = $eg['id_act'];
-        $valor_egreso = $eg['egreso_egr'];
-        $fecha_egreso = $eg['fecha_egreso'];
-        $observaciones = $eg['observaciones_egr'];
-      }
+    foreach ($Egreso as $key => $eg) {
+      $id_egreso = $eg['id_egr'];
+      $id_acta = $eg['id_act'];
+      $valor_egreso = $eg['egreso_egr'];
+      $fecha_egreso = $eg['fecha_egreso'];
+      $observaciones = $eg['observaciones_egr'];
+    }
 
-      $Acta_deposito = Actas_deposito_view::where('id_act', $id_acta)
-      ->get()
-      ->toArray();
+    $Acta_deposito = Actas_deposito_view::where('id_act', $id_acta)
+    ->get()
+    ->toArray();
 
-      foreach ($Acta_deposito as $key => $ad) {
-        $cliente = $ad['nombre'];
-        $identificacion = $ad['identificacion_cli'];
-      }
+    foreach ($Acta_deposito as $key => $ad) {
+      $cliente = $ad['nombre'];
+      $identificacion = $ad['identificacion_cli'];
+    }
 
 
-        
+    
     $data['nit'] = $nit;
     $data['nombre_nota'] = $nombre_nota;
     $data['direccion_nota'] = $direccion_nota;
@@ -2777,19 +2820,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         "format" => [216, 140],//Media Carta
         'margin_bottom' => 10,
-    ]);
+      ]);
 
     $mpdf->defaultfooterfontsize=2;
     $mpdf->SetTopMargin(5);
@@ -2800,137 +2843,137 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
   }
 
   private function unique_multidim_array($array, $key) {
-      $temp_array = array();
-      $i = 0;
-      $key_array = array();
-      foreach($array as $val) {
-          if (!in_array($val[$key], $key_array)) {
-              $key_array[$i] = $val[$key];
-              $temp_array[$i] = $val;
-          }
-          $i++;
+    $temp_array = array();
+    $i = 0;
+    $key_array = array();
+    foreach($array as $val) {
+      if (!in_array($val[$key], $key_array)) {
+        $key_array[$i] = $val[$key];
+        $temp_array[$i] = $val;
       }
-      return $temp_array;
+      $i++;
     }
+    return $temp_array;
+  }
+
+  
+  public function PdfInformeRecaudos(Request $request){
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $nit = $notaria->nit;
+    $nombre_nota = strtoupper($notaria->nombre_nota);
+    $direccion_nota = $notaria->direccion_nota;
+    $telefono_nota = $notaria->telefono_nota;
+    $email = $notaria->email;
+    $nombre_notario = $notaria->nombre_notario;
+    $identificacion_not = $notaria->identificacion_not;
+    $fecha_reporte = date("Y/m/d");
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+
+    $fecha = $fecha1.' A '.$fecha2;
+
+    $raw1 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
+    $rango1 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->where('cuantia','>=', 0)
+    ->where('cuantia','<=', 100000000)
+    ->groupBy('escr')
+    ->select($raw1)->get()->toArray();
 
     
-    public function PdfInformeRecaudos(Request $request){
-      $notaria = Notaria::find(1);
-      $anio_trabajo = $notaria->anio_trabajo;
-      $nit = $notaria->nit;
-      $nombre_nota = strtoupper($notaria->nombre_nota);
-      $direccion_nota = $notaria->direccion_nota;
-      $telefono_nota = $notaria->telefono_nota;
-      $email = $notaria->email;
-      $nombre_notario = $notaria->nombre_notario;
-      $identificacion_not = $notaria->identificacion_not;
-      $fecha_reporte = date("Y/m/d");
-
-      $fecha1 = $request->session()->get('fecha1');
-      $fecha2 = $request->session()->get('fecha2');
-
-      $fecha = $fecha1.' A '.$fecha2;
-
-      $raw1 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-      $rango1 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->where('cuantia','>=', 0)
-      ->where('cuantia','<=', 100000000)
-      ->groupBy('escr')
-      ->select($raw1)->get()->toArray();
-
-     
-      $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-      $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->where('cuantia','>=', 100000001)
-      ->where('cuantia','<=', 300000000)
-      ->groupBy('escr')
-      ->select($raw2)->get()->toArray();
+    $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
+    $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->where('cuantia','>=', 100000001)
+    ->where('cuantia','<=', 300000000)
+    ->groupBy('escr')
+    ->select($raw2)->get()->toArray();
 
 
 
-      $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-      $rango3 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->where('cuantia','>=', 300000001)
-      ->where('cuantia','<=', 500000000)
-      ->groupBy('escr')
-      ->select($raw3)->get()->toArray();
+    $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
+    $rango3 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->where('cuantia','>=', 300000001)
+    ->where('cuantia','<=', 500000000)
+    ->groupBy('escr')
+    ->select($raw3)->get()->toArray();
 
 
-      
-      $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-      $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->where('cuantia','>=', 500000001)
-      ->where('cuantia','<=', 1000000000)
-      ->groupBy('escr')
-      ->select($raw4)->get()->toArray();
-
-            
-
-      $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-      $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->where('cuantia','>=', 1000000001)
-      ->where('cuantia','<=', 1500000000)
-      ->groupBy('escr')
-      ->select($raw5)->get()->toArray();
-      
-
-      $raw6 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-      $rango6 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->where('cuantia','>', 1500000000)
-      ->groupBy('escr')
-      ->select($raw6)->get()->toArray();
-
-      
-
-      $raw7 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-      $sincuantia = Recaudos_sincuantia_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->groupBy('escr')
-      ->select($raw7)->get()->toArray();
-
-           
-      $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-      $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->groupBy('escr')
-      ->select($raw8)->get()->toArray();
-
-      $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-      $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<', $fecha2)
-      ->groupBy('escr')
-      ->select($raw9)->get()->toArray();
-
-      /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
-      
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($excenta as $j => $exc) {
-          if($sinc['escr'] == $exc['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
     
-      /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
-      
-      $excenta = array_merge($excenta, $sincuantiaexcenta);
+    $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
+    $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->where('cuantia','>=', 500000001)
+    ->where('cuantia','<=', 1000000000)
+    ->groupBy('escr')
+    ->select($raw4)->get()->toArray();
 
-      foreach ($excenta as $key => $value) {
-        if($value['escr'] == 0){
-          unset($excenta[$key]);
+    
+
+    $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
+    $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->where('cuantia','>=', 1000000001)
+    ->where('cuantia','<=', 1500000000)
+    ->groupBy('escr')
+    ->select($raw5)->get()->toArray();
+    
+
+    $raw6 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
+    $rango6 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->where('cuantia','>', 1500000000)
+    ->groupBy('escr')
+    ->select($raw6)->get()->toArray();
+
+    
+
+    $raw7 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
+    $sincuantia = Recaudos_sincuantia_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->groupBy('escr')
+    ->select($raw7)->get()->toArray();
+
+    
+    $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
+    $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->groupBy('escr')
+    ->select($raw8)->get()->toArray();
+
+    $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
+    $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<', $fecha2)
+    ->groupBy('escr')
+    ->select($raw9)->get()->toArray();
+
+    /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
+    
+    foreach ($sincuantia as $i => $sinc) {
+      foreach ($excenta as $j => $exc) {
+        if($sinc['escr'] == $exc['escr']){
+          unset($sincuantia[$i]);
         }
       }
+    }
+    
+    /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
+    
+    $excenta = array_merge($excenta, $sincuantiaexcenta);
+
+    foreach ($excenta as $key => $value) {
+      if($value['escr'] == 0){
+        unset($excenta[$key]);
+      }
+    }
 
        # ====================================================================
       # =           Identifica excentas que van para con cuantia           =
       # ====================================================================
-      
+    
 
       $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
       $valor2 = $tarifa['valor2'] / 2;
@@ -2998,7 +3041,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         }
       }
 
-     
+      
 
       $rango1 = array_merge($rango1, $array_rango1);
       $rango2 = array_merge($rango2, $array_rango2);
@@ -3129,7 +3172,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $rango6 = $this->unique_multidim_array($rango6,'escr');
 
 
-       if($rango1){
+      if($rango1){
         $ran1escr = 0;
         $ran1super =  0;
         $ran1fondo = 0;
@@ -3146,8 +3189,8 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $ran1fondo = 0;
         $ran1total = 0;
       }
-       
-       /*----------  Rango2  ----------*/
+      
+      /*----------  Rango2  ----------*/
 
       foreach ($excenta as $i => $exc) {
         foreach ($rango2 as $j => $rn2) {
@@ -3184,7 +3227,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
 
-       /*----------  Rango3  ----------*/
+      /*----------  Rango3  ----------*/
 
       foreach ($excenta as $i => $exc) {
         foreach ($rango3 as $j => $rn3) {
@@ -3365,11 +3408,11 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $sincfondo = 0;
         $sinctotal = 0;
         foreach ($sincuantia as $key => $value) {
-        $sincescr += 1;
-        $sincsuper +=  $value['super'];
-        $sincfondo += $value['fondo'];
-        $sinctotal += $value['total'];
-      }
+          $sincescr += 1;
+          $sincsuper +=  $value['super'];
+          $sincfondo += $value['fondo'];
+          $sinctotal += $value['total'];
+        }
 
       }else{
         $sincescr = 0;
@@ -3380,15 +3423,15 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
 
       $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
-                          $ran6escr + $sincescr + $excescr;
+      $ran6escr + $sincescr + $excescr;
       $total_super =  $ran1super +  $ran2super +  $ran3super +  $ran4super +
-                       $ran5super +  $ran6super + $sincsuper + $excsuper;
+      $ran5super +  $ran6super + $sincsuper + $excsuper;
       $total_fondo = $ran1fondo +  $ran2fondo +  $ran3fondo +  $ran4fondo +
-                       $ran5fondo +  $ran6fondo + $sincfondo + $excfondo;
+      $ran5fondo +  $ran6fondo + $sincfondo + $excfondo;
 
       $total_recaudos = $ran1total + $ran2total + $ran3total + $ran4total +
-                      $ran5total + $ran6total + $sinctotal + $exctotal;
-          
+      $ran5total + $ran6total + $sinctotal + $exctotal;
+      
 
       $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
       $valor1 = $tarifa['valor1'];
@@ -3398,7 +3441,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $valor5 = $tarifa['valor5'];
       $valor6 = $tarifa['valor6'];
       $valor7 = $tarifa['valor7'];
-    
+      
       
       $nombre_reporte = $request->session()->get('nombre_reporte');
 
@@ -3489,19 +3532,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $mpdf->Output($namefile,"I");
     }
 
-  public function PdfCajaDiarioGeneral(Request $request){
-    $notaria = Notaria::find(1);
-    $nit = $notaria->nit;
-    $nombre_nota = strtoupper($notaria->nombre_nota);
-    $direccion_nota = $notaria->direccion_nota;
-    $telefono_nota = $notaria->telefono_nota;
-    $email = $notaria->email;
-    $nombre_notario = $notaria->nombre_notario;
-    $identificacion_not = $notaria->identificacion_not;
-    $fecha_reporte = date("Y/m/d");
+    public function PdfCajaDiarioGeneral(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      $fecha_reporte = date("Y/m/d");
 
-    $fecha1 = $request->session()->get('fecha1');
-    $fecha2 = $request->session()->get('fecha2');
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
 
     $anio_trabajo = date("Y", strtotime($fecha1)); //Convierte Fecha a YYYY
 
@@ -3509,24 +3552,24 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
     if($tipoinforme == 'completo'){
       $cajadiario = Cajadiariogeneral_view::whereDate('fecha', '>=', $fecha1)
-        ->whereDate('fecha', '<=', $fecha2)
-        ->where('anio_esc', '=', $anio_trabajo)
-        ->get()
-        ->toArray();
+      ->whereDate('fecha', '<=', $fecha2)
+      ->where('anio_esc', '=', $anio_trabajo)
+      ->get()
+      ->toArray();
     }else if($tipoinforme == 'contado'){
       $cajadiario = Cajadiariogeneral_view::whereDate('fecha', '>=', $fecha1)
-        ->whereDate('fecha', '<=', $fecha2)
-        ->where('anio_esc', '=', $anio_trabajo)
-        ->where('tipo_pago', '=', 'Contado')
-        ->get()
-        ->toArray();
+      ->whereDate('fecha', '<=', $fecha2)
+      ->where('anio_esc', '=', $anio_trabajo)
+      ->where('tipo_pago', '=', 'Contado')
+      ->get()
+      ->toArray();
     }else if($tipoinforme == 'credito'){
       $cajadiario = Cajadiariogeneral_view::whereDate('fecha', '>=', $fecha1)
-        ->whereDate('fecha', '<=', $fecha2)
-        ->where('anio_esc', '=', $anio_trabajo)
-        ->where('tipo_pago', '=', 'Crédito')
-        ->get()
-        ->toArray();
+      ->whereDate('fecha', '<=', $fecha2)
+      ->where('anio_esc', '=', $anio_trabajo)
+      ->where('tipo_pago', '=', 'Crédito')
+      ->get()
+      ->toArray();
     }
 
 
@@ -3564,30 +3607,30 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     /****POR CONCEPTOS*****/
     if($tipoinforme == 'completo'){
       $sumaconceptos = Factura::join("liq_conceptos","facturas.id_radica","=","liq_conceptos.id_radica")
-        ->whereDate('fecha_fact', '>=', $fecha1)
-        ->whereDate('fecha_fact', '<=', $fecha2)
-        ->where("facturas.nota_credito","=",false)
-        ->where("facturas.anio_radica","=",$anio_trabajo)
-        ->get()->toArray();
-     
+      ->whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where("facturas.nota_credito","=",false)
+      ->where("facturas.anio_radica","=",$anio_trabajo)
+      ->get()->toArray();
+      
     }else if($tipoinforme == 'contado'){
       $sumaconceptos = Factura::join("liq_conceptos","facturas.id_radica","=","liq_conceptos.id_radica")
-        ->whereDate('fecha_fact', '>=', $fecha1)
-        ->whereDate('fecha_fact', '<=', $fecha2)
-        ->where('credito_fact', '=', 'false')
-        ->where("facturas.nota_credito","=",false)
-        ->where("facturas.anio_radica","=",$anio_trabajo)
-        ->get()->toArray();
+      ->whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('credito_fact', '=', 'false')
+      ->where("facturas.nota_credito","=",false)
+      ->where("facturas.anio_radica","=",$anio_trabajo)
+      ->get()->toArray();
       
     }else if($tipoinforme == 'credito'){
       $sumaconceptos = Factura::join("liq_conceptos","facturas.id_radica","=","liq_conceptos.id_radica")
-        ->whereDate('fecha_fact', '>=', $fecha1)
-        ->whereDate('fecha_fact', '<=', $fecha2)
-        ->where('credito_fact', '=', 'true')
-        ->where("facturas.nota_credito","=",false)
-        ->where("facturas.anio_radica","=",$anio_trabajo)
-        ->get()->toArray();
-     
+      ->whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('credito_fact', '=', 'true')
+      ->where("facturas.nota_credito","=",false)
+      ->where("facturas.anio_radica","=",$anio_trabajo)
+      ->get()->toArray();
+      
     }
     
 
@@ -3608,22 +3651,22 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $i = $i + 1;
     }
 
-      $contdataconcept = count ($dataconcept, 0);
+    $contdataconcept = count ($dataconcept, 0);
 
-      $totalconceptos = 0;
-      foreach ($dataconcept as $key => $value) {
-        $totalconceptos = $value['total'] + $totalconceptos;
-      }
+    $totalconceptos = 0;
+    foreach ($dataconcept as $key => $value) {
+      $totalconceptos = $value['total'] + $totalconceptos;
+    }
 
-      $cruces = Cruces_actas_deposito_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)->get()->toArray();
-      $contcruces = count ($cruces, 0);
+    $cruces = Cruces_actas_deposito_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<=', $fecha2)->get()->toArray();
+    $contcruces = count ($cruces, 0);
 
-      $total_egreso = 0;
-      foreach ($cruces as $key => $cru) {
-        $total_egreso = $cru['valor_egreso'] + $total_egreso;
-      }
-      
+    $total_egreso = 0;
+    foreach ($cruces as $key => $cru) {
+      $total_egreso = $cru['valor_egreso'] + $total_egreso;
+    }
+    
     $nombre_reporte = $request->session()->get('nombre_reporte');
 
     $data['nit'] = $nit;
@@ -3665,19 +3708,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -3688,7 +3731,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
   }
 
-    public function PdfRelaciondeFacturasPorConceptos(Request $request){
+  public function PdfRelaciondeFacturasPorConceptos(Request $request){
     $notaria = Notaria::find(1);
     //$anio_trabajo = $notaria->anio_trabajo;
     $nit = $notaria->nit;
@@ -3719,89 +3762,89 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     foreach ($atributos as $key => $value) {
      $dataconcept[$y]['total'] = 0;
      $dataconcept[$y]['escrituras'] = 0;
-      $y++;
-    }
+     $y++;
+   }
 
 
-    foreach ($facturas as $key1 => $fc) {
-      $id_radica = $fc['id_radica'];
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+   foreach ($facturas as $key1 => $fc) {
+    $id_radica = $fc['id_radica'];
+    $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
 
-      foreach ($conceptos as $key => $conc) {
-        $i = 1;
-        foreach ($atributos as $key => $atri) {
-          $atributo = $atri['nombre_concep'];
-          $totalatributo = 'total'.$atri['atributo'];
-          if($conc[$totalatributo] > 0){
-            $total = $conc[$totalatributo];
-            $dataconcept[$i]['concepto'] = $atributo;
-            $dataconcept[$i]['escrituras'] += 1;
-            $dataconcept[$i]['total'] += $total;
-              $i = $i + 1;
-          }
+    foreach ($conceptos as $key => $conc) {
+      $i = 1;
+      foreach ($atributos as $key => $atri) {
+        $atributo = $atri['nombre_concep'];
+        $totalatributo = 'total'.$atri['atributo'];
+        if($conc[$totalatributo] > 0){
+          $total = $conc[$totalatributo];
+          $dataconcept[$i]['concepto'] = $atributo;
+          $dataconcept[$i]['escrituras'] += 1;
+          $dataconcept[$i]['total'] += $total;
+          $i = $i + 1;
         }
       }
     }
-
-    $grantotal = 0;
-    foreach ($dataconcept as $key => $value) {
-      if($value['total'] == 0){
-        unset($dataconcept[$key]);
-      } else {
-       $grantotal +=  $value['total'];
-      }
-    }
-
-    $relconceptos = $dataconcept;
-
-    $contrelconceptos = count ($relconceptos, 0);
-
-    $nombre_reporte = $request->session()->get('nombre_reporte');
-
-    $data['nit'] = $nit;
-    $data['nombre_nota'] = $nombre_nota;
-    $data['direccion_nota'] = $direccion_nota;
-    $data['telefono_nota'] = $telefono_nota;
-    $data['email'] = $email;
-    $data['nombre_notario'] = $nombre_notario;
-    $data['fecha_reporte'] = $fecha;
-    $data['relconceptos'] = $relconceptos;
-    $data['contrelconceptos'] = $contrelconceptos;
-    $data['nombre_reporte'] = $nombre_reporte;
-    $data['total'] = $grantotal;
-
-    $html = view('pdf.relacionporconceptos',$data)->render();
-
-    $namefile = 'ReldeFactPorConceptos_'.$fecha_reporte.'.pdf';
-
-    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-    $fontDirs = $defaultConfig['fontDir'];
-
-    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-    $fontData = $defaultFontConfig['fontdata'];
-    $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
-        ],
-        'default_font' => 'arial',
-        //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
-    ]);
-
-    $mpdf->defaultfooterfontsize=2;
-    $mpdf->SetTopMargin(5);
-    $mpdf->SetDisplayMode('fullpage');
-    $mpdf->WriteHTML($html);
-    $mpdf->Output($namefile,"I");
-
   }
+
+  $grantotal = 0;
+  foreach ($dataconcept as $key => $value) {
+    if($value['total'] == 0){
+      unset($dataconcept[$key]);
+    } else {
+     $grantotal +=  $value['total'];
+   }
+ }
+
+ $relconceptos = $dataconcept;
+
+ $contrelconceptos = count ($relconceptos, 0);
+
+ $nombre_reporte = $request->session()->get('nombre_reporte');
+
+ $data['nit'] = $nit;
+ $data['nombre_nota'] = $nombre_nota;
+ $data['direccion_nota'] = $direccion_nota;
+ $data['telefono_nota'] = $telefono_nota;
+ $data['email'] = $email;
+ $data['nombre_notario'] = $nombre_notario;
+ $data['fecha_reporte'] = $fecha;
+ $data['relconceptos'] = $relconceptos;
+ $data['contrelconceptos'] = $contrelconceptos;
+ $data['nombre_reporte'] = $nombre_reporte;
+ $data['total'] = $grantotal;
+
+ $html = view('pdf.relacionporconceptos',$data)->render();
+
+ $namefile = 'ReldeFactPorConceptos_'.$fecha_reporte.'.pdf';
+
+ $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+ $fontDirs = $defaultConfig['fontDir'];
+
+ $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+ $fontData = $defaultFontConfig['fontdata'];
+ $mpdf = new Mpdf([
+  'fontDir' => array_merge($fontDirs, [
+    public_path() . '/fonts',
+  ]),
+  'fontdata' => $fontData + [
+    'arial' => [
+      'R' => 'arial.ttf',
+      'B' => 'arialbd.ttf',
+    ],
+  ],
+  'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+  "format" => 'Letter-L',
+  'margin_bottom' => 10,
+]);
+
+ $mpdf->defaultfooterfontsize=2;
+ $mpdf->SetTopMargin(5);
+ $mpdf->SetDisplayMode('fullpage');
+ $mpdf->WriteHTML($html);
+ $mpdf->Output($namefile,"I");
+
+}
 
   /*=============================================
   =            Reporte Enlaces            =
@@ -3881,93 +3924,93 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     foreach ($estadistico as $key => $est) {
       $id_radica = $est['id_radica'];
       $id_gru = $est['id_gru'];
-            
-        if($id_gru == 1){
-          $cantventa++;
-        }else if($id_gru == 2){
-          $canthipotecas++;
-        }else if($id_gru == 3){
-          $cantcancelhipo++;
-        }else if($id_gru == 4){
-          $cantescriturasvis++;
-        }else if($id_gru == 5){
-          $cantescriturasvip++;
-        }else if($id_gru == 6){
-          $cantescriturasvipa++;
-        }else if($id_gru == 7){
-          $cantsucesiones++;
-        }else if($id_gru == 8){
-          $cantpermutas++;
-        }else if($id_gru == 9){
-          $cantotrasescrsobreinmueb++;
-        }else if($id_gru == 10){
-          $cantcontratodearrenda++;
-        }else if($id_gru == 11){
-          $cantfiducias++;
-        }else if($id_gru == 12){
-          $cantleasing++;
-        }else if($id_gru == 13){
-          $cantconstitusocied++;
-        }else if($id_gru == 14){
-          $cantliqsocied++;
-        }else if($id_gru == 15){
-          $cantreformsocial++;
-        }else if($id_gru == 16){
-          $cantmatrimoniociv++;
-        }else if($id_gru == 17){
-          $cantmatrimismosexo++;
-        }else if($id_gru == 18){
-          $cantdivorcios++;
-        }else if($id_gru == 19){
-          $cantdeclaunionmaritdhech++;
-        }else if($id_gru == 20){
-          $cantdisounimaritdhech++;
-        }else if($id_gru == 21){
-          $cantdisoluliqsocconyu++;
-        }else if($id_gru == 22){
-          $cantcorrecregcivil++;
-        }else if($id_gru == 23){
-          $cantcambionombre++;
-        }else if($id_gru == 24){
-          $cantligitimhijos++;
-        }else if($id_gru == 25){
-          $cantcapitumatrimo++;
-        }else if($id_gru == 26){
-          $cantinterdicjudic++;
-        }else if($id_gru == 27){
-          $cantunipersomismosexo++;
-        }else if($id_gru == 28){
-          $cantactascomparec++;
-        }else if($id_gru == 29){
-          $cantautenticac++;
-        }else if($id_gru == 30){
-          $cantdeclarextrajuic++;
-        }else if($id_gru == 31){
-          $cantdeclarsuperviv++;
-        }else if($id_gru == 32){
-          $cantconciliac++;
-        }else if($id_gru == 33){
-          $cantrematinmueb++;
-        }else if($id_gru == 34){
-          $cantcopiregcivil++;
-        }else if($id_gru == 35){
-          $cantregcivnacim++;
-        }else if($id_gru == 36){
-          $cantregcivimatrim++;
-        }else if($id_gru == 37){
-          $cantregcivdefunc++;
-        }else if($id_gru == 38){
-          $cantescrpublicorreccomposexmasca++;
-        }else if($id_gru == 39){
-          $cantescrpublicorreccomposexfema++;
-        }else if($id_gru == 40){
-          $cantmatrimenoredad++;
-        }else if($id_gru == 41){
-          $cantprocedinsoleconopersonatur++;
-        }else if($id_gru == 42){
-          $cantotros++;
-        }
-        
+      
+      if($id_gru == 1){
+        $cantventa++;
+      }else if($id_gru == 2){
+        $canthipotecas++;
+      }else if($id_gru == 3){
+        $cantcancelhipo++;
+      }else if($id_gru == 4){
+        $cantescriturasvis++;
+      }else if($id_gru == 5){
+        $cantescriturasvip++;
+      }else if($id_gru == 6){
+        $cantescriturasvipa++;
+      }else if($id_gru == 7){
+        $cantsucesiones++;
+      }else if($id_gru == 8){
+        $cantpermutas++;
+      }else if($id_gru == 9){
+        $cantotrasescrsobreinmueb++;
+      }else if($id_gru == 10){
+        $cantcontratodearrenda++;
+      }else if($id_gru == 11){
+        $cantfiducias++;
+      }else if($id_gru == 12){
+        $cantleasing++;
+      }else if($id_gru == 13){
+        $cantconstitusocied++;
+      }else if($id_gru == 14){
+        $cantliqsocied++;
+      }else if($id_gru == 15){
+        $cantreformsocial++;
+      }else if($id_gru == 16){
+        $cantmatrimoniociv++;
+      }else if($id_gru == 17){
+        $cantmatrimismosexo++;
+      }else if($id_gru == 18){
+        $cantdivorcios++;
+      }else if($id_gru == 19){
+        $cantdeclaunionmaritdhech++;
+      }else if($id_gru == 20){
+        $cantdisounimaritdhech++;
+      }else if($id_gru == 21){
+        $cantdisoluliqsocconyu++;
+      }else if($id_gru == 22){
+        $cantcorrecregcivil++;
+      }else if($id_gru == 23){
+        $cantcambionombre++;
+      }else if($id_gru == 24){
+        $cantligitimhijos++;
+      }else if($id_gru == 25){
+        $cantcapitumatrimo++;
+      }else if($id_gru == 26){
+        $cantinterdicjudic++;
+      }else if($id_gru == 27){
+        $cantunipersomismosexo++;
+      }else if($id_gru == 28){
+        $cantactascomparec++;
+      }else if($id_gru == 29){
+        $cantautenticac++;
+      }else if($id_gru == 30){
+        $cantdeclarextrajuic++;
+      }else if($id_gru == 31){
+        $cantdeclarsuperviv++;
+      }else if($id_gru == 32){
+        $cantconciliac++;
+      }else if($id_gru == 33){
+        $cantrematinmueb++;
+      }else if($id_gru == 34){
+        $cantcopiregcivil++;
+      }else if($id_gru == 35){
+        $cantregcivnacim++;
+      }else if($id_gru == 36){
+        $cantregcivimatrim++;
+      }else if($id_gru == 37){
+        $cantregcivdefunc++;
+      }else if($id_gru == 38){
+        $cantescrpublicorreccomposexmasca++;
+      }else if($id_gru == 39){
+        $cantescrpublicorreccomposexfema++;
+      }else if($id_gru == 40){
+        $cantmatrimenoredad++;
+      }else if($id_gru == 41){
+        $cantprocedinsoleconopersonatur++;
+      }else if($id_gru == 42){
+        $cantotros++;
+      }
+      
     }//Fin del for estadisticonotarial
 
 
@@ -3991,167 +4034,167 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       if (in_array("2", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("1", $arr_codigo) && !in_array("9", $arr_codigo)) {
-          $canthipotecas++;
+        $canthipotecas++;
       }
 
       if (in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("1", $arr_codigo) && !in_array("9", $arr_codigo)) {
-            $cantcancelhipo++;
+        $cantcancelhipo++;
       }
 
       if (in_array("4", $arr_codigo)  && !in_array("7", $arr_codigo) ) {
-            $cantescriturasvis++;
+        $cantescriturasvis++;
       }
 
       if (in_array("5", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo)) {
-            $cantescriturasvip++;
+        $cantescriturasvip++;
       }
 
-       if (in_array("6", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo)) {
-            $cantescriturasvipa++;
+      if (in_array("6", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo)) {
+        $cantescriturasvipa++;
       }
 
 
       if (in_array("7", $arr_codigo) ) {
-            $cantsucesiones++;
+        $cantsucesiones++;
       }
 
       if (in_array("8", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("22", $arr_codigo) && !in_array("18", $arr_codigo)  && !in_array("17", $arr_codigo) && !in_array("9", $arr_codigo)) {
-            $cantpermutas++;
+        $cantpermutas++;
       }
 
       if (in_array("9", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("1", $arr_codigo) ) {
-            $cantotrasescrsobreinmueb++;
+        $cantotrasescrsobreinmueb++;
       }
 
 
       if (in_array("10", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-            $cantcontratodearrenda++;
+        $cantcontratodearrenda++;
       }
 
       if (in_array("11", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantfiducias++;
+        $cantfiducias++;
       }
 
       if (in_array("12", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantleasing++;
+        $cantleasing++;
       }
 
       if (in_array("13", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantconstitusocied++;
+        $cantconstitusocied++;
       }
 
       if (in_array("14", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantliqsocied++;
+        $cantliqsocied++;
       }
 
 
       if (in_array("15", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantreformsocial++;
+        $cantreformsocial++;
       }
 
       if (in_array("16", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantmatrimoniociv++;
+        $cantmatrimoniociv++;
       }
 
 
       if (in_array("17", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantmatrimismosexo++;
+        $cantmatrimismosexo++;
       }
 
       if (in_array("18", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantdivorcios++;
+        $cantdivorcios++;
       }
 
       if (in_array("19", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantdeclaunionmaritdhech++;
+        $cantdeclaunionmaritdhech++;
       }
 
       if (in_array("20", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantdisounimaritdhech++;
+        $cantdisounimaritdhech++;
       }
 
       if (in_array("21", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("19", $arr_codigo)) {
-              $cantdisoluliqsocconyu++;
+        $cantdisoluliqsocconyu++;
       }
 
       if (in_array("22", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantcorrecregcivil++;
+        $cantcorrecregcivil++;
       }
 
       if (in_array("23", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantcambionombre++;
+        $cantcambionombre++;
       }
 
       if (in_array("24", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantligitimhijos++;
+        $cantligitimhijos++;
       }
 
       if (in_array("25", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantcapitumatrimo++;
+        $cantcapitumatrimo++;
       }
 
       if (in_array("26", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantinterdicjudic++;
+        $cantinterdicjudic++;
       }
 
       if (in_array("27", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantunipersomismosexo++;
+        $cantunipersomismosexo++;
       }
 
       if (in_array("28", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantactascomparec++;
+        $cantactascomparec++;
       }
 
       if (in_array("29", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantautenticac++;
+        $cantautenticac++;
       }
 
       if (in_array("30", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantdeclarextrajuic++;
+        $cantdeclarextrajuic++;
       }
 
       if (in_array("31", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantdeclarsuperviv++;
+        $cantdeclarsuperviv++;
       }
 
       if (in_array("32", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantconciliac++;
+        $cantconciliac++;
       }
 
       if (in_array("33", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantrematinmueb++;
+        $cantrematinmueb++;
       }
 
       if (in_array("34", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantcopiregcivil++;
+        $cantcopiregcivil++;
       }
 
       if (in_array("35", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantregcivnacim++;
+        $cantregcivnacim++;
       }
 
       if (in_array("36", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantregcivimatrim++;
+        $cantregcivimatrim++;
       }
 
       if (in_array("37", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantregcivdefunc++;
+        $cantregcivdefunc++;
       }
 
       if (in_array("38", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantescrpublicorreccomposexmasca++;
+        $cantescrpublicorreccomposexmasca++;
       }
 
       if (in_array("39", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantescrpublicorreccomposexfema++;
+        $cantescrpublicorreccomposexfema++;
       }
 
       if (in_array("40", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantmatrimenoredad++;
+        $cantmatrimenoredad++;
       }
 
       if (in_array("41", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("7", $arr_codigo) && !in_array("2", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("1", $arr_codigo)) {
-              $cantprocedinsoleconopersonatur++;
+        $cantprocedinsoleconopersonatur++;
       }
 
       if (in_array("42", $arr_codigo) && !in_array("1", $arr_codigo) &&
@@ -4175,7 +4218,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         !in_array("36", $arr_codigo) && !in_array("37", $arr_codigo) &&
         !in_array("38", $arr_codigo) && !in_array("39", $arr_codigo) &&
         !in_array("40", $arr_codigo) && !in_array("41", $arr_codigo)) {
-              $cantotros++;
+        $cantotros++;
       }
 
     }
@@ -4197,7 +4240,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $cantescrpublicorreccomposexmasca + $cantescrpublicorreccomposexfema + 
     $cantmatrimenoredad + $cantprocedinsoleconopersonatur + $cantotros;
 
-       
+    
     $data['nit'] = $nit;
     $data['nombre_nota'] = $nombre_nota;
     $data['direccion_nota'] = $direccion_nota;
@@ -4264,19 +4307,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
     $fontData = $defaultFontConfig['fontdata'];
     $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-            public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-            'arial' => [
-                'R' => 'arial.ttf',
-                'B' => 'arialbd.ttf',
-            ],
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
         ],
-        'default_font' => 'arial',
+      ],
+      'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
-        "format" => 'Letter-L',
-        'margin_bottom' => 10,
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
     ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -4330,7 +4373,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $formadepago = "Contado";
       }
 
-   
+      
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
         $num_esc = $esc->num_esc;
@@ -4344,7 +4387,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente_otor = Cliente::where('identificacion_cli', $identificacioncli1_otor)->select($raw)->get();
       foreach ($cliente_otor as $key => $cli_otor) {
         $nombrecli1_otor = $cli_otor['fullname'];
@@ -4353,14 +4396,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                            direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -4391,7 +4434,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
 
-        $contdataconcept_otor = count($dataconcept_otor, 0);
+      $contdataconcept_otor = count($dataconcept_otor, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -4518,14 +4561,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $deducciones_otor[$k]['total'] = $reteica_otor;
       }
 
-        if (isset($deducciones_otor)){
-          $contdeducciones = count ($deducciones_otor, 0);
-          $data_otor['deducciones'] = $deducciones_otor;
-          $data_otor['contdeducciones'] = $contdeducciones;
+      if (isset($deducciones_otor)){
+        $contdeducciones = count ($deducciones_otor, 0);
+        $data_otor['deducciones'] = $deducciones_otor;
+        $data_otor['contdeducciones'] = $contdeducciones;
 
-          $totaldeducciones = $reteiva_otor + $retertf_otor + $reteica_otor;
-          $data_otor['totaldeducciones'] = round($totaldeducciones);
-        }
+        $totaldeducciones = $reteiva_otor + $retertf_otor + $reteica_otor;
+        $data_otor['totaldeducciones'] = round($totaldeducciones);
+      }
 
       $html_otor = view('pdf.generar',$data_otor)->render();
 
@@ -4537,29 +4580,29 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHeader('Factura '.'{PAGENO} de {nbpg}');
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
       $mpdf->SetDisplayMode('fullpage');
@@ -4603,7 +4646,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
         $num_esc = $esc->num_esc;
       }
 
-     
+      
       $protocolista = Protocolistas_copias_view::where('num_esc', $num_esc)
       ->where('anio_esc', $anio_trabajo)
       ->get();
@@ -4612,7 +4655,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -4620,14 +4663,14 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-                              direccion_cli");
+        direccion_cli");
       $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
       }
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-      identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
@@ -4648,12 +4691,12 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
             $dataconcept[$i]['concepto'] = $atributo;
             $dataconcept[$i]['cantidad'] = $conc[$hojasatributo];
             $dataconcept[$i]['total'] = $conc[$totalatributo];
-              $i = $i + 1;
+            $i = $i + 1;
           }
 
         }
       }
-        $contdataconcept = count ($dataconcept, 0);
+      $contdataconcept = count ($dataconcept, 0);
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -4800,27 +4843,27 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
       $mpdf->SetDisplayMode('fullpage');
@@ -4846,50 +4889,50 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $total_derechos = $sum['derechos'] + $total_derechos;
     }
 
-      $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
-      $contactos = count ($actos, 0);
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+    $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+    $contactos = count ($actos, 0);
+    $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
 
-      $atributos = Concepto::all();
-      $atributos = $atributos->sortBy('id_concep');
+    $atributos = Concepto::all();
+    $atributos = $atributos->sortBy('id_concep');
 
-      $i = 1;
-      $total_conceptos = 0;
-      foreach ($conceptos as $key => $conc1) {
-        foreach ($atributos as $key => $atri) {
-          $atributo = $atri['nombre_concep'];
-          $totalatributo = 'total'.$atri['atributo'];
-          $hojasatributo = 'hojas'.$atri['atributo'];
-          if($conc1[$totalatributo] > 0){
-            $dataconcept[$i]['concepto'] = $atributo;
-            $dataconcept[$i]['cantidad'] = "";
-            $dataconcept[$i]['total'] = $conc1[$totalatributo];
-            $total_conceptos = $dataconcept[$i]['total'] + $total_conceptos;
-              $i++;
-          }
+    $i = 1;
+    $total_conceptos = 0;
+    foreach ($conceptos as $key => $conc1) {
+      foreach ($atributos as $key => $atri) {
+        $atributo = $atri['nombre_concep'];
+        $totalatributo = 'total'.$atri['atributo'];
+        $hojasatributo = 'hojas'.$atri['atributo'];
+        if($conc1[$totalatributo] > 0){
+          $dataconcept[$i]['concepto'] = $atributo;
+          $dataconcept[$i]['cantidad'] = "";
+          $dataconcept[$i]['total'] = $conc1[$totalatributo];
+          $total_conceptos = $dataconcept[$i]['total'] + $total_conceptos;
+          $i++;
         }
       }
+    }
 
-      $subtotal1 = $total_derechos + $total_conceptos;
+    $subtotal1 = $total_derechos + $total_conceptos;
 
-      $contdataconcept = count($dataconcept, 0);
-      $nit = $notaria->nit;
-      $nombre_nota = strtoupper($notaria->nombre_nota);
-      $direccion_nota = $notaria->direccion_nota;
-      $telefono_nota = $notaria->telefono_nota;
-      $email = $notaria->email;
-      $nombre_notario = $notaria->nombre_notario;
-      $resolucion = $notaria->resolucion;
-      $piepagina_fact = $notaria->piepagina_fact;
-      $data['nit'] = $nit;
-      $data['nombre_nota'] = $nombre_nota;
-      $data['direccion_nota'] = $direccion_nota;
-      $data['telefono_nota'] = $telefono_nota;
-      $data['email'] = $email;
-      $data['nombre_notario'] = $nombre_notario;
-      $data['resolucion'] = $resolucion;
-      $data['piepagina_fact'] = $piepagina_fact;
-      $data['actos'] = $actos;
+    $contdataconcept = count($dataconcept, 0);
+    $nit = $notaria->nit;
+    $nombre_nota = strtoupper($notaria->nombre_nota);
+    $direccion_nota = $notaria->direccion_nota;
+    $telefono_nota = $notaria->telefono_nota;
+    $email = $notaria->email;
+    $nombre_notario = $notaria->nombre_notario;
+    $resolucion = $notaria->resolucion;
+    $piepagina_fact = $notaria->piepagina_fact;
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['resolucion'] = $resolucion;
+    $data['piepagina_fact'] = $piepagina_fact;
+    $data['actos'] = $actos;
       $data['contactos'] = $contactos;//contador actos
       $data['derechos'] = $total_derechos;
       $data['dataconcept'] = $dataconcept;
@@ -4931,7 +4974,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
           $terceros[$j]['total'] = $rec['reteconsumo'];
           $total_reteconsumo = $terceros[$j]['total'];
         }
-       if($rec['aporteespecial'] > 0){
+        if($rec['aporteespecial'] > 0){
           $j = $j + 1;
           $terceros[$j]['concepto'] = "Aporte Especial";
           $terceros[$j]['total'] = $rec['aporteespecial'];
@@ -4966,19 +5009,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           // "format" => "Letter en mm",
-          "format" => 'Letter',
-          'margin_bottom' => 10,
+        "format" => 'Letter',
+        'margin_bottom' => 10,
       ]);
 
       $mpdf->defaultfooterfontsize=2;
@@ -4989,19 +5032,19 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
 
-  }
+    }
 
 
-  public function FacturaCajaRapida(Request $request){
+    public function FacturaCajaRapida(Request $request){
 
-    $notaria = Notaria::find(1);
-    $prefijo_fact = $notaria->prefijo_facturarapida;
-    $id_concepto = $request->id_concepto;
-    $num_fact  = $request->session()->get('numfactrapida');
-    $anio_trabajo = $notaria->anio_trabajo;
- 
+      $notaria = Notaria::find(1);
+      $prefijo_fact = $notaria->prefijo_facturarapida;
+      $id_concepto = $request->id_concepto;
+      $num_fact  = $request->session()->get('numfactrapida');
+      $anio_trabajo = $notaria->anio_trabajo;
+      
 
-    $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($facturas as $factura) {
         $total_iva = $factura->total_iva;
         $total_rtf = 0;
@@ -5028,7 +5071,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -5038,22 +5081,22 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       
       
       $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
-                    ->where('id_fact', $num_fact)
-                    ->get()
-                    ->toArray();
+      ->where('id_fact', $num_fact)
+      ->get()
+      ->toArray();
 
       $contdetalle = count ($detalle, 0);
-       
-        $subtotal_all = 0;
-        $total_iva = 0;
-        $total_all = 0;
+      
+      $subtotal_all = 0;
+      $total_iva = 0;
+      $total_all = 0;
 
-        foreach ($detalle as $Key => $value) {
-            $subtotal_all += $value['subtotal'];
-            $total_iva += $value['iva'];
-            $total_all += $value['total'];
-        }
-              
+      foreach ($detalle as $Key => $value) {
+        $subtotal_all += $value['subtotal'];
+        $total_iva += $value['iva'];
+        $total_all += $value['total'];
+      }
+      
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -5131,26 +5174,26 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           "format" => [216, 140],//Media Carta
           'margin_bottom' => 10,
-      ]);
+        ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -5160,17 +5203,17 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       $request->session()->forget('numfactrapida');
-  }
+    }
 
 
-  public function PdfCopiaFacturaCajaRapida(Request $request){
+    public function PdfCopiaFacturaCajaRapida(Request $request){
 
-    $notaria = Notaria::find(1);
-    $prefijo_fact = $notaria->prefijo_facturarapida;
-    $id_concepto = $request->id_concepto;
-    $num_fact  = $request->session()->get('numfact');
-    
-    $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      $notaria = Notaria::find(1);
+      $prefijo_fact = $notaria->prefijo_facturarapida;
+      $id_concepto = $request->id_concepto;
+      $num_fact  = $request->session()->get('numfact');
+      
+      $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($facturas as $factura) {
         $total_iva = $factura->total_iva;
         $total_rtf = 0;
@@ -5198,7 +5241,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -5208,23 +5251,23 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       
       
       $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
-                    ->where('id_fact', $num_fact)
-                    ->get()
-                    ->toArray();
+      ->where('id_fact', $num_fact)
+      ->get()
+      ->toArray();
 
       $contdetalle = count ($detalle, 0);
-       
-        $subtotal_all = 0;
-        $total_iva = 0;
-        $total_all = 0;
+      
+      $subtotal_all = 0;
+      $total_iva = 0;
+      $total_all = 0;
 
-        foreach ($detalle as $Key => $value) {
-            $subtotal_all += $value['subtotal'];
-            $total_iva += $value['iva'];
-            $total_all += $value['total'];
-        }
+      foreach ($detalle as $Key => $value) {
+        $subtotal_all += $value['subtotal'];
+        $total_iva += $value['iva'];
+        $total_all += $value['total'];
+      }
 
-              
+      
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -5300,26 +5343,26 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           "format" => [216, 140],//Media Carta
           'margin_bottom' => 10,
-      ]);
+        ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       //$carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -5329,27 +5372,27 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
-  }
-
-
-  public function PdfNotaCreditoFacturaCajaRapida(Request $request){
-
-    $notaria = Notaria::find(1);
-    $prefijo_fact = $notaria->prefijo_facturarapida;
-    $id_concepto = $request->id_concepto;
-    $num_fact  = $request->session()->get('numfact');
-    $id_ncf  = $request->session()->get('id_ncf');
-    $anio_trabajo = $notaria->anio_trabajo;
-
-    $nota_credito = Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$id_ncf)->get();
-    foreach ($nota_credito as $notacre) {
-      $detalle_ncf = $notacre->detalle_ncf;
-      $fecha_ncf = $notacre->created_at;
     }
 
 
+    public function PdfNotaCreditoFacturaCajaRapida(Request $request){
 
-    $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      $notaria = Notaria::find(1);
+      $prefijo_fact = $notaria->prefijo_facturarapida;
+      $id_concepto = $request->id_concepto;
+      $num_fact  = $request->session()->get('numfact');
+      $id_ncf  = $request->session()->get('id_ncf');
+      $anio_trabajo = $notaria->anio_trabajo;
+
+      $nota_credito = Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$id_ncf)->get();
+      foreach ($nota_credito as $notacre) {
+        $detalle_ncf = $notacre->detalle_ncf;
+        $fecha_ncf = $notacre->created_at;
+      }
+
+
+
+      $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($facturas as $factura) {
         $total_iva = $factura->total_iva;
         $total_rtf = 0;
@@ -5376,7 +5419,7 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-      direccion_cli");
+        direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
       foreach ($cliente as $key => $cli) {
         $nombrecli1 = $cli['fullname'];
@@ -5386,23 +5429,23 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       
       
       $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
-                    ->where('id_fact', $num_fact)
-                    ->get()
-                    ->toArray();
+      ->where('id_fact', $num_fact)
+      ->get()
+      ->toArray();
 
       $contdetalle = count ($detalle, 0);
-       
-        $subtotal_all = 0;
-        $total_iva = 0;
-        $total_all = 0;
+      
+      $subtotal_all = 0;
+      $total_iva = 0;
+      $total_all = 0;
 
-        foreach ($detalle as $Key => $value) {
-            $subtotal_all += $value['subtotal'];
-            $total_iva += $value['iva'];
-            $total_all += $value['total'];
-        }
+      foreach ($detalle as $Key => $value) {
+        $subtotal_all += $value['subtotal'];
+        $total_iva += $value['iva'];
+        $total_all += $value['total'];
+      }
 
-              
+      
 
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -5496,26 +5539,26 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
       $mpdf = new Mpdf([
-          'fontDir' => array_merge($fontDirs, [
-              public_path() . '/fonts',
-          ]),
-          'fontdata' => $fontData + [
-              'arial' => [
-                  'R' => 'arial.ttf',
-                  'B' => 'arialbd.ttf',
-              ],
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
           ],
-          'default_font' => 'arial',
+        ],
+        'default_font' => 'arial',
           "format" => [216, 140],//Media Carta
           'margin_bottom' => 10,
-      ]);
+        ]);
 
       $mpdf->SetHTMLFooter('
-      <table width="100%">
-            <tr>
-              <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-            </tr>
-          </table>');
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
       $carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
@@ -5524,83 +5567,83 @@ public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
       $mpdf->Output($namefile,"I");
       $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
-     
+      
 
-  }
-
-
-  private function convertir($n) {
-  switch (true) {
-  case ( $n >= 1 && $n <= 29) : return $this->basico($n); break;
-  case ( $n >= 30 && $n < 100) : return $this->decenas($n); break;
-  case ( $n >= 100 && $n < 1000) : return $this->centenas($n); break;
-  case ($n >= 1000 && $n <= 999999): return $this->miles($n); break;
-  case ($n >= 1000000): return $this->millones($n);
-  }
-  }
+    }
 
 
-  private function basico($numero) {
-  $valor = array ('un','dos','tres','cuatro','cinco','seis','siete','ocho',
-  'nueve','diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis',
-  'diecisiete', 'dieciocho', 'diecinueve', 'veinte', 'veintiunu', 'veintidos',
-  'veintitres', 'veinticuatro','veinticinco', 'veintiséis','veintisiete',
-  'veintiocho','veintinueve');
-  return $valor[$numero - 1];
-  }
+    private function convertir($n) {
+      switch (true) {
+        case ( $n >= 1 && $n <= 29) : return $this->basico($n); break;
+        case ( $n >= 30 && $n < 100) : return $this->decenas($n); break;
+        case ( $n >= 100 && $n < 1000) : return $this->centenas($n); break;
+        case ($n >= 1000 && $n <= 999999): return $this->miles($n); break;
+        case ($n >= 1000000): return $this->millones($n);
+      }
+    }
 
-  private function decenas($n) {
-  $decenas = array (30=>'treinta',40=>'cuarenta',50=>'cincuenta',60=>'sesenta',
-  70=>'setenta',80=>'ochenta',90=>'noventa');
-  if( $n <= 29) return $this->basico($n);
-  $x = $n % 10;
-  if ( $x == 0 ) {
-  return $decenas[$n];
-  } else return $decenas[$n - $x].' y '. $this->basico($x);
-  }
 
-  private function centenas($n) {
-  $cientos = array (100 =>'cien',200 =>'doscientos',300=>'trecientos',
-  400=>'cuatrocientos', 500=>'quinientos',600=>'seiscientos',
-  700=>'setecientos',800=>'ochocientos', 900 =>'novecientos');
-  if( $n >= 100) {
-  if ( $n % 100 == 0 ) {
-  return $cientos[$n];
-  } else {
-  $u = (int) substr($n,0,1);
-  $d = (int) substr($n,1,2);
-  return (($u == 1)?'ciento':$cientos[$u*100]).' '.$this->decenas($d);
-  }
-  } else return $this->decenas($n);
-  }
+    private function basico($numero) {
+      $valor = array ('un','dos','tres','cuatro','cinco','seis','siete','ocho',
+        'nueve','diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis',
+        'diecisiete', 'dieciocho', 'diecinueve', 'veinte', 'veintiunu', 'veintidos',
+        'veintitres', 'veinticuatro','veinticinco', 'veintiséis','veintisiete',
+        'veintiocho','veintinueve');
+      return $valor[$numero - 1];
+    }
 
-  private function miles($n) {
-  if($n > 999) {
-  if( $n == 1000) {return 'mil';}
-  else {
-  $l = strlen($n);
-  $c = (int)substr($n,0,$l-3);
-  $x = (int)substr($n,-3);
-  if($c == 1) {$cadena = 'mil '.$this->centenas($x);}
-  else if($x != 0) {$cadena = $this->centenas($c).' mil '.$this->centenas($x);}
-  else $cadena = $this->centenas($c). ' mil';
-  return $cadena;
-  }
-  } else return $this->centenas($n);
-  }
+    private function decenas($n) {
+      $decenas = array (30=>'treinta',40=>'cuarenta',50=>'cincuenta',60=>'sesenta',
+        70=>'setenta',80=>'ochenta',90=>'noventa');
+      if( $n <= 29) return $this->basico($n);
+      $x = $n % 10;
+      if ( $x == 0 ) {
+        return $decenas[$n];
+      } else return $decenas[$n - $x].' y '. $this->basico($x);
+    }
 
-  private function millones($n) {
-  if($n == 1000000) {return 'un millón';}
-  else {
-  $l = strlen($n);
-  $c = (int)substr($n,0,$l-6);
-  $x = (int)substr($n,-6);
-  if($c == 1) {
-  $cadena = ' millón ';
-  } else {
-  $cadena = ' millones ';
+    private function centenas($n) {
+      $cientos = array (100 =>'cien',200 =>'doscientos',300=>'trecientos',
+        400=>'cuatrocientos', 500=>'quinientos',600=>'seiscientos',
+        700=>'setecientos',800=>'ochocientos', 900 =>'novecientos');
+      if( $n >= 100) {
+        if ( $n % 100 == 0 ) {
+          return $cientos[$n];
+        } else {
+          $u = (int) substr($n,0,1);
+          $d = (int) substr($n,1,2);
+          return (($u == 1)?'ciento':$cientos[$u*100]).' '.$this->decenas($d);
+        }
+      } else return $this->decenas($n);
+    }
+
+    private function miles($n) {
+      if($n > 999) {
+        if( $n == 1000) {return 'mil';}
+        else {
+          $l = strlen($n);
+          $c = (int)substr($n,0,$l-3);
+          $x = (int)substr($n,-3);
+          if($c == 1) {$cadena = 'mil '.$this->centenas($x);}
+          else if($x != 0) {$cadena = $this->centenas($c).' mil '.$this->centenas($x);}
+          else $cadena = $this->centenas($c). ' mil';
+          return $cadena;
+        }
+      } else return $this->centenas($n);
+    }
+
+    private function millones($n) {
+      if($n == 1000000) {return 'un millón';}
+      else {
+        $l = strlen($n);
+        $c = (int)substr($n,0,$l-6);
+        $x = (int)substr($n,-6);
+        if($c == 1) {
+          $cadena = ' millón ';
+        } else {
+          $cadena = ' millones ';
+        }
+        return $this->miles($c).$cadena.(($x > 0)?$this->miles($x):'');
+      }
+    }
   }
-  return $this->miles($c).$cadena.(($x > 0)?$this->miles($x):'');
-  }
-  }
-}

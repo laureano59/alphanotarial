@@ -24,4 +24,15 @@ class SesionesController extends Controller
     }
 
 
+    public function Sessiones_protocolistas(Request $request){
+      $request->session()->forget('opcion_protocolista');
+      $opcion = $request->input('opcion');
+      $request->session()->put('opcion_protocolista', $opcion);
+
+      return response()->json([
+        "validar"=>1,
+      ]);
+    }
+
+
 }

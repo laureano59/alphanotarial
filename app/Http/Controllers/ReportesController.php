@@ -556,8 +556,6 @@ class ReportesController extends Controller
 
       
 
-
-
       /*----------  Elimina repetidas entre rango1 y array_rango1  ----------*/
 
 
