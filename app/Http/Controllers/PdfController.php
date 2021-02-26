@@ -818,9 +818,11 @@ class PdfController extends Controller
     $email = $notaria->email;
     $anio_gravable = $anio_trabajo;
     $fecha_certificado = date("Y/m/d");
-    $identificacion = $request->identificacion;
-
-    $certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->where("identificacion_contribuyente","=",$identificacion)->get();
+    //$identificacion = $request->identificacion;
+    $identificacion = $request->session()->get('identificacion');
+   
+    //$certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->where("identificacion_contribuyente","=",$identificacion)->get();
+    $certificado_rtf = Certificado_rtf::where("identificacion_contribuyente","=",$identificacion)->get();
     $i = 0;
     foreach ($certificado_rtf as $cer) {
       $fecha_escritura = $cer->fecha_escritura;
@@ -831,7 +833,8 @@ class PdfController extends Controller
       $num_factura = $cer->num_factura;
       $fecha_factura = $cer->fecha_factura;
       $valor_venta = $cer->valor_venta;
-      $total_retenido = $cer->total_retenido;
+      $total_retenido = $cer->total_retencion;
+      $num_escritura = $cer->num_escritura;
 
       $data['id_cer'] = $cer->id_cer;
       $data['nombre_nota'] = $nombre_nota;

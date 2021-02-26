@@ -69,6 +69,8 @@ class ReportesController extends Controller
       return view('reportes.informederecaudos', compact('nombre_reporte'));
     }else if($opcion == 12){
       return view('reportes.ron');
+    }else if($opcion == 13){
+      return view('reportes.certificadortf');
     }
   }
 

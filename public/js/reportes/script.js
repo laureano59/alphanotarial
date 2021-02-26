@@ -18,6 +18,25 @@ $("#ron").click(function(){
 
 });
 
+$("#certificadortf").click(function(){
+  var opcion = 13;
+  var reporte = "Certificado de Retención en la Fuente";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+
+});
+
 
 $("#diariocaja").click(function(){
   var opcion = 1;
@@ -214,6 +233,8 @@ $("#informecarterames").click(function(){
   })
 });
 
+
+
 $("#informecarteracliente").click(function(){
   var opcion = 10;
   var reporte = "Relación de Cartera por Cliente";
@@ -340,6 +361,25 @@ $("#imprimirenlaces").click(function(){
       $("<a>").attr("href", url).attr("target", "_blank")[0].click();
     }
   })
+});
+
+$("#imprimircertificadortf").click(function(){
+  var route = "/cargaridentificacion";
+  var token = $("#token").val();
+  var type = 'GET';
+  var identificacion = $("#identificacion").val();
+  var datos = {
+      "identificacion": identificacion
+  };
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      var url = "/copiacertificadortf";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+
 });
 
 $("#auxiliarcaja").click(function(){

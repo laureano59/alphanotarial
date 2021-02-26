@@ -105,6 +105,7 @@ Route::get('enviarnotadebito', 'EinvoicenotadebitoController@index');
 
 Route::get('cargartiporeporte', 'ReportesController@CargarTipoReporte');
 Route::get('cargarfechas', 'ReportesController@FechaReporte');
+Route::get('cargaridentificacion', 'SesionesController@Sessiones_Identificacion');
 Route::get('cajadiario', 'ReportesController@Caja_Diario');
 Route::get('libroindice', 'ReportesController@Libro_Indice');
 Route::get('relacionnotacredito', 'ReportesController@Relacion_Nota_Credito');

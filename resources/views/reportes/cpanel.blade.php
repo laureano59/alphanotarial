@@ -185,6 +185,23 @@
       </table>
     </div>
   </div>
+
+  <div class="group">
+    <h3 class="accordion-header">CERTIFICADOS</h3>
+
+    <div>
+      <table class="table table-striped table-bordered table-hover head">
+        <tr>
+          <td bgcolor="#FEFFE0">
+            <a href="javascript://" id="certificadortf">
+              Retención en la Fuente
+          </a>
+          </td>
+        </tr>
+        
+      </table>
+    </div>
+  </div>
 </div><!-- #accordion -->
 
 </div>
