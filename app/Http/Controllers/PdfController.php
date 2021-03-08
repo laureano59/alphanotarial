@@ -17,6 +17,8 @@ use App\Principales_radica;
 use App\Notario;
 use App\Principalesfact_view;
 use App\Factura;
+use App\Cajadiario_cajarapida_view;
+use App\Cajadiario_conceptos_rapida_view;
 use App\Escritura;
 use App\Detalle_factura;
 use App\Liq_derecho;
@@ -3534,6 +3536,172 @@ class PdfController extends Controller
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
     }
+   
+
+    public function Cajadiariocajarapidaconceptospdf(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      $fecha_reporte = date("Y/m/d");
+
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+
+      $raw = \DB::raw("min(id_concep) AS id_concep,
+                  min((nombre_concep)) AS nombre_concep,
+                  count(id_concep) AS cantidad,
+                  sum(subtotal) AS subtotal,
+                  sum(iva) AS iva,
+                  sum(total) AS total");
+      $cajadiario = Cajadiario_conceptos_rapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->groupBy('id_concep')
+      ->select($raw)->get()->toArray();
+
+      $contcajadiario = count ($cajadiario, 0);
+      $subtotal = 0;
+      $total_iva = 0;
+      $total_fact = 0;
+
+    foreach ($cajadiario as $key => $value) {
+      $subtotal = $value['subtotal'] + $subtotal;
+      $total_iva =$value['iva'] + $total_iva;
+      $total_fact = $value['total'] + $total_fact;
+    }
+ 
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['cajadiario'] = $cajadiario;
+    $data['contcajadiario'] = $contcajadiario;
+    $data['subtotal'] = round($subtotal);
+    $data['total_iva'] = $total_iva;
+    $data['total_fact'] = round($total_fact);
+    $data['nombre_reporte'] = $nombre_reporte;
+    $data['fecha_reporte'] = $fecha_reporte;
+
+    $html = view('pdf.cajadiario_cajarapidaconceptos',$data)->render();
+
+    $namefile = 'cajadiario_cajarapida_conceptos'.$fecha_reporte.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
+    ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+
+  }
+
+    
+    public function CajaDiarioCajaRapidaPdf(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      $fecha_reporte = date("Y/m/d");
+
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+
+      $cajadiario = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->get()
+      ->toArray();
+
+      $contcajadiario = count ($cajadiario, 0);
+      $subtotal = 0;
+      $total_iva = 0;
+      $total_fact = 0;
+
+    foreach ($cajadiario as $key => $value) {
+      $subtotal = $value['subtotal'] + $subtotal;
+      $total_iva =$value['total_iva'] + $total_iva;
+      $total_fact = $value['total_fact'] + $total_fact;
+    }
+ 
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['cajadiario'] = $cajadiario;
+    $data['contcajadiario'] = $contcajadiario;
+    $data['subtotal'] = round($subtotal);
+    $data['total_iva'] = $total_iva;
+    $data['total_fact'] = round($total_fact);
+    $data['nombre_reporte'] = $nombre_reporte;
+    $data['fecha_reporte'] = $fecha_reporte;
+
+    $html = view('pdf.cajadiario_cajarapida',$data)->render();
+
+    $namefile = 'cajadiario_cajarapida_'.$fecha_reporte.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
+    ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+
+  }
 
     public function PdfCajaDiarioGeneral(Request $request){
       $notaria = Notaria::find(1);
@@ -3574,11 +3742,6 @@ class PdfController extends Controller
       ->get()
       ->toArray();
     }
-
-
-    
-
-
 
     $contcajadiario = count ($cajadiario, 0);
     $total_derechos = 0;
@@ -5064,6 +5227,7 @@ class PdfController extends Controller
         $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = false;
+        $cufe_almacenado = $factura->cufe;
       }
 
       if($forma_pago == true){
@@ -5116,7 +5280,7 @@ class PdfController extends Controller
       # =====================================
 
 
-      $cufe = $request->session()->get('CUFE_SESION');
+      $cufe = $cufe_almacenado;//$request->session()->get('CUFE_SESION');
       $QRCode = $cufe;
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
@@ -5133,7 +5297,6 @@ class PdfController extends Controller
       $data['IVA'] = $iva;
       $data['prefijo_fact'] = $prefijo_fact;
       $data['num_fact'] = $num_fact;
-      
       $data['identificacioncli1'] = $identificacioncli1;
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;

@@ -64,7 +64,10 @@ $("#cajarapida").click(function() {
 $("#nuevafactura").click(function() {
 
   var botonnuevo = document.getElementById("botonnuevo");
-  botonnuevo.style.display = "none";
+ //  botonnuevo.style.display = "none";
+
+  var botonagregar = document.getElementById("botonagregar");
+  botonagregar.style.display = "";
 
   var impresora = document.getElementById("impresora");
   impresora.style.display = "";

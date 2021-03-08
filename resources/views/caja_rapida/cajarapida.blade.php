@@ -59,6 +59,7 @@
                         <strong id="msj4"></strong>
                       </div>
 
+                      <div id="botonagregar" style="display:none">
                         <form class="form-horizontal" role="form">
                           @csrf
                           <input type="hidden" id="numfactrapida">
@@ -87,12 +88,15 @@
                                         @endforeach
                                     </select>
                                     <input type="text" size="10" id="cantidad" name="cantidad" placeholder="Cantidad" onKeyPress="return soloNumeros(event)" />
-                                    <a href="javascript://" id="agregaritem" data-action="collapse">
+                                    
+                                      <a href="javascript://" id="agregaritem" data-action="collapse">
                                           <i><img src="{{ asset('images/nuevo.png') }}" width="28 px" height="28 px" title="Agregar Item"></i>
-                                      </a>
+                                        </a>
+                                    
                                 </div>
                             </div>
                         </form>
+                      </div>
                     </div>
                 </div>
             </div>

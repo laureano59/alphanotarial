@@ -531,6 +531,100 @@ $("#generarreportecarteracliente").click(function(){
   })
 });
 
+$("#informediariocajarapida").click(function(){
+  var opcion = 14;
+  var reporte = "Relación de Facturas Diarias Caja Rápida";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
+$("#statusfactelectronicacajarapida").click(function(){
+  var opcion = 16;
+  var reporte = "Facturas por enviar a la DIAN";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
+$("#informeporconceptoscajarapida").click(function(){
+  var opcion = 15;
+  var reporte = "Relación de Facturas Diarias Por Grupos Caja Rápida";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
+
+$("#generarreportecajadiario").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+  var route = "/generarreportecajadiario";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informe = info.Informe_cajadiario_rapida;
+    CargarInformeCajadiario_rapida(informe);
+  })
+});
+
+$("#generarreportecajadiarioporconceptos").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+  var route = "/generarreportecajadiarioporconceptos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informe = info.Informe_cajadiario_rapida_conceptos;
+    CargarInformeCajadiario_rapida_conceptos(informe);
+  })
+});
+
+
+
 $("#generarinformederecaudos").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();

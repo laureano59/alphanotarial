@@ -30,12 +30,30 @@
         <i class="ace-icon glyphicon glyphicon-pencil bigger-150"></i>
         Editar
       </a>
+     
 
       <a href="javascript://" id="copiasfacturarapida" class="btn btn-app btn-light">
         <i class="ace-icon fa fa-print bigger-160"></i>
         Copias
       </a>
 
+    </div>
+
+    <div class="center">
+       <a href="javascript://" id="informediariocajarapida" class="btn btn-app btn-success">
+        <i class="ace-icon  glyphicon  glyphicon-th-large bigger-160"></i>
+        R.Diario
+      </a>
+
+      <a href="javascript://" id="informeporconceptoscajarapida" class="btn btn-app btn-purple">
+        <i class="ace-icon  glyphicon  glyphicon-th-large bigger-160"></i>
+        R.Grupos
+      </a>
+
+       <a href="javascript://" id="statusfactelectronicacajarapida" class="btn btn-app btn-warning">
+        <i class="ace-icon fa fa-print bigger-160"></i>
+        Status
+      </a>
     </div>
 
     </div>
@@ -79,4 +97,5 @@
 <script src="{{ asset('js/mantenimiento/script.js')}}"></script>
 <script src="{{ asset('js/__AJAX.js')}}"></script>
 <script src="{{ asset('js/caja_rapida/script.js')}}"></script>
+<script src="{{ asset('js/reportes/script.js')}}"></script>
 @endsection

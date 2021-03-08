@@ -96,8 +96,8 @@ Route::get('buscarcartera', 'CarteraController@BuscarCartera');
 Route::get('rastrearradicacion', 'ConsultasController@Rastrear_Radicacion');
 Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
 Route::get('cargarfacturanotadebito', 'NotasdebitoController@CargarFactura');
-
 Route::get('cargarfacturaelectronica', 'FacturaelectronicaController@CargarFacturas');
+Route::get('cargarfacturasnodian', 'FacturaelectronicacajarapidaController@CargarFacturas_cajarapida');
 Route::get('enviarfactura', 'EinvoiceController@index');
 Route::get('enviarfacturacajarapida', 'EnvoicecajarapidaController@index');
 Route::get('enviarnotadebito', 'EinvoicenotadebitoController@index');
@@ -112,6 +112,12 @@ Route::get('relacionnotacredito', 'ReportesController@Relacion_Nota_Credito');
 Route::get('ingresoporconceptos', 'ReportesController@Ingreso_Conceptos');
 Route::get('informecartera', 'ReportesController@Informe_Cartera');
 Route::get('informerecaudos', 'ReportesController@Informe_Recaudos');
+Route::get('generarreportecajadiario', 'ReportesController@Informe_cajadiario_rapida');
+
+
+Route::get('generarreportecajadiarioporconceptos', 'ReportesController@Informe_cajadiario_rapida_conceptos');
+
+
 
 Route::get('sessionabonos', 'CarteraController@SessionFact');
 
@@ -135,6 +141,11 @@ Route::get('factunicapdf', 'PdfController@pdf');
 Route::get('facturacajarapidapdf', 'PdfController@FacturaCajaRapida');
 Route::get('actasdepositopdf', 'PdfController@PdfActaDeposito');
 Route::get('cajadiariopdf', 'PdfController@PdfCajaDiarioGeneral');
+
+Route::get('cajadiariocajarapidapdf', 'PdfController@CajaDiarioCajaRapidaPdf');
+Route::get('cajadiariocajarapidaconceptos', 'PdfController@Cajadiariocajarapidaconceptospdf');
+
+
 Route::get('liquidacionpdf', 'PdfController@PdfLiquidacion');
 Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
 Route::get('informe_ron', 'ReportesController@Ron');

@@ -50,9 +50,9 @@ class FacturascajarapidaController extends Controller
         $Facturascajarapida->fecha_fact = $fecha_factura;
         $Facturascajarapida->save();
         $numfactrapida = $Facturascajarapida->id_fact;
-        //$numfactrapida = Facturascajarapida::where()
         $request->session()->put('numfactrapida', $numfactrapida);
 
+       
         # ==================================================
         # =           Para vaciar Grilla detalle           =
         # ==================================================

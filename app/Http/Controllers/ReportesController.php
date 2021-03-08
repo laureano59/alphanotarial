@@ -9,6 +9,8 @@ use App\Detalle_liqderecho;
 use App\Liq_concepto;
 use App\Liq_recaudo;
 use App\Factura;
+use App\Cajadiario_cajarapida_view;
+use App\Cajadiario_conceptos_rapida_view;
 use App\Detalle_factura;
 use App\Escritura;
 use App\Cajadiariogeneral_view;
@@ -71,6 +73,15 @@ class ReportesController extends Controller
       return view('reportes.ron');
     }else if($opcion == 13){
       return view('reportes.certificadortf');
+    }else if($opcion == 14){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informediariocajarapida', compact('nombre_reporte'));
+    }else if($opcion == 15){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informeporconceptoscajarapida', compact('nombre_reporte'));
+    }else if($opcion == 16){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.statusfactelectronicacajarapida', compact('nombre_reporte'));
     }
   }
 
@@ -252,6 +263,54 @@ class ReportesController extends Controller
 
     return response()->json([
        "informecartera"=>$informecartera
+     ]);
+  }
+
+  public function Informe_cajadiario_rapida(Request $request)
+  {
+    $notaria = Notaria::find(1);
+    $fecha1 = $request->fecha1;
+    $fecha2 = $request->fecha2;
+    $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
+    $fecha2 = date("Y-m-d", strtotime($fecha2));
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+
+    $Informe_cajadiario_rapida = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->get()
+      ->toArray();
+
+        
+    return response()->json([
+       "Informe_cajadiario_rapida"=>$Informe_cajadiario_rapida
+     ]);
+  }
+ 
+
+   public function Informe_cajadiario_rapida_conceptos(Request $request)
+  {
+    $notaria = Notaria::find(1);
+    $fecha1 = $request->fecha1;
+    $fecha2 = $request->fecha2;
+    $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
+    $fecha2 = date("Y-m-d", strtotime($fecha2));
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+
+    $raw = \DB::raw("min(id_concep) AS id_concep,
+                    min((nombre_concep)) AS nombre_concep,
+                    count(id_concep) AS cantidad,
+                    sum(subtotal) AS subtotal,
+                    sum(iva) AS iva,
+                    sum(total) AS total");
+      $Informe_cajadiario_rapida_conceptos = Cajadiario_conceptos_rapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->groupBy('id_concep')
+      ->select($raw)->get()->toArray();
+        
+    return response()->json([
+       "Informe_cajadiario_rapida_conceptos"=>$Informe_cajadiario_rapida_conceptos
      ]);
   }
 

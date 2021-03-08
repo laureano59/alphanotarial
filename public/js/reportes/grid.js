@@ -379,4 +379,135 @@ function CargarInformeCartera(data){
       document.getElementById('carteradata').innerHTML = htmlTags;
 }
 
+function CargarInformeCajadiario_rapida(data){
+  var subtotal = 0;
+  var total_iva = 0;
+  var total_factura = 0;
+  var htmlTags = '';
+  for (item in data) {
+   
+    total_iva = total_iva + parseFloat(data[item].total_iva);
+    subtotal = subtotal + parseFloat(data[item].subtotal);
+    total_factura = total_factura + parseFloat(data[item].total_fact);
+    htmlTags +=
+          '<tr>' +
+           '<td>' +
+          data[item].fecha_fact +
+          '</td>' +
+          '<td>' +
+          data[item].prefijo + ' ' + data[item].id_fact +
+          '</td>' +
+           '<td>' +
+          data[item].a_nombre_de +
+          '</td>' +
+           '<td>' +
+          data[item].cliente +
+          '</td>' +
+         
+           '<td align="right">' +
+          formatNumbderechos(data[item].subtotal) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].total_iva) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].total_fact) +
+          '</td>' +
+          '<td>' +
+          data[item].estado +
+          '</td>' +
+          '<td>' +
+          data[item].id_ncf +
+          '</td>' +
+           '<td>' +
+          data[item].name +
+          '</td>' +
+          '</tr>';
+      }
 
+      htmlTags +=
+       '<tr>' +
+          '<td>' +
+         '<b>Totales:</b>'+
+          '</td>' +
+          '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(subtotal) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(total_iva) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(total_factura) +
+          '</b></td>' +
+          '<td>'
+          '</td>' +
+           '<td>' +
+          '</td>' +
+          '<td>' +
+           '</td>'+
+          '</tr>';
+
+      document.getElementById('data_tabla').innerHTML = htmlTags;
+}
+
+function CargarInformeCajadiario_rapida_conceptos(data){
+  var subtotal = 0;
+  var total_iva = 0;
+  var total_factura = 0;
+  var htmlTags = '';
+  for (item in data) {
+   
+    total_iva = total_iva + parseFloat(data[item].iva);
+    subtotal = subtotal + parseFloat(data[item].subtotal);
+    total_factura = total_factura + parseFloat(data[item].total);
+    htmlTags +=
+          '<tr>' +
+           '<td>' +
+          data[item].id_concep +
+          '</td>' +
+          '<td>' +
+          data[item].nombre_concep +
+          '</td>' +
+           '<td>' +
+          data[item].cantidad +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].subtotal) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].iva) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].total) +
+          '</td>' +
+          '</tr>';
+      }
+
+      htmlTags +=
+       '<tr>' +
+          '<td>' +
+         '<b>Totales:</b>'+
+          '</td>' +
+          '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(subtotal) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(total_iva) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(total_factura) +
+          '</b></td>' +
+          '</tr>';
+
+      document.getElementById('data_tabla').innerHTML = htmlTags;
+}

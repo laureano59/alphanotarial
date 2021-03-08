@@ -4,7 +4,7 @@ $("#imprimir").click(function() {
 	// =============================================
     // =       Enviar Factura electronica          =
     // =============================================
-
+  
     var opcion = "F1";
     var num_fact = $("#numfactrapida").val();
     var route = "/enviarfacturacajarapida";
@@ -48,9 +48,9 @@ $("#imprimir").click(function() {
 function GenerarPdf(){
     botonnuevo.style.display = "block";
     impresora.style.display = "none";
+    botonagregar.style.display = "none";
 	var url = "/facturacajarapidapdf";
-	$("<a>").attr("href", url).attr("target", "_blank")[0].click();
-    
+	$("<a>").attr("href", url).attr("target", "_blank")[0].click(); 
 }
 
 

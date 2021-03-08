@@ -49,11 +49,11 @@ class DetallefacturascajarapidaController extends Controller
         # =           Valida limite de item           =
         # =============================================
 
-        $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
+        $detalle_max = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
                     ->where('id_fact', $id_fact)
                     ->get()
                     ->toArray();
-        $contdetalle = count ($detalle, 0);
+        $contdetalle = count ($detalle_max, 0);
 
         if($contdetalle >= 6){
 
