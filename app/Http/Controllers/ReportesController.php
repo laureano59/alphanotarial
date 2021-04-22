@@ -191,19 +191,37 @@ class ReportesController extends Controller
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
     $ordenar = $request->session()->get('ordenar');
+
     if($ordenar == 'pornumescritura'){ //Ordena por escritura
-      //$libroindice = Libroindice_view::whereBetween('fecha', [$fecha1, $fecha2])->orderBy('num_esc')->get()->toArray();
+      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
       $libroindice = Actos_notariales_escritura_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
-      ->orderBy('num_esc')->get()->toArray();
+      ->groupBy('num_esc')
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+
     }elseif($ordenar == 'pornombre'){//Ordena por nombre
       
+      
+      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
       $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
-      ->orderBy('otorgante')->get()->toArray();
+      ->groupBy('num_esc')
+      ->orderBy('otorgante')
+      ->select($raw1)
+      ->get()
+      ->toArray();
     }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
+     $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
       $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)->get()->toArray();
+      ->whereDate('fecha', '<=', $fecha2)
+      ->groupBy('num_esc')
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
     }
   
     return response()->json([
@@ -349,6 +367,7 @@ class ReportesController extends Controller
       ->where('cuantia','<=', 100000000)
       ->groupBy('escr')
       ->select($raw1)->get()->toArray();
+
 
      
       $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");

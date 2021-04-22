@@ -112,7 +112,9 @@ $("#nuevafactura").click(function() {
 
 $("#agregaritem").click(function() {
   var identificacion_cli1 = $("#identificacion_cli1").val();
-  if(identificacion_cli1 != ''){
+  var formapago = $("#id_formapago").val();
+
+  if(identificacion_cli1 != '' && formapago != null){
     var id_concepto, cantidad, identificacion_cli1;
     id_concepto = $("#id_concepto").val();
     cantidad = $("#cantidad").val();
@@ -124,7 +126,8 @@ $("#agregaritem").click(function() {
     var datos = {
       "id_concepto": id_concepto,
       "identificacion_cli1": identificacion_cli1,
-      "cantidad": cantidad
+      "cantidad": cantidad,
+      "formapago": formapago
     };
     
     __ajax(route, token, type, datos)
@@ -143,7 +146,7 @@ $("#agregaritem").click(function() {
           })
 
   }else{
-    alert("Debes ingresar la información del cliente");
+    alert("Debes ingresar la información del cliente y la forma de pago");
   }
   
 });

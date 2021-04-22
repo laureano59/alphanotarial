@@ -110,12 +110,51 @@ class CarteraController extends Controller
     public function BuscarCartera(Request $request)
     {
       $opcion = $request->input('opcion');
+      
+
+      /*===========================================================
+      /             VALIDA PARA PODER IMPRIMIR ANTERIORES         /
+      /*=========================================================*/
+      if($opcion == 1){//Buscar Cartera por identificación
+        $Identifi = $request->input('identificacion_cli');
+        $cartera_factu = informe_cartera_view::where('identificacion_cli', $Identifi)
+        ->where('nota_credito', false)
+        ->get();
+         foreach ($cartera_factu as $key => $value) {
+            $ident = $value['identificacion_cli'];
+            $cli = $value['cliente'];
+            $id_fact = $value['id_fact'];
+        }
+
+        $request->session()->put('abonos_fact', $id_fact);
+
+        $request->session()->put('ident', $ident);//para PdfAbonosCartera()
+        $request->session()->put('cli', $cli);//para PdfAbonosCartera()
+                                              //
+       } else if($opcion == 2){
+        $id_factu = $request->input('id_fact');
+        $cartera_factu = informe_cartera_view::where('id_fact', $id_factu)
+        ->where('nota_credito', false)
+        ->get();
+         foreach ($cartera_factu as $key => $value) {
+            $ident = $value['identificacion_cli'];
+            $cli = $value['cliente'];
+        }
+
+        $request->session()->put('abonos_fact', $id_factu);
+
+        $request->session()->put('ident', $ident);//para PdfAbonosCartera()
+        $request->session()->put('cli', $cli);//para PdfAbonosCartera()
+
+        }
+
       if($opcion == 1){//Buscar Cartera por identificación
         $Identificacion_cli = $request->input('identificacion_cli');
         $cartera_fact = informe_cartera_view::where('identificacion_cli', $Identificacion_cli)
         ->where('nota_credito', false)
         ->where('saldo_fact', '>=', 1)
         ->get();
+         
         return response()->json([
            "cartera_fact"=>$cartera_fact
          ]);
@@ -126,6 +165,7 @@ class CarteraController extends Controller
         ->where('nota_credito', false)
         ->where('saldo_fact', '>=', 1)
         ->get();
+      
         return response()->json([
            "cartera_fact"=>$cartera_fact
          ]);

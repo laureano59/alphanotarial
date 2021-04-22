@@ -79,6 +79,17 @@
                             </div>
 
                             <div class="form-group">
+                                <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Forma_Pago</b></label>
+                                <div class="col-sm-9">
+                                    <select id="id_formapago" style="width: 150px;">
+                                        <option value="" disabled selected>Seleccione</option>
+                                          <option value="0">Contado</option>
+                                          <option value="1">Crédito</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Concepto</b></label>
                                 <div class="col-sm-9">
                                     <select id="id_concepto" style="width: 350px;">
@@ -89,9 +100,9 @@
                                     </select>
                                     <input type="text" size="10" id="cantidad" name="cantidad" placeholder="Cantidad" onKeyPress="return soloNumeros(event)" />
                                     
-                                      <a href="javascript://" id="agregaritem" data-action="collapse">
+                                      <a href="javascript://" id="agregaritem" data-action="collapse" data-action="reload">
                                           <i><img src="{{ asset('images/nuevo.png') }}" width="28 px" height="28 px" title="Agregar Item"></i>
-                                        </a>
+                                      </a>
                                     
                                 </div>
                             </div>

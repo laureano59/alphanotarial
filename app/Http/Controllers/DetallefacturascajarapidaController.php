@@ -114,12 +114,20 @@ class DetallefacturascajarapidaController extends Controller
         # =           Almacena totales en tabla facturacajarapida y cliente =
         # ===================================================================
 
+        
+        if($request->formapago == 0){
+            $formapago = 'false';
+        }else if($request->formapago == 1){
+            $formapago = 'true';
+        }
         $identificacion_cli1 = $request->identificacion_cli1;
         $factura_rapida = Facturascajarapida::where("prefijo","=",$prefijo_fact)->find($id_fact);
         $factura_rapida->a_nombre_de = $identificacion_cli1;
         $factura_rapida->total_iva = $total_iva;
         $factura_rapida->subtotal = $subtotal_all;
         $factura_rapida->total_fact = $total_all;
+        $factura_rapida->credito_fact = $formapago;
+
         $factura_rapida->save();
 
         return response()->json([

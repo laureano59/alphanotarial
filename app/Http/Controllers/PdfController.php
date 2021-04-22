@@ -2053,11 +2053,7 @@ class PdfController extends Controller
 
     
     /*----------  Consulta Radicaciones con un solo acto  ----------*/
-    
-    //$estadistico = Estadisticonotarial_unicas_view::
-    //whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
-    //
-  
+   
             
     $raw1 = \DB::raw("id_radica");
       $subquery = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
@@ -2083,14 +2079,11 @@ class PdfController extends Controller
         }
         
       }
-
-         
                
 
     /*----------  Consulta Radicaciones con varios actos  ----------*/
 
-    //$estadistico_repe = Estadisticonotarial_repetidas_solo_radi_view::whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
-   
+      
     $raw2 = \DB::raw("id_radica");
       $subquery2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
       ->groupBy('id_radica')
@@ -2155,14 +2148,14 @@ class PdfController extends Controller
     $cantvip = 0;
     $ingrevip = 0;
 
-        
+      
     foreach ($estadistico as $key => $est) {
       $id_radica = $est['id_radica'];
       $id_codigoagru = $est['id_codigoagru'];
       $ingresos = round($est['derechos']);
 
       if($id_codigoagru == 1){
-        $cantventa++;
+        $cantventa += 1;
         $ingreventas += $ingresos;
       }else if($id_codigoagru == 2){
         $cantpermuta++;
@@ -2217,9 +2210,8 @@ class PdfController extends Controller
         $ingrevip += $ingresos;
       }
     }//Fin del for estadisticonotarial
-
-
-
+    
+   
     foreach ($estadistico_repe as $key => $esr) {
       $id_radica = $esr['id_radica'];
       $ingresos = round($esr['derechos']);
@@ -2227,6 +2219,8 @@ class PdfController extends Controller
       ->where('id_radica', [$id_radica])
       ->get()
       ->toArray();
+
+
 
       $i = 0;
       unset($arr_codigo);
@@ -2303,7 +2297,7 @@ class PdfController extends Controller
       }
 
 
-      if (in_array("10", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
+      if (in_array("10", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("1", $arr_codigo)) {
 
         $cantreglaproprefor++;
         $ingrereglaprorefor += $ingresos;
@@ -2370,6 +2364,7 @@ class PdfController extends Controller
 
     }
 
+   
     $totalcantidad = $cantventa + $cantpermuta + $canthipoteca +
     $cantcancelhipo + $cantventaconhipo + $cantconstisocie +
     $cantliqsocie + $cantreforsocial + $cantsuce + $cantreglaproprefor +
@@ -2487,10 +2482,36 @@ class PdfController extends Controller
     $fecha = $fecha1.' A '.$fecha2;
 
     $ordenar = $request->session()->get('ordenar');
-    if($ordenar == 'pornumescritura'){ //Ordena por fatura
-      $libroindice = Actos_notariales_escritura_view::whereBetween('fecha', [$fecha1, $fecha2])->orderBy('num_esc')->get()->toArray();
-    }elseif($ordenar == 'libroindice'){//Ordena por nombre
-      $libroindice = Libroindice_view::whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
+    if($ordenar == 'pornumescritura'){ //Ordena por escritura
+      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $libroindice = Actos_notariales_escritura_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+      ->groupBy('num_esc')
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+
+    }elseif($ordenar == 'pornombre'){//Ordena por nombre
+      
+      
+      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+      ->groupBy('num_esc')
+      ->orderBy('otorgante')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+    }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
+     $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+      ->groupBy('num_esc')
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
     }
 
     $contlibroindice = count ($libroindice, 0);
@@ -2733,6 +2754,8 @@ class PdfController extends Controller
     $data['contabonos'] = $contabonos;
     $data['total_abono'] = $total_abono;
     $data['id_fact'] = $id_fact;
+    $data['id_cliente'] = $request->session()->get('ident');
+    $data['cliente'] = $request->session()->get('cli');
     $html = view('pdf.abonoscartera',$data)->render();
 
     $namefile = 'abonoscartera_'.$fecha_reporte.'.pdf';
@@ -5226,7 +5249,7 @@ class PdfController extends Controller
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
         $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
         $identificacioncli1 = $factura->a_nombre_de;
-        $forma_pago = false;
+        $forma_pago = $factura->credito_fact;
         $cufe_almacenado = $factura->cufe;
       }
 
@@ -5395,7 +5418,7 @@ class PdfController extends Controller
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
         $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
         $identificacioncli1 = $factura->a_nombre_de;
-        $forma_pago = false;
+        $forma_pago = $factura->credito_fact;
         $cufe = $factura->cufe;
       }
 
@@ -5574,7 +5597,7 @@ class PdfController extends Controller
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
         $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
         $identificacioncli1 = $factura->a_nombre_de;
-        $forma_pago = false;
+        $forma_pago = $factura->credito_fact;
       }
 
       if($forma_pago == true){

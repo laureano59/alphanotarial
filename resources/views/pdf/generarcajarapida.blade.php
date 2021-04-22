@@ -67,16 +67,7 @@
                 <font size="1">Fecha:</font>&nbsp;
             </td>
             <td width="25%">
-                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }}</font>
-            </td>
-        </tr>
-    </table>
-    <hr>
-
-    <table width="100%">
-        <tr>
-            <td align="center">
-                <font size="1">Resolución:{{$resolucion}}</font>
+                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; Forma de pago: {{$formadepago}}</font> 
             </td>
         </tr>
     </table>

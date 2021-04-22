@@ -39,6 +39,11 @@
                         Fecha del Reporte : {{$fecha_reporte}}
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        Cliente : {{$id_cliente}} -- {{$cliente}}
+                      </td>
+                    </tr>
                 </table>
             </td>
             <td>

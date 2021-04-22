@@ -40,43 +40,43 @@ class ConsultasController extends Controller
       if($filtro == 'radicacion'){
         $Seguimiento = Seguimiento_radicacion_view::
                       where('id_radica', '=', $info)
-                      ->where('anio_esc', '=', $anio)
+                      ->where('anio_radica', '=', $anio)
                       ->get()
                       ->toArray();
       }else if($filtro == 'factura'){
         $Seguimiento = Seguimiento_radicacion_view::
                     where('id_fact', '=', $info)
-                    ->where('anio_esc', '=', $anio)
+                    ->where('anio_radica', '=', $anio)
                     ->get()
                     ->toArray();
       }else if($filtro == 'escritura'){
         $Seguimiento = Seguimiento_radicacion_view::
                       where('num_esc', '=', $info)
-                      ->where('anio_esc', '=', $anio)
+                      ->where('anio_radica', '=', $anio)
                       ->get()
                       ->toArray();
       }else if($filtro == 'otorgante'){
         $Seguimiento = Seguimiento_radicacion_view::
                     where('otorgante', '=', $info)
-                    ->where('anio_esc', '=', $anio)
+                    ->where('anio_radica', '=', $anio)
                     ->get()
                     ->toArray();
       }else if($filtro == 'compareciente'){
          $Seguimiento = Seguimiento_radicacion_view::
                       where('compareciente', '=', $info)
-                      ->where('anio_esc', '=', $anio)
+                      ->where('anio_radica', '=', $anio)
                       ->get()
                       ->toArray();
       }else if($filtro == 'protocolista'){
         $Seguimiento = Seguimiento_radicacion_view::
                       where('protocolista','like','%'.$info.'%')
-                      ->where('anio_esc', '=', $anio)
+                      ->where('anio_radica', '=', $anio)
                       ->get()
                       ->toArray();
       }else if($filtro == 'usuario'){
         $Seguimiento = Seguimiento_radicacion_view::
                       where('usuario','like', '%'.$info.'%')
-                      ->where('anio_esc', '=', $anio)
+                      ->where('anio_radica', '=', $anio)
                       ->get()
                       ->toArray();
       }

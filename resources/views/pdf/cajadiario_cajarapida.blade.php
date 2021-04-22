@@ -59,6 +59,7 @@
                 <th><font size="2">Subtotal</font></th>
                 <th><font size="2">Iva</font></th>
                 <th><font size="2">Total</font></th>
+                <th><font size="2">Forma_pago</font></th>
                 <th><font size="2">Estado</font></th>
                 <th><font size="2">No.NC</font></th>
                 <th><font size="2">Facturador</font></th>
@@ -89,6 +90,9 @@
                 </td>
                 <td align="right">
                   <font size="2">{{ number_format($cajadiario[$i]['total_fact'], 2) }}</font>
+                </td>
+                <td>
+                    {{$cajadiario[$i]['forma_pago']}}
                 </td>
                 <td align="center">
                   <font size="2">{{ $cajadiario[$i]['estado'] }}</font>

@@ -414,6 +414,9 @@ function CargarInformeCajadiario_rapida(data){
           formatNumbderechos(data[item].total_fact) +
           '</td>' +
           '<td>' +
+          data[item].forma_pago +
+          '</td>' +
+          '<td>' +
           data[item].estado +
           '</td>' +
           '<td>' +

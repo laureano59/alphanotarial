@@ -66,7 +66,7 @@ class EnvoicecajarapidaController extends Controller
       $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
       $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
       $identificacioncli = $factura->a_nombre_de;
-      $TipodePago = false;
+      $TipodePago = $factura->credito_fact;
       $TotalFactura = $factura->total_fact;
       $TotalDerechos = 0;
       $TotalIva = $factura->total_iva;
@@ -350,12 +350,7 @@ class EnvoicecajarapidaController extends Controller
       'dev_number_date'     =>  $fecha_fact_aplica,//'fecha de la factura
       'prefix_application'  =>  $prefijo_fact_aplica,//'prefijo de la fatura a la que aplica la nota ( en caso de notas)',
     );
-
-
-
-   
-
-    
+  
      
 
     if($opcion == 'F1'){

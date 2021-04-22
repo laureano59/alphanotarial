@@ -38,8 +38,9 @@ class FacturascajarapidaController extends Controller
     public function store(Request $request)
     {
 
-        $request->session()->forget('numfactrapida'); 
 
+        $request->session()->forget('numfactrapida'); 
+        
         $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
         $fecha_factura = date("Y-m-d H:i:s");//date("Y/m/d");
        
@@ -48,6 +49,14 @@ class FacturascajarapidaController extends Controller
         $Facturascajarapida->prefijo = $prefijo_fact;
         $Facturascajarapida->id = Auth()->user()->id;
         $Facturascajarapida->fecha_fact = $fecha_factura;
+        $Facturascajarapida->credito_fact = 'false';
+
+        if($request->formapago == 'true' ){
+            $Facturascajarapida->dias_credito = 30;
+          }else if($request->formapago == 'false' ){
+            $Facturascajarapida->dias_credito = 0;
+          }
+
         $Facturascajarapida->save();
         $numfactrapida = $Facturascajarapida->id_fact;
         $request->session()->put('numfactrapida', $numfactrapida);
@@ -70,6 +79,7 @@ class FacturascajarapidaController extends Controller
             $total_iva += $value['iva'];
             $total_all += $value['total'];
         }
+
         
         return response()->json([
             "validar"=>1,

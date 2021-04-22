@@ -53,8 +53,8 @@
             <tr>
                 <th><font size="2">Fecha</font></th>
                 <th><font size="2">No.Esc</font></th>
-                <th><font size="2">Otorgante</font></th>
-                <th><font size="2">Compareciente</font></th>
+                <th><font size="2">Pmer.Contratante</font></th>
+                <th><font size="2">Sgdo.Contratante</font></th>
                 <th><font size="2">Acto</font></th>
             </tr>
         </thead>

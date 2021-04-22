@@ -61,6 +61,7 @@
                             <th>Sub Total</th>
                             <th>Iva</th>
                             <th>Total</th>
+                            <th>Forma_pago</th>
                             <th>Estado</th>
                             <th>No.Nc</th>
                             <th>Facturador</th>

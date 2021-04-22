@@ -54,8 +54,8 @@
                         <tr>
                             <th>Fecha</th>
                             <th>No.Esc</th>
-                            <th>Otorgante</th>
-                            <th>Compareciente</th>
+                            <th>Pmer.Contratante</th>
+                            <th>Sgdo.Contratante</th>
                             <th>Acto</th>
                         </tr>
                     </thead>
