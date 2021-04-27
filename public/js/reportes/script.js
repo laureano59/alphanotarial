@@ -601,7 +601,10 @@ $("#generarreportecajadiario").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     var informe = info.Informe_cajadiario_rapida;
-    CargarInformeCajadiario_rapida(informe);
+    var contado = info.Contado;
+    var credito = info.Credito;
+    
+    CargarInformeCajadiario_rapida(informe, contado, credito);
   })
 });
 

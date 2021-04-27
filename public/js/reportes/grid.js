@@ -379,7 +379,7 @@ function CargarInformeCartera(data){
       document.getElementById('carteradata').innerHTML = htmlTags;
 }
 
-function CargarInformeCajadiario_rapida(data){
+function CargarInformeCajadiario_rapida(data, contado, credito){
   var subtotal = 0;
   var total_iva = 0;
   var total_factura = 0;
@@ -457,6 +457,67 @@ function CargarInformeCajadiario_rapida(data){
           '</tr>';
 
       document.getElementById('data_tabla').innerHTML = htmlTags;
+
+      var htmlTags2 = '';
+      var contado_iva = 0;
+      var contado_subtotal = 0;
+      var contado_total_factura = 0;
+
+
+      for (item in contado) {
+   
+        contado_iva = parseFloat(contado[item].total_contado_iva);
+        contado_subtotal = parseFloat(contado[item].subtotal_contado);
+        contado_total_factura = parseFloat(contado[item].total_contado_fact);
+      }
+
+
+      var credito_iva = 0;
+      var credito_subtotal = 0;
+      var credito_total_factura = 0;
+
+
+      for (item in credito) {
+   
+        credito_iva = parseFloat(credito[item].total_credito_iva);
+        credito_subtotal = parseFloat(credito[item].subtotal_credito);
+        credito_total_factura = parseFloat(credito[item].total_credito_fact);
+      }
+
+      htmlTags2 +=
+          '<tr>' +
+           '<td>' +
+          'Contado' +
+          '</td>' +
+          '<td>' +
+          formatNumbderechos(contado_subtotal)+
+          '</td>' +
+           '<td>' +
+            formatNumbderechos(contado_iva)+
+          '</td>' +
+           '<td>' +
+          formatNumbderechos(contado_total_factura) +
+          '</td>' +
+          '</tr>'+
+
+          '<tr>' +
+           '<td>' +
+          'Crédito' +
+          '</td>' +
+          '<td>' +
+          formatNumbderechos(credito_subtotal)+
+          '</td>' +
+           '<td>' +
+           formatNumbderechos(credito_iva)+
+          '</td>' +
+           '<td>' +
+          formatNumbderechos(credito_total_factura) +
+          '</td>' +
+          '</tr>';
+
+          document.getElementById('data_2').innerHTML = htmlTags2;
+
+
 }
 
 function CargarInformeCajadiario_rapida_conceptos(data){

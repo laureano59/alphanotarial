@@ -3676,7 +3676,36 @@ class PdfController extends Controller
       $total_iva =$value['total_iva'] + $total_iva;
       $total_fact = $value['total_fact'] + $total_fact;
     }
+
+    //Consulta para sacar las facturas de contado y credito
+    //
  
+    $raw1 = \DB::raw("sum(total_iva) AS total_contado_iva, sum(subtotal) AS subtotal_contado, sum(total_fact) AS total_contado_fact");
+      $Contado = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('forma_pago', '=', 'Contado')
+      ->select($raw1)->get()->toArray();
+
+      foreach ($Contado as $key => $value) {
+        $total_contado_iva = $value['total_contado_iva'];
+        $subtotal_contado = $value['subtotal_contado'];
+        $total_contado_fact = $value['total_contado_fact'];
+      }
+
+     
+      $raw2 = \DB::raw("sum(total_iva) AS total_credito_iva, sum(subtotal) AS subtotal_credito, sum(total_fact) AS total_credito_fact");
+      $Credito = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('forma_pago', '=', 'Credito')
+      ->select($raw2)->get()->toArray();
+
+      foreach ($Credito as $key => $value) {
+        $total_credito_iva = $value['total_credito_iva'];
+        $subtotal_credito = $value['subtotal_credito'];
+        $total_credito_fact = $value['total_credito_fact'];
+      }
+
+
     $nombre_reporte = $request->session()->get('nombre_reporte');
 
     $data['nit'] = $nit;
@@ -3692,6 +3721,12 @@ class PdfController extends Controller
     $data['total_fact'] = round($total_fact);
     $data['nombre_reporte'] = $nombre_reporte;
     $data['fecha_reporte'] = $fecha_reporte;
+    $data['total_contado_iva'] = $total_contado_iva;
+    $data['subtotal_contado'] = $subtotal_contado;
+    $data['total_contado_fact'] = $total_contado_fact;
+    $data['total_credito_iva'] = $total_credito_iva;
+    $data['subtotal_credito'] = $subtotal_credito;
+    $data['total_credito_fact'] = $total_credito_fact;
 
     $html = view('pdf.cajadiario_cajarapida',$data)->render();
 

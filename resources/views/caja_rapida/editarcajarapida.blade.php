@@ -80,6 +80,19 @@
                                     <input type="text" readonly size="40" id="nombre_cli1" name="nombre_cli1" />
                                 </div>
                             </div>
+                            <br><br>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Forma_Pago</b></label>
+                                <div class="col-sm-9">
+                                    <select id="id_formapago" style="width: 150px;">
+                                        <option value="" disabled selected>Seleccione</option>
+                                          <option value="0">Contado</option>
+                                          <option value="1">Crédito</option>
+                                    </select>
+                                </div>
+                            </div>
+
 
                             <br><br>
 

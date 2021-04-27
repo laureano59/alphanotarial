@@ -153,6 +153,52 @@
             </tbody>
             </table>
             <hr>
+            
+                <table width="100%" border="1">
+                    <thead>
+                        <tr>
+                            <th><font size="2">Item</font></th>
+                            <th><font size="2">Sub Total</font></th>
+                            <th><font size="2">Iva</font></th>
+                            <th><font size="2">Total</font></th>
+                        </tr>
+                    </thead>
+                    <tbody id="data_2">
+                        
+
+                         <tr>
+                            <td>
+                                <font size="2">Contado</font>
+                            </td>
+                            <td align="right">
+                                <font size="2">{{ number_format($subtotal_contado, 2)}}</font>
+                            </td>
+                            <td align="right">
+                                <font size="2">{{ number_format($total_contado_iva, 2)}}</font>
+                            </td>
+                            <td align="right">
+                                <font size="2">{{ number_format($total_contado_fact, 2)}}</font>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <font size="2">Crédito</font>
+                            </td>
+                            <td align="right">
+                                <font size="2">{{ number_format($subtotal_credito, 2)}}</font>
+                            </td>
+                            <td align="right">
+                                <font size="2">{{ number_format($total_credito_iva, 2)}}</font>
+                            </td>
+                            <td align="right">
+                                <font size="2">{{ number_format($total_credito_fact, 2)}}</font>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
 
 </body>
 

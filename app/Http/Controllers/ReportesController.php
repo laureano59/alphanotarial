@@ -299,9 +299,24 @@ class ReportesController extends Controller
       ->get()
       ->toArray();
 
-        
+      
+       $raw1 = \DB::raw("sum(total_iva) AS total_contado_iva, sum(subtotal) AS subtotal_contado, sum(total_fact) AS total_contado_fact");
+      $Contado = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('forma_pago', '=', 'Contado')
+      ->select($raw1)->get()->toArray();
+
+     
+      $raw2 = \DB::raw("sum(total_iva) AS total_credito_iva, sum(subtotal) AS subtotal_credito, sum(total_fact) AS total_credito_fact");
+      $Credito = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('forma_pago', '=', 'Credito')
+      ->select($raw2)->get()->toArray();
+            
     return response()->json([
-       "Informe_cajadiario_rapida"=>$Informe_cajadiario_rapida
+       "Informe_cajadiario_rapida"=>$Informe_cajadiario_rapida,
+       "Contado"=>$Contado,
+       "Credito"=>$Credito
      ]);
   }
  
