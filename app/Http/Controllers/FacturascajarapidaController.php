@@ -53,10 +53,11 @@ class FacturascajarapidaController extends Controller
 
         if($request->formapago == 'true' ){
             $Facturascajarapida->dias_credito = 30;
-          }else if($request->formapago == 'false' ){
+        }else if($request->formapago == 'false' ){
             $Facturascajarapida->dias_credito = 0;
           }
 
+        
         $Facturascajarapida->save();
         $numfactrapida = $Facturascajarapida->id_fact;
         $request->session()->put('numfactrapida', $numfactrapida);
@@ -123,7 +124,20 @@ class FacturascajarapidaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
+        $factura = Facturascajarapida::where("prefijo","=",$prefijo_fact)->find($id);
+        $opcion = $request->opcion;
+
+
+        if($opcion == 'solocartera'){
+          $factura->saldo_fact = $request->nuevosaldo;
+          $factura->save();
+          return response()->json([
+            "validar"=>1,
+            "mensaje"=>'Muy bien! Abono realizado'
+           ]);
+
+        }
     }
 
     /**

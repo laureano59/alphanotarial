@@ -54,6 +54,11 @@
         <i class="ace-icon fa fa-print bigger-160"></i>
         Status
       </a>
+
+      <a href="/carteracacajarapida" class="btn btn-app btn-danger">
+        <i class="ace-icon fa fa-credit-card bigger-160"></i>
+        Cartera
+      </a>
     </div>
 
     </div>

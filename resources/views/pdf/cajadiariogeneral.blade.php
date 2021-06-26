@@ -330,7 +330,7 @@
 
                 </td>
                 <td valign="top">
-                  <table width="100%" border="1">
+                  <!--<table width="100%" border="1">
                       <thead>
                           <tr>
                               <th><font size="2">No.Factura</font></th>
@@ -386,7 +386,7 @@
                       </td>
                     </tr>
                       </tbody>
-                  </table>
+                  </table>-->
                 </td>
               </tr>
             </table>

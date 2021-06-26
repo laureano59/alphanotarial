@@ -41,6 +41,7 @@ Route::resource('egreso', 'EgresoactasdepositoController');
 
 Route::resource('notascreditofact', 'NotascreditofacturaController');
 Route::resource('notacreditocajarapida', 'NotacreditocajarapidaController');
+Route::resource('carteracacajarapida', 'CarteracajarapidaController');
 Route::resource('notasdebitofact', 'NotasdebitoController');
 Route::resource('detallenotadebito', 'DetallenotadebitoController');
 Route::resource('cpanelreportes', 'PanelreporteController');
@@ -93,6 +94,7 @@ Route::get('tarifas', 'TarifasController@Tarifas');
 Route::get('ciudad', 'CiudadController@ciudad');
 Route::get('buscaracta', 'ActasdepositoController@BuscarActa');
 Route::get('buscarcartera', 'CarteraController@BuscarCartera');
+Route::get('buscarcartera_cajarapida', 'CarteracajarapidaController@BuscarCartera');
 Route::get('rastrearradicacion', 'ConsultasController@Rastrear_Radicacion');
 Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
 Route::get('cargarfacturanotadebito', 'NotasdebitoController@CargarFactura');
@@ -128,6 +130,7 @@ Route::get('reporteradicacion', 'PdfController@PdfRadicacion');
 Route::get('notacreditopdf', 'PdfController@PdfNotaCreditoFact');
 
 Route::get('imprimirabonos', 'PdfController@PdfAbonosCartera');
+Route::get('imprimirabonoscajarapida', 'PdfController@PdfAbonosCarteraCajaRapida');
 
 
 Route::get('copianotacreditopdf', 'PdfController@PdfNotaCreditoFactCopia');

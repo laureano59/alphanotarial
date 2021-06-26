@@ -324,6 +324,25 @@ class FacturacionController extends Controller
         $factura = Factura::where("prefijo","=",$prefijo_fact)->find($id);
         $opcion = $request->opcion;
 
+        $fecha_actual = date("Y-m-d");
+        $fecha_factura = $factura->fecha_fact;
+
+        $periodo_actual = date("Y-m", strtotime($fecha_actual));
+        $periodo_factura = date("Y-m", strtotime($fecha_factura));
+
+        $anio_actual = date("Y", strtotime($fecha_actual));
+        $anio_factura = date("Y", strtotime($fecha_factura));
+
+        if($anio_actual == $anio_factura){//mismo año
+          if($periodo_actual == $periodo_factura){//mismo periodo
+            $nota_periodo = 1;
+          }else if($periodo_actual != $periodo_factura){//diferente periodo
+            $nota_periodo = 0;
+          }
+        }else{//diferente año
+          $nota_periodo = 8;
+        }
+
         if($opcion == 'solocartera'){
           $factura->saldo_fact = $request->nuevosaldo;
           $factura->save();
@@ -336,6 +355,7 @@ class FacturacionController extends Controller
           if($factura){
             $id_radica = $factura->id_radica;
             $factura->nota_credito = true;
+            $factura->nota_periodo = $nota_periodo;
             $factura->save();
             return response()->json([
               "validar"=>1,
@@ -348,12 +368,6 @@ class FacturacionController extends Controller
             ]);
           }
         }
-
-       
-        
-        
-        
-
     }
 
     /**

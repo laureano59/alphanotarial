@@ -57,7 +57,7 @@
             </tr>
         </thead>
         <tbody id="datos">
-          @for ($i = 0; $i < $contrelconceptos; $i++)
+          @for ($i = 1; $i <= $contrelconceptos; $i++)
             @if (array_key_exists($i, $relconceptos))
               <tr>
                 <td>

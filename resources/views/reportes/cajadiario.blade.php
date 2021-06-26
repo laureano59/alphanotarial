@@ -130,7 +130,7 @@
       </div>
     </div>
 
-
+    <!--
     <div class="col-sm-5">
       <div class="widget-box">
         <div class="widget-header">
@@ -163,7 +163,7 @@
             </div>
           </div>
               </div>
-        </div>
+        </div>-->
 
 
 </div>

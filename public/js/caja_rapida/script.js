@@ -61,6 +61,8 @@ $("#cajarapida").click(function() {
 
 });
 
+
+
 $("#nuevafactura").click(function() {
 
   var botonnuevo = document.getElementById("botonnuevo");

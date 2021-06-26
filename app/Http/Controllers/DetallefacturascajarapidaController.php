@@ -117,8 +117,10 @@ class DetallefacturascajarapidaController extends Controller
         
         if($request->formapago == 0){
             $formapago = 'false';
+            $saldo_fact = 0;
         }else if($request->formapago == 1){
             $formapago = 'true';
+            $saldo_fact = $total_all;
         }
         $identificacion_cli1 = $request->identificacion_cli1;
         $factura_rapida = Facturascajarapida::where("prefijo","=",$prefijo_fact)->find($id_fact);
@@ -127,6 +129,7 @@ class DetallefacturascajarapidaController extends Controller
         $factura_rapida->subtotal = $subtotal_all;
         $factura_rapida->total_fact = $total_all;
         $factura_rapida->credito_fact = $formapago;
+        $factura_rapida->saldo_fact = $saldo_fact;
 
         $factura_rapida->save();
 

@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Notaria;
-use App\Factura;
-use App\Cartera_fact;
-use App\Informe_cartera_view;
+use App\Facturascajarapida;
+use App\Informe_cartera_cajarapida_view;
+use App\Cartera_fact_caja_rapida;
 
-class CarteraController extends Controller
+class CarteracajarapidaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class CarteraController extends Controller
      */
     public function index()
     {
-        return view('cartera.cartera');
+        return view('caja_rapida.cartera');
     }
 
     /**
@@ -38,23 +38,22 @@ class CarteraController extends Controller
      */
     public function store(Request $request)
     {
-
-      $prefijo_fact = Notaria::find(1)->prefijo_fact;
-      $id_fact = $request->input('id_fact');
-      $abono = $request->input('abono');
-
-      $cartera = new Cartera_fact();
-      $cartera->id_fact = $id_fact;
-      $cartera->prefijo = $prefijo_fact;
-      $cartera->abono_car = $abono;
-      $cartera->usuario = auth()->user()->name;
-      $cartera->save();
+        $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
+        $id_fact = $request->input('id_fact');
+        $abono = $request->input('abono');
+        $cartera = new Cartera_fact_caja_rapida();
+        $cartera->id_fact = $id_fact;
+        $cartera->prefijo = $prefijo_fact;
+        $cartera->abono_car = $abono;
+        $cartera->usuario = auth()->user()->name;
+        $cartera->save();
+            
 
       return response()->json([
           "validar"=> "1"
         ]);
-     
     }
+    
 
     /**
      * Display the specified resource.
@@ -87,9 +86,9 @@ class CarteraController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $factura = Factura::find($id);
-        $factura->saldo_fact = $request->input('nuevosaldo');
-        $factura->save();
+       $facturacajarapida = Facturascajarapida::find($id);
+       $facturacajarapida->saldo_fact = $request->input('nuevosaldo');
+       $facturacajarapida->save();
 
         return response()->json([
            "validar"=> "1"
@@ -110,14 +109,13 @@ class CarteraController extends Controller
     public function BuscarCartera(Request $request)
     {
       $opcion = $request->input('opcion');
-      
 
       /*===========================================================
       /             VALIDA PARA PODER IMPRIMIR ANTERIORES         /
       /*=========================================================*/
       if($opcion == 1){//Buscar Cartera por identificación
         $Identifi = $request->input('identificacion_cli');
-        $cartera_factu = Informe_cartera_view::where('identificacion_cli', $Identifi)
+        $cartera_factu = Informe_cartera_cajarapida_view::where('identificacion_cli', $Identifi)
         ->where('nota_credito', false)
         ->get();
          foreach ($cartera_factu as $key => $value) {
@@ -133,7 +131,7 @@ class CarteraController extends Controller
                                               //
        } else if($opcion == 2){
         $id_factu = $request->input('id_fact');
-        $cartera_factu = informe_cartera_view::where('id_fact', $id_factu)
+        $cartera_factu = Informe_cartera_cajarapida_view::where('id_fact', $id_factu)
         ->where('nota_credito', false)
         ->get();
          foreach ($cartera_factu as $key => $value) {
@@ -150,7 +148,7 @@ class CarteraController extends Controller
 
       if($opcion == 1){//Buscar Cartera por identificación
         $Identificacion_cli = $request->input('identificacion_cli');
-        $cartera_fact = Informe_cartera_view::where('identificacion_cli', $Identificacion_cli)
+        $cartera_fact = Informe_cartera_cajarapida_view::where('identificacion_cli', $Identificacion_cli)
         ->where('nota_credito', false)
         ->where('saldo_fact', '>=', 1)
         ->get();
@@ -161,7 +159,7 @@ class CarteraController extends Controller
 
       }else if($opcion == 2){//Buscar Cartera por Número de Factura
         $id_fact = $request->input('id_fact');
-        $cartera_fact = Informe_cartera_view::where('id_fact', $id_fact)
+        $cartera_fact = Informe_cartera_cajarapida_view::where('id_fact', $id_fact)
         ->where('nota_credito', false)
         ->where('saldo_fact', '>=', 1)
         ->get();

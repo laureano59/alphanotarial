@@ -47,6 +47,7 @@ use App\Tarifa;
 use App\Recaudos_sincuantia_excenta_view;
 use App\Recaudos_concuantia_view;
 use App\Cartera_fact;
+use App\Cartera_fact_caja_rapida;
 use App\Detalle_cajarapidafacturas;
 use App\Facturascajarapida;
 use App\Notas_credito_cajarapida;
@@ -2079,7 +2080,8 @@ class PdfController extends Controller
         }
         
       }
-               
+
+                    
 
     /*----------  Consulta Radicaciones con varios actos  ----------*/
 
@@ -2276,7 +2278,7 @@ class PdfController extends Controller
       }
 
 
-      if (in_array("7", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
+      if (in_array("7", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo ) && !in_array("1", $arr_codigo) ) {
 
         $cantliqsocie++;
         $ingreliqsocie += $ingresos;
@@ -2483,10 +2485,10 @@ class PdfController extends Controller
 
     $ordenar = $request->session()->get('ordenar');
     if($ordenar == 'pornumescritura'){ //Ordena por escritura
-      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
       $libroindice = Actos_notariales_escritura_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
-      ->groupBy('num_esc')
+      //->groupBy('num_esc')
       ->orderBy('num_esc')
       ->select($raw1)
       ->get()
@@ -2731,6 +2733,77 @@ class PdfController extends Controller
     $id_fact = $request->session()->get('abonos_fact');
 
     $abonos = Cartera_fact::where('id_fact', $id_fact)
+    ->where('prefijo', $prefijo)
+    ->orderBy('created_at')
+    ->get()
+    ->toArray();
+    
+    $total_abono = 0;
+    foreach ($abonos as $key => $abn) {
+      $total_abono = $abn['abono_car'] + $total_abono;
+    }
+
+    $contabonos = count ($abonos, 0);
+
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['fecha_reporte'] = $fecha_reporte;
+    $data['abonos'] = $abonos;
+    $data['contabonos'] = $contabonos;
+    $data['total_abono'] = $total_abono;
+    $data['id_fact'] = $id_fact;
+    $data['id_cliente'] = $request->session()->get('ident');
+    $data['cliente'] = $request->session()->get('cli');
+    $html = view('pdf.abonoscartera',$data)->render();
+
+    $namefile = 'abonoscartera_'.$fecha_reporte.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+      "format" => 'Letter',
+      'margin_bottom' => 10,
+    ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+
+  }
+
+  public function PdfAbonosCarteraCajaRapida(Request $request){
+    $notaria = Notaria::find(1);
+    $nit = $notaria->nit;
+    $prefijo = $notaria->prefijo_facturarapida;
+    $nombre_nota = strtoupper($notaria->nombre_nota);
+    $direccion_nota = $notaria->direccion_nota;
+    $telefono_nota = $notaria->telefono_nota;
+    $email = $notaria->email;
+    $nombre_notario = $notaria->nombre_notario;
+    $identificacion_not = $notaria->identificacion_not;
+    $fecha_reporte = date("Y/m/d");
+    $id_fact = $request->session()->get('abonos_fact');
+
+    $abonos = Cartera_fact_caja_rapida::where('id_fact', $id_fact)
     ->where('prefijo', $prefijo)
     ->orderBy('created_at')
     ->get()
@@ -4010,6 +4083,7 @@ class PdfController extends Controller
     }
   }
 
+
   $grantotal = 0;
   foreach ($dataconcept as $key => $value) {
     if($value['total'] == 0){
@@ -4019,9 +4093,12 @@ class PdfController extends Controller
    }
  }
 
+ 
  $relconceptos = $dataconcept;
 
+
  $contrelconceptos = count ($relconceptos, 0);
+
 
  $nombre_reporte = $request->session()->get('nombre_reporte');
 
@@ -4090,16 +4167,79 @@ class PdfController extends Controller
     
     /*----------  Consulta Radicaciones con un solo acto  ----------*/
     
-    $estadistico = Estadisticonotarial_unicas_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<=', $fecha2)
-    ->get()->toArray();
+    //$estadistico = Estadisticonotarial_unicas_view::whereDate('fecha', '>=', $fecha1)
+    //->whereDate('fecha', '<=', $fecha2)
+    //->get()->toArray();
 
 
     /*----------  Consulta Radicaciones con varios actos  ----------*/
 
-    $estadistico_repe = Estadisticonotarial_repetidas_solo_radi_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<=', $fecha2)
-    ->get()->toArray();
+    //$estadistico_repe = Estadisticonotarial_repetidas_solo_radi_view::whereDate('fecha', '>=', $fecha1)
+    //->whereDate('fecha', '<=', $fecha2)
+    //->get()->toArray();
+    //
+    //
+
+    /*----------  Consulta Radicaciones con un solo acto  ----------*/
+   
+            
+    $raw1 = \DB::raw("id_radica");
+      $subquery = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      ->groupBy('id_radica')
+      ->havingRaw('count(*) = 1')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+
+      $estadistico = [];
+      foreach ($subquery as $key => $sub) {
+        $id_radica = $sub['id_radica'];
+        $consulta = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+        ->where('id_radica', [$id_radica])->get()->toArray();
+
+        foreach ($consulta as $key2 => $con) {
+          $estadistico[$key]['id_actoperrad'] = $con['id_actoperrad'];
+          $estadistico[$key]['id_radica'] = $con['id_radica'];
+          $estadistico[$key]['fecha'] = $con['fecha'];
+          $estadistico[$key]['id_codigoagru'] = $con['id_codigoagru'];
+          $estadistico[$key]['id_gru'] = $con['id_gru'];
+          $estadistico[$key]['derechos'] = $con['derechos'];
+        }
+        
+      }
+
+                    
+
+    /*----------  Consulta Radicaciones con varios actos  ----------*/
+
+      
+    $raw2 = \DB::raw("id_radica");
+      $subquery2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      ->groupBy('id_radica')
+      ->havingRaw('count(*) > 1')
+      ->select($raw2)
+      ->get()
+      ->toArray();
+
+     
+      $estadistico_repe = [];
+      foreach ($subquery2 as $key => $sub2) {
+        $id_radica = $sub2['id_radica'];
+        $consulta2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+        ->where('id_radica', [$id_radica])->get()->toArray();
+
+        foreach ($consulta2 as $key2 => $con2) {
+          $estadistico_repe[$key]['id_actoperrad'] = $con2['id_actoperrad'];
+          $estadistico_repe[$key]['id_radica'] = $con2['id_radica'];
+          $estadistico_repe[$key]['fecha'] = $con2['fecha'];
+          $estadistico_repe[$key]['id_codigoagru'] = $con2['id_codigoagru'];
+          $estadistico_repe[$key]['id_gru'] = $con2['id_gru'];
+          $estadistico_repe[$key]['derechos'] = $con2['derechos'];
+        }
+        
+      }
+
+
 
     $cantventa = 0;
     $canthipotecas = 0;
@@ -4241,7 +4381,7 @@ class PdfController extends Controller
 
     foreach ($estadistico_repe as $key => $esr) {
       $id_radica = $esr['id_radica'];
-      $estadistico_rad = Estadisticonotarial_repetidas_view::where('id_radica', [$id_radica])->get()->toArray();
+      $estadistico_rad = Estadisticonotarial_view::where('id_radica', [$id_radica])->get()->toArray();
 
       $i = 0;
       unset($arr_codigo);
