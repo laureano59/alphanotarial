@@ -30,7 +30,7 @@
         <i class="ace-icon glyphicon glyphicon-pencil bigger-150"></i>
         Editar
       </a>
-     
+         
 
       <a href="javascript://" id="copiasfacturarapida" class="btn btn-app btn-light">
         <i class="ace-icon fa fa-print bigger-160"></i>

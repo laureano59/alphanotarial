@@ -1,4 +1,4 @@
-function CargarCajaDiarioGeneral(data, total_egreso) {
+function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
     var htmlTags = "";
     var total_derechos = 0;
     var total_conceptos = 0;
@@ -201,6 +201,203 @@ function CargarCajaDiarioGeneral(data, total_egreso) {
        
 
     document.getElementById('datos_totales').innerHTML = htmlTags_2;
+
+    /*======================================
+    =            Otros periodos            =
+    ======================================*/
+    
+    var total_derechos_otros = 0;
+    var total_conceptos_otros = 0;
+    var total_recaudo_otros = 0;
+    var total_aporteespecial_otros = 0;
+    var total_retencion_otros = 0;
+    var total_iva_otros = 0;
+    var total_otros = 0;
+    var total_gravado_otros = 0;
+    var total_reteiva_otros = 0;
+    var total_reteica_otros = 0;
+    var total_retertf_otros = 0;
+    var htmlTags_3 = "";
+
+    for (item2 in caja_diario_otros) {
+        total_derechos_otros = parseFloat(caja_diario_otros[item2].derechos) + total_derechos_otros;
+        total_conceptos_otros = parseFloat(caja_diario_otros[item2].conceptos) + total_conceptos_otros;
+        total_recaudo_otros = parseFloat(caja_diario_otros[item2].recaudo) + total_recaudo_otros;
+        total_aporteespecial_otros = parseFloat(caja_diario_otros[item2].aporteespecial) + total_aporteespecial_otros;
+        total_retencion_otros = parseFloat(caja_diario_otros[item2].retencion) + total_retencion_otros;
+        total_iva_otros = parseFloat(caja_diario_otros[item2].iva) + total_iva_otros;
+        total_otros = parseFloat(caja_diario_otros[item2].total) + total_otros;
+        total_gravado_otros = parseFloat(caja_diario_otros[item2].total_gravado) + total_gravado_otros;
+        total_reteiva_otros = parseFloat(caja_diario_otros[item2].reteiva) + total_reteiva_otros;
+        total_reteica_otros = parseFloat(caja_diario_otros[item2].reteica) + total_reteica_otros;
+        total_retertf_otros = parseFloat(caja_diario_otros[item2].retertf) + total_retertf_otros;
+      }
+
+      /*----------  RESTA  ----------*/
+
+      var total_derechos_resta = 0;
+      var total_conceptos_resta = 0;
+      var total_recaudo_resta = 0;
+      var total_aporteespecial_resta = 0;
+      var total_retencion_resta = 0;
+      var total_iva_resta = 0;
+      var total_resta = 0;
+      var total_gravado_resta = 0;
+      var total_reteiva_resta = 0;
+      var total_reteica_resta = 0;
+      var total_retertf_resta = 0;
+
+      total_derechos_resta = parseInt(Math.round(total_derechos) - Math.round(total_derechos_otros));
+      total_conceptos_resta = parseInt(Math.round(total_conceptos) - Math.round(total_conceptos_otros));
+      total_recaudo_resta = parseInt(Math.round(total_recaudo) - Math.round(total_recaudo_otros));
+      total_aporteespecial_resta = parseInt(Math.round(total_aporteespecial) - Math.round(total_aporteespecial_otros));
+      total_retencion_resta = parseInt(Math.round(total_retencion) - Math.round(total_retencion_otros));
+      total_iva_resta = parseInt(Math.round(total_iva) - Math.round(total_iva_otros));
+      total_resta = parseInt(Math.round(total) - Math.round(total_otros));
+      total_gravado_resta = parseInt(Math.round(total_gravado) - Math.round(total_gravado_otros));
+      total_reteiva_resta = parseInt(Math.round(total_reteiva) - Math.round(total_reteiva_otros));
+      total_reteica_resta = parseInt(Math.round(total_reteica) - Math.round(total_reteica_otros));
+      total_retertf_resta = parseInt(Math.round(total_retertf) - Math.round(total_retertf_otros));
+
+        htmlTags_3 =
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Derechos</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_derechos_otros)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(total_derechos_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Conceptos</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_conceptos_otros)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(total_conceptos_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Ingresos</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_gravado_otros)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(total_gravado_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Iva</b></font>' +
+        '</td>'+
+        '<td>'+
+        formatNumbderechos(Math.round(total_iva_otros)) +
+        '</td>' +
+        '<td>'+
+        formatNumbderechos(total_iva_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Recaudos</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_recaudo_otros)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(total_recaudo_resta) +
+        '</td>' +
+        '</tr>' +
+
+         '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Aporte Especial</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_aporteespecial_otros)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(total_aporteespecial_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Retención</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_retencion_otros)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(total_retencion_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total ReteIva</b></font>' +
+        '</td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(total_reteiva_otros)) +
+        ')</font></td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(total_reteiva_resta) +
+        ')</font></td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total ReteIca</b></font>' +
+        '</td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(total_reteica_otros)) +
+        ')</font></td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(total_reteica_resta) +
+        ')</font></td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total ReteRtf</b></font>' +
+        '</td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(total_retertf_otros)) +
+        ')</font></td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(total_retertf_resta) +
+        ')</font></td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>'+
+        '<font size="2"><b>Gran Total</b></font>' +
+        '</td>'+
+        '<td>' +
+        formatNumbderechos(Math.round(total_otros)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(total_resta) +
+        '</td>' +
+        '</tr>';
+      
+
+    document.getElementById('datos_totales_otros_periodos').innerHTML = htmlTags_3;
+    
+    
+    /*=====  End of Otros periodos  ======*/
+    
 }
 
 function CargarCrucesActas(data){

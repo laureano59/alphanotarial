@@ -220,6 +220,8 @@
                           <tr>
                               <th><font size="2">ITEM</font></th>
                               <th><font size="2">VALOR</font></th>
+                              <th><font size="2">OTROS PERIODOS</font></th>
+                              <th><font size="2">DIFERENCIA</font></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -231,6 +233,12 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_derechos, 2) }}</font>
                           </td>
+                           <td align="right">
+                            <font size="3">{{ number_format($total_derechos_otros, 2) }}</font>
+                          </td>
+                           <td align="right">
+                            <font size="3">{{ number_format($total_derechos_resta, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -239,6 +247,14 @@
                           </td>
                           <td align="right">
                             <font size="3">{{ number_format($total_conceptos, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_conceptos_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_conceptos_resta, 2) }}</font>
                           </td>
                         </tr>
 
@@ -249,6 +265,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_ingresos, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_gravado_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_gravado_resta, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -257,6 +281,14 @@
                           </td>
                           <td align="right">
                             <font size="3">{{ number_format($total_iva, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_iva_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_iva_resta, 2) }}</font>
                           </td>
                         </tr>
 
@@ -267,6 +299,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_recaudo, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_recaudo_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_recaudo_resta, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -275,6 +315,14 @@
                           </td>
                           <td align="right">
                             <font size="3">{{ number_format($total_aporteespecial, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_aporteespecial_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_aporteespecial_resta, 2) }}</font>
                           </td>
                         </tr>
 
@@ -285,6 +333,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_retencion, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_retencion_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_retencion_resta, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -293,6 +349,14 @@
                           </td>
                           <td align="right">
                             <font size="3">{{ number_format($total_reteiva, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_reteiva_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_reteiva_resta, 2) }}</font>
                           </td>
                         </tr>
 
@@ -303,6 +367,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_reteica, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_reteica_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_reteica_resta, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -312,6 +384,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_retertf, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_retertf_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_retertf_resta, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -320,6 +400,14 @@
                           </td>
                           <td align="right">
                             <font size="3">{{ number_format($total, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($total_resta, 2) }}</font>
                           </td>
                         </tr>
 

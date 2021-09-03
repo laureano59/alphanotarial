@@ -59,10 +59,11 @@
                         <strong id="msj4"></strong>
                       </div>
 
-                      <div id="botonagregar" style="display:none">
+                     
                         <form class="form-horizontal" role="form">
                           @csrf
                           <input type="hidden" id="numfactrapida">
+                          <input type="hidden" id="itemrapida" value=0>
                           <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Cliente</b></label>
@@ -107,7 +108,7 @@
                                 </div>
                             </div>
                         </form>
-                      </div>
+                      
                     </div>
                 </div>
             </div>
@@ -133,6 +134,12 @@
                   <div class="widget-toolbar" id="impresora"  style="display:none">
                         <a href="javascript://" id="imprimir" data-action="reload">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Factura"></i>
+                        </a>
+                  </div>
+
+                  <div class="widget-toolbar" id="guardar_btn">
+                        <a href="javascript://" id="guardar" data-action="reload">
+                            <i><img src="{{ asset('images/almacenar.png') }}" width="28 px" height="28 px" title="Guardar Factura"></i>
                         </a>
                   </div>
                 </div>

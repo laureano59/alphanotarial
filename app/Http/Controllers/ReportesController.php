@@ -14,6 +14,7 @@ use App\Cajadiario_conceptos_rapida_view;
 use App\Detalle_factura;
 use App\Escritura;
 use App\Cajadiariogeneral_view;
+use App\Cajadiariogeneral_notas_otros_periodos_view;
 use App\Concepto;
 use App\Cruces_actas_deposito_view;
 use App\Libroindice_view;
@@ -134,6 +135,15 @@ class ReportesController extends Controller
                       ->toArray();
         $cruces = Cruces_actas_deposito_view::whereDate('fecha', '>=', $fecha1)
                   ->whereDate('fecha', '<=', $fecha2)->get()->toArray();
+
+        $cajadiario_otros_periodos = Cajadiariogeneral_notas_otros_periodos_view::whereDate('fecha', '>=', $fecha1)
+                      ->whereDate('fecha', '<=', $fecha2)
+                      ->where('anio_esc', '=', $anio_trabajo)
+                      ->where('nota_periodo', '=', 0)
+                      ->where('nota_credito', '=', 'false')
+                      ->get()
+                      ->toArray();
+               
     }else if($tipo_informe == 'contado'){
 
       $cajadiario = Cajadiariogeneral_view::
@@ -172,11 +182,25 @@ class ReportesController extends Controller
       $total_egreso = $cru['valor_egreso'] + $total_egreso;
     }
 
-    return response()->json([
+
+    if($tipo_informe == 'completo'){
+      return response()->json([
        "cajadiario"=>$cajadiario,
+       "cajadiario_otros_periodos"=>$cajadiario_otros_periodos,
        "cruces"=>$cruces,
        "total_egreso"=>$total_egreso
      ]);
+    }else{
+       $cajadiario_otros_periodos = [];
+       return response()->json([
+       "cajadiario"=>$cajadiario,
+       "cajadiario_otros_periodos"=>$cajadiario_otros_periodos,
+       "cruces"=>$cruces,
+       "total_egreso"=>$total_egreso
+     ]);
+    }
+
+    
   }
 
   public function Libro_Indice(Request $request)
@@ -379,6 +403,7 @@ class ReportesController extends Controller
       $raw1 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango1 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->where('cuantia','>=', 0)
       ->where('cuantia','<=', 100000000)
       ->groupBy('escr')
@@ -389,6 +414,7 @@ class ReportesController extends Controller
       $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->where('cuantia','>=', 100000001)
       ->where('cuantia','<=', 300000000)
       ->groupBy('escr')
@@ -399,6 +425,7 @@ class ReportesController extends Controller
       $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango3 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->where('cuantia','>=', 300000001)
       ->where('cuantia','<=', 500000000)
       ->groupBy('escr')
@@ -409,6 +436,7 @@ class ReportesController extends Controller
       $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->where('cuantia','>=', 500000001)
       ->where('cuantia','<=', 1000000000)
       ->groupBy('escr')
@@ -419,6 +447,7 @@ class ReportesController extends Controller
       $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->where('cuantia','>=', 1000000001)
       ->where('cuantia','<=', 1500000000)
       ->groupBy('escr')
@@ -428,6 +457,7 @@ class ReportesController extends Controller
       $raw6 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango6 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->where('cuantia','>', 1500000000)
       ->groupBy('escr')
       ->select($raw6)->get()->toArray();
@@ -437,6 +467,7 @@ class ReportesController extends Controller
       $raw7 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
       $sincuantia = Recaudos_sincuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->groupBy('escr')
       ->select($raw7)->get()->toArray();
 
@@ -444,16 +475,18 @@ class ReportesController extends Controller
       $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
       $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->groupBy('escr')
       ->select($raw8)->get()->toArray();
+
+      
 
       $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
       $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
+      ->where('nota_periodo', '<>', 0)
       ->groupBy('escr')
       ->select($raw9)->get()->toArray();
-
-
 
       /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
       
@@ -465,18 +498,14 @@ class ReportesController extends Controller
         }
       }
 
-
-
       /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
       
       $excenta = array_merge($excenta, $sincuantiaexcenta);
 
-
       # ====================================================================
       # =           Identifica excentas que van para con cuantia           =
       # ====================================================================
-      
-
+ 
       $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
       $valor2 = $tarifa['valor2'] / 2;
       $valor3 = $tarifa['valor3'] / 2;
@@ -484,7 +513,6 @@ class ReportesController extends Controller
       $valor5 = $tarifa['valor5'] / 2;
       $valor6 = $tarifa['valor6'] / 2;
       $valor7 = $tarifa['valor7'] / 2;
-
 
       $array_rango1 = array();
       $array_rango2 = array();
@@ -543,8 +571,6 @@ class ReportesController extends Controller
         }
       }
 
-     
-
       $rango1 = array_merge($rango1, $array_rango1);
       $rango2 = array_merge($rango2, $array_rango2);
       $rango3 = array_merge($rango3, $array_rango3);
@@ -559,8 +585,6 @@ class ReportesController extends Controller
       $rango5 = $this->unique_multidim_array($rango5,'escr');
       $rango6 = $this->unique_multidim_array($rango6,'escr');
 
-
-          
       
       # ==============================================================================
       # =           Elimna repetidas en rangos entre excentas y sincuantia           =
@@ -649,8 +673,6 @@ class ReportesController extends Controller
           unset($sincuantia[$key]);
         }
       }
-
-      
 
       /*----------  Elimina repetidas entre rango1 y array_rango1  ----------*/
 
@@ -1032,7 +1054,10 @@ class ReportesController extends Controller
     
     foreach ($facturas as $key1 => $fc) {
       $id_radica = $fc['id_radica'];
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+      if($fc['nota_periodo'] == 0  || $fc['nota_periodo'] == 8){
+
+      }else{
+        $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
  
 
       foreach ($conceptos as $key => $conc) {
@@ -1050,6 +1075,9 @@ class ReportesController extends Controller
           }
         }
       }
+
+      }
+      
     }
    
     $grantotal = 0;

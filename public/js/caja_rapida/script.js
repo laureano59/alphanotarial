@@ -64,47 +64,90 @@ $("#cajarapida").click(function() {
 
 
 $("#nuevafactura").click(function() {
-
-  var botonnuevo = document.getElementById("botonnuevo");
- //  botonnuevo.style.display = "none";
-
-  var botonagregar = document.getElementById("botonagregar");
-  botonagregar.style.display = "";
-
-  var impresora = document.getElementById("impresora");
-  impresora.style.display = "";
-
+   window.location.reload();
+  $("#itemrapida").val('0');
   $("#numfactrapida").val('');
-  $("#id_tipoident1").val('');
+  detalle = [];
+  total_iva = 0;
+  total = 0;
+  total_all = 0;
+
   $("#identificacion_cli1").val('');
   $("#nombre_cli1").val('');
+
+  $("#id_tipoident1").val('');
+  $("#id_formapago").val('');
+
   $("#id_concepto").val('');
   $("#cantidad").val('');
   
-  
-  var tipo_fact = "cajarapida";
-  var route = "/facturacajarapida";
+  document.getElementById('numfat').innerHTML = '';
+
+  //CargarDetalleFact(detalle);
+
+});
+
+
+$("#actualizar_cambios") .click(function() {
+  var num_factura = parseInt($("#numfactrapida").val());
+  console.log(num_factura);
+  var identificacion_cli1 = $("#identificacion_cli1").val();
+  var formapago = $("#id_formapago").val();
+  var opcion = "actualizar";
+  var route = "/facturacajarapida/"+num_factura;
   var token = $("#token").val();
-  var type = 'POST';
+  var type = 'PUT';
   var datos = {
-    "tipo_fact": tipo_fact
+    "opcion": opcion,
+    "identificacion_cli1":identificacion_cli1,
+    "formapago":formapago,
+    "total_iva":total_iva,
+    "total":total,
+    "total_all":total_all,
+    "detalle":detalle
     };
     
     __ajax(route, token, type, datos)
           .done(function(info) {
             if(info.validar == 1){
+              alert(info.Mensaje);
+            }else{
+              alert("Error al generar la factura");
+            }
+
+            })
+
+});
+
+
+$("#guardar").click(function() {
+  var x = document.getElementById("guardar_btn");
+  x.style.display = "none";
+  var identificacion_cli1 = $("#identificacion_cli1").val();
+  var formapago = $("#id_formapago").val();
+  var tipo_fact = "cajarapida";
+  var route = "/facturacajarapida";
+  var token = $("#token").val();
+  var type = 'POST';
+  var datos = {
+    "tipo_fact": tipo_fact,
+    "identificacion_cli1":identificacion_cli1,
+    "formapago":formapago,
+    "total_iva":total_iva,
+    "total":total,
+    "total_all":total_all,
+    "detalle":detalle
+    };
+    
+    __ajax(route, token, type, datos)
+          .done(function(info) {
+            if(info.validar == 1){
+              $("#impresora").fadeIn();
               var prefijo, id_fact;
               prefijo = info.prefijo;
               id_fact = info.id_fact;
               $("#numfactrapida").val(id_fact);
               $("#numfat").html(prefijo + '-' + ' ' + id_fact);
-              var detalle, subtotal, total_iva, total;
-              detalle = info.detalle;
-              subtotal = info.subtotal;
-              total_iva = info.total_iva;
-              total = info.total;
-              CargarDetalleFact(detalle, subtotal, total_iva, total);
-
             }else{
               alert("Error al generar la factura");
             }
@@ -112,49 +155,77 @@ $("#nuevafactura").click(function() {
             })
 });
 
+var detalle = [];
+var total_iva = 0;
+var total = 0;
+var total_all = 0;
+
 $("#agregaritem").click(function() {
-  var identificacion_cli1 = $("#identificacion_cli1").val();
-  var formapago = $("#id_formapago").val();
+  var longi_detalle = detalle.length;
+  if(longi_detalle >= 6){
+    alert("Maximo 6 item");
+  }else{
+    var identificacion_cli1 = $("#identificacion_cli1").val();
+    var formapago = $("#id_formapago").val();
 
-  if(identificacion_cli1 != '' && formapago != null){
-    var id_concepto, cantidad, identificacion_cli1;
-    id_concepto = $("#id_concepto").val();
-    cantidad = $("#cantidad").val();
-    identificacion_cli1 = $("#identificacion_cli1").val();
+    if(identificacion_cli1 != '' && formapago != null){
+      var id_concepto, cantidad, identificacion_cli1;
+      id_concepto = $("#id_concepto").val();
+      cantidad = $("#cantidad").val();
+      identificacion_cli1 = $("#identificacion_cli1").val();
 
-    var route = "/detallefacturacajarapida";
-    var token = $("#token").val();
-    var type = 'POST';
-    var datos = {
+      //var route = "/detallefacturacajarapida";
+      var route = "/agregaritemcajarapida";
+      var token = $("#token").val();
+      var type = 'GET';
+      var datos = {
       "id_concepto": id_concepto,
       "identificacion_cli1": identificacion_cli1,
       "cantidad": cantidad,
       "formapago": formapago
-    };
+      };
     
     __ajax(route, token, type, datos)
           .done(function(info) {
             if(info.validar == 1){
-              var detalle, subtotal, total_iva, total;
-              detalle = info.detalle;
+              var nombre_concep, valor_unitario, subtotal;
+              nombre_concep = info.nombre_concep;
+              valor_unitario = info.valor_unitario;
               subtotal = info.subtotal;
-              total_iva = info.total_iva;
-              total = info.total;
-              CargarDetalleFact(detalle, subtotal, total_iva, total);
-            }else if(info.validar == 7){
-              alert("Maximo 6 item");
+              total_iva += info.total_iva;
+              total += subtotal;
+              total_all += subtotal +  info.total_iva;
+              var total_item = info.total; 
 
+                        
+               var nuevo = 
+              {
+                "id_concep":id_concepto,
+                "nombre_concep":nombre_concep,
+                "valor_unitario":valor_unitario,
+                "cantidad":cantidad,
+                "subtotal":subtotal,
+                "iva":info.total_iva,
+                "total": total_item
+              };
+
+              detalle.push(nuevo);
+
+             
+              CargarDetalleFact(detalle);
             }
           })
 
   }else{
     alert("Debes ingresar la información del cliente y la forma de pago");
   }
-  
+
+  }
+
 });
 
 
-function CargarDetalleFact(detalle, subtotal, total_iva, total){
+function CargarDetalleFact(detalle){
 
   var htmlTags = "";
     for (item in detalle) {
@@ -176,7 +247,8 @@ function CargarDetalleFact(detalle, subtotal, total_iva, total){
         formatNumbderechos(detalle[item].subtotal)+
         '</td>'+
         '<td>'+
-        '<a href="javascript://" OnClick="Eliminaritem(\'' + detalle[item].id_detfac  + '\'' + ');">' +
+        //'<a href="javascript://" OnClick="HacerAbono(\'' + data[item].id_fact + '\',\'' + data[item].saldo_fact + '\'' + ');">' +
+        '<a href="javascript://" OnClick="Eliminaritem(\'' + item + '\',\'' + detalle[item].subtotal+ '\',\'' + detalle[item].iva  + '\'' + ');">' +
          '<i><img src="images/borrar.png" width="28 px" height="28 px" title="Eliminar"></i>'+
         '</a>'+
         '</td>'+
@@ -195,7 +267,7 @@ function CargarDetalleFact(detalle, subtotal, total_iva, total){
           'Total bruto:'+
         '</b></td>'+
         '<td  bgcolor="##DAF7A6" align="right"><b>'+
-        formatNumbderechos(subtotal)+
+        formatNumbderechos(total)+
         '</b></td>'+
         '<td>'+
         '</td>'+
@@ -227,7 +299,7 @@ function CargarDetalleFact(detalle, subtotal, total_iva, total){
           'Total neto:'+
         '</b></td>'+
         '<td bgcolor="##DAF7A6" align="right"><b>'+
-        formatNumbderechos(total)+
+        formatNumbderechos(total_all)+
         '</b></td>'+
         '<td>'+
         '</td>'+
@@ -236,29 +308,14 @@ function CargarDetalleFact(detalle, subtotal, total_iva, total){
 }
 
 
-function Eliminaritem(id_detfac){
-  var id_item = id_detfac;
-  var route = "/detallefacturacajarapida/" + id_item;
-  var token = $("#token").val();
-  $.ajax({
-       url: route,
-       headers: {
-           'X-CSRF-TOKEN': token
-       },
-       type: 'DELETE',
-       dataType: 'json',
-       success: function(info) {
-          if(info.validar == 1){
-              var detalle, subtotal, total_iva, total;
-              detalle = info.detalle;
-              subtotal = info.subtotal;
-              total_iva = info.total_iva;
-              total = info.total;
-              CargarDetalleFact(detalle, subtotal, total_iva, total);
-            }
-        }
-    });
-
+function Eliminaritem(item, subto, iva){
+  total = total - subto;
+  total_iva = total_iva - iva;
+  var aux = parseInt(iva) + parseInt(subto);
+  total_all = total_all - aux;
+  detalle.splice(item,1);
+  CargarDetalleFact(detalle);
+   
 }
 
 
@@ -317,7 +374,6 @@ $("#validarfacturaparaeditar").click(function() {
   var type = 'GET';
   var num_factura = $("#numfactrapidavisual").val();
   $("#numfactrapida").val('');
-
   $("#numfactrapida").val(num_factura);
   var datos = {
     "num_factura": num_factura
@@ -346,7 +402,7 @@ $("#validarfacturaparaeditar").click(function() {
               subtotal = info.subtotal;
               total_iva = info.total_iva;
               total = info.total;
-              CargarDetalleFact(detalle, subtotal, total_iva, total);
+              //CargarDetalleFact(detalle, subtotal, total_iva, total);
 
           
         }else if(info.validar == 0){

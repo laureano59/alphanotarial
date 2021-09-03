@@ -14,7 +14,7 @@ class SesionesController extends Controller
 
 
     public function Sessiones_cajarapida(Request $request){
-    	$request->session()->forget('opcioncajarapida');
+    	 $request->session()->forget('opcioncajarapida');
       	$opcion = $request->input('opcion');
       	$request->session()->put('opcioncajarapida', $opcion);
 

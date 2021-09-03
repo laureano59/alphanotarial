@@ -30,6 +30,7 @@ use App\Actas_deposito_view;
 use App\Concepto;
 use App\Notas_credito_factura;
 use App\Cajadiariogeneral_view;
+use App\Cajadiariogeneral_notas_otros_periodos_view;
 use App\Cruces_actas_deposito_view;
 use App\Egreso_acta_deposito;
 use App\Estadisticonotarial_view;
@@ -823,46 +824,50 @@ class PdfController extends Controller
     $fecha_certificado = date("Y/m/d");
     //$identificacion = $request->identificacion;
     $identificacion = $request->session()->get('identificacion');
-   
+
+      
     //$certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->where("identificacion_contribuyente","=",$identificacion)->get();
     $certificado_rtf = Certificado_rtf::where("identificacion_contribuyente","=",$identificacion)->get();
+   
+    
     $i = 0;
+        
     foreach ($certificado_rtf as $cer) {
-      $fecha_escritura = $cer->fecha_escritura;
-      $ciudad = $cer->ciudad;
-      $nombre_contribuyente = $cer->nombre_contribuyente;
-      $identificacion_contribuyente = $cer->identificacion_contribuyente;
-      $prefijo_fact = $cer->prefijo;
-      $num_factura = $cer->num_factura;
-      $fecha_factura = $cer->fecha_factura;
-      $valor_venta = $cer->valor_venta;
-      $total_retenido = $cer->total_retencion;
-      $num_escritura = $cer->num_escritura;
+        $fecha_escritura = $cer->fecha_escritura;
+        $ciudad = $cer->ciudad;
+        $nombre_contribuyente = $cer->nombre_contribuyente;
+        $identificacion_contribuyente = $cer->identificacion_contribuyente;
+        $prefijo_fact = $cer->prefijo;
+        $num_factura = $cer->num_factura;
+        $fecha_factura = $cer->fecha_factura;
+        $valor_venta = $cer->valor_venta;
+        $total_retenido = $cer->total_retencion;
+        $num_escritura = $cer->num_escritura;
 
-      $data['id_cer'] = $cer->id_cer;
-      $data['nombre_nota'] = $nombre_nota;
-      $data['nombre_notario'] = $nombre_notario;
-      $data['nit'] = $nit;
-      $data['direccion_nota'] = $direccion_nota;
-      $data['email'] = $email;
-      $data['num_escritura'] = $num_escritura;
-      $data['anio_gravable'] = $anio_gravable;
-      $data['fecha_escritura'] = $fecha_escritura;
-      $data['ciudad'] = $ciudad;
-      $data['nombre_contribuyente'] = $nombre_contribuyente;
-      $data['identificacion_contribuyente'] = $identificacion_contribuyente;
-      $data['prefijo_fact'] = $prefijo_fact;
-      $data['num_factura'] = $num_factura;
-      $data['fecha_factura'] = $fecha_factura;
-      $data['valor_venta'] = $valor_venta;
-      $data['total_retenido'] = $total_retenido;
-      $data['fecha_certificado'] = $fecha_certificado;
-      $html[$i] = view('pdf.certificadortf',$data)->render();
-      $i++;
+        $data['id_cer'] = $cer->id_cer;
+        $data['nombre_nota'] = $nombre_nota;
+        $data['nombre_notario'] = $nombre_notario;
+        $data['nit'] = $nit;
+        $data['direccion_nota'] = $direccion_nota;
+        $data['email'] = $email;
+        $data['num_escritura'] = $num_escritura;
+        $data['anio_gravable'] = $anio_gravable;
+        $data['fecha_escritura'] = $fecha_escritura;
+        $data['ciudad'] = $ciudad;
+        $data['nombre_contribuyente'] = $nombre_contribuyente;
+        $data['identificacion_contribuyente'] = $identificacion_contribuyente;
+        $data['prefijo_fact'] = $prefijo_fact;
+        $data['num_factura'] = $num_factura;
+        $data['fecha_factura'] = $fecha_factura;
+        $data['valor_venta'] = $valor_venta;
+        $data['total_retenido'] = $total_retenido;
+        $data['fecha_certificado'] = $fecha_certificado;
+        $html[$i] = view('pdf.certificadortf',$data)->render();
+        $i++;
     }
-
-
-    $namefile = 'certifirtf_'.$fecha_certificado.'.pdf';
+        
+    
+     $namefile = 'certifirtf_'.$fecha_certificado.'.pdf';
 
     $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
     $fontDirs = $defaultConfig['fontDir'];
@@ -1967,6 +1972,20 @@ class PdfController extends Controller
     $id_act = $request->session()->get('id_acta');
 
     $Actas_deposito = Actas_deposito_view::find($id_act);
+    $id_radica = $Actas_deposito->id_radica;
+    
+    $escritura = Escritura::where('id_radica', $id_radica)
+    ->where('anio_esc', $anio_trabajo)
+    ->get()
+    ->toArray();
+
+    if($escritura){
+      foreach ($escritura as $key => $escr) {
+        $num_escritura = $escr['num_esc'];
+      }
+    }else{
+      $num_escritura = '';
+    }
 
     $id_act = $Actas_deposito->id_act;
     $nombre = $Actas_deposito->nombre;
@@ -1994,6 +2013,8 @@ class PdfController extends Controller
     $data['identificacion_cli'] = $identificacion_cli;
     $data['fecha'] = $fecha;
     $data['descripcion_tip'] = $descripcion_tip;
+    $data['num_escritura'] = $num_escritura;
+    $data['id_radica'] = $id_radica;
 
     $data['efectivo'] = $efectivo;
     $data['cheque'] = $cheque;
@@ -2978,6 +2999,7 @@ class PdfController extends Controller
     $raw1 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango1 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->where('cuantia','>=', 0)
     ->where('cuantia','<=', 100000000)
     ->groupBy('escr')
@@ -2987,6 +3009,7 @@ class PdfController extends Controller
     $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->where('cuantia','>=', 100000001)
     ->where('cuantia','<=', 300000000)
     ->groupBy('escr')
@@ -2997,6 +3020,7 @@ class PdfController extends Controller
     $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango3 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->where('cuantia','>=', 300000001)
     ->where('cuantia','<=', 500000000)
     ->groupBy('escr')
@@ -3007,6 +3031,7 @@ class PdfController extends Controller
     $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->where('cuantia','>=', 500000001)
     ->where('cuantia','<=', 1000000000)
     ->groupBy('escr')
@@ -3017,6 +3042,7 @@ class PdfController extends Controller
     $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->where('cuantia','>=', 1000000001)
     ->where('cuantia','<=', 1500000000)
     ->groupBy('escr')
@@ -3026,6 +3052,7 @@ class PdfController extends Controller
     $raw6 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango6 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->where('cuantia','>', 1500000000)
     ->groupBy('escr')
     ->select($raw6)->get()->toArray();
@@ -3035,6 +3062,7 @@ class PdfController extends Controller
     $raw7 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
     $sincuantia = Recaudos_sincuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->groupBy('escr')
     ->select($raw7)->get()->toArray();
 
@@ -3042,12 +3070,14 @@ class PdfController extends Controller
     $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
     $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->groupBy('escr')
     ->select($raw8)->get()->toArray();
 
     $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
     $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
+    ->where('nota_periodo', '<>', 0)
     ->groupBy('escr')
     ->select($raw9)->get()->toArray();
 
@@ -3858,6 +3888,40 @@ class PdfController extends Controller
       ->where('anio_esc', '=', $anio_trabajo)
       ->get()
       ->toArray();
+
+      $cajadiario_otros_periodos = Cajadiariogeneral_notas_otros_periodos_view::whereDate('fecha', '>=', $fecha1)
+                      ->whereDate('fecha', '<=', $fecha2)
+                      ->where('anio_esc', '=', $anio_trabajo)
+                      ->where('nota_periodo', '=', 0)
+                      ->where('nota_credito', '=', 'false')
+                      ->get()
+                      ->toArray();
+
+      $total_derechos_otros = 0;
+      $total_conceptos_otros = 0;
+      $total_recaudo_otros = 0;
+      $total_aporteespecial_otros = 0;
+      $total_retencion_otros = 0;
+      $total_iva_otros = 0;
+      $total_otros = 0;
+      $total_gravado_otros = 0;
+      $total_reteiva_otros = 0;
+      $total_reteica_otros = 0;
+      $total_retertf_otros = 0;
+
+      $total_derechos_resta = 0;
+      $total_conceptos_resta = 0;
+      $total_recaudo_resta = 0;
+      $total_aporteespecial_resta = 0;
+      $total_retencion_resta = 0;
+      $total_iva_resta = 0;
+      $total_resta = 0;
+      $total_gravado_resta = 0;
+      $total_reteiva_resta = 0;
+      $total_reteica_resta = 0;
+      $total_retertf_resta = 0;
+
+
     }else if($tipoinforme == 'contado'){
       $cajadiario = Cajadiariogeneral_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
@@ -3865,6 +3929,29 @@ class PdfController extends Controller
       ->where('tipo_pago', '=', 'Contado')
       ->get()
       ->toArray();
+      $total_derechos_otros = 0;
+      $total_conceptos_otros = 0;
+      $total_recaudo_otros = 0;
+      $total_aporteespecial_otros = 0;
+      $total_retencion_otros = 0;
+      $total_iva_otros = 0;
+      $total_otros = 0;
+      $total_gravado_otros = 0;
+      $total_reteiva_otros = 0;
+      $total_reteica_otros = 0;
+      $total_retertf_otros = 0;
+
+      $total_derechos_resta = 0;
+      $total_conceptos_resta = 0;
+      $total_recaudo_resta = 0;
+      $total_aporteespecial_resta = 0;
+      $total_retencion_resta = 0;
+      $total_iva_resta = 0;
+      $total_resta = 0;
+      $total_gravado_resta = 0;
+      $total_reteiva_resta = 0;
+      $total_reteica_resta = 0;
+      $total_retertf_resta = 0;
     }else if($tipoinforme == 'credito'){
       $cajadiario = Cajadiariogeneral_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
@@ -3872,6 +3959,29 @@ class PdfController extends Controller
       ->where('tipo_pago', '=', 'Crédito')
       ->get()
       ->toArray();
+      $total_derechos_otros = 0;
+      $total_conceptos_otros = 0;
+      $total_recaudo_otros = 0;
+      $total_aporteespecial_otros = 0;
+      $total_retencion_otros = 0;
+      $total_iva_otros = 0;
+      $total_otros = 0;
+      $total_gravado_otros = 0;
+      $total_reteiva_otros = 0;
+      $total_reteica_otros = 0;
+      $total_retertf_otros = 0;
+
+      $total_derechos_resta = 0;
+      $total_conceptos_resta = 0;
+      $total_recaudo_resta = 0;
+      $total_aporteespecial_resta = 0;
+      $total_retencion_resta = 0;
+      $total_iva_resta = 0;
+      $total_resta = 0;
+      $total_gravado_resta = 0;
+      $total_reteiva_resta = 0;
+      $total_reteica_resta = 0;
+      $total_retertf_resta = 0;
     }
 
     $contcajadiario = count ($cajadiario, 0);
@@ -3900,6 +4010,37 @@ class PdfController extends Controller
       $total_reteica = $value['reteica'] + $total_reteica;
       $total_retertf = $value['retertf'] + $total_retertf;
     }
+
+    /*----------  OTROS PERIODOS  ----------*/
+    if($tipoinforme == 'completo'){
+      foreach ($cajadiario_otros_periodos as $key => $value) {
+        $total_derechos_otros = $value['derechos'] + $total_derechos_otros;
+        $total_conceptos_otros =$value['conceptos'] + $total_conceptos_otros;
+        $total_recaudo_otros = $value['recaudo'] + $total_recaudo_otros;
+        $total_aporteespecial_otros = $value['aporteespecial'] + $total_aporteespecial_otros;
+        $total_retencion_otros = $value['retencion'] + $total_retencion_otros;
+        $total_iva_otros =$value['iva'] + $total_iva_otros;
+        $total_otros = $value['total'] + $total_otros;
+        $total_gravado_otros = $value['total_gravado'] + $total_gravado_otros;
+        $total_reteiva_otros =$value['reteiva'] + $total_reteiva_otros;
+        $total_reteica_otros = $value['reteica'] + $total_reteica_otros;
+        $total_retertf_otros = $value['retertf'] + $total_retertf_otros;
+      }
+    
+      $total_derechos_resta = $total_derechos - $total_derechos_otros;
+      $total_conceptos_resta = $total_conceptos - $total_conceptos_otros;
+      $total_recaudo_resta = $total_recaudo - $total_recaudo_otros;
+      $total_aporteespecial_resta = $total_aporteespecial - $total_aporteespecial_otros;
+      $total_retencion_resta = $total_retencion - $total_retencion_otros;
+      $total_iva_resta = $total_iva - $total_iva_otros;
+      $total_resta = $total - $total_otros;
+      $total_gravado_resta = $total_gravado - $total_gravado_otros;
+      $total_reteiva_resta = $total_reteiva - $total_reteiva_otros;
+      $total_reteica_resta = $total_reteica - $total_reteica_otros;
+      $total_retertf_resta = $total_retertf - $total_retertf_otros;
+
+    }
+    
 
     /****POR CONCEPTOS*****/
     if($tipoinforme == 'completo'){
@@ -3995,6 +4136,29 @@ class PdfController extends Controller
     $data['contcruces'] = $contcruces;
     $data['nombre_reporte'] = $nombre_reporte;
 
+    $data['total_derechos_resta'] = round($total_derechos_resta);
+    $data['total_derechos_otros'] = round($total_derechos_otros);
+    $data['total_conceptos_resta'] = $total_conceptos_resta;
+    $data['total_conceptos_otros'] = $total_conceptos_otros;
+    $data['total_recaudo_resta'] = $total_recaudo_resta;
+    $data['total_recaudo_otros'] = $total_recaudo_otros;
+    $data['total_aporteespecial_resta'] = $total_aporteespecial_resta;
+    $data['total_aporteespecial_otros'] = $total_aporteespecial_otros;
+    $data['total_retencion_resta'] = $total_retencion_resta;
+    $data['total_retencion_otros'] = $total_retencion_otros;
+    $data['total_iva_resta'] = round($total_iva_resta);
+    $data['total_iva_otros'] = round($total_iva_otros);
+    $data['total_resta'] = $total_resta;
+    $data['total_otros'] = $total_otros;
+    $data['total_gravado_resta'] = round($total_gravado_resta);
+    $data['total_gravado_otros'] = round($total_gravado_otros);
+    $data['total_reteiva_resta'] = $total_reteiva_resta;
+    $data['total_reteiva_otros'] = $total_reteiva_otros;
+    $data['total_reteica_resta'] = $total_reteica_resta;
+    $data['total_reteica_otros'] = $total_reteica_otros;
+    $data['total_retertf_resta'] = $total_retertf_resta;
+    $data['total_retertf_otros'] = $total_retertf_otros;
+
     $html = view('pdf.cajadiariogeneral',$data)->render();
 
     $namefile = 'cajadiario_'.$fecha_reporte.'.pdf';
@@ -4065,7 +4229,10 @@ class PdfController extends Controller
 
    foreach ($facturas as $key1 => $fc) {
     $id_radica = $fc['id_radica'];
-    $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+    if($fc['nota_periodo'] == 0  || $fc['nota_periodo'] == 8){
+
+    }else{
+      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
 
     foreach ($conceptos as $key => $conc) {
       $i = 1;
@@ -4081,6 +4248,9 @@ class PdfController extends Controller
         }
       }
     }
+
+    }
+    
   }
 
 
@@ -5442,7 +5612,6 @@ class PdfController extends Controller
         $nombrecli1 = $cli['fullname'];
         $direccioncli1 = $cli['direccion_cli'];
       }
-
       
       
       $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
@@ -5479,6 +5648,9 @@ class PdfController extends Controller
 
 
       $cufe = $cufe_almacenado;//$request->session()->get('CUFE_SESION');
+      if(is_null($cufe)){
+        $cufe = "sin facturar";
+      }
       $QRCode = $cufe;
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
@@ -5526,8 +5698,12 @@ class PdfController extends Controller
       $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
       $data['totalterceros'] = round($totalterceros);
 
-
-      $html = view('pdf.generarcajarapida',$data)->render();
+      if($cufe == "sin facturar"){
+        $html = view('pdf.recibofactcajarapida',$data)->render();
+      }else{
+        $html = view('pdf.generarcajarapida',$data)->render();
+      }
+      
 
       $namefile = $num_fact.'_F1'.'.pdf';
       //$namefile = 'facturan13'.$num_fact.'.pdf';
@@ -5646,7 +5822,9 @@ class PdfController extends Controller
       # =====================================
       # =           CUFE y QRCODE           =
       # =====================================
-
+        if(is_null($cufe)){
+          $cufe = "sin facturar";
+        }
       $QRCode = $cufe;
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
@@ -5695,8 +5873,13 @@ class PdfController extends Controller
       $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
       $data['totalterceros'] = round($totalterceros);
 
-
-      $html = view('pdf.generarcajarapida',$data)->render();
+      if($cufe == "sin facturar"){
+        $html = view('pdf.recibofactcajarapida',$data)->render();
+      }else{
+        $html = view('pdf.generarcajarapida',$data)->render();
+      }
+      
+      //$html = view('pdf.generarcajarapida',$data)->render();
 
       $namefile = $num_fact.'_F1'.'.pdf';
       //$namefile = 'facturan13'.$num_fact.'.pdf';

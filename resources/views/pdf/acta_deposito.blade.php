@@ -82,13 +82,13 @@
           <b>Radicación No.</b>
         </td>
         <td>
-        xxx
+        {{$id_radica}}
         </td>
         <td>
           <b>Escritura No.</b>
         </td>
         <td>
-          xxxx
+          {{$num_escritura}}
         </td>
       </tr>
     </table>

@@ -38,58 +38,67 @@ class FacturascajarapidaController extends Controller
     public function store(Request $request)
     {
 
-
-        $request->session()->forget('numfactrapida'); 
+        //$request->session()->forget('numfactrapida'); 
         
         $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
         $fecha_factura = date("Y-m-d H:i:s");//date("Y/m/d");
-       
+
+        $identificacion_cli1 = $request->identificacion_cli1;
+        $formapago = $request->formapago;
+        $total_iva = $request->total_iva;
+        $total = $request->total;
+        $total_all = $request->total_all;
+        $detalle = $request->detalle;
+              
         $Facturascajarapida = new Facturascajarapida();
 
         $Facturascajarapida->prefijo = $prefijo_fact;
         $Facturascajarapida->id = Auth()->user()->id;
         $Facturascajarapida->fecha_fact = $fecha_factura;
-        $Facturascajarapida->credito_fact = 'false';
+        $Facturascajarapida->a_nombre_de = $identificacion_cli1;
+        $Facturascajarapida->total_iva = $total_iva;
+        $Facturascajarapida->total_fact = $total_all;
+        $Facturascajarapida->subtotal = $total;
 
-        if($request->formapago == 'true' ){
+         /*----------  Forma pago  ----------*/
+
+        if($formapago == 1){
+            $Facturascajarapida->credito_fact = true;
             $Facturascajarapida->dias_credito = 30;
-        }else if($request->formapago == 'false' ){
+        }else if($formapago == 0){
+            $Facturascajarapida->credito_fact = false;
             $Facturascajarapida->dias_credito = 0;
-          }
-
+        }
         
         $Facturascajarapida->save();
         $numfactrapida = $Facturascajarapida->id_fact;
         $request->session()->put('numfactrapida', $numfactrapida);
-
-       
-        # ==================================================
-        # =           Para vaciar Grilla detalle           =
-        # ==================================================
-
-        $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
-                    ->where('id_fact', $numfactrapida)
-                    ->get();
         
-        $subtotal_all = 0;
-        $total_iva = 0;
-        $total_all = 0;
+       
+        # =======================================
+        # =           Guardar detalle           =
+        # =======================================
 
-        foreach ($detalle as $value) {
-            $subtotal_all += $value['subtotal'];
-            $total_iva += $value['iva'];
-            $total_all += $value['total'];
+
+        foreach ($detalle as $key => $det) {
+            $detalle_factura = new Detalle_cajarapidafacturas();
+            $detalle_factura->prefijo = $prefijo_fact;
+            $detalle_factura->id_fact = $numfactrapida;
+            $detalle_factura->id_concep = $det['id_concep'];
+            $detalle_factura->cantidad = $det['cantidad'];
+            $detalle_factura->nombre_concep = $det['nombre_concep'];
+            $detalle_factura->valor_unitario = $det['valor_unitario'];
+            $detalle_factura->subtotal = $det['subtotal'];
+            $detalle_factura->iva = $det['iva'];
+            $detalle_factura->total = $det['total'];
+            $detalle_factura->save(); 
         }
-
+      
         
         return response()->json([
             "validar"=>1,
             "prefijo"=>$prefijo_fact,
-            "id_fact"=> $numfactrapida,
-            "detalle"=>$detalle,
-            "subtotal"=>$subtotal_all,
-            "total_iva"=>$total_iva,
-            "total"=>$total_all
+            "id_fact"=> $numfactrapida
          ]);
     }
 
@@ -128,7 +137,7 @@ class FacturascajarapidaController extends Controller
         $factura = Facturascajarapida::where("prefijo","=",$prefijo_fact)->find($id);
         $opcion = $request->opcion;
 
-
+        
         if($opcion == 'solocartera'){
           $factura->saldo_fact = $request->nuevosaldo;
           $factura->save();
@@ -136,6 +145,69 @@ class FacturascajarapidaController extends Controller
             "validar"=>1,
             "mensaje"=>'Muy bien! Abono realizado'
            ]);
+
+        }else if($opcion == 'actualizar'){
+                        
+            Detalle_cajarapidafacturas::
+            where("prefijo","=",$prefijo_fact)
+            ->where("id_fact","=", $id)->delete();
+
+            $identificacion_cli1 = $request->identificacion_cli1;
+            $formapago = $request->formapago;
+            $total_iva = $request->total_iva;
+            $total = $request->total;
+            $total_all = $request->total_all;
+            $detalle = $request->detalle;
+            
+            $Facturascajarapida = Facturascajarapida::where("prefijo","=",$prefijo_fact)->find($id);
+
+            $Facturascajarapida->prefijo = $prefijo_fact;
+            $Facturascajarapida->id = Auth()->user()->id;
+            $Facturascajarapida->a_nombre_de = $identificacion_cli1;
+            $Facturascajarapida->total_iva = $total_iva;
+            $Facturascajarapida->total_fact = $total_all;
+            $Facturascajarapida->subtotal = $total;
+
+            /*----------  Forma pago  ----------*/
+
+            if($formapago == 1){
+            $Facturascajarapida->credito_fact = true;
+            $Facturascajarapida->dias_credito = 30;
+            }else if($formapago == 0){
+            $Facturascajarapida->credito_fact = false;
+            $Facturascajarapida->dias_credito = 0;
+            }
+            
+            $Facturascajarapida->save();
+                  
+       
+            # =======================================
+            # =           Guardar detalle           =
+            # =======================================
+
+
+            foreach ($detalle as $key => $det) {
+            $detalle_factura = new Detalle_cajarapidafacturas();
+            $detalle_factura->prefijo = $prefijo_fact;
+            $detalle_factura->id_fact = $id;
+            $detalle_factura->id_concep = $det['id_concep'];
+            $detalle_factura->cantidad = $det['cantidad'];
+            $detalle_factura->nombre_concep = $det['nombre_concep'];
+            $detalle_factura->valor_unitario = $det['valor_unitario'];
+            $detalle_factura->subtotal = $det['subtotal'];
+            $detalle_factura->iva = $det['iva'];
+            $detalle_factura->total = $det['total'];
+            $detalle_factura->save(); 
+            }
+      
+        
+            return response()->json([
+            "validar"=>1,
+            "Mensaje"=>"MUY BIEN!. Cambios realizados"
+            ]);
+
+
+
 
         }
     }

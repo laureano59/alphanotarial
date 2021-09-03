@@ -63,6 +63,9 @@ Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vende
 Route::get('liberarradicacion', 'RadicacionController@Liberar_Radicacion');
 Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
+
+Route::get('agregaritemcajarapida', 'AgregaritemcajarapidaController@AgregarItemCajaRapida');
+
 Route::get('anombrede', 'FacturacionController@AnombreDe');
 Route::get('validarradicacion', 'ValidacionesController@ValidarRadicacion');
 Route::get('validartotalfactliq', 'ValidacionesController@TotalFact_TotalLiq');

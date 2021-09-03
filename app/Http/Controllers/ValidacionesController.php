@@ -28,6 +28,12 @@ class ValidacionesController extends Controller
         $anio_trabajo = Notaria::find(1)->anio_trabajo;
         $id_radica = $request->input('id_radica');
         if (Radicacion::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
+          if($id_radica == 0){
+            return response()->json([
+                 "validar"=> "2"//TODO:Significa que la Radicación está lista para liquidar
+               ]);
+            exit;
+          }
             $validartodo = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
             $validar = '';
             foreach ($validartodo as $key => $value) {
@@ -577,11 +583,13 @@ class ValidacionesController extends Controller
           }
 
 
-
-
           if($cont > 0){
             $request->session()->put('numfactrapida', $id);
-
+            $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
+            Detalle_cajarapidafacturas::
+            where("prefijo","=",$prefijo_fact)
+            ->where("id_fact","=", $id)->delete();
+            
             return response()->json([
               "validar"=>1,
               "detalle"=>$detalle,

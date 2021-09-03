@@ -130,6 +130,36 @@
       </div>
     </div>
 
+
+    <div class="col-sm-5">
+      <div class="widget-box">
+        <div class="widget-header">
+          <h4 class="widget-title">Total Recibido Periodos Anteriores</h4>
+        </div>
+        <div class="widget-body">
+            <div class="widget-main no-padding">
+                <table class="table table-bordered table-striped">
+                    <thead class="thin-border-bottom">
+                        <tr>
+                            <th>
+                                <i class="ace-icon fa fa-caret-right blue"></i>ITEM
+                            </th>
+
+                            <th>
+                                <i class="ace-icon fa fa-caret-right blue"></i>VALOR
+                            </th>
+                            <th>
+                                <i class="ace-icon fa fa-caret-right blue"></i>RESTA
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="datos_totales_otros_periodos"></tbody>
+                </table>
+            </div><!-- /.widget-main -->
+        </div><!-- /.widget-body -->
+      </div>
+    </div>
+
     <!--
     <div class="col-sm-5">
       <div class="widget-box">

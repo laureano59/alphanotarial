@@ -48,7 +48,7 @@ $("#imprimir").click(function() {
 function GenerarPdf(){
     botonnuevo.style.display = "block";
     impresora.style.display = "none";
-    botonagregar.style.display = "none";
+    //botonagregar.style.display = "none";
 	var url = "/facturacajarapidapdf";
 	$("<a>").attr("href", url).attr("target", "_blank")[0].click(); 
 }

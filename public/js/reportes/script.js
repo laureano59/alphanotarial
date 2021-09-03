@@ -445,9 +445,10 @@ $("#generarreporte").click(function(){
     __ajax(route, token, type, datos)
       .done( function( info ){
         var cajadiario = info.cajadiario;
+        var cajadiario_otros_periodos = info.cajadiario_otros_periodos;
         var cruces = info.cruces;
         var total_egreso = info.total_egreso;
-        CargarCajaDiarioGeneral(cajadiario, total_egreso);
+        CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos);
         CargarCrucesActas(cruces);
     })
 

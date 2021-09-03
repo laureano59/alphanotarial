@@ -7,9 +7,11 @@ use App\Liq_derecho;
 use App\Detalle_liqderecho;
 use App\Notaria;
 use App\Derechos_view;
+use App\Derechos_cotiza_view;
 use App\Radicacion;
 use App\Tarifa;
 use App\Concepto;
+
 
 
 class LiqderechoController extends Controller
@@ -47,11 +49,15 @@ public function derechos(Request $request){
     $id_radica = $request->id_radica;
 
     if (Radicacion::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
-      $der_view = Derechos_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
 
-      $derechos = $this->Derechos_Not($der_view);
-      //var_dump($derechos);
-      //exit;
+      if($id_radica == 0){
+        $der_view = Derechos_cotiza_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+        $derechos = $this->Derechos_Not($der_view);
+      }else{
+        $der_view = Derechos_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+        $derechos = $this->Derechos_Not($der_view);
+      }
+        
 
       /************TODO:Calcular IVA Solo Derechos Notariales*************/
       $porcentaje = (Tarifa::find(9)->valor1)/100;

@@ -141,6 +141,12 @@
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Factura"></i>
                         </a>
                   </div>
+
+                  <div class="widget-toolbar" id="actualizar">
+                        <a href="javascript://" id="actualizar_cambios" data-action="reload">
+                            <i><img src="{{ asset('images/guardar.png') }}" width="28 px" height="28 px" title="Guardar Cambios"></i>
+                        </a>
+                  </div>
                 </div>
 
 

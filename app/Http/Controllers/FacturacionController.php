@@ -125,7 +125,6 @@ class FacturacionController extends Controller
       }else{
         $detalle_acargo_de = $request->detalle_acargo_de;
       }
-
       
       $fecha_manual = Notaria::find(1)->fecha_fact;
       $fecha_automatica = Notaria::find(1)->fecha_fact_automatica;
@@ -144,6 +143,36 @@ class FacturacionController extends Controller
              "mensaje"=>"La radicación ya está facturada"
            ]);
         }else{
+
+          if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->exists()){
+
+            $fact = Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->get()->toArray();
+
+            foreach ($fact as $key => $f) {
+              $fecha_fact = $f['fecha_fact'];
+            }
+
+            $fecha_actual = date("Y-m-d");
+        
+            $periodo_actual = date("Y-m", strtotime($fecha_actual));
+            $periodo_factura = date("Y-m", strtotime($fecha_fact));
+
+            $anio_actual = date("Y", strtotime($fecha_actual));
+            $anio_fact = date("Y", strtotime($fecha_fact));
+
+            if($anio_actual == $anio_fact){//mismo año
+              if($periodo_actual == $periodo_factura){//mismo periodo
+                $nota_periodo = 7;
+              }else if($periodo_actual != $periodo_factura){//diferente periodo
+                $nota_periodo = 0;
+              }
+            }else{//diferente año
+              $nota_periodo = 8;
+            }
+          }else{
+            $nota_periodo = 7;
+          }
+
           $factura = new Factura();
           $factura->prefijo = $prefijo_fact;
           $factura->id_radica = $id_radica;
@@ -166,6 +195,7 @@ class FacturacionController extends Controller
           $factura->credito_fact = $request->input('formapago');
           $factura->a_cargo_de = $doc_acargo_de;
           $factura->detalle_acargo_de = $detalle_acargo_de;
+          $factura->nota_periodo = $nota_periodo;
                     
           if($request->input('formapago') == 'true' ){
             $factura->dias_credito = 30;
@@ -213,6 +243,37 @@ class FacturacionController extends Controller
              "mensaje"=>"La radicación ya está facturada"
            ]);
         }else{
+
+          if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->exists()){
+
+            $fact = Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->get()->toArray();
+
+            foreach ($fact as $key => $f) {
+              $fecha_fact = $f['fecha_fact'];
+            }
+
+            $fecha_actual = date("Y-m-d");
+        
+            $periodo_actual = date("Y-m", strtotime($fecha_actual));
+            $periodo_factura = date("Y-m", strtotime($fecha_fact));
+
+            $anio_actual = date("Y", strtotime($fecha_actual));
+            $anio_fact = date("Y", strtotime($fecha_fact));
+
+            if($anio_actual == $anio_fact){//mismo año
+              if($periodo_actual == $periodo_factura){//mismo periodo
+                $nota_periodo = 7;
+              }else if($periodo_actual != $periodo_factura){//diferente periodo
+                $nota_periodo = 0;
+              }
+            }else{//diferente año
+              $nota_periodo = 8;
+            }
+          }else{
+             $nota_periodo = 7;
+          }
+
+
           $factura = new Factura();
           $factura->prefijo = $prefijo_fact;
           $factura->id_radica = $id_radica;
@@ -235,6 +296,7 @@ class FacturacionController extends Controller
           $factura->credito_fact = $request->input('formapago');
           $factura->a_cargo_de = $doc_acargo_de;
           $factura->detalle_acargo_de = $detalle_acargo_de;
+          $factura->nota_periodo = $nota_periodo;
 
           if($request->input('formapago') == 'true' ){
             $factura->dias_credito = 30;
