@@ -21,6 +21,7 @@ use App\Departamento;
 use App\Concepto;
 use App\Banco;
 use App\Medios_pago;
+use App\Factura_a_cargo_de_view;
 
 class FacturacionController extends Controller
 {
@@ -144,12 +145,20 @@ class FacturacionController extends Controller
            ]);
         }else{
 
-          if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->exists()){
+          if (Factura::where('id_radica', $id_radica)
+              ->where('anio_radica', $anio_radica)
+              ->where('nota_credito', true)
+              ->exists()){
 
-            $fact = Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->get()->toArray();
+            $fact = Factura::where('id_radica', $id_radica)
+                    ->where('anio_radica', $anio_radica)
+                    ->where('nota_credito', true)
+                    ->get()
+                    ->toArray();
 
             foreach ($fact as $key => $f) {
               $fecha_fact = $f['fecha_fact'];
+              //$id_fact_otroperiodo = $f['id_fact_otroperiodo'];
             }
 
             $fecha_actual = date("Y-m-d");
@@ -165,6 +174,7 @@ class FacturacionController extends Controller
                 $nota_periodo = 7;
               }else if($periodo_actual != $periodo_factura){//diferente periodo
                 $nota_periodo = 0;
+                //$id_fact_otroperiodo = 
               }
             }else{//diferente año
               $nota_periodo = 8;
@@ -510,6 +520,61 @@ class FacturacionController extends Controller
 
       }
     }
+
+    public function A_cargo_De(Request $request){
+      $num_fact = $request->num_fact;
+      $prefijo = $request->prefijo;
+
+      if (Factura::where('prefijo', $prefijo)->where('id_fact', $num_fact)->exists()){
+         $factura = Factura_a_cargo_de_view::where('prefijo', $prefijo)
+                ->where('id_fact', $num_fact)
+                ->get();
+
+      $request->session()->put('factura', $factura);
+      return response()->json([
+             "validar"=> "7"
+           ]);
+
+
+      }else{
+        return response()->json([
+             "validar"=> "1",
+             "mensaje"=> "La factura ingresada no existe"
+           ]);
+
+      }
+    
+    }
+
+    public function Update_a_cargo_de_Editar(Request $request){
+      $identificacion = $request->identificacion;
+      $detalle = $request->detalle;
+
+      $Fact = $request->session()->get('factura');
+
+       foreach ($Fact as $value) {
+          $prefijo = $value['prefijo'];
+          $id = $value['id_fact'];
+       }
+
+      $factura = Factura::where("prefijo","=",$prefijo)->find($id);
+      $factura->a_cargo_de = $identificacion;
+      $factura->detalle_acargo_de = $detalle;
+      $factura->save();
+      $factura = Factura_a_cargo_de_view::where('prefijo', $factura->prefijo)
+                ->where('id_fact', $factura->id_fact)
+                ->get();
+
+      $request->session()->put('factura', $factura);
+
+       return response()->json([
+             "validar"=> "1",
+             "mensaje"=> "Muy bien!. Factura Actualizada"
+           ]);
+
+    }
+
+    
 
 /********TODO:Elimina duplicados de un array********/
 

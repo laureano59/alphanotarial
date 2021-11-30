@@ -65,6 +65,7 @@ class FacturascajarapidaController extends Controller
         if($formapago == 1){
             $Facturascajarapida->credito_fact = true;
             $Facturascajarapida->dias_credito = 30;
+            $Facturascajarapida->saldo_fact = $total_all;
         }else if($formapago == 0){
             $Facturascajarapida->credito_fact = false;
             $Facturascajarapida->dias_credito = 0;

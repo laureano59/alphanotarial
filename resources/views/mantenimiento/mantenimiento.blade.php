@@ -26,6 +26,11 @@
         Editar<br>Clientes
       </a>
 
+      <a href="javascript://" id="editar_a_cargo_de" class="btn btn-app btn-primary">
+        <i class="ace-icon fa fa-pencil-square-o bigger-230"></i>
+        Editar<br>Factura
+      </a>
+
     </div>
 
     </div>
@@ -104,6 +109,40 @@
                         </div>
                       </div>
 
+                  </div>
+                  <div class="space-10"></div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+  <div class="widget-box" id="guyeditaracargode" style="display:none">
+    <form>
+      @csrf
+      <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+      <div class="widget-header">
+        <h4 class="widget-title">Escribe el No. de Factura</h4>
+          <span class="nav-search widget-toolbar">
+            <input type="text" id="prefijo" placeholder="Escribir prefijo" class="nav-search-input"  autocomplete="off" />
+            <input type="text" id="num_fact" placeholder="Escribir número de factura" class="nav-search-input"  autocomplete="off" onKeyPress="return soloNumeros(event)" />
+            <a href="#" id="editaracargode" data-action="reload">
+                <i><img src="{{ asset('images/comprobar.png') }}" width="28 px" height="28 px" title="Editar a cargo de"></i>
+            </a>
+          </span>
+      </div>
+    </form>
+
+      <div class="widget-body">
+          <div class="widget-main">
+              <div>
+                  <div class="form-horizontal">
+                      <div class="form-group">
+                        <div class="alert alert-warning" role="alert" id="msj-error7" style="display:none">
+                          <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                          <strong id="msj7"></strong>
+                        </div>
+                      </div>
                   </div>
                   <div class="space-10"></div>
               </div>

@@ -18,6 +18,9 @@ Route::get('/', function () {
 Route::resource('radicacion', 'RadicacionController');
 Route::resource('liquidacion', 'LiqderechoController');
 Route::resource('facturacion', 'FacturacionController');
+Route::resource('factura_acargo_de', 'EditaracargodeController');
+
+
 Route::resource('facturaelectronica', 'FacturaelectronicaController');
 Route::resource('panel_protocolistas', 'ProtocolistasController');
 
@@ -61,6 +64,11 @@ Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController
 Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vendedores');
 
 Route::get('liberarradicacion', 'RadicacionController@Liberar_Radicacion');
+
+Route::get('editar_acargo_de_factura', 'FacturacionController@A_cargo_De');
+
+Route::get('editar_acargo_de', 'FacturacionController@Update_a_cargo_de_Editar');
+
 Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
 

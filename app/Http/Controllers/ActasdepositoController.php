@@ -155,6 +155,7 @@ class ActasdepositoController extends Controller
 
       }else if($opcion == 2){//Buscar Acta por Número de Acta
         $Id_acta = $request->input('id_acta');
+        $request->session()->put('id_acta', $Id_acta);
         $actas_depo_all = Actas_deposito_view::where('id_act', $Id_acta)->where('anulada', 'false')->get();
         return response()->json([
            "actas_depo_all"=>$actas_depo_all

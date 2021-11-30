@@ -136,13 +136,43 @@ class ReportesController extends Controller
         $cruces = Cruces_actas_deposito_view::whereDate('fecha', '>=', $fecha1)
                   ->whereDate('fecha', '<=', $fecha2)->get()->toArray();
 
-        $cajadiario_otros_periodos = Cajadiariogeneral_notas_otros_periodos_view::whereDate('fecha', '>=', $fecha1)
+        $cajadiario_otros_periodos1 = Cajadiariogeneral_notas_otros_periodos_view::whereDate('fecha', '>=', $fecha1)
                       ->whereDate('fecha', '<=', $fecha2)
                       ->where('anio_esc', '=', $anio_trabajo)
                       ->where('nota_periodo', '=', 0)
                       ->where('nota_credito', '=', 'false')
                       ->get()
                       ->toArray();
+       
+      
+        $cajadiario_otros_periodos = [];
+        $i = 0;
+        foreach ($cajadiario_otros_periodos1 as $key => $value) {
+          $num_fact_otros_p = $value['id_fact_otroperiodo'];
+
+          
+         $tempo = Factura::where('id_fact', '=', $num_fact_otros_p)
+                                     ->get()
+                                     ->toArray();
+   
+          
+          foreach ($tempo as $key => $value) {
+            $cajadiario_otros_periodos[$i]['derechos'] = $value['total_derechos'];
+            $cajadiario_otros_periodos[$i]['conceptos'] = $value['total_conceptos'];
+            $cajadiario_otros_periodos[$i]['recaudo'] = ($value['total_fondo'] + $value['total_super']);
+            $cajadiario_otros_periodos[$i]['aporteespecial'] = $value['total_aporteespecial'];
+            $cajadiario_otros_periodos[$i]['retencion'] = $value['total_rtf'];
+            $cajadiario_otros_periodos[$i]['iva'] = $value['total_iva'];
+            $cajadiario_otros_periodos[$i]['total'] = $value['total_fact'];
+            $cajadiario_otros_periodos[$i]['total_gravado'] = ($value['total_derechos'] + $value['total_conceptos']);
+            $cajadiario_otros_periodos[$i]['reteiva'] = $value['deduccion_reteiva'];
+            $cajadiario_otros_periodos[$i]['reteica'] = $value['deduccion_reteica'];
+            $cajadiario_otros_periodos[$i]['retertf'] = $value['deduccion_retertf'];
+          }
+
+          $i++;
+        }
+ 
                
     }else if($tipo_informe == 'contado'){
 
@@ -409,7 +439,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw1)->get()->toArray();
 
-
+   
      
       $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -600,7 +630,7 @@ class ReportesController extends Controller
         }
       }
 
-
+     
       foreach ($sincuantia as $i => $sinc) {
         foreach ($rango1 as $j => $rn1) {
           if($sinc['escr'] == $rn1['escr']){
