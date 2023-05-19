@@ -452,6 +452,7 @@ $("#guardarfacturamultiple").click(function() {
                   var total_fondo = $("#totfondo").val();
                   var total_super = $("#totsuper").val();
                   var total_aporteespecial = $("#totaporteespecial").val();
+                  var total_impuesto_timbre = $("#totimpuestotimbre").val();
                   var total_fact = $("#grantotal").val();
                   var reteiva = $("#reteivaide").val();
                   var retertf = $("#retertfide").val();
@@ -489,6 +490,7 @@ $("#guardarfacturamultiple").click(function() {
                       "total_fondo": total_fondo,
                       "total_super": total_super,
                       "total_aporteespecial": total_aporteespecial,
+                      "total_impuesto_timbre": total_impuesto_timbre,
                       "total_fact": total_fact,
                       "reteiva": reteiva,
                       "retertf": retertf,

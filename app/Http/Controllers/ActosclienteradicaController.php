@@ -10,6 +10,8 @@ use App\Actoscuantia;
 use App\Cliente;
 use App\Otorgante;
 use App\Compareciente;
+use App\Acto;
+use Carbon\Carbon;
 
 class ActosclienteradicaController extends Controller
 {
@@ -29,7 +31,11 @@ class ActosclienteradicaController extends Controller
 
     public function listing(Request $request){
         if($request->ajax()){
-          $anio_trabajo = Notaria::find(1)->anio_trabajo;
+          $anio_trabajo = $request->periodo;
+          if($anio_trabajo == ''){
+            $anio_trabajo = Notaria::find(1)->anio_trabajo;
+          }
+          
           $id_radica = $request->input('id_radica');
           $request->session()->put('key', $id_radica); //TODO:Inicia Variable de Session con la radicacion
 
@@ -73,7 +79,7 @@ class ActosclienteradicaController extends Controller
      */
     public function store(Request $request)
     {
-
+          
         if($request->ajax()){
           $Actosclienteradica = new Actosclienteradica();
           $Actosclienteradica->anio_radica = Notaria::find(1)->anio_trabajo;
@@ -90,10 +96,28 @@ class ActosclienteradicaController extends Controller
             $Actosclienteradica->cuantia = 0;
           }
 
-          //return $Actosclienteradica->cuantia;
+          /*VALIDO SI LLEVA TRADICION*/
 
-          $Actosclienteradica->tradicion= $request->input('tradicion');
+          $id_acto = $request->input('id_acto');
+          $actos = Acto::where('id_acto', $id_acto)->get();
+          
+          foreach ($actos as $value) {
+            $codigo_dian = $value['cod_dian'];
+            //$id_acto = $value['id_acto'];
+          }
 
+          $codigo_dian = str_replace(" ", "", $codigo_dian);//elimina los espacios
+
+          if($codigo_dian != '0'){
+            $tradicion = Carbon::parse($request->input('tradicion'))->format('Y-m-d h:i:s');
+          }else{
+            $tradicion = NULL;
+          }
+            
+
+          $Actosclienteradica->tradicion= $tradicion;
+
+        
           if (Radicacion::where('id_radica', $Actosclienteradica->id_radica)->where('anio_radica', $Actosclienteradica->anio_radica)->exists()){
             $Actosclienteradica->save();
 
@@ -153,12 +177,21 @@ class ActosclienteradicaController extends Controller
      */
     public function update(Request $request, $id)
     {
+
       if($request->actualizar == 1){
         $actosclienteradica = Actosclienteradica::find($id);
         $actosclienteradica->id_acto = $request->id_acto;
         $cuantia = $request->cuantia;
-        $actosclienteradica->tradicion = $request->tradicion;
-        $tradicion = $request->tradicion;
+
+       
+        if($request->tradicion === 'null'){
+           $tradicion = NULL;//date("Y-m-d H:i:s");
+           $actosclienteradica->tradicion = $tradicion;
+        }else{
+          $tradicion = Carbon::parse($request->tradicion)->format('Y-m-d h:i:s');
+          $actosclienteradica->tradicion = $tradicion;
+        }
+
         $cuantia = str_replace(",", " ", $cuantia);//Reemplaza las comas por espacios
         $cuantia = str_replace(" ", "", $cuantia);//elimina los espacios
         $actosclienteradica->cuantia = $cuantia;
@@ -177,7 +210,7 @@ class ActosclienteradicaController extends Controller
         $Otorgante->tradicion = $tradicion;
         $Otorgante->save();
 
-
+       
         return response()->json([
            "actos"=>$actos
          ]);

@@ -15,6 +15,7 @@
 
         <span class="nav-search widget-toolbar">
           <input type="text" id="radicacion" name="radicacion" placeholder="Buscar Radicación" class="nav-search-input" onKeyPress="return soloNumeros(event)" autocomplete="off" />
+          <input type="text" id="periodo" name="periodo" maxlength="4" size="5" placeholder="Periodo"  onKeyPress="return soloNumeros(event)" autocomplete="off" />
           <a href="javascript://" id="buscaractosradica">
               <i><img src="{{ asset('images/investigacion.png') }}" width="28 px" height="28 px" title="Consultar Radicación"></i>
           </a>
@@ -54,8 +55,16 @@
                         <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <b class="blue">Tradición</b> </label>
 
                         <div class="col-sm-9">
-                            <input type="text" id="tradicion" name="tradicion" maxlength="4" onKeyPress="return soloNumeros(event)" class="col-xs-10 col-sm-5" />
+                            <input type="hidden" id="tradicion" name="tradicion" maxlength="4" onKeyPress="return soloNumeros(event)" class="col-xs-10 col-sm-5" />
                         </div>
+                        
+                        <div class="input-group date col-sm-4" data-provide="datepicker">
+                            <input type="text" class="form-control" id="fecha_tradicion" disabled="disabled" >
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                       
                     </div>
                 </div>
                 <div class="space-10"></div>

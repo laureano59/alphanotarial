@@ -20,7 +20,11 @@ $("#guardaractosradica").click(function() {
                     var id_radica = $("#radicacion").val();
                     var id_acto = $("#id_acto").val();
                     var cuantia = $("#cuantia").val();
-                    var tradicion = $("#tradicion").val();
+                    //var tradicion = $("#tradicion").val();
+                    var fecha_tradicion = $("#fecha_tradicion").val();
+                   
+                    var tradicion = fecha_tradicion;
+                   
                     if (cuantia == '') {
                         cuantia = 0;
                     }

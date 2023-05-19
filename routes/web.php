@@ -160,6 +160,9 @@ Route::get('cajadiariocajarapidapdf', 'PdfController@CajaDiarioCajaRapidaPdf');
 Route::get('cajadiariocajarapidaconceptos', 'PdfController@Cajadiariocajarapidaconceptospdf');
 
 
+Route::get('validar_liquidacion_provisional', 'ValidacionesController@Validar_liquidacion_provisional');
+
+
 Route::get('liquidacionpdf', 'PdfController@PdfLiquidacion');
 Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
 Route::get('informe_ron', 'ReportesController@Ron');
@@ -176,6 +179,7 @@ Route::get('informederecaudospdf', 'PdfController@PdfInformeRecaudos');
 Route::get('Imprimircomprobante_Egreso', 'PdfController@PdfComprobante_Egreso');
 
 Route::get('seguimiento', 'ConsultasController@Consultar');
+Route::get('seguimiento_secun', 'ConsultasController@Consultar_secun');
 
 
 Auth::routes();

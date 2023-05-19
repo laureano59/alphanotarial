@@ -150,10 +150,13 @@ class ReportesController extends Controller
         foreach ($cajadiario_otros_periodos1 as $key => $value) {
           $num_fact_otros_p = $value['id_fact_otroperiodo'];
 
+         
           
          $tempo = Factura::where('id_fact', '=', $num_fact_otros_p)
                                      ->get()
                                      ->toArray();
+
+
    
           
           foreach ($tempo as $key => $value) {
@@ -172,6 +175,7 @@ class ReportesController extends Controller
 
           $i++;
         }
+
  
                
     }else if($tipo_informe == 'contado'){
@@ -211,6 +215,7 @@ class ReportesController extends Controller
     foreach ($cruces as $key => $cru) {
       $total_egreso = $cru['valor_egreso'] + $total_egreso;
     }
+
 
 
     if($tipo_informe == 'completo'){
@@ -439,7 +444,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw1)->get()->toArray();
 
-   
+
      
       $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -461,7 +466,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw3)->get()->toArray();
 
-
+     
       
       $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -501,6 +506,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw7)->get()->toArray();
 
+
            
       $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
       $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
@@ -509,7 +515,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw8)->get()->toArray();
 
-      
+           
 
       $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
       $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
@@ -517,6 +523,9 @@ class ReportesController extends Controller
       ->where('nota_periodo', '<>', 0)
       ->groupBy('escr')
       ->select($raw9)->get()->toArray();
+
+
+     
 
       /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
       
@@ -528,9 +537,13 @@ class ReportesController extends Controller
         }
       }
 
+
       /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
       
       $excenta = array_merge($excenta, $sincuantiaexcenta);
+
+    
+
 
       # ====================================================================
       # =           Identifica excentas que van para con cuantia           =
@@ -615,7 +628,7 @@ class ReportesController extends Controller
       $rango5 = $this->unique_multidim_array($rango5,'escr');
       $rango6 = $this->unique_multidim_array($rango6,'escr');
 
-      
+
       # ==============================================================================
       # =           Elimna repetidas en rangos entre excentas y sincuantia           =
       # ==============================================================================
@@ -639,7 +652,7 @@ class ReportesController extends Controller
         }
       }
 
-
+     
       unset($array_rango1);
       unset($array_rango2);
       unset($array_rango3);
@@ -653,7 +666,8 @@ class ReportesController extends Controller
       $array_rango4 = [];
       $array_rango5 = [];
       $array_rango6 = [];
-      
+
+    
       foreach ($sincuantia as $key => $value) {
         if($value['super'] == $valor2){
           $array_rango1[$key]['escr'] = $value['escr'];
@@ -747,6 +761,8 @@ class ReportesController extends Controller
         $ran1fondo = 0;
         $ran1total = 0;
       }
+
+      
        
        /*----------  Rango2  ----------*/
 
@@ -840,6 +856,7 @@ class ReportesController extends Controller
         }
       }
 
+      
 
       if($rango4){
         $ran4escr = 0;
@@ -1073,6 +1090,7 @@ class ReportesController extends Controller
     ->get()->toArray();
 
 
+
     $facturas = $this->unique_multidim_array($facturas, 'id_radica');
     $y=1;
     foreach ($atributos as $key => $value) {
@@ -1081,21 +1099,42 @@ class ReportesController extends Controller
       $y++;
     }
 
-    
-    foreach ($facturas as $key1 => $fc) {
+
+
+    $sum_conceptos_otros_periodos = 0;
+
+    foreach ($facturas as $key => $fc) {
       $id_radica = $fc['id_radica'];
-      if($fc['nota_periodo'] == 0  || $fc['nota_periodo'] == 8){
+      $not_per = $fc['nota_periodo'];
 
-      }else{
-        $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
- 
+          
+     
+      if($not_per == 0  || $not_per == 8){
 
+        $radicacion_otro_periodo = $id_radica;
+                      
+        //$id_fact_otro_periodo = $fc['id_fact_otroperiodo'];
+
+        $facturas_otro_periodo = Factura::where('id_radica', '=', $radicacion_otro_periodo)
+        ->where('anio_radica', '=', $anio_trabajo)
+        ->where('nota_credito', '=', true)
+        ->get()->toArray();
+          foreach ($facturas_otro_periodo as $key1 => $fco) {
+            $sum_conceptos_otros_periodos +=  $fco['total_conceptos'];
+      
+          }
+      }
+      
+      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+
+
+        
       foreach ($conceptos as $key => $conc) {
         $i = 1;
         foreach ($atributos as $key => $atri) {
           $atributo = $atri['nombre_concep'];
           $totalatributo = 'total'.$atri['atributo'];
-          
+
           if($conc[$totalatributo] > 0){
             $total = $conc[$totalatributo];
             $dataconcept[$i]['concepto'] = $atributo;
@@ -1106,20 +1145,29 @@ class ReportesController extends Controller
         }
       }
 
-      }
-      
+      //}
+
+
     }
+
    
+
+      
     $grantotal = 0;
     foreach ($dataconcept as $key => $value) {
+
       if($value['total'] == 0){
         unset($dataconcept[$key]);
       } else {
        $grantotal +=  $value['total'];
+      
       }
     }
 
+   
+    $grantotal = $grantotal - $sum_conceptos_otros_periodos;
 
+   
     return response()->json([
         "conceptos"=>$dataconcept,
         "grantotal"=>$grantotal

@@ -65,6 +65,10 @@ class PdfController extends Controller
     $notaria = Notaria::find(1);
     $anio_trabajo = $notaria->anio_trabajo;
     $id_radica = $request->session()->get('key');//Obtiene el número de radicación por session
+    
+    //TARIFA DEL IVA
+    $porcentaje_iva = round((Tarifa::find(9)->valor1));
+
     $Escri = Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
     foreach ($Escri as $value) {
       $num_esc = $value['num_esc'];
@@ -94,7 +98,8 @@ class PdfController extends Controller
         $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
         $ingresos = $factura->total_derechos + $factura->total_conceptos;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $derechos = round($factura->total_derechos);
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
@@ -106,7 +111,7 @@ class PdfController extends Controller
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Contado";
+        $formadepago = "Efectivo";
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -206,6 +211,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
       $data['actos'] = $actos;
@@ -223,6 +230,7 @@ class PdfController extends Controller
       $data['a_cargo_de'] = $a_cargo_de;
       $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data['detalle_acargo_de'] = $detalle_acargo_de;
+      $data['porcentaje_iva'] = $porcentaje_iva;
 
 
       $j = 0;
@@ -253,7 +261,7 @@ class PdfController extends Controller
       }
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -355,6 +363,7 @@ class PdfController extends Controller
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_aporteespecial = $factura->total_aporteespecial;
+        $total_impuesto_timbre = $factura->total_impuesto_timbre;
         $total_fact = $factura->total_fact;
         $reteiva = $factura->deduccion_reteiva;
         $retertf = $factura->deduccion_retertf;
@@ -362,7 +371,8 @@ class PdfController extends Controller
         $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
         $ingresos = $factura->total_derechos + $factura->total_conceptos;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $derechos = round($factura->total_derechos);
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
@@ -374,7 +384,7 @@ class PdfController extends Controller
       if($forma_pago == true){
         $formadepago = "Credito";
       }else if($forma_pago == false){
-        $formadepago = "Contado";
+        $formadepago = "Efectivo";
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -480,6 +490,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
       $data['actos'] = $actos;
@@ -515,6 +527,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial;
       }
+      if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto Timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
+      }
       if($total_rtf > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -527,7 +544,7 @@ class PdfController extends Controller
       }
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -535,7 +552,7 @@ class PdfController extends Controller
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_aporteespecial +$total_impuesto_timbre;
       $data['totalterceros'] = round($totalterceros);
 
       $k = 0;
@@ -814,13 +831,13 @@ class PdfController extends Controller
   //$id_cer = $request->session()->get('id_cer');
     
     $notaria = Notaria::find(1);
-    $anio_trabajo = $notaria->anio_trabajo;
+    //$anio_trabajo = $notaria->anio_trabajo;
     $nombre_nota = $notaria->nombre_nota;
     $nombre_notario = $notaria->nombre_notario;
     $nit = $notaria->nit;
     $direccion_nota = $notaria->direccion_nota;
     $email = $notaria->email;
-    $anio_gravable = $anio_trabajo;
+    //$anio_gravable = $anio_trabajo;
     $fecha_certificado = date("Y/m/d");
     //$identificacion = $request->identificacion;
     $identificacion = $request->session()->get('identificacion');
@@ -843,7 +860,7 @@ class PdfController extends Controller
         $valor_venta = $cer->valor_venta;
         $total_retenido = $cer->total_retencion;
         $num_escritura = $cer->num_escritura;
-
+        $anio_gravable = $cer->anio_gravable;
         $data['id_cer'] = $cer->id_cer;
         $data['nombre_nota'] = $nombre_nota;
         $data['nombre_notario'] = $nombre_notario;
@@ -915,6 +932,9 @@ class PdfController extends Controller
     $prefijo_fact = $notaria->prefijo_fact;
     //$anio_trabajo = $notaria->anio_trabajo;
     $num_fact = $request->session()->get('numfact');//TODO:Obtiene el número de factura por session
+    
+    //TARIFA DEL IVA
+    $porcentaje_iva = round((Tarifa::find(9)->valor1));
     $id_ncf = $request->session()->get('id_ncf');
     $notacreditofact = Notas_credito_factura::where("id_ncf","=",$id_ncf)->where("prefijo_ncf","=",$prefijo_fact)->get();
     
@@ -942,7 +962,8 @@ class PdfController extends Controller
         $reteica_otor = $factura_otor->deduccion_reteica;
         $subtotal1_otor = $factura_otor->total_derechos + $factura_otor->total_conceptos;
         $fecha_fact = Carbon::parse($factura_otor->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura_otor->updated_at)->format('h:i:s');
         $derechos_otor = $factura_otor->total_derechos;
         $identificacioncli1_otor = $factura_otor->a_nombre_de;
         $id_radica =  $factura_otor->id_radica;
@@ -1057,6 +1078,8 @@ class PdfController extends Controller
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
       $data_otor['fecha_fact'] = $fecha_fact;
+      $data_otor['hora_fact'] = $hora_fact;
+      $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
       $data_otor['contprincipales'] = $contprincipales;
       $data_otor['actos'] = $actos;
@@ -1100,7 +1123,7 @@ class PdfController extends Controller
       }
       if($total_iva_otor > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = $total_iva_otor;
       }
 
@@ -1197,7 +1220,8 @@ class PdfController extends Controller
         $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
         $ingresos = $factura->total_derechos + $factura->total_conceptos;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $derechos = round($factura->total_derechos);
         $identificacioncli1 = $factura->a_nombre_de;
         $id_radica = $factura->id_radica;
@@ -1308,6 +1332,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
       $data['actos'] = $actos;
@@ -1351,7 +1377,7 @@ class PdfController extends Controller
       }
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -1438,6 +1464,10 @@ class PdfController extends Controller
     $prefijo_fact = $notaria->prefijo_fact;
     //$anio_trabajo = $notaria->anio_trabajo;
     $num_fact = $request->session()->get('numfact');//TODO:Obtiene el número de factura por session
+    
+    //TARIFA DEL IVA
+    $porcentaje_iva = round((Tarifa::find(9)->valor1));
+
     $Notacredito = Notas_credito_factura::where("id_fact","=",$num_fact)->where("prefijo","=",$prefijo_fact)->get();
     foreach ($Notacredito as $nc) {
       $id_ncf = $nc->id_ncf;
@@ -1450,7 +1480,7 @@ class PdfController extends Controller
       $detalle_ncf = $ncf->detalle_ncf;
       $fecha_ncf = Carbon::parse($ncf->created_at)->format('Y-m-d');
       $fecha_ncf_completa = $ncf->created_at;
-      $hora_ncf = Carbon::parse($ncf->created_at)->format('h-i-s');
+      $hora_ncf = Carbon::parse($ncf->created_at)->format('h:i:s');
     }
 
     /********Valida Si la factura es doble o unica*********/
@@ -1470,7 +1500,8 @@ class PdfController extends Controller
         $reteica_otor = $factura_otor->deduccion_reteica;
         $subtotal1_otor = $factura_otor->total_derechos + $factura_otor->total_conceptos;
         $fecha_fact = Carbon::parse($factura_otor->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura_otor->updated_at)->format('h:i:s');
         $derechos_otor = $factura_otor->total_derechos;
         $identificacioncli1_otor = $factura_otor->a_nombre_de;
         $id_radica =  $factura_otor->id_radica;
@@ -1585,6 +1616,8 @@ class PdfController extends Controller
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
       $data_otor['fecha_fact'] = $fecha_fact;
+      $data_otor['hora_fact'] = $hora_fact;
+      $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
       $data_otor['contprincipales'] = $contprincipales;
       $data_otor['actos'] = $actos;
@@ -1628,7 +1661,7 @@ class PdfController extends Controller
       }
       if($total_iva_otor > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = $total_iva_otor;
       }
 
@@ -1725,7 +1758,8 @@ class PdfController extends Controller
         $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
         $ingresos = $factura->total_derechos + $factura->total_conceptos;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $derechos = round($factura->total_derechos);
         $identificacioncli1 = $factura->a_nombre_de;
         $id_radica = $factura->id_radica;
@@ -1834,6 +1868,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
       $data['actos'] = $actos;
@@ -1877,7 +1913,7 @@ class PdfController extends Controller
       }
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -2085,11 +2121,15 @@ class PdfController extends Controller
       ->get()
       ->toArray();
 
+
+
+
       $estadistico = [];
       foreach ($subquery as $key => $sub) {
         $id_radica = $sub['id_radica'];
         $consulta = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
         ->where('id_radica', [$id_radica])->get()->toArray();
+
 
         foreach ($consulta as $key2 => $con) {
           $estadistico[$key]['id_actoperrad'] = $con['id_actoperrad'];
@@ -2114,6 +2154,7 @@ class PdfController extends Controller
       ->select($raw2)
       ->get()
       ->toArray();
+
 
      
       $estadistico_repe = [];
@@ -2234,7 +2275,8 @@ class PdfController extends Controller
       }
     }//Fin del for estadisticonotarial
     
-   
+  
+
     foreach ($estadistico_repe as $key => $esr) {
       $id_radica = $esr['id_radica'];
       $ingresos = round($esr['derechos']);
@@ -2254,6 +2296,7 @@ class PdfController extends Controller
         $i++;
       }
 
+     
       
 
       if (in_array("1", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo)) {
@@ -2334,10 +2377,11 @@ class PdfController extends Controller
 
       }
 
-      if (in_array("12", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
+      if (in_array("12", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo)  && !in_array("1", $arr_codigo)) {
 
         $cantmatri++;
         $ingrematri += $ingresos;
+               
 
       }
 
@@ -2376,6 +2420,7 @@ class PdfController extends Controller
         $cantotros++;
         $ingreotros += $ingresos;
 
+       
       }
 
 
@@ -4254,13 +4299,24 @@ class PdfController extends Controller
      $y++;
    }
 
-
+  $sum_conceptos_otros_periodos = 0;
    foreach ($facturas as $key1 => $fc) {
     $id_radica = $fc['id_radica'];
     if($fc['nota_periodo'] == 0  || $fc['nota_periodo'] == 8){
 
-    }else{
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+      $radicacion_otro_periodo = $id_radica;
+
+      //$id_fact_otro_periodo = $fc['id_fact_otroperiodo'];
+        $facturas_otro_periodo = Factura::where('id_radica', '=', $radicacion_otro_periodo)
+        ->where('anio_radica', '=', $anio_trabajo)
+        ->where('nota_credito', '=', true)
+        ->get()->toArray();
+          foreach ($facturas_otro_periodo as $key1 => $fco) {
+            $sum_conceptos_otros_periodos +=  $fco['total_conceptos'];
+          }
+    }
+    
+    $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
 
     foreach ($conceptos as $key => $conc) {
       $i = 1;
@@ -4277,7 +4333,7 @@ class PdfController extends Controller
       }
     }
 
-    }
+    //}
     
   }
 
@@ -4290,6 +4346,8 @@ class PdfController extends Controller
      $grantotal +=  $value['total'];
    }
  }
+
+ $grantotal = $grantotal - $sum_conceptos_otros_periodos;
 
  
  $relconceptos = $dataconcept;
@@ -4902,6 +4960,8 @@ class PdfController extends Controller
     $num_fact = $request->session()->get('numfact');//TODO:Obtiene el número de factura por session
 
 
+    //TARIFA DEL IVA
+    $porcentaje_iva = round((Tarifa::find(9)->valor1));
     /********Valida Si la factura es doble o unica*********/
     if (Detalle_factura::where('id_fact', $num_fact)->where('prefijo', $prefijo_fact)->exists()){
       $factura_oto = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
@@ -4912,6 +4972,7 @@ class PdfController extends Controller
         $total_fondo_otor = $factura_otor->total_fondo;
         $total_super_otor = $factura_otor->total_super;
         $total_aporteespecial_otor = $factura_otor->total_aporteespecial;
+        $total_impuesto_timbre = $factura_otor->total_impuesto_timbre;
         $total_fact_otor = $factura_otor->total_fact;
         $reteiva_otor = $factura_otor->deduccion_reteiva;
         $retertf_otor = $factura_otor->deduccion_retertf;
@@ -4919,6 +4980,7 @@ class PdfController extends Controller
         $subtotal1_otor = $factura_otor->total_derechos + $factura_otor->total_conceptos;
         $fecha_fact = Carbon::parse($factura_otor->fecha_fact)->format('Y-m-d');
         $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('h-i-s');
+        $hora_cufe = Carbon::parse($factura_otor->updated_at)->format('h:i:s');
         $derechos_otor = $factura_otor->total_derechos;
         $identificacioncli1_otor = $factura_otor->a_nombre_de;
         $id_radica =  $factura_otor->id_radica;
@@ -4941,6 +5003,7 @@ class PdfController extends Controller
         $num_esc = $esc->num_esc;
       }
 
+     
       $protocolista = Protocolistas_view::where('num_esc', $num_esc)
       ->where('anio_esc', $anio_trabajo)
       ->get();
@@ -5048,6 +5111,8 @@ class PdfController extends Controller
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
       $data_otor['fecha_fact'] = $fecha_fact;
+      $data_otor['hora_fact'] = $hora_fact;
+      $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
       $data_otor['contprincipales'] = $contprincipales;
       $data_otor['actos'] = $actos;
@@ -5083,6 +5148,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial_otor;
       }
+      if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto Timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
+      }
       if($total_rtf_otor > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -5095,7 +5165,7 @@ class PdfController extends Controller
       }
       if($total_iva_otor > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = $total_iva_otor;
       }
 
@@ -5103,7 +5173,7 @@ class PdfController extends Controller
       $data_otor['terceros'] = $terceros;
       $data_otor['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor;
+      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor + $total_aporteespecial_otor + $total_impuesto_timbre;
       $data_otor['totalterceros'] = $totalterceros;
 
       $k = 0;
@@ -5173,6 +5243,7 @@ class PdfController extends Controller
     }else{//Para radicación con una sola factura
       $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
 
+
       foreach ($facturas as $factura) {
         $total_iva = $factura->total_iva;
         $total_rtf = $factura->total_rtf;
@@ -5186,7 +5257,8 @@ class PdfController extends Controller
         $reteica = $factura->deduccion_reteica;
         $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
         $derechos = round($factura->total_derechos);
         $identificacioncli1 = $factura->a_nombre_de;
         $id_radica = $factura->id_radica;
@@ -5196,11 +5268,12 @@ class PdfController extends Controller
         $detalle_acargo_de = $factura->detalle_acargo_de;
       }
 
+
       if($forma_pago == true){
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Contado";
+        $formadepago = "Efectivo";
       }
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
@@ -5230,6 +5303,8 @@ class PdfController extends Controller
       foreach ($a_cargo as $key => $acar) {
         $nombrecli_acargo_de = $acar['fullname'];
       }
+
+
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
         identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
@@ -5311,6 +5386,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
       $data['actos'] = $actos;
@@ -5357,7 +5434,7 @@ class PdfController extends Controller
       }
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -5440,6 +5517,17 @@ class PdfController extends Controller
     $prefijo_fact = $notaria->prefijo_fact;
     $anio_trabajo = $notaria->anio_trabajo;
     $id_radica = $request->session()->get('key');
+    $tipo_impre_liq   = $request->session()->get('tipo_impre_liq');
+    
+    if($tipo_impre_liq == 'provisional'){
+
+      $titulo_liq = 'LIQUIDACIÓN PROVISIONAL';
+
+    }else if($tipo_impre_liq == 'real'){
+
+      $titulo_liq = 'LIQUIDACIÓN DE LA RADICACIÓN No.'.$id_radica;
+
+    }
 
     $sumaderechos = Liq_derecho::join("detalle_liqderechos","liq_derechos.id_liqd","=","detalle_liqderechos.id_liqd")
     ->where("liq_derechos.id_radica","=",$id_radica)
@@ -5486,6 +5574,7 @@ class PdfController extends Controller
     $nombre_notario = $notaria->nombre_notario;
     $resolucion = $notaria->resolucion;
     $piepagina_fact = $notaria->piepagina_fact;
+    $data['titulo_liq'] = $titulo_liq;
     $data['nit'] = $nit;
     $data['nombre_nota'] = $nombre_nota;
     $data['direccion_nota'] = $direccion_nota;
@@ -5604,6 +5693,8 @@ class PdfController extends Controller
       $id_concepto = $request->id_concepto;
       $num_fact  = $request->session()->get('numfactrapida');
       $anio_trabajo = $notaria->anio_trabajo;
+      //TARIFA DEL IVA
+      $porcentaje_iva = round((Tarifa::find(9)->valor1));
       
 
       $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
@@ -5620,7 +5711,8 @@ class PdfController extends Controller
         $reteica = 0;
         $subtotal1 = $factura->subtotal;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
         $cufe_almacenado = $factura->cufe;
@@ -5630,7 +5722,7 @@ class PdfController extends Controller
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Contado";
+        $formadepago = "Efectivo";
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -5699,6 +5791,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['detalle'] = $detalle;
       $data['contdetalle'] = $contdetalle;
       $data['subtotal'] = $subtotal1;
@@ -5710,12 +5804,13 @@ class PdfController extends Controller
       $data['cufe'] = $cufe;
       $data['titulo'] = $FactComprobante;
       $data['formadepago'] = $formadepago;
+      $data['porcentaje_iva'] = $porcentaje_iva;
 
       $j = 0;
       $terceros = [];
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -5780,6 +5875,8 @@ class PdfController extends Controller
       $prefijo_fact = $notaria->prefijo_facturarapida;
       $id_concepto = $request->id_concepto;
       $num_fact  = $request->session()->get('numfact');
+      //TARIFA DEL IVA
+      $porcentaje_iva = round((Tarifa::find(9)->valor1));
       
       $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($facturas as $factura) {
@@ -5795,7 +5892,8 @@ class PdfController extends Controller
         $reteica = 0;
         $subtotal1 = $factura->subtotal;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
         $cufe = $factura->cufe;
@@ -5805,7 +5903,7 @@ class PdfController extends Controller
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Contado";
+        $formadepago = "Efectivo";
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -5874,6 +5972,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['detalle'] = $detalle;
       $data['contdetalle'] = $contdetalle;
       $data['subtotal'] = $subtotal1;
@@ -5885,12 +5985,13 @@ class PdfController extends Controller
       $data['cufe'] = $cufe;
       $data['titulo'] = $FactComprobante;
       $data['formadepago'] = $formadepago;
+      $data['porcentaje_iva'] = $porcentaje_iva;
 
       $j = 0;
       $terceros = [];
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 
@@ -5959,6 +6060,10 @@ class PdfController extends Controller
       $id_ncf  = $request->session()->get('id_ncf');
       $anio_trabajo = $notaria->anio_trabajo;
 
+      //TARIFA DEL IVA
+      $porcentaje_iva = round((Tarifa::find(9)->valor1));
+
+
       $nota_credito = Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$id_ncf)->get();
       foreach ($nota_credito as $notacre) {
         $detalle_ncf = $notacre->detalle_ncf;
@@ -5981,7 +6086,8 @@ class PdfController extends Controller
         $reteica = 0;
         $subtotal1 = $factura->subtotal;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
       }
@@ -6072,6 +6178,8 @@ class PdfController extends Controller
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
       $data['detalle'] = $detalle;
       $data['contdetalle'] = $contdetalle;
       $data['subtotal'] = $subtotal1;
@@ -6086,12 +6194,13 @@ class PdfController extends Controller
       $data['id_ncf'] = $id_ncf;
       $data['detalle_ncf'] = $detalle_ncf;
       $data['fecha_ncf'] = $fecha_ncf;
+      $data['porcentaje_iva'] = $porcentaje_iva;
 
       $j = 0;
       $terceros = [];
       if($total_iva > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva";
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
         $terceros[$j]['total'] = round($total_iva);
       }
 

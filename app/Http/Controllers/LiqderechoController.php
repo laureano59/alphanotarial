@@ -94,14 +94,18 @@ public function derechos(Request $request){
           if( $values['cuantia'] ==  $values['valor1']){
             $dere[$key]['derechos']= $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
+            $dere[$key]['impuestotimbre'] = 0;
           }else if($values['cuantia'] <= $values['valor3']){
             $dere[$key]['derechos']= $values['valor4'];
             $dere[$key]['valor_aporte_especial'] = 0;
+            $dere[$key]['impuestotimbre'] = 0;
           }else if($values['cuantia'] > $values['valor3']){
             $res = (($values['cuantia'] - $values['valor3']) * $values['valor5']) + $values['valor4'];
             $valor = $this->Redondear($res); //Redondea a dos decimales
             $tarifa = Tarifa::find(29);//Aporte Especial
             $aporte_especial = $tarifa['valor1'];
+
+           /********IMPUESTO APORTE ESPECIAL************/
         
          
             if($valor > $aporte_especial){

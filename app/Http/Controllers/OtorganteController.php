@@ -45,19 +45,16 @@ class OtorganteController extends Controller
       $otorgante->porcentaje_otor = $request->input('porcentaje');
       $otorgante->id_cal1 = $id_cal1;
       $otorgante->cuantia = $request->session()->get('cuantia_otor');
-      $tradicion_definida = $request->session()->get('tradi');
 
-
-      if($tradicion_definida === "null"){
-        $otorgante->tradicion = 0;
+      if($request->session()->get('tradi') === 'null'){
+        $tradicion = NULL;
       }else{
-        $otorgante->tradicion = $tradicion_definida;
-      }
+        $tradicion = $request->session()->get('tradi');
+        }
       
-     
+      $otorgante->tradicion = $tradicion;
       $otorgante->id_radica = $id_radica = $request->session()->get('key');
       
-
       $porcentajeprincipal = Actosclienteradica::find($id)->porcentajecli1;
 
       $raw1 = \DB::raw("SUM(porcentaje_otor) as total1");

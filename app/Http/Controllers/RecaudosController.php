@@ -16,14 +16,15 @@ class RecaudosController extends Controller
       $rtf = $this->ReteFuente($actos);
       $reteconsumo = $this->ReteConsumo($actos);
       $aporteespecial = $this->AporteEspecial($actos);
-
+      $impuesto_timbre = $this->ImpuestoTimbre($actos);
 
       return response()->json([
          "recsuper"=>$recsuper,
          "recfondo"=>$recfondo,
          "rtf"=>$rtf,
          "reteconsumo"=>$reteconsumo,
-         "aporteespecial"=>$aporteespecial
+         "aporteespecial"=>$aporteespecial,
+         "impuesto_timbre"=>$impuesto_timbre
       ]);
     }
 
@@ -198,6 +199,66 @@ class RecaudosController extends Controller
     
       return $valoracum;
     }
+
+
+
+private function ImpuestoTimbre($actos){
+      $tarifa = Tarifa::find(32);//:Tarifa de impuesto timbre
+      $porcentaje1 = $tarifa['valor1'] / 100;//para formula 1
+      $porcentaje2 = $tarifa['valor2'] / 100;//para formula 2
+      $uvt = $tarifa['uvt'];
+      $uvtformula2 = $tarifa['valor3'];//para sumar en formula 2
+
+      $rango1 = $tarifa['valor4'];
+      $rango2 = $tarifa['valor5'];
+      
+      $impuestotimbre = 0;
+      $valor = 0;
+      $valoracum = 0;
+
+
+      $mayor = 0;
+      $mayor_acum = 0;
+      $id_array = 0;
+
+
+      foreach ($actos as $key => $value) {//Para tomar el acto de mayor cuantia
+        $mayor = $value['cuantia'];
+        if($mayor > $mayor_acum){
+          $mayor_acum = $mayor;
+          $id_array = $key;//tomo el id del acto con mayor cuantia
+        }
+      }
+     
+
+      $act = $actos[$id_array];
+
+      if($act['impuesto_timbre'] == 'true'){//valida si al acto se le aplica impuesto timbre
+        $cuantia_en_uvt = ($act['cuantia']) / $uvt;
+        
+          if($cuantia_en_uvt <= $rango1){
+            $valor = 0;
+          }else if($cuantia_en_uvt > $rango1 and $cuantia_en_uvt <= $rango2){
+            $valor = ($cuantia_en_uvt - $rango1) * $porcentaje1;
+            $valor_en_pesos = $valor * $uvt;
+            $valor =  $valor_en_pesos;
+          }else if($cuantia_en_uvt > $rango2){
+            $valor = (($cuantia_en_uvt - $rango2) * $porcentaje2) + $uvtformula2;
+            $valor_en_pesos = $valor * $uvt;
+            $valor =  $valor_en_pesos;
+
+          }
+      }else{
+        $valor = 0;
+      }
+        
+     
+      return $valor;
+
+          
+}
+
+    
 
     private function ReteConsumo($actos){
       $tarifa = Tarifa::find(12);//:Tarifa de Impuesto al Consumo

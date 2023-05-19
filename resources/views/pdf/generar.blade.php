@@ -35,7 +35,7 @@
                         <td><font size="1">Radicación No: {{$id_radica}}</font></td>
                     </tr>
                     <tr>
-                        <td><font size="1">Forma de pago: {{$formadepago}}</font></td>
+                        <td><font size="1">Medios de pago: {{$formadepago}}</font></td>
                     </tr>
                     <tr>
                         <td><font size="1">A cargo de: C.C {{$a_cargo_de}} &nbsp; {{$nombrecli_acargo_de}}</font></td>
@@ -86,7 +86,7 @@
                 <font size="1">Fecha:</font>&nbsp;
             </td>
             <td width="25%">
-                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }}</font>
+                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font>
             </td>
         </tr>
     </table>
@@ -340,7 +340,7 @@
         <td>
             <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->generate($QRCode)) !!} ">
         </td>
-        <td><font size="1">Cufe:&nbsp;{{$cufe}}</font></td>
+        <td><font size="1">Cufe:&nbsp;{{$cufe}} &nbsp; Hora:{{$hora_cufe}}</font></td>
       </tr>
     </table>
 

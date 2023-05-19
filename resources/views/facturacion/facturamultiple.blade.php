@@ -255,6 +255,25 @@
                     <input type="hidden" id="pagoaporteespecialiden" value="0" />
                   </td>
               </tr>
+
+              <tr id="recaudoimpuestotimbre">
+                  <td>Impuesto al Timbre</td>
+                  <td bgcolor="#ccffcc" align="right">
+                      <span id="totalimpuestotimbre"></span>
+                      <input type="hidden" id="totalimpuestotimbreiden"/>
+                  </td>
+                  <td bgcolor="#FFF9BB" align="right">
+                      <span id="totalimpuestotimbreparticipacion"></span>
+                      <input type="hidden" id="totalimpuestotimbreparticipacioniden"/>
+                  </td>
+                  <td width="10%">
+                    <input type="text" id="porcentajeimpuestotimbre" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+                  </td>
+                  <td width="20%" bgcolor="#ccffcc" align="right">
+                    <span id="pagoimpuestotimbre"></span>
+                    <input type="hidden" id="pagoimpuestotimbreiden" value="0" />
+                  </td>
+              </tr>
             </tbody>
         </table>
     </div>
@@ -297,6 +316,7 @@
                         <input type="hidden" id="totfondo" value="0">
                         <input type="hidden" id="totsuper" value="0">
                         <input type="hidden" id="totaporteespecial" value="0">
+                        <input type="hidden" id="totimpuestotimbre" value="0">
                         <input type="hidden" id="reteivaide" value="0">
                         <input type="hidden" id="retertfide" value="0">
                         <input type="hidden" id="reteicaide" value="0">
@@ -329,6 +349,11 @@
                             <tr>
                                 <td style="width:20%;"><span style="font-size:16px;">Aporte_Especial:</span></td>
                                 <td style="width:50%;"><span id="aporteespecial" style="font-size:16px;"></span></td>
+                            </tr>
+
+                            <tr>
+                                <td style="width:20%;"><span style="font-size:16px;">Impuesto_Timbre:</span></td>
+                                <td style="width:50%;"><span id="impuestotimbre" style="font-size:16px;"></span></td>
                             </tr>
 
                             <tr>

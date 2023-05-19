@@ -404,7 +404,12 @@
 @section('csslau')
   <link rel="stylesheet" href="{{ asset('css/formatos.css')}}" />
 	<link rel="stylesheet" href="{{ asset('css/lau.css')}}" />
+
+  <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}" />
+  <link rel="stylesheet" href="{{asset('assets/css/bootstrap-datepicker3.min.css')}}" />
 @endsection
+
+
 
 @section('scripts')
   <script src="{{ asset('js/radicacion/script.js')}}"></script>
@@ -420,4 +425,10 @@
   <script src="{{ asset('js/limpiarclientes.js')}}"></script>
   <script src="{{ asset('js/crearclientes.js')}}"></script>
   <script src="{{ asset('js/validarciudad.js')}}"></script>
+  
+
+  <script src="{{ asset('js/calendario.js')}}"></script>
+  <script src="{{asset('assets/js/bootstrap-datepicker.min.js')}}"></script>
+    
+ 
 @endsection

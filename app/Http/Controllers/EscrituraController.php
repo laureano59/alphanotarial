@@ -62,7 +62,15 @@ class EscrituraController extends Controller
          ]);
       }else{
 
+        /*Autonumerico*/
+         $raw = \DB::raw("MAX(num_esc) as num_esc");
+        $consecutivo = Escritura::where('anio_esc', $anio_radica)->select($raw)->get();
+        foreach ($consecutivo as $esc) {
+          $nuevo_num_esc = ($esc->num_esc) + 1;
+        }
+
         $escritura = new Escritura();
+        $escritura->num_esc = $nuevo_num_esc;
         $escritura->anio_esc = $anio_radica;
         $escritura->id_radica = $id_radica;
         $escritura->anio_radica = $anio_radica;

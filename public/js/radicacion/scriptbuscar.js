@@ -4,8 +4,10 @@ $("#buscaractosradica").click(function() {
   $('#veradicionales').hide();
 
     var id_radica = $("#radicacion").val();
+    var periodo = $("#periodo").val();
     var datos = {
-        "id_radica": id_radica
+        "id_radica": id_radica,
+        "periodo": periodo
     };
     var route = "/detalleradica";
     var token = $("#token").val();

@@ -1,5 +1,5 @@
 $("#guardarliq").click(function() {
-  CalConceptos();
+   CalConceptos();
   /******NOTE: Se Valida que La Radicación esté Completa********/
   var id_radica = $("#radicacion").val();
   var datos = {
@@ -71,13 +71,14 @@ $("#guardarliq").click(function() {
 
                   /***********NOTE:Recaudos**************/
                   var totrecsuper, totrecfondo, totiva, totrtf, totreteconsumo,
-                  totalrecaudos, totaporteespecial, grantotalliq;
+                  totalrecaudos, totaporteespecial, total_impuesto_timbre, grantotalliq;
                   totrecsuper = $("#totrecsuper").val();
                   totrecfondo = $("#totrecfondo").val();
                   totiva = $("#totivacompleto").val();
                   totrtf = $("#totrtf").val();
                   totreteconsumo = $("#totreteconsumo").val();
                   totaporteespecial = $("#totaporteespecial").val();
+                  total_impuesto_timbre = $("#total_impuesto_timbre").val();
                   totalrecaudos = $("#totrecaudos").val();
                   grantotalliq = $("#grantot").val();
 
@@ -89,6 +90,7 @@ $("#guardarliq").click(function() {
                       "totrtf": totrtf,
                       "totreteconsumo": totreteconsumo,
                       "totaporteespecial": totaporteespecial,
+                      "total_impuesto_timbre": total_impuesto_timbre,
                       "totalrecaudos": totalrecaudos,
                       "grantotalliq": grantotalliq
                     };

@@ -283,6 +283,7 @@ class FacturacionController extends Controller
              $nota_periodo = 7;
           }
 
+         
 
           $factura = new Factura();
           $factura->prefijo = $prefijo_fact;
@@ -299,6 +300,7 @@ class FacturacionController extends Controller
           $factura->total_fondo = $request->input('total_fondo');
           $factura->total_super = $request->input('total_super');
           $factura->total_aporteespecial = $request->input('total_aporteespecial');
+          $factura->total_impuesto_timbre = $request->input('total_impuesto_timbre');
           $factura->total_fact = $request->input('total_fact');
           $factura->deduccion_reteiva = $request->input('reteiva');
           $factura->deduccion_retertf = $request->input('retertf');

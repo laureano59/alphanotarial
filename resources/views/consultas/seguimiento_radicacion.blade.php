@@ -74,7 +74,11 @@
                 <div class="widget-header">
                     <div class="widget-toolbar">
                         <a href="javascript://" id="buscar">
-                            <i><img src="{{ asset('images/analisis.png') }}" width="28 px" height="28 px" title="Buscar"></i>
+                            <i><img src="{{ asset('images/analisis.png') }}" width="28 px" height="28 px" title="Buscar Principales"></i>
+                        </a>
+
+                        <a href="javascript://" id="buscar_secun">
+                            <i><img src="{{ asset('images/analisis.png') }}" width="28 px" height="28 px" title="Buscar secundarios"></i>
                         </a>
                     </div>
                     

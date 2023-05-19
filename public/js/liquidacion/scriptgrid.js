@@ -80,6 +80,9 @@ function CargarRecaudos(validar) {
   $("#totrecsuper").val(validar.recsuper);
   $("#totrecfondo").val(validar.recfondo);
   $("#totaporteespecial").val(validar.aporteespecial);
+  $("#total_impuesto_timbre").val(validar.impuesto_timbre);
+
+  
 
   if(validar.rtf > 0){
     $("#retefuente").fadeIn();
@@ -105,6 +108,19 @@ function CargarRecaudos(validar) {
     $("#aporteespecial").fadeOut();
       $("#totalaporteespecial").html(formatNumbderechos(0));
   }
+
+
+  if(validar.impuesto_timbre > 0){
+    $("#totalimpuestotimbre").html(formatNumbderechos(validar.impuesto_timbre));
+    $("#impuesto_timbre").fadeIn();
+  }else{
+    $("#impuesto_timbre").fadeOut();
+      $("#totalimpuestotimbre").html(formatNumbderechos(0));
+  }
+
+
+
+
 }
 
 //NOTE: Cargar Recaudos Liq
@@ -136,6 +152,13 @@ function CargarRecaudosLiq(validar) {
       $("#aporteespecial").fadeIn();
     }else if(validar[item].aporteespecial < 1){
         $("#aporteespecial").fadeOut();
+    }
+
+     if(validar[item].total_impuesto_timbre > 0){
+      $("#totalimpuestotimbre").html(formatNumbderechos(validar[item].total_impuesto_timbre));
+      $("#impuesto_timbre").fadeIn();
+    }else if(validar[item].aporteespecial < 1){
+        $("#impuesto_timbre").fadeOut();
     }
 
 

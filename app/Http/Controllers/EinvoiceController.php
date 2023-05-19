@@ -76,9 +76,59 @@ class EinvoiceController extends Controller
 
     # -----------  Numero de factura obtenida en una session  -----------
 
+    
     $numfact = $request->num_fact;
 
-    $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
+
+    $opcion1 = $request->opcion;
+    
+
+    if($opcion1 == 'F1'){
+
+     $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
+
+     foreach ($facturas as $factura) {
+      $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+      $fecha_fact_completa = $factura->fecha_fact;
+      $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+      $StarPeriodo =  Carbon::parse($fecha_fact)->firstOfMonth();
+      $StarPeriodo = Carbon::parse($StarPeriodo)->format('Y-m-d');
+      $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
+      $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
+      $identificacioncli = $factura->a_nombre_de;
+      $TipodePago = $factura->credito_fact;
+      $TotalFactura = $factura->total_fact;
+      $TotalDerechos = $factura->total_derechos;
+      $TotalConceptos = $factura->total_conceptos;
+      $TotalIva = $factura->total_iva;
+      $TotalRtf = $factura->total_rtf;
+      $TotalReteIva = $factura->deduccion_reteiva;
+      $TotalReteIca = $factura->deduccion_reteica;
+      $TotalReteRtf = $factura->deduccion_retertf;
+      $TotalFondo = $factura->total_fondo;
+      $TotalSuper = $factura->total_super;
+      $AporteEspecial = $factura->total_aporteespecial;
+      $ImpuestoTimbre = $factura->total_impuesto_timbre;
+      $id_radica = $factura->id_radica;
+      $comentarios_fact = $factura->comentarios_fact;
+      $diascredito_fact = $factura->dias_credito;
+      $nota_credito = $factura->nota_credito;
+      $anio_trabajo = $factura->anio_radica;
+    }
+
+    $TotalAntesdeIva = $TotalDerechos + $TotalConceptos;
+
+  }else if($opcion1 == 'NC'){
+    $Notas_credito_factura_anulada =  Notas_credito_factura::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$numfact)->get();
+
+
+    foreach ($Notas_credito_factura_anulada as $ncf) {
+      $num_fact_anulada = $ncf['id_fact'];
+    }
+
+
+    $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact_anulada)->get();
+
     foreach ($facturas as $factura) {
       $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
       $fecha_fact_completa = $factura->fecha_fact;
@@ -100,6 +150,7 @@ class EinvoiceController extends Controller
       $TotalFondo = $factura->total_fondo;
       $TotalSuper = $factura->total_super;
       $AporteEspecial = $factura->total_aporteespecial;
+      $ImpuestoTimbre = $factura->total_impuesto_timbre;
       $id_radica = $factura->id_radica;
       $comentarios_fact = $factura->comentarios_fact;
       $diascredito_fact = $factura->dias_credito;
@@ -109,11 +160,15 @@ class EinvoiceController extends Controller
 
     $TotalAntesdeIva = $TotalDerechos + $TotalConceptos;
 
+  }
+
 
     # ============================================
     # =      Item Conceptos de Factura           =
     # ============================================
-   
+
+  if($opcion1 == 'F1'){
+
     $SoloConceptos = array();
     /********Valida Si la factura es doble o unica*********/
     if (Detalle_factura::where('id_fact', $numfact)->where('prefijo', $prefijo_fact)->exists()){
@@ -136,8 +191,8 @@ class EinvoiceController extends Controller
         }
       }
 
-    $contdataconcept = count($dataconcept_mul, 0);
-    $SoloConceptos = $dataconcept_mul;
+      $contdataconcept = count($dataconcept_mul, 0);
+      $SoloConceptos = $dataconcept_mul;
 
     }else{
       $conceptos_unica = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
@@ -163,79 +218,134 @@ class EinvoiceController extends Controller
     }
 
 
-    if($TotalDerechos > 0){
-      $SoloConceptos[0]['concepto']= 'Derechos';
-      $SoloConceptos[0]['total']= $TotalDerechos;
+  }else if($opcion1 == 'NC'){
+
+    $SoloConceptos = array();
+    /********Valida Si la factura es doble o unica*********/
+    if (Detalle_factura::where('id_fact', $num_fact_anulada)->where('prefijo', $prefijo_fact)->exists()){
+
+      $conceptos_mul = Detalle_factura::where('id_fact', $num_fact_anulada)->get()->toArray();
+      $atributos = Concepto::all();
+      $atributos = $atributos->sortBy('id_concep');
+      $i = 1;
+      $dataconcept_mul = array();
+      foreach ($conceptos_mul as $key => $conc1) {
+        foreach ($atributos as $key => $atri) {
+          $atributo = $atri['nombre_concep'];
+          $totalatributo = 'total'.$atri['atributo'];
+          $hojasatributo = 'hojas'.$atri['atributo'];
+          if($conc1[$totalatributo] > 0){
+            $dataconcept_mul[$i]['concepto'] = $atributo;
+            $dataconcept_mul[$i]['total'] = $conc1[$totalatributo];
+            $i = $i + 1;
+          }
+        }
+      }
+
+      $contdataconcept = count($dataconcept_mul, 0);
+      $SoloConceptos = $dataconcept_mul;
+
+    }else{
+      $conceptos_unica = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+      $atributos = Concepto::all();
+      $atributos = $atributos->sortBy('id_concep');
+      $i = 1;
+      $dataconcept_unica = array();
+      foreach ($conceptos_unica as $key => $conc) {
+        foreach ($atributos as $key => $atri) {
+          $atributo = $atri['nombre_concep'];
+          $totalatributo = 'total'.$atri['atributo'];
+          $hojasatributo = 'hojas'.$atri['atributo'];
+          if($conc[$totalatributo] > 0){
+            $dataconcept_unica[$i]['concepto'] = $atributo;
+            $dataconcept_unica[$i]['total'] = $conc[$totalatributo];
+            $i = $i + 1;
+          }
+        }
+      }
+
+      $contdataconcept = count ($dataconcept_unica, 0);
+      $SoloConceptos = $dataconcept_unica;
     }
 
-    ksort($SoloConceptos);
-    $contSoloConceptos = count ($SoloConceptos, 0);
-    $contSoloConceptos = $contSoloConceptos - 1;
+
+  }
+
+
+
+  if($TotalDerechos > 0){
+    $SoloConceptos[0]['concepto']= 'Derechos';
+    $SoloConceptos[0]['total']= $TotalDerechos;
+  }
+
+  ksort($SoloConceptos);
+  $contSoloConceptos = count ($SoloConceptos, 0);
+  $contSoloConceptos = $contSoloConceptos - 1;
 
 
     # =============================================
     # =           % Tarifas: Iva, Ica, Rtf        =
     # =============================================
 
-    $IVA = Tarifa::find(9);
-    $PorcentajeIva = round($IVA->valor1, 2);
-    
-    $ReteIca = Tarifa::find(27);
-    $PorcentajeReteIca = round($ReteIca->valor1, 2);
+  $IVA = Tarifa::find(9);
+  $PorcentajeIva = round($IVA->valor1, 2);
 
-    $ReteIva = Tarifa::find(26);
-    $PorcentajeReteIva = $ReteIva->valor1 * 100;
+  $ReteIca = Tarifa::find(27);
+  $PorcentajeReteIca = round($ReteIca->valor1, 2);
 
-    $ReteRtf = Tarifa::find(28);
-    $PorcentajeReteRtf = $ReteRtf->valor1 * 100;
+  $ReteIva = Tarifa::find(26);
+  $PorcentajeReteIva = $ReteIva->valor1 * 100;
+
+  $ReteRtf = Tarifa::find(28);
+  $PorcentajeReteRtf = $ReteRtf->valor1 * 100;
 
     #===============================================
     #            Información del Cliente           =
     #===============================================
 
-    $Info_cliente = Info_cliente_factura_electronica_view::where("identificacion_cli","=",$identificacioncli)->get();
-    
-    foreach ($Info_cliente as $infocliente) {
-      $nombre_cliente = $infocliente->nombre_cli;
-      $pmer_nombre = $infocliente->pmer_nombrecli;
-      $sgdo_nombre = $infocliente->sgndo_nombrecli;
-      $pmer_apellido = $infocliente->pmer_apellidocli;
-      $sgdo_apellido = $infocliente->sgndo_apellidocli;
-      $telefono_cliente = $infocliente->telefono_cli;
-      $direccion_cliente = $infocliente->direccion_cli;
-      $email_cliente = $infocliente->email_cli;
-      $CodPostalCiud_cliente = $infocliente->id_ciud;
-      $CodPostalDepartamento_cliente = $infocliente->id_depa;
-      $CodPostalPais_cliente = $infocliente->id_pais;
-      $NombreCiud_cliente = $infocliente->nombre_ciud;
-      $NombreDepartamento_cliente = $infocliente->nombre_depa;
-      $NombrePais_cliente = $infocliente->nombre_pais;
-      $Tipo_identificacion = $infocliente->id_tipoident;
-      $digito_verif = $infocliente->digito_verif;
-    }
+  $Info_cliente = Info_cliente_factura_electronica_view::where("identificacion_cli","=",$identificacioncli)->get();
+
+  foreach ($Info_cliente as $infocliente) {
+    $nombre_cliente = $infocliente->nombre_cli;
+    $pmer_nombre = $infocliente->pmer_nombrecli;
+    $sgdo_nombre = $infocliente->sgndo_nombrecli;
+    $pmer_apellido = $infocliente->pmer_apellidocli;
+    $sgdo_apellido = $infocliente->sgndo_apellidocli;
+    $telefono_cliente = $infocliente->telefono_cli;
+    $direccion_cliente = $infocliente->direccion_cli;
+    $email_cliente = $infocliente->email_cli;
+    $CodPostalCiud_cliente = $infocliente->id_ciud;
+    $CodPostalDepartamento_cliente = $infocliente->id_depa;
+    $CodPostalPais_cliente = $infocliente->id_pais;
+    $NombreCiud_cliente = $infocliente->nombre_ciud;
+    $NombreDepartamento_cliente = $infocliente->nombre_depa;
+    $NombrePais_cliente = $infocliente->nombre_pais;
+    $Tipo_identificacion = $infocliente->id_tipoident;
+    $digito_verif = $infocliente->digito_verif;
+  }
 
     #=============================================
     #               Medio de Pago                =
     #=============================================
 
-    $Medios_de_pago = Pago::where("id_fact","=",$numfact)->get();
-    foreach ($Medios_de_pago as $med) {
-      $MediodePago = $med->codigo_med;
-    }
+  $Medios_de_pago = Pago::where("id_fact","=",$numfact)->get();
+  foreach ($Medios_de_pago as $med) {
+    $MediodePago = $med->codigo_med;
+  }
 
-    $Medio_pago = Medios_pago::find($MediodePago);
-    $paymentmethod = $Medio_pago->codigo_med;
-         	 
-    $InvoiceAuthorization = $NumAutorizacionDian;
-    $StartDate = $StarPeriodo;
-    $EndDate = $EndPeriodo;
-    $From = $NumDesde;
-    $To = $NumHasta;
-    $Prefix = $prefijo_fact;
-    $Nitempresa = $nit;
-    $SoftwareID = $IdSoftware;
-    $pin = $pinfactDian;
-    $SoftwareSecurityCode = hash('sha384', $IdSoftware, $pin);
+  $Medio_pago = Medios_pago::find($MediodePago);
+  $paymentmethod = $Medio_pago->codigo_med;
+
+  $InvoiceAuthorization = $NumAutorizacionDian;
+  $StartDate = $StarPeriodo;
+  $EndDate = $EndPeriodo;
+  $From = $NumDesde;
+  $To = $NumHasta;
+  $Prefix = $prefijo_fact;
+  $Nitempresa = $nit;
+  $SoftwareID = $IdSoftware;
+  $pin = $pinfactDian;
+  $SoftwareSecurityCode = hash('sha384', $IdSoftware, $pin);
     $AuthorizationProviderID = $NitDian; //Que es?
 
     $CustomizationID = '10';
@@ -243,10 +353,10 @@ class EinvoiceController extends Controller
 		$ID = $prefijo_fact.$numfact; //Numero de la factura
     $IssueDate = $fecha_fact;
 
-		/*----------  Formato de hora y zona horaria Colombia ----------*/
-		
-		$ZonaHoraria_Colombia = '-05:00';
-		$HoraMasZonaHoraria = $hora_fact.$ZonaHoraria_Colombia;
+    /*----------  Formato de hora y zona horaria Colombia ----------*/
+
+    $ZonaHoraria_Colombia = '-05:00';
+    $HoraMasZonaHoraria = $hora_fact.$ZonaHoraria_Colombia;
 		$HoraMasZonaHoraria = str_replace(" ", "", $HoraMasZonaHoraria);//Elimina espacios si los hay
 		$IssueTime =   $HoraMasZonaHoraria;//Formato: 09:15:23-05:00
 		$InvoiceTypeCode = '01';//Significa Factura Venta
@@ -260,7 +370,7 @@ class EinvoiceController extends Controller
 		
 
 		/*--Periodo en el que se está facturando Fecha de inicio y Fecha Final--*/
-   
+
     $InvoiceStartDate = $StartDate;
     $InvoiceEndDate = $EndDate;
 
@@ -286,7 +396,7 @@ class EinvoiceController extends Controller
 		#===============================================
     #=            Información del Cliente          =
     #===============================================
-    
+
     $ClienteName = $nombre_cliente;
     $CodigoPostalCiud_cliente = $CodPostalCiud_cliente;
     $CiudadNameCliente = $NombreCiud_cliente;
@@ -300,10 +410,10 @@ class EinvoiceController extends Controller
     if($Tipo_identificacion != 31){//Si es Diferente a Nit
 			$AdditionalAccountID = '2';//Persona natural
       $Name_empresa = '';
-		}else{
+    }else{
 			$AdditionalAccountID = '1';//Persona Juridica
       $Name_empresa = $ClienteName;
-		}
+    }
 
 		$CodIdentificacionFiscal = $Tipo_identificacion; //Tipo de Identificación
 
@@ -332,7 +442,7 @@ class EinvoiceController extends Controller
 		# =======================================
 
 		$TaxAmountIva = $TotalIva;
-    
+
     # =============================================
     # =           Deducciones           =
     # =============================================
@@ -340,15 +450,15 @@ class EinvoiceController extends Controller
     $TaxAmountReteIva = $TotalReteIva; // Sobre ingresos
     $TaxAmountReteIca = $TotalReteIca; // Sobre ingresos
     $TaxAmountReteRtf = $TotalReteRtf; // 
-      	
+
     # =================================
     # =           % Tarifas           =
     # =================================
 
     $PorcentIva = $PorcentajeIva;
-   	$PorcentReteIca = floatval($PorcentajeReteIca / 1000) * 100;
-   	$PorcentReteIva = $PorcentajeReteIva;
-   	$PorcentReteRtf = $PorcentajeReteRtf;
+    $PorcentReteIca = floatval($PorcentajeReteIca / 1000) * 100;
+    $PorcentReteIva = $PorcentajeReteIva;
+    $PorcentReteRtf = $PorcentajeReteRtf;
 
     $iva = floatval($PorcentIva / 100);
 
@@ -361,7 +471,7 @@ class EinvoiceController extends Controller
     $TaxExclusiveAmount = $TaxableAmount;// Duda con esta variable
     $TaxInclusiveAmount = $TotalFactura;
     $PayableAmount = $TotalFactura; //El Valor a Pagar de Factura es igual a la Suma de Valor Bruto más tributos - Valor del Descuento Total + Valor del Cargo Total - Valor del Anticipo Total
-      	
+
 		$codImp1 = '01'; //IVA
 		$valImp1 = $TaxAmountIva;
 		$codImp2 = '04'; //Impuesto al consumo bolsa no se genera para nuestro caso
@@ -378,19 +488,24 @@ class EinvoiceController extends Controller
     # ================================================
     # =           NOTA CREDITO, NOTA DEBITO          =
     # ================================================
-   
+
     $opcion = $request->opcion;
     $tipo_operacion = $opcion;
+
+
     if($opcion == 'F1'){
       $typenote = '';
       $num_fact_aplica = '';
       $fecha_fact_aplica = '';
       $prefijo_fact_aplica = '';
     }else if($opcion == 'NC'){
+
+
       if($nota_credito == true){
-        $Notas_credito_factura =  Notas_credito_factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
-        foreach ($Notas_credito_factura as $nc) {
-          $num_fact_aplica = $numfact;
+
+
+        foreach ($Notas_credito_factura_anulada as $nc) {
+          $num_fact_aplica = $num_fact_anulada;
           $fecha_fact_aplica = $fecha_fact_completa;
           $prefijo_fact_aplica = $Prefix;
           $numfact = $nc->id_ncf;
@@ -403,7 +518,7 @@ class EinvoiceController extends Controller
     }
 
 
-   
+
     # =============================================
     # =           JSON PARA ENVIAR API            =
     # =============================================
@@ -455,7 +570,7 @@ class EinvoiceController extends Controller
       'dev_number_date'     =>  $fecha_fact_aplica,//'fecha de la factura
       'prefix_application'  =>  $prefijo_fact_aplica,//'prefijo de la fatura a la que aplica la nota ( en caso de notas)',
     );
-  
+
 
     $ingresos = $SoloConceptos;
     $item = 1;
@@ -472,109 +587,116 @@ class EinvoiceController extends Controller
     
     foreach ($detalle as $key => $value) {
      $det[] = $value;
-    }
-      
-    $det = array(
-      "detalle_factura_set"=>$det,
-    );
-          
+   }
+
+   $det = array(
+    "detalle_factura_set"=>$det,
+  );
+
    
-    $impuestos = array();
-    $item = 1;
-    $i=1;
-    foreach ($ingresos as $key => $value) {
-      $impuestos[$i]['id'] = $item;
-      $impuestos[$i]['item'] = $item;
-      $impuestos[$i]['codigo'] = "01";
-      $impuestos[$i]['rate'] = $PorcentIva;
-      $impuestos[$i]['name'] = "IVA";
-      $impuestos[$i]['amount'] = $value['total'];
-      $impuestos[$i]['base'] = $value['total'] * $iva;
-      $item += 1;
-      $i += 1;
-    }
+   $impuestos = array();
+   $item = 1;
+   $i=1;
+   foreach ($ingresos as $key => $value) {
+    $impuestos[$i]['id'] = $item;
+    $impuestos[$i]['item'] = $item;
+    $impuestos[$i]['codigo'] = "01";
+    $impuestos[$i]['rate'] = $PorcentIva;
+    $impuestos[$i]['name'] = "IVA";
+    $impuestos[$i]['amount'] = $value['total'];
+    $impuestos[$i]['base'] = $value['total'] * $iva;
+    $item += 1;
+    $i += 1;
+  }
 
-    foreach ($impuestos as $key => $value) {
-     $imp[] = $value;
-    }
+  foreach ($impuestos as $key => $value) {
+   $imp[] = $value;
+ }
 
-    $imp = array(
-      "salestax"=>$imp,
-    );
-    
-    
-    $otroscargos = array();
-      
-    $otroscargos[1]["name"] = "Retencion en la Fuente";
-    $otroscargos[1]["base"] = $TotalRtf;
-    $otroscargos[1]["amount"] = $TotalRtf;
-    $otroscargos[1]["factor"] = "99.99";
-    $otroscargos[1]["indicator"] = "true";
-
-    $otroscargos[2]["name"] = "Super";
-    $otroscargos[2]["base"] = $TotalSuper;
-    $otroscargos[2]["amount"] = $TotalSuper;
-    $otroscargos[2]["factor"] = "99.99";
-    $otroscargos[2]["indicator"] = "true";
-
-    $otroscargos[3]["name"] = "Fondo";
-    $otroscargos[3]["base"] = $TotalFondo;
-    $otroscargos[3]["amount"] = $TotalFondo;
-    $otroscargos[3]["factor"] = "99.99";
-    $otroscargos[3]["indicator"] = "true";
-
-    $otroscargos[4]["name"] = "Aporte especial";
-    $otroscargos[4]["base"] = $AporteEspecial;
-    $otroscargos[4]["amount"] = $AporteEspecial;
-    $otroscargos[4]["factor"] = "99.99";
-    $otroscargos[4]["indicator"] = "true";
-
-    foreach ($otroscargos as $key => $value) {
-     $otr[] = $value;
-    }
-
-    $otr = array(
-      "AllowanceCharge"=>$otr,
-    );
-
-    
-    $deducciones = array();
-    $deducciones[1]["name"] = "Rete Iva";
-    $deducciones[1]["tax"] = $TaxAmountReteIva;
-    $deducciones[1]["base"] = $TaxAmountIva;
-    $deducciones[1]["rate"] = $PorcentReteIva;
-    $deducciones[1]["id"] = "05";
-
-    $deducciones[2]["name"] = "Rete Ica";
-    $deducciones[2]["tax"] = $TaxAmountReteIca;
-    $deducciones[2]["base"] = $TaxableAmount;
-    $deducciones[2]["rate"] = $PorcentReteIca;
-    $deducciones[2]["id"] = "07";
-
-    $deducciones[3]["name"] = "Rete Fuente";
-    $deducciones[3]["tax"] = $TaxAmountReteRtf;
-    $deducciones[3]["base"] = $TaxableAmount;
-    $deducciones[3]["rate"] = $PorcentReteRtf;
-    $deducciones[3]["id"] = "06";
+ $imp = array(
+  "salestax"=>$imp,
+);
 
 
-    foreach ($deducciones as $key => $value) {
-     $dedu[] = $value;
-    }
+ $otroscargos = array();
 
-    $dedu = array(
-      "WithholdingTaxTotal"=>$dedu,
-    );
+ $otroscargos[1]["name"] = "Retencion en la Fuente";
+ $otroscargos[1]["base"] = $TotalRtf;
+ $otroscargos[1]["amount"] = $TotalRtf;
+ $otroscargos[1]["factor"] = "99.99";
+ $otroscargos[1]["indicator"] = "true";
+
+ $otroscargos[2]["name"] = "Super";
+ $otroscargos[2]["base"] = $TotalSuper;
+ $otroscargos[2]["amount"] = $TotalSuper;
+ $otroscargos[2]["factor"] = "99.99";
+ $otroscargos[2]["indicator"] = "true";
+
+ $otroscargos[3]["name"] = "Fondo";
+ $otroscargos[3]["base"] = $TotalFondo;
+ $otroscargos[3]["amount"] = $TotalFondo;
+ $otroscargos[3]["factor"] = "99.99";
+ $otroscargos[3]["indicator"] = "true";
+
+ $otroscargos[4]["name"] = "Aporte especial";
+ $otroscargos[4]["base"] = $AporteEspecial;
+ $otroscargos[4]["amount"] = $AporteEspecial;
+ $otroscargos[4]["factor"] = "99.99";
+ $otroscargos[4]["indicator"] = "true";
+
+ $otroscargos[4]["name"] = "Impuesto timbre";
+ $otroscargos[4]["base"] = $ImpuestoTimbre;
+ $otroscargos[4]["amount"] = $ImpuestoTimbre;
+ $otroscargos[4]["factor"] = "99.99";
+ $otroscargos[4]["indicator"] = "true";
+
+
+ foreach ($otroscargos as $key => $value) {
+   $otr[] = $value;
+ }
+
+ $otr = array(
+  "AllowanceCharge"=>$otr,
+);
+
+
+ $deducciones = array();
+ $deducciones[1]["name"] = "Rete Iva";
+ $deducciones[1]["tax"] = $TaxAmountReteIva;
+ $deducciones[1]["base"] = $TaxAmountIva;
+ $deducciones[1]["rate"] = $PorcentReteIva;
+ $deducciones[1]["id"] = "05";
+
+ $deducciones[2]["name"] = "Rete Ica";
+ $deducciones[2]["tax"] = $TaxAmountReteIca;
+ $deducciones[2]["base"] = $TaxableAmount;
+ $deducciones[2]["rate"] = $PorcentReteIca;
+ $deducciones[2]["id"] = "07";
+
+ $deducciones[3]["name"] = "Rete Fuente";
+ $deducciones[3]["tax"] = $TaxAmountReteRtf;
+ $deducciones[3]["base"] = $TaxableAmount;
+ $deducciones[3]["rate"] = $PorcentReteRtf;
+ $deducciones[3]["id"] = "06";
+
+
+ foreach ($deducciones as $key => $value) {
+   $dedu[] = $value;
+ }
+
+ $dedu = array(
+  "WithholdingTaxTotal"=>$dedu,
+);
 
 
 
-    $todo = array_merge($encabezado, $det, $imp, $otr, $dedu);
+ $todo = array_merge($encabezado, $det, $imp, $otr, $dedu);
 
     /*$todo = json_encode($todo);
     dd($todo);
     exit;*/
-   
-     
+
+
     # ========================================================
     # =       Almacena JSON antes de enviar a la API         =
     # ========================================================
@@ -596,15 +718,17 @@ class EinvoiceController extends Controller
     # =           Enviar a la API           =
     # =======================================
 
-   
-   
+    
+
     $res = $this->Enviar_Json($todo);
 
    
+   
+
     # =====================================================
     # =           Recoge lo que devuelve la API           =
     # =====================================================
-   
+
     foreach ($res as $key => $value) {
       $cuf = $value['cufe'];
       $status = $value['status'];
@@ -614,6 +738,7 @@ class EinvoiceController extends Controller
       $numerofactura = $value['number'];
     }
 
+    
     
     # ===========================================
     # =       Almacena AttachedDocument         =
@@ -633,7 +758,7 @@ class EinvoiceController extends Controller
     # =========================================================
     # =           Valida Status que devuelve la API           =
     # =========================================================
-             
+
     if($status == true){
       $recibo_factura = "Factura de Venta No.";
       $mensaje = "Muy bien! documentos enviados correctamente";
@@ -647,18 +772,18 @@ class EinvoiceController extends Controller
       # =           Guarda CUFE y Status           =
       # ============================================
 
-       if($opcion == 'F1'){
+      if($opcion == 'F1'){
         $factura = Factura::where("prefijo","=",$Prefix)->find($numerofactura);
         $factura->cufe = $cf;
         $factura->status_factelectronica = '1';
         $factura->save();
 
-       }else if($opcion == 'NC'){
+      }else if($opcion == 'NC'){
         $nota_c = Notas_credito_factura::where("prefijo_ncf","=",$Prefix)->find($numerofactura);
         $nota_c->cufe = $cf;
         $nota_c->status_factelectronica = '1';
         $nota_c->save();
-       }
+      }
       
     }else{
       $recibo_factura = "Comprobante de pago No.";
@@ -680,40 +805,43 @@ class EinvoiceController extends Controller
       "email_cliente"=>$email_cliente,
       "opcion2"=>$opcion2
     ]);
-   
+
   }
 
 
   private function Enviar_Json($data_todo){
 
+
     $datosCodificados = json_encode($data_todo);
-
-    $url = "http://notaria13.binario.shop/factura/api-sync-invoice.json";
+    $url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
+    
     $ch = curl_init($url);
-
     curl_setopt_array($ch, array(
       CURLOPT_CUSTOMREQUEST => "POST",
       CURLOPT_POSTFIELDS => $datosCodificados,
-      //Encabezados
-      //CURLOPT_HEADER => true,
       CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json',
         'Content-Length: ' . strlen($datosCodificados),
       ),
       # indicar que regrese los datos, no que los imprima directamente
       CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_PORT => 80
     ));
-  
+
+
     # Hora de hacer la petición
     $resultado = curl_exec($ch);
+
     # Vemos si el código es 200, es decir, HTTP_OK
     $codigoRespuesta = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
     $res = json_decode($resultado, true);
+
+    
     curl_close($ch);
-   
+
+    
     return $res;
- 
+
   }
 
 }

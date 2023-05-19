@@ -127,7 +127,7 @@
         <font size="3">VALOR RETENIDO</font>
       </td>
       <td>
-        <font size="3">${{number_format($total_retenido, 2)}})</font>
+        <font size="3">${{number_format($total_retenido, 2)}}</font>
       </td>
     </tr>
 

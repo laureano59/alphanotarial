@@ -97,15 +97,22 @@
                 </h5>
               </div>
               <div class="widget-toolbar">
+                  <a href="#" id="imprimirliquidacion_provisional">
+                      <i><img src="{{ asset('images/impreprovi.png') }}" width="28 px" height="28 px" title="Provisional"></i>
+                  </a>
+              </div>
+              <div class="widget-toolbar">
                   <a href="javascript://" data-action="reload" id="guardarliq">
                       <i><img src="{{ asset('images/almacenar.png') }}" width="28 px" height="28 px" title="Guardar Liquidación"></i>
                   </a>
               </div>
               <div class="widget-toolbar">
-                  <a href="javascript://" id="imprimirliquidacion">
+                  <a href="#" id="imprimirliquidacion">
                       <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Liquidación"></i>
                   </a>
               </div>
+
+              
             <div class="widget-body">
                 <div class="widget-main">
                     <div class="form-horizontal">
@@ -275,6 +282,14 @@
                                               <td>
                                               <b class="green"><span id="totalaporteespecial"></span></b>
                                               <input type="hidden" id="totaporteespecial" value="0">
+                                              </td>
+                                            </tr>
+
+                                            <tr id="impuesto_timbre" style="display:none">
+                                              <td><b class="blue">Impuesto Timbre</b></td>
+                                              <td>
+                                              <b class="green"><span id="totalimpuestotimbre"></span></b>
+                                              <input type="hidden" id="total_impuesto_timbre" value="0">
                                               </td>
                                             </tr>
                                             

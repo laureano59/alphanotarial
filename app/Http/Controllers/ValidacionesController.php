@@ -647,4 +647,16 @@ class ValidacionesController extends Controller
 
         }
 
+
+         public function Validar_liquidacion_provisional(Request $request){
+         
+            $tipo_impre_liq = $request->tipo_impresion;
+            $request->session()->put('tipo_impre_liq', $tipo_impre_liq);
+
+            return response()->json([
+              "validar"=>1
+             ]);
+
+        }
+
     }

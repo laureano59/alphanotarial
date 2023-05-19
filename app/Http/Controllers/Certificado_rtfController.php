@@ -88,14 +88,14 @@ class Certificado_rtfController extends Controller
             $Certificado_rtf->fecha_factura = $fecha_factura;
             $Certificado_rtf->valor_venta = $cuantia;
             $Certificado_rtf->total_retenido = $total_retenido_cli;
-            $Certificado_rtf->total_retencion = $totalretencion;
+            $Certificado_rtf->total_retencion = $total_retenido_cli;
             $Certificado_rtf->ciudad = $nombre_ciud;
             $Certificado_rtf->fecha_escritura = $fecha_escritura;
             $Certificado_rtf->save();
             //echo 1;
 
             /******Cuando hay vendedores adicionales********/
-            if($acr->porcentajecli1 < 100){
+            if($acr->porcentajecli1 < 100 ){
               $vendedores = Otorgante::where('id_actoperrad', $id_actoperrad)->get();
               foreach ($vendedores as $ven) {
                 $Certificado_rtf = new Certificado_rtf();
@@ -111,7 +111,7 @@ class Certificado_rtfController extends Controller
                 $porcentaje_ven = ($ven->porcentaje_otor) / 100;
                 $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_ven));
                 $Certificado_rtf->total_retenido = $total_retenido_cli;
-                $Certificado_rtf->total_retencion = $totalretencion;
+                $Certificado_rtf->total_retencion = $total_retenido_cli;
                 $Certificado_rtf->ciudad = $nombre_ciud;
                 $Certificado_rtf->fecha_escritura = $fecha_escritura;
                 $Certificado_rtf->save();

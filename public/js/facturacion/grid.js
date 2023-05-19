@@ -434,6 +434,18 @@ function CargarRecaudos_Fact_Multiple(validar) {
             $("#totalaporteespecialparticipacion").html('0.00');
             $("#totalaporteespecialparticipacioniden").val(0);
         }
+
+        if (parseFloat(validar[item].impuestotimbre) > 0) {
+            $("#totalimpuestotimbre").html(formatNumbderechos(validar[item].impuestotimbre));
+            $("#totalimpuestotimbreiden").val(parseFloat(validar[item].impuestotimbre));
+            $("#totalimpuestotimbreparticipacion").html(formatNumbderechos(validar[item].impuestotimbre * porcentaje));
+            $("#totalimpuestotimbreparticipacioniden").val(validar[item].impuestotimbre * porcentaje);
+        } else if (parseFloat(validar[item].impuestotimbre) < 1) {
+            $("#totalimpuestotimbre").html('0.00');
+            $("#totalimpuestotimbreiden").val(0);
+            $("#totalimpuestotimbreparticipacion").html('0.00');
+            $("#totalimpuestotimbreparticipacioniden").val(0);
+        }
     }
     // $("#grantotal").val(grantotal);
     // $("#totalcompleto").html(formatNumbderechos(Math.round($("#grantotal").val())));
@@ -441,39 +453,48 @@ function CargarRecaudos_Fact_Multiple(validar) {
 
 function Calcular_Recaudos_FactMultiple() {
     var pagosuper, pagosuperiden, pagofondo, pagofondoiden, 
-    pagoaporteespecial, pagoaporteespecialiden, totalcompleto,
-    porcentajesuper, porcentajefondo, totalsuperparticipacioniden,
+    pagoaporteespecial, pagoaporteespecialiden, 
+    pagoimpuestotimbre, pagoimpuestotimbreiden, porcentajeimpuestotimbre,
+    totalcompleto, porcentajesuper, porcentajefondo, porcentajeaporteespecial, totalsuperparticipacioniden,
     totalfondoparticipacioniden;
 
     porcentajesuper = parseFloat($("#porcentajesuper").val() / 100);
     porcentajefondo = parseFloat($("#porcentajefondo").val() / 100);
     porcentajeaporteespecial = parseFloat($("#porcentajeaporteespecial").val() / 100);
+    porcentajeimpuestotimbre = parseFloat($("#porcentajeimpuestotimbre").val() / 100);
    
     totalsuperparticipacioniden = $("#totalsuperparticipacioniden").val();
     totalfondoparticipacioniden = $("#totalfondoparticipacioniden").val();
     totalaporteespecialparticipacioniden = $("#totalaporteespecialparticipacioniden").val();
+    totalimpuestotimbreparticipacioniden = $("#totalimpuestotimbreparticipacioniden").val();
     
     pagosuper = parseFloat(totalsuperparticipacioniden * porcentajesuper);
     pagofondo = parseFloat(totalfondoparticipacioniden * porcentajefondo);
     pagoaporteespecial = parseFloat(totalaporteespecialparticipacioniden * porcentajeaporteespecial);
+    pagoimpuestotimbre = parseFloat(totalimpuestotimbreparticipacioniden * porcentajeimpuestotimbre);
 
     $("#totfondo").val(pagofondo);
     $("#totsuper").val(pagosuper);
     $("#totaporteespecial").val(pagoaporteespecial);
+    $("#totimpuestotimbre").val(pagoimpuestotimbre);
+
 
     $("#pagosuper").html(formatNumbderechos(Math.round(pagosuper)));
     $("#pagofondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#pagoaporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
+    $("#pagoimpuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
     
     $("#pagosuperiden").val(pagosuper);
     $("#pagofondoiden").val(pagofondo);
     $("#pagoaporteespecialiden").val(pagoaporteespecial);
+    $("#pagoimpuestotimbreiden").val(pagoimpuestotimbre);
 
     $("#super").html(formatNumbderechos(Math.round(pagosuper)));
     $("#fondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#aporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
+    $("#impuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
 
-    //totalcompleto =
+   // totalcompleto = 
 }
 
 function CagarConceptos(validar) {
@@ -671,6 +692,7 @@ function SumarConceptosCompa() {
 
 
 function CargarRecaudos(validar) {
+    
     var grantotal = 0;
     for (item in validar) {
         grantotal = parseFloat(validar[item].grantotalliq);
@@ -702,8 +724,15 @@ function CargarRecaudos(validar) {
          if (parseFloat(validar[item].aporteespecial) > 0) {
             $("#totaporteespecial").val(parseFloat(validar[item].aporteespecial));
             $("#aporteespecial").html(formatNumbderechos($("#totaporteespecial").val()));
-        } else if (parseFloat(validar[item].reteconsumo) < 1) {
+        } else if (parseFloat(validar[item].aporteespecial) < 1) {
             $("#aporteespecial").html('0.00');
+        }
+
+         if (parseFloat(validar[item].impuesto_timbre) > 0) {
+            $("#total_impuesto_timbre").val(parseFloat(validar[item].impuesto_timbre));
+            $("#totalimpuestotimbre").html(formatNumbderechos($("#total_impuesto_timbre").val()));
+        } else if (parseFloat(validar[item].impuesto_timbre) < 1) {
+            $("#totalimpuestotimbre").html('0.00');
         }
 
         if (parseFloat(validar[item].recsuper) > 0) {
@@ -1294,6 +1323,7 @@ function Total_Menos_Deducciones() {
         parseFloat($("#totrtf").val()) +
         parseFloat($("#totreteconsumo").val()) +
         parseFloat($("#totaporteespecial").val()) +
+        parseFloat($("#totimpuestotimbre").val()) +
         parseFloat($("#totfondo").val()) +
         parseFloat($("#totsuper").val());
 
@@ -1301,7 +1331,10 @@ function Total_Menos_Deducciones() {
         parseFloat($("#retertfide").val()) +
         parseFloat($("#reteicaide").val());
 
+
+
     grantotal = Math.round(grantotal - deducciones);
+    
     $("#grantotal").val(grantotal);
     $("#totalcompleto").html(formatNumbderechos(grantotal));
 

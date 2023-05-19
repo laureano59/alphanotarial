@@ -52,9 +52,10 @@ class EnvoicecajarapidaController extends Controller
     $responsabilidad_fiscal = $notaria->responsabilidad_fiscal;
     $anio_trabajo = Notaria::find(1)->anio_trabajo;
 
-    # -----------  Numero de factura obtenida en una session  -----------
+    # -----------  Numero de factura obtenida en una session o en un ajax  -----------
 
     $numfact = $request->num_fact;
+    
    
     $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
     foreach ($facturas as $factura) {
@@ -537,31 +538,34 @@ class EnvoicecajarapidaController extends Controller
   private function Enviar_Json($data_todo){
 
     $datosCodificados = json_encode($data_todo);
-
-    $url = "http://notaria13.binario.shop/factura/api-sync-invoice.json";
+    $url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
+    
     $ch = curl_init($url);
-
     curl_setopt_array($ch, array(
       CURLOPT_CUSTOMREQUEST => "POST",
       CURLOPT_POSTFIELDS => $datosCodificados,
-      //Encabezados
-      //CURLOPT_HEADER => true,
       CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json',
         'Content-Length: ' . strlen($datosCodificados),
       ),
       # indicar que regrese los datos, no que los imprima directamente
       CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_PORT => 80
     ));
+
   
     # Hora de hacer la petición
     $resultado = curl_exec($ch);
+
     # Vemos si el código es 200, es decir, HTTP_OK
     $codigoRespuesta = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
     $res = json_decode($resultado, true);
+
+    //var_dump($resultado);
+    //exit;
     curl_close($ch);
-   
+
+    
     return $res;
  
   }

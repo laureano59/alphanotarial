@@ -67,7 +67,7 @@
                 <font size="1">Fecha:</font>&nbsp;
             </td>
             <td width="25%">
-                <font size="1">{{ Carbon\Carbon::parse($fecha_ncf)->format('d/m/Y') }}</font>
+                <font size="1">{{ Carbon\Carbon::parse($fecha_ncf)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font>
             </td>
         </tr>
     </table>
@@ -137,7 +137,7 @@
             </td>
 
             <td align="right">
-                <font size="1"><b>Iva:</b></font>
+                <font size="1"><b>Iva ({{$porcentaje_iva}}%):</b></font>
             </td>
             <td align="right">
                 <font size="1"><b>$&nbsp;{{ number_format($total_iva, 2) }}</b></font>
@@ -165,7 +165,7 @@
         <td>
             <img width="40" height="40" src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->generate($QRCode)) !!} ">
         </td>
-        <td><font size="1">Cufe:&nbsp;{{$cufe}}</font></td>
+        <td><font size="1">Cufe:&nbsp;{{$cufe}} &nbsp; Hora:{{$hora_cufe}}</font></td>
       </tr>
     </table>
 

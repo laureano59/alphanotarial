@@ -43,7 +43,7 @@
     <table width="100%">
       <tr>
         <td align="center">
-          LIQUIDACIÓN DE LA RADICACIÓN No. {{$id_radica}}
+          {{$titulo_liq}}
         </td>
       </tr>
     </table>

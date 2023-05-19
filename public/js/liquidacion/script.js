@@ -1,4 +1,5 @@
 $("#buscar").click(function() {
+
   /********NOTE:Comprueba si La radicación está liquidada********/
   var id_radica = $("#radicacion").val();
   var route = "/mostrarliq";
@@ -180,6 +181,42 @@ function Conceptos(id_acto){
 
 
 $("#imprimirliquidacion").click(function() {
-  var url = "/liquidacionpdf";
-  $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+   
+   var tipo_impresion = "real";
+   var datos = {
+      "tipo_impresion": tipo_impresion
+  };
+  var route = "/validar_liquidacion_provisional";
+  var token = $("#token").val();
+  var type = 'GET';
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == '1'){
+      var url = "/liquidacionpdf";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+   
+  })
+});
+
+
+$("#imprimirliquidacion_provisional").click(function() {
+
+  var tipo_impresion = "provisional";
+
+  var datos = {
+      "tipo_impresion": tipo_impresion
+  };
+  var route = "/validar_liquidacion_provisional";
+  var token = $("#token").val();
+  var type = 'GET';
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == '1'){
+      var url = "/liquidacionpdf";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+    
+  })
+
 });

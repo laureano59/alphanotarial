@@ -175,6 +175,7 @@
                   <input type="hidden" id="totrtf" value="0">
                   <input type="hidden" id="totreteconsumo" value="0">
                   <input type="hidden" id="totaporteespecial" value="0">
+                  <input type="hidden" id="totimpuestotimbre" value="0">
                   <input type="hidden" id="totfondo" value="0">
                   <input type="hidden" id="totsuper" value="0">
                   <input type="hidden" id="reteivaide" value="0">
