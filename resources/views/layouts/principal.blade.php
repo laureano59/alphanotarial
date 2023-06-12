@@ -144,6 +144,14 @@
 				      </a>
 				    </li>
 
+				    <li>
+							<a href="/cpanelcertificados">
+					    	<i class="menu-icon"><img src="{{ asset('images/certificados.png') }}" width="30 px" height="30 px"></i>
+					    	<span class="menu-text"> Certificados</span>
+					     </a>
+				       <b class="arrow"></b>
+					  </li>
+
 					  <li>
 					    <a href="/panel_protocolistas">
 								<i class="menu-icon"><img src="{{ asset('images/protocolistas.png') }}" width="30 px" height="30 px"></i>

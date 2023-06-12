@@ -154,10 +154,10 @@ function CargarRecaudosLiq(validar) {
         $("#aporteespecial").fadeOut();
     }
 
-     if(validar[item].total_impuesto_timbre > 0){
-      $("#totalimpuestotimbre").html(formatNumbderechos(validar[item].total_impuesto_timbre));
+     if(validar[item].impuestotimbre > 0){
+      $("#totalimpuestotimbre").html(formatNumbderechos(validar[item].impuestotimbre));
       $("#impuesto_timbre").fadeIn();
-    }else if(validar[item].aporteespecial < 1){
+    }else if(validar[item].impuestotimbre < 1){
         $("#impuesto_timbre").fadeOut();
     }
 

@@ -87,6 +87,7 @@ class LiqrecaudosController extends Controller
           $id_radica = $request->input('id_radica');
           if (Liq_recaudo::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
             $liq_recaudos = Liq_recaudo::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+           
             return response()->json([
               "validarliqr"=> "1",
               "recaudos"=>$liq_recaudos

@@ -12,6 +12,7 @@ use App\Banco;
 use App\Actas_deposito;
 use App\Actas_deposito_view;
 
+
 class ActasdepositoController extends Controller
 {
     /**

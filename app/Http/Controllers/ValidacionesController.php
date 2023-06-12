@@ -521,11 +521,14 @@ class ValidacionesController extends Controller
         public function ExisteFactura(Request $request){
           $id = $request->num_factura;
           $anio_trabajo = $request->anio_trabajo;
+          $tipo_certificado = $request->tipo_certificado;
           $prefijo_fact = Notaria::find(1)->prefijo_fact;
           $factura = Factura::where("prefijo","=",$prefijo_fact)->find($id);
+
           if($factura){
-            $request->session()->put('numfact', $id);
+            $request->session()->put('tipo_certificado', $tipo_certificado);
             $request->session()->put('anio_trabajo', $anio_trabajo);
+            $request->session()->put('numfact', $id);
 
             return response()->json([
               "validar"=>1
@@ -533,7 +536,7 @@ class ValidacionesController extends Controller
           }else{
             return response()->json([
               "validar"=>0,
-              "mensaje"=>'Esta Factura no Existe en el Sistema'
+              "mensaje"=>'La factura no exixte para el año fiscal ingresado'
              ]);
           }
         }

@@ -34,7 +34,7 @@ class SesionesController extends Controller
       ]);
     }
 
-
+   
     public function Sessiones_Identificacion(Request $request){
       $request->session()->forget('identificacion');
       $opcion = $request->identificacion;

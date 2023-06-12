@@ -53,6 +53,8 @@ use App\Detalle_cajarapidafacturas;
 use App\Facturascajarapida;
 use App\Notas_credito_cajarapida;
 use App\Protocolistas_copias_view;
+use App\Consecutivo;
+use App\Ciudad;
 
 
 class PdfController extends Controller
@@ -5598,6 +5600,7 @@ class PdfController extends Controller
       $total_fondo = 0;
       $total_super = 0;
       $total_aporteespecial = 0;
+      $total_impuesto_tiembre = 0;
 
       foreach ($recaudos as $key => $rec) {
         $j = 0;
@@ -5637,6 +5640,12 @@ class PdfController extends Controller
           $terceros[$j]['total'] = $rec['iva'];
           $total_iva = $terceros[$j]['total'];
         }
+        if($rec['impuestotimbre'] > 0){
+          $j = $j + 1;
+          $terceros[$j]['concepto'] = "Impuesto de timbre";
+          $terceros[$j]['total'] = $rec['impuestotimbre'];
+          $total_impuesto_tiembre = $terceros[$j]['total'];
+        }
       }
 
 
@@ -5645,7 +5654,7 @@ class PdfController extends Controller
       $data['contterceros'] = $contterceros;
 
       $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + 
-      $total_fondo + $total_super + $total_aporteespecial;
+      $total_fondo + $total_super + $total_aporteespecial + $total_impuesto_tiembre;
       $total_fact = $totalterceros + $subtotal1;
       $data['totalterceros'] = $totalterceros;
       $data['total_fact'] = $total_fact;
@@ -6253,6 +6262,135 @@ class PdfController extends Controller
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
 
+    }
+
+    public function Certificado_impuesto_timbre(Request $request)
+    {
+      $notaria = Notaria::find(1);
+      $nombre_nota = $notaria->nombre_nota;
+      $nombre_notario = $notaria->nombre_notario;
+      $nit = $notaria->nit;
+      $direccion_nota = $notaria->direccion_nota;
+      $email = $notaria->email;
+      $id_ciud = $notaria->id_ciud;
+      $ciudad = Ciudad::find($id_ciud);
+      $nombre_ciud = $ciudad->nombre_ciud;
+      $num_factura = $request->session()->get('numfact');
+      $anio_fiscal = $request->session()->get('anio_trabajo');
+      $tipo_certificado = $request->session()->get('tipo_certificado');
+
+      if($tipo_certificado == 1){
+        $Tipo_certificado = "CERTIFICADO DE IMPUESTO AL TIMBRE No. ";
+        $nombredelpdf = "certimbre";
+        $consecutivo = Consecutivo::find(1);
+        $consecutivo_timbre = $consecutivo->certi_impuesto_timbre;
+        $id_cer = $consecutivo_timbre + 1;
+        $consecutivo->certi_impuesto_timbre = $id_cer;
+        $consecutivo->save();
+
+      }else  if($tipo_certificado == 2){
+        $Tipo_certificado = "CERTIFICADO DE RETENCIÓN EN LA FUENTE No. ";
+        $nombredelpdf = "certrtf";
+        $consecutivo = Consecutivo::find(1);
+        $consecutivo_timbre = $consecutivo->certi_retencion_fuente;
+        $id_cer = $consecutivo_timbre + 1;
+        $consecutivo->certi_retencion_fuente = $id_cer;
+        $consecutivo->save();
+      }
+
+      
+      $fecha_certificado = date("d/m/Y");
+
+      $Factura = Factura::where('id_fact', $num_factura)->where('anio_radica', $anio_fiscal)->get();
+          foreach ($Factura as $fact) {
+            $id_radica = $fact->id_radica;
+            $prefijo_fact = $fact->prefijo;
+            $fecha_factura = Carbon::parse($fact->fecha_fact)->format('d-m-Y');
+            if($tipo_certificado == 1){
+              $total_impuesto_timbre = $fact->total_impuesto_timbre;
+            }else if($tipo_certificado == 2){
+              $total_impuesto_timbre = $fact->total_rtf;
+            }
+            
+            $identificacion_cli = $fact->a_nombre_de;
+          }
+
+      $Escritura = Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_fiscal)->get();
+        foreach ($Escritura as $esc) {
+            $num_escritura = $esc->num_esc;
+            $fecha_escritura = Carbon::parse($esc->fecha_esc)->format('d-m-Y');
+        }
+
+        $nombre_cli = $this->Trae_Nombres($identificacion_cli);
+
+        $Actos_persona_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_fiscal)->get();
+          foreach ($Actos_persona_radica as $apr) {
+            if($apr->porcentajecli1 > 0){
+              $cuantia = $apr->cuantia;
+            }
+          }
+        
+      
+        $data['id_cer'] = $id_cer;
+        $data['nombre_nota'] = $nombre_nota;
+        $data['nombre_notario'] = $nombre_notario;
+        $data['nit'] = $nit;
+        $data['direccion_nota'] = $direccion_nota;
+        $data['email'] = $email;
+        $data['num_escritura'] = $num_escritura;
+        $data['anio_gravable'] = $anio_fiscal;
+        $data['fecha_escritura'] = $fecha_escritura;
+        $data['ciudad'] = $nombre_ciud;
+        $data['nombre_contribuyente'] = $nombre_cli;
+        $data['identificacion_contribuyente'] = $identificacion_cli;
+        $data['prefijo_fact'] = $prefijo_fact;
+        $data['num_factura'] = $num_factura;
+        $data['fecha_factura'] = $fecha_factura;
+        $data['valor_venta'] = $cuantia;
+        $data['total_retenido'] = $total_impuesto_timbre;
+        $data['fecha_certificado'] = $fecha_certificado;
+        $data['nombre_del_certificado'] = $Tipo_certificado;
+
+        $html = view('pdf.certificadotimbre',$data)->render();
+
+        $namefile =  $nombredelpdf.'_No.'.$id_cer.'.pdf';
+
+        $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+
+        $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+        $mpdf = new Mpdf([
+          'fontDir' => array_merge($fontDirs, [
+            public_path() . '/fonts',
+          ]),
+          'fontdata' => $fontData + [
+            'arial' => [
+              'R' => 'arial.ttf',
+              'B' => 'arialbd.ttf',
+            ],
+          ],
+          'default_font' => 'arial',
+          "format" => [216, 140],
+          'margin_bottom' => 10,
+        ]);
+
+        $mpdf->defaultfooterfontsize=2;
+        $mpdf->SetTopMargin(5);
+        $mpdf->SetDisplayMode('fullpage');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($namefile,"I");
+   
+        
+    }
+
+    private function Trae_Nombres($identificacion){
+      $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname");
+      $nombre = Cliente::where('identificacion_cli', $identificacion)->select($raw)->get();
+      foreach ($nombre as $nom) {
+        $nom = $nom->fullname;
+      }
+      return $nom;
     }
 
 

@@ -23,6 +23,7 @@ Route::resource('factura_acargo_de', 'EditaracargodeController');
 
 Route::resource('facturaelectronica', 'FacturaelectronicaController');
 Route::resource('panel_protocolistas', 'ProtocolistasController');
+Route::resource('cpanelcertificados', 'CertificadosController');
 
 Route::resource('actas_deposito', 'ActasdepositoController');
 Route::resource('guardarcertificadortf', 'Certificado_rtfController');
@@ -90,6 +91,8 @@ Route::get('mostrarconcep', 'LiqconceptosController@Cargar_Conceptos');
 Route::get('mostrarrecaud', 'LiqrecaudosController@Cargar_Recaudos');
 Route::get('sessiones', 'SesionesController@Sessiones');
 Route::get('sessiones_protocolista', 'SesionesController@Sessiones_protocolistas');
+Route::get('certificado_impuesto_timbre', 'PdfController@Certificado_impuesto_timbre');
+Route::get('sessiones_certificados', 'SesionesController@Sessiones_certificados');
 Route::get('sessionescajarapida', 'SesionesController@Sessiones_cajarapida');
 Route::get('conceptos', 'ConceptosController@ConceptoActo');
 Route::get('traeconceptosporid', 'ConceptosController@TraeConceptoPorId');
