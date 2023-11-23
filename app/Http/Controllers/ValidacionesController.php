@@ -268,6 +268,7 @@ class ValidacionesController extends Controller
         }
 
         public function Porcentaje_Rtf_Vendedores(Request $request){
+         
           $rtfcliente = 0;
           $identificacion_cli = $request->input('identificacion_cli');
           $ValidarEmpresa = cliente::where('identificacion_cli', $identificacion_cli)->get();
@@ -290,7 +291,7 @@ class ValidacionesController extends Controller
 
 
           $anio_radica = Notaria::find(1)->anio_trabajo;
-          $rtf_porcentaje = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('identificacion_cli', $identificacion_cli)->whereIn('id_cal1', [5, 14])->get()->toArray();
+          $rtf_porcentaje = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('identificacion_cli', $identificacion_cli)->whereIn('id_cal1', [5, 11, 14])->get()->toArray();
           $porcentajevendedor = 0;
           if(empty($rtf_porcentaje)) { //Si identificacion_cli está vacío entra a validar con cli2
             $rtf_porcentaje = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('identificacion_cli2', $identificacion_cli)->whereIn('id_cal2', [23, 19])->get()->toArray();

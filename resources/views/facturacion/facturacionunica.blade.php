@@ -212,6 +212,11 @@
                             <td style="width:50%;"><span id="aporteespecial" style="font-size:16px;"></span></td>
                         </tr>
 
+                         <tr>
+                            <td style="width:20%;"><span style="font-size:16px;">Impuesto_Timbre:</span></td>
+                            <td style="width:50%;"><span id="impuestotimbre" style="font-size:16px;"></span></td>
+                        </tr>
+
                         <tr>
                             <td style="width:20%;"><span style="font-size:16px;">ReteIva:</span></td>
                             <td style="width:50%;"><span id="reteiva" class="red" style="font-size:16px;"></span></td>

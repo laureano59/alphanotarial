@@ -153,11 +153,15 @@ Route::get('copiafactura', 'PdfController@PdfCopiaFactura');
 
 Route::get('copiafacturacajarapida', 'PdfController@PdfCopiaFacturaCajaRapida');
 
+Route::get('copiafacturacajarapidapos', 'PdfController@PdfCopiaFacturaCajaRapidaPOS');
+
 
 Route::get('factunicapdf', 'PdfController@pdf');
 Route::get('facturacajarapidapdf', 'PdfController@FacturaCajaRapida');
 Route::get('actasdepositopdf', 'PdfController@PdfActaDeposito');
 Route::get('cajadiariopdf', 'PdfController@PdfCajaDiarioGeneral');
+
+Route::get('facturacajarapidaPost', 'PdfController@FacturaCajaRapidaPost');
 
 Route::get('cajadiariocajarapidapdf', 'PdfController@CajaDiarioCajaRapidaPdf');
 Route::get('cajadiariocajarapidaconceptos', 'PdfController@Cajadiariocajarapidaconceptospdf');

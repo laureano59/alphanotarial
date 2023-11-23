@@ -692,7 +692,7 @@ function SumarConceptosCompa() {
 
 
 function CargarRecaudos(validar) {
-    
+   
     var grantotal = 0;
     for (item in validar) {
         grantotal = parseFloat(validar[item].grantotalliq);
@@ -728,11 +728,11 @@ function CargarRecaudos(validar) {
             $("#aporteespecial").html('0.00');
         }
 
-         if (parseFloat(validar[item].impuesto_timbre) > 0) {
-            $("#total_impuesto_timbre").val(parseFloat(validar[item].impuesto_timbre));
-            $("#totalimpuestotimbre").html(formatNumbderechos($("#total_impuesto_timbre").val()));
-        } else if (parseFloat(validar[item].impuesto_timbre) < 1) {
-            $("#totalimpuestotimbre").html('0.00');
+         if (parseFloat(validar[item].impuestotimbre) > 0) {
+            $("#totimpuestotimbre").val(parseFloat(validar[item].impuestotimbre));
+            $("#impuestotimbre").html(formatNumbderechos($("#totimpuestotimbre").val()));
+        } else if (parseFloat(validar[item].impuestotimbre) < 1) {
+            $("#impuestotimbre").html('0.00');
         }
 
         if (parseFloat(validar[item].recsuper) > 0) {

@@ -25,12 +25,20 @@ class EnviaremailController extends Controller
           $nombre_factura = $request->num_fact.'_'.$opcion.'.pdf';
           $nombre_xml = $request->num_fact.'_'.$opcion.'_AttachedDocument'.'.xml';
 
+          /*Crear carpeta*/
+          
+          $nombre_carpeta = $request->num_fact.'_'.$opcion;
+          mkdir("cliente/".$nombre_carpeta, 0700);
+
           $zip = new ZipArchive();
-          $paquete_zip = "cliente/".$request->num_fact.'.zip';
+          //$paquete_zip = "cliente/".$request->num_fact.'.zip';
+          $paquete_zip = "cliente/".$nombre_carpeta.'/'.$request->num_fact.'.zip';
 
           $zip = new ZipArchive();
 
-          $archivo = "cliente/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
+          //$archivo = "cliente/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
+
+          $archivo = "cliente/".$nombre_carpeta.'/'.'FACTURA'.'_'.$request->num_fact.'_'.$opcion.".zip";
 
           sleep(10);//da tiempo de generar el PDF
           
@@ -50,8 +58,8 @@ class EnviaremailController extends Controller
 
           }
 
-          unlink(public_path('cliente/').$nombre_factura);
-          unlink(public_path('cliente/').$nombre_xml);
+          //unlink(public_path('cliente/').$nombre_factura);
+          //unlink(public_path('cliente/').$nombre_xml);
 
     
           $Enviar = array();
@@ -75,13 +83,22 @@ class EnviaremailController extends Controller
           $nombre_factura = $request->num_fact.'_'.$opcion.'.pdf';
           $nombre_xml = $request->num_fact.'_'.$opcion.'_AttachedDocument'.'.xml';
 
+           /*Crear carpeta*/
+          
+          $nombre_carpeta = $request->num_fact.'_'.$opcion;
+          mkdir("cliente_cajarapida/".$nombre_carpeta, 0700);
+
 
           $zip = new ZipArchive();
-          $paquete_zip = "cliente_cajarapida/".$request->num_fact.'.zip';
+          //$paquete_zip = "cliente_cajarapida/".$request->num_fact.'.zip';
+
+           $paquete_zip = "cliente_cajarapida/".$nombre_carpeta.'/'.$request->num_fact.'.zip';
 
           $zip = new ZipArchive();
 
-          $archivo = "cliente_cajarapida/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
+          //$archivo = "cliente_cajarapida/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
+
+          $archivo = "cliente_cajarapida/".$nombre_carpeta.'/'.'FACTURA'.'_'.$request->num_fact.'_'.$opcion.".zip";
 
           sleep(10);//da tiempo de generar el PDF
           
@@ -101,8 +118,8 @@ class EnviaremailController extends Controller
 
           }
 
-          unlink(public_path('cliente_cajarapida/').$nombre_factura);
-          unlink(public_path('cliente_cajarapida/').$nombre_xml);
+         //unlink(public_path('cliente_cajarapida/').$nombre_factura);
+         //unlink(public_path('cliente_cajarapida/').$nombre_xml);
 
     
           $Enviar = array();

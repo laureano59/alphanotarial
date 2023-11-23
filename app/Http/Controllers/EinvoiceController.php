@@ -722,8 +722,7 @@ class EinvoiceController extends Controller
 
     $res = $this->Enviar_Json($todo);
 
-   
-   
+      
 
     # =====================================================
     # =           Recoge lo que devuelve la API           =

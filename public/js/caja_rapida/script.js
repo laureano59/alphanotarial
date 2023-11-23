@@ -334,7 +334,7 @@ $("#imprimircopiafacturacajarapida").click(function() {
   __ajax(route, token, type, datos)
       .done(function(info) {
         if(info.validar == 1){
-          var url = "/copiafacturacajarapida";
+          var url = "/copiafacturacajarapidapos";
           $("<a>").attr("href", url).attr("target", "_blank")[0].click();
 
         }else if(info.validar == 0){

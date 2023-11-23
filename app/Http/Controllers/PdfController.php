@@ -5694,6 +5694,194 @@ class PdfController extends Controller
 
     }
 
+    
+
+    public function FacturaCajaRapidaPost(Request $request){
+
+      $notaria = Notaria::find(1);
+      $prefijo_fact = $notaria->prefijo_facturarapida;
+      $id_concepto = $request->id_concepto;
+      $num_fact  = $request->session()->get('numfactrapida');
+      $anio_trabajo = $notaria->anio_trabajo;
+      //TARIFA DEL IVA
+      $porcentaje_iva = round((Tarifa::find(9)->valor1));
+      
+
+      $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($facturas as $factura) {
+        $total_iva = $factura->total_iva;
+        $total_rtf = 0;
+        $total_reteconsumo = 0;
+        $total_aporteespecial = 0;
+        $total_fondo = 0;
+        $total_super = 0;
+        $total_fact = $factura->total_fact;
+        $reteiva = 0;
+        $retertf = 0;
+        $reteica = 0;
+        $subtotal1 = $factura->subtotal;
+        $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
+        $identificacioncli1 = $factura->a_nombre_de;
+        $forma_pago = $factura->credito_fact;
+        $cufe_almacenado = $factura->cufe;
+      }
+
+      if($forma_pago == true){
+        $formadepago = "Credito";
+
+      }else if($forma_pago == false){
+        $formadepago = "Efectivo";
+      }
+
+      $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
+        direccion_cli");
+      $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
+      foreach ($cliente as $key => $cli) {
+        $nombrecli1 = $cli['fullname'];
+        $direccioncli1 = $cli['direccion_cli'];
+      }
+      
+      
+      $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
+      ->where('id_fact', $num_fact)
+      ->get()
+      ->toArray();
+
+      $contdetalle = count ($detalle, 0);
+      
+      $subtotal_all = 0;
+      $total_iva = 0;
+      $total_all = 0;
+
+      foreach ($detalle as $Key => $value) {
+        $subtotal_all += $value['subtotal'];
+        $total_iva += $value['iva'];
+        $total_all += $value['total'];
+      }
+      
+
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $resolucion = $notaria->resolucion_cajarapida;
+      $piepagina_fact = $notaria->piepagina_factcajarapida;
+
+
+      # =====================================
+      # =           CUFE y QRCODE           =
+      # =====================================
+
+
+      $cufe = $cufe_almacenado;//$request->session()->get('CUFE_SESION');
+      if(is_null($cufe)){
+        $cufe = "sin facturar";
+      }
+      $QRCode = $cufe;
+
+      $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
+      
+      $iva = "Somos Responsables de IVA";
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['resolucion'] = $resolucion;
+      $data['piepagina_fact'] = $piepagina_fact;
+      $data['IVA'] = $iva;
+      $data['prefijo_fact'] = $prefijo_fact;
+      $data['num_fact'] = $num_fact;
+      $data['identificacioncli1'] = $identificacioncli1;
+      $data['nombrecli1'] = $nombrecli1;
+      $data['direccioncli1'] = $direccioncli1;
+      $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
+      $data['detalle'] = $detalle;
+      $data['contdetalle'] = $contdetalle;
+      $data['subtotal'] = $subtotal1;
+      $data['total_fact'] = $total_fact;
+      $data['subtotal_all'] = $subtotal_all;
+      $data['total_iva'] = $total_iva;
+      $data['total_all'] = $total_all;
+      $data['QRCode'] = $QRCode;
+      $data['cufe'] = $cufe;
+      $data['titulo'] = $FactComprobante;
+      $data['formadepago'] = $formadepago;
+      $data['porcentaje_iva'] = $porcentaje_iva;
+
+      $j = 0;
+      $terceros = [];
+      if($total_iva > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
+        $terceros[$j]['total'] = round($total_iva);
+      }
+
+      $contterceros = count ($terceros, 0);
+      $data['terceros'] = $terceros;
+      $data['contterceros'] = $contterceros;
+
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $data['totalterceros'] = round($totalterceros);
+
+      if($cufe == "sin facturar"){
+        $html = view('pdf.recibofactcajarapida',$data)->render();
+      }else{
+        $html = view('pdf.generarcajarapida',$data)->render();
+      }
+      
+
+      $namefile = $num_fact.'_F1'.'.pdf';
+      //$namefile = 'facturan13'.$num_fact.'.pdf';
+
+
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+          "format" => [216, 140],//Media Carta
+          'margin_bottom' => 10,
+        ]);
+
+      $mpdf->SetHTMLFooter('
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
+      $carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
+      $request->session()->forget('numfactrapida');
+
+
+    }
+
 
     public function FacturaCajaRapida(Request $request){
 
@@ -5875,6 +6063,189 @@ class PdfController extends Controller
       $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       $request->session()->forget('numfactrapida');
+    }
+
+
+    public function PdfCopiaFacturaCajaRapidaPOS(Request $request){
+
+      $notaria = Notaria::find(1);
+      $prefijo_fact = $notaria->prefijo_facturarapida;
+      $id_concepto = $request->id_concepto;
+      $num_fact  = $request->session()->get('numfact');
+      //TARIFA DEL IVA
+      $porcentaje_iva = round((Tarifa::find(9)->valor1));
+      
+      $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($facturas as $factura) {
+        $total_iva = $factura->total_iva;
+        $total_rtf = 0;
+        $total_reteconsumo = 0;
+        $total_aporteespecial = 0;
+        $total_fondo = 0;
+        $total_super = 0;
+        $total_fact = $factura->total_fact;
+        $reteiva = 0;
+        $retertf = 0;
+        $reteica = 0;
+        $subtotal1 = $factura->subtotal;
+        $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
+        $identificacioncli1 = $factura->a_nombre_de;
+        $forma_pago = $factura->credito_fact;
+        $cufe = $factura->cufe;
+      }
+
+      if($forma_pago == true){
+        $formadepago = "Credito";
+
+      }else if($forma_pago == false){
+        $formadepago = "Efectivo";
+      }
+
+      $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
+        direccion_cli");
+      $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
+      foreach ($cliente as $key => $cli) {
+        $nombrecli1 = $cli['fullname'];
+        $direccioncli1 = $cli['direccion_cli'];
+      }
+
+      
+      
+      $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
+      ->where('id_fact', $num_fact)
+      ->get()
+      ->toArray();
+
+      $contdetalle = count ($detalle, 0);
+      
+      $subtotal_all = 0;
+      $total_iva = 0;
+      $total_all = 0;
+
+      foreach ($detalle as $Key => $value) {
+        $subtotal_all += $value['subtotal'];
+        $total_iva += $value['iva'];
+        $total_all += $value['total'];
+      }
+
+      
+
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $resolucion = $notaria->resolucion_cajarapida;
+      $piepagina_fact = $notaria->piepagina_factcajarapida;
+
+
+      # =====================================
+      # =           CUFE y QRCODE           =
+      # =====================================
+        if(is_null($cufe)){
+          $cufe = "sin facturar";
+        }
+      $QRCode = $cufe;
+
+      $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
+      
+      $iva = "Somos Responsables de IVA";
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['resolucion'] = $resolucion;
+      $data['piepagina_fact'] = $piepagina_fact;
+      $data['IVA'] = $iva;
+      $data['prefijo_fact'] = $prefijo_fact;
+      $data['num_fact'] = $num_fact;
+      
+      $data['identificacioncli1'] = $identificacioncli1;
+      $data['nombrecli1'] = $nombrecli1;
+      $data['direccioncli1'] = $direccioncli1;
+      $data['fecha_fact'] = $fecha_fact;
+      $data['hora_fact'] = $hora_fact;
+      $data['hora_cufe'] = $hora_cufe;
+      $data['detalle'] = $detalle;
+      $data['contdetalle'] = $contdetalle;
+      $data['subtotal'] = $subtotal1;
+      $data['total_fact'] = $total_fact;
+      $data['subtotal_all'] = $subtotal_all;
+      $data['total_iva'] = $total_iva;
+      $data['total_all'] = $total_all;
+      $data['QRCode'] = $QRCode;
+      $data['cufe'] = $cufe;
+      $data['titulo'] = $FactComprobante;
+      $data['formadepago'] = $formadepago;
+      $data['porcentaje_iva'] = $porcentaje_iva;
+
+      $j = 0;
+      $terceros = [];
+      if($total_iva > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
+        $terceros[$j]['total'] = round($total_iva);
+      }
+
+      $contterceros = count ($terceros, 0);
+      $data['terceros'] = $terceros;
+      $data['contterceros'] = $contterceros;
+
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $data['totalterceros'] = round($totalterceros);
+
+      if($cufe == "sin facturar"){
+        $html = view('pdf.recibofactcajarapidapos',$data)->render();
+      }else{
+        $html = view('pdf.generarcajarapidapos',$data)->render();
+      }
+      
+      //$html = view('pdf.generarcajarapida',$data)->render();
+
+      $namefile = $num_fact.'_F1'.'.pdf';
+      //$namefile = 'facturan13'.$num_fact.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+          "format" => [74, 210],//tiquet
+          'margin_bottom' => 2,
+        ]);
+
+      $mpdf->SetHTMLFooter('
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
+        </tr>
+        </table>');
+      //$carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"f");
+      $mpdf->Output($namefile,"i");
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
+      
     }
 
 

@@ -14,7 +14,7 @@ class ConfigurarfechasController extends Controller
    */
   public function index(Request $request)
   {
-        $request->user()->authorizeRoles(['facturacion','administrador']);
+        $request->user()->authorizeRoles(['administrador']);
         $notaria = Notaria::find(1);
         $fecha_fact = $notaria->fecha_fact;
         $fecha_esc = $notaria->fecha_esc;

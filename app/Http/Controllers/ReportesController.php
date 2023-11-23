@@ -49,6 +49,7 @@ class ReportesController extends Controller
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.libroindice', compact('nombre_reporte'));
     }else if($opcion == 3){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.ingresosporconcepto', compact('nombre_reporte'));
     }else if($opcion == 4){
       return view('reportes.estadisticonotarial');
@@ -444,7 +445,6 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw1)->get()->toArray();
 
-
      
       $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -466,7 +466,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw3)->get()->toArray();
 
-     
+
       
       $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -515,7 +515,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw8)->get()->toArray();
 
-           
+      
 
       $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
       $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
@@ -524,8 +524,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw9)->get()->toArray();
 
-
-     
+         
 
       /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
       
@@ -541,9 +540,6 @@ class ReportesController extends Controller
       /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
       
       $excenta = array_merge($excenta, $sincuantiaexcenta);
-
-    
-
 
       # ====================================================================
       # =           Identifica excentas que van para con cuantia           =
@@ -628,7 +624,7 @@ class ReportesController extends Controller
       $rango5 = $this->unique_multidim_array($rango5,'escr');
       $rango6 = $this->unique_multidim_array($rango6,'escr');
 
-
+      
       # ==============================================================================
       # =           Elimna repetidas en rangos entre excentas y sincuantia           =
       # ==============================================================================
@@ -761,8 +757,6 @@ class ReportesController extends Controller
         $ran1fondo = 0;
         $ran1total = 0;
       }
-
-      
        
        /*----------  Rango2  ----------*/
 
@@ -856,7 +850,6 @@ class ReportesController extends Controller
         }
       }
 
-      
 
       if($rango4){
         $ran4escr = 0;
@@ -1090,7 +1083,6 @@ class ReportesController extends Controller
     ->get()->toArray();
 
 
-
     $facturas = $this->unique_multidim_array($facturas, 'id_radica');
     $y=1;
     foreach ($atributos as $key => $value) {
@@ -1098,7 +1090,6 @@ class ReportesController extends Controller
      $dataconcept[$y]['escrituras'] = 0;
       $y++;
     }
-
 
 
     $sum_conceptos_otros_periodos = 0;
@@ -1127,7 +1118,6 @@ class ReportesController extends Controller
       
       $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
 
-
         
       foreach ($conceptos as $key => $conc) {
         $i = 1;
@@ -1150,9 +1140,9 @@ class ReportesController extends Controller
 
     }
 
-   
 
-      
+    
+   
     $grantotal = 0;
     foreach ($dataconcept as $key => $value) {
 

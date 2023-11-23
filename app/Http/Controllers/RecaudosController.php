@@ -18,6 +18,7 @@ class RecaudosController extends Controller
       $aporteespecial = $this->AporteEspecial($actos);
       $impuesto_timbre = $this->ImpuestoTimbre($actos);
 
+
       return response()->json([
          "recsuper"=>$recsuper,
          "recfondo"=>$recfondo,
@@ -118,8 +119,7 @@ class RecaudosController extends Controller
       $valor = 0;
       $valoracum = 0;
 
-      
-      
+
       foreach ($actos as $key => $value) {
         if($value['retefuente'] == 'true' && $value['id_tipoident'] != 31){//valida si al acto se le aplica rtf
           $retencion = ($value['cuantia'] * $porcentaje);
@@ -128,50 +128,52 @@ class RecaudosController extends Controller
           # ==================================
           # =           Descuentos           =
           # ==================================
-          
+
+          $Tradicion = date("Y", strtotime($value['tradicion']));
+                   
           if($value['descuento_rtf'] == 0){ //no es un lote
 
-            if($value['tradicion'] == 1986){
+            if($Tradicion == 1986){
               $retencion = $retencion * 0.9;
               $valor = $retencion;
             }
             
-            if($value['tradicion'] == 1985){
+            if($Tradicion == 1985){
               $retencion = $retencion * 0.8;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1984){
+            if($Tradicion == 1984){
               $retencion = $retencion * 0.7;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1983){
+            if($Tradicion == 1983){
               $retencion = $retencion * 0.6;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1982){
+            if($Tradicion == 1982){
               $retencion = $retencion * 0.5;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1981){
+            if($Tradicion == 1981){
               $retencion = $retencion * 0.4;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1980){
+            if($Tradicion == 1980){
               $retencion = $retencion * 0.3;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1979){
+            if($Tradicion == 1979){
               $retencion = $retencion * 0.2;
               $valor = $retencion;
             }
 
-            if($value['tradicion'] == 1978){
+            if($Tradicion == 1978){
               $retencion = $retencion * 0.1;
               $valor = $retencion;
             }

@@ -1,4 +1,5 @@
 function Factura(num_radica, opcion) {
+ 
   /********NOTE:Comprueba si La radicación está liquidada********/
   var id_radica = num_radica;
   var route = "/factderechos";
@@ -55,6 +56,7 @@ function Factura(num_radica, opcion) {
               $("#id_tipoident2").val('');
               $("#identificacion_cli2").val('');
               $("#nombre_cli2").val('');
+              
               if(opcion == 1){
                 CargarDerechos_FactUnica(actosliquidados);
                 CargarRecaudos(recaudos);
@@ -268,6 +270,7 @@ $("#guardarfacturaunica").click(function() {
             var total_rtf = $("#totrtf").val();
             var total_reteconsumo = $("#totreteconsumo").val();
             var total_aporteespecial = $("#totaporteespecial").val();
+            var total_impuesto_timbre = $("#totimpuestotimbre").val();
             var total_fondo = $("#totfondo").val();
             var total_super = $("#totsuper").val();
             var total_fact = $("#grantotal").val();
@@ -293,6 +296,7 @@ $("#guardarfacturaunica").click(function() {
                 "total_rtf": total_rtf,
                 "total_reteconsumo": total_reteconsumo,
                 "total_aporteespecial": total_aporteespecial,
+                "total_impuesto_timbre": total_impuesto_timbre,
                 "total_fondo": total_fondo,
                 "total_super": total_super,
                 "total_fact": total_fact,
