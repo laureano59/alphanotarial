@@ -86,6 +86,7 @@
                             <th>I.V.A</th>
                             <th>Recaudos</th>
                             <th>Aport_Espe</th>
+                            <th>Impuesto_Timbre</th>
                             <th>Retención</th>
                             <th>ReteIva</th>
                             <th>ReteIca</th>

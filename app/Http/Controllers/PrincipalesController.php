@@ -8,6 +8,8 @@ use App\Principal;
 use App\Otorganteview;
 use App\Comparecienteview;
 use App\Actosclienteradica;
+use App\Tipo_reportados;
+use App\Reportados;
 
 class PrincipalesController extends Controller
 {
@@ -17,9 +19,24 @@ class PrincipalesController extends Controller
     public function existecliente(Request $request){
 
       $id = $request->input('identificacion_cli');//$request->identificacion_cli;
-      $tipo_doc = $request->input('tipo_doc');//$request->tipo_doc;
+      $tipo_doc = $request->input('tipo_doc');//$request->tipo_doc;+
 
-      if (Cliente::where('identificacion_cli', $id)->exists()){
+      /*Valida si hay algun tipo de reporte en el cliente y envia una alerta*/
+      $reportado = Reportados::where('identificacion_rep', $id)->where('activo', true)->first();
+      if($reportado){
+          $nombre = $reportado->nombre_rep;
+          $id_tipo = $reportado->id_tipo_rep;
+          $concepto = $reportado->concepto_rep;
+          $activo = $reportado->activo;
+
+           return response()->json([
+            "validar"=> "7",
+            "nombre"=> $nombre,
+            "concepto"=>$concepto
+          ]);
+
+      }else{
+        if (Cliente::where('identificacion_cli', $id)->exists()){
         $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname");
         $nombre = Cliente::where('identificacion_cli', $id)->select($raw)->get();
         foreach ($nombre as $nom) {
@@ -38,6 +55,9 @@ class PrincipalesController extends Controller
            "tipo_doc" => $tipo_doc
          ]);
       }
+
+      }
+      
     }
 
     /**

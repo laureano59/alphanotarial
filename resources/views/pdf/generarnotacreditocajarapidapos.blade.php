@@ -8,7 +8,7 @@
 
 <body>
 
-    <div style="text-align: center;">
+      <div style="text-align: center;">
         <img src="{{ asset('images/logoposn13.png') }}">
     </div>
     <br>
@@ -26,13 +26,22 @@
     <p align="center">
         <font size="3"><b>Cliente:&nbsp;</b>{{$identificacioncli1}}</font><br>
         <font size="1"><b>{{$nombrecli1}}</font></b><br>
-        <b><font size="3">Factura electrónica de Venta No:</font></b><br>
-        <b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$num_fact}}</b><br>
+        <b><font size="3">Nota Crédito No:</font></b><br>
+        <b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$id_ncf}}</b><br>
+        <b>(F.No: {{$num_fact}})</b><br>
+
         <font size="3">Fecha:</font>&nbsp;
         <font size="3">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font><br>
-        <font size="3">Medios de pago: {{$formadepago}}</font><br>
     </p>
     <hr>
+
+    <p align="center">
+        <font size="4">Resolución:</font><br>
+        <font size="3">{{$resolucion}}</font><br>
+    </p>
+    
+    <hr>
+
     <table width="100%">
         <thead>
             <tr>
@@ -92,7 +101,7 @@
     
     <font size="1">Cufe:&nbsp;{{$cufe}} &nbsp; Hora:{{$hora_cufe}}</font>
 
-    
 </body>
 
 </html>
+

@@ -154,4 +154,5 @@ class ConsultasController extends Controller
        ]);
      
     }
+
 }

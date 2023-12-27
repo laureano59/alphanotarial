@@ -101,7 +101,6 @@
 
   		<div class="main-container ace-save-state" id="main-container">
 
-
   			<div id="sidebar" class="sidebar h-sidebar navbar-collapse collapse  ace-save-state">
   				<script type="text/javascript">
   					 try{ace.settings.loadState('sidebar')}catch(e){}
@@ -185,6 +184,14 @@
  					   </li>
 
  					   <li>
+ 							<a href="/seguimientoescrituras">
+ 								<i class="menu-icon"><img src="{{ asset('images/trazabilidad.png') }}" width="30 px" height="30 px"></i>
+ 					    	<span class="menu-text"> Seguimiento escrituras </span>
+ 					    </a>
+ 					      <b class="arrow"></b>
+ 					   </li>
+
+ 					   <li>
  							<a href="/cpanelcajarapida">
  								<i class="menu-icon"><img src="{{ asset('images/presupuesto.png') }}" width="30 px" height="30 px"></i>
  					    	<span class="menu-text"> Caja Rápida </span>
@@ -193,6 +200,9 @@
  					   </li>
 					</ul>
 				</div>
+
+
+				<!--CONTENIDO*/-->
 
   			<div class="main-content">
   				<div class="main-content-inner">

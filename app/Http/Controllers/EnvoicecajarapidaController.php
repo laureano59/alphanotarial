@@ -538,7 +538,8 @@ class EnvoicecajarapidaController extends Controller
   private function Enviar_Json($data_todo){
 
     $datosCodificados = json_encode($data_todo);
-    $url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
+    //$url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
+    $url = 'http://notaria13cali.binario.shop/factura/api-sync-invoice/';
     
     $ch = curl_init($url);
     curl_setopt_array($ch, array(

@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Mail;
 class EnviaremailController extends Controller
 {
      public function enviarfactura(Request $request){
-     	$opcion = $request->opcion;
+     	$opcion =  $request->opcion;
           $opcion2 = $request->opcion2;
-
+          
           if($opcion2 == 1){
                if($opcion == 'F1'){
                     $titulo = "FACTURA No.";
@@ -31,12 +31,9 @@ class EnviaremailController extends Controller
           mkdir("cliente/".$nombre_carpeta, 0700);
 
           $zip = new ZipArchive();
-          //$paquete_zip = "cliente/".$request->num_fact.'.zip';
           $paquete_zip = "cliente/".$nombre_carpeta.'/'.$request->num_fact.'.zip';
 
           $zip = new ZipArchive();
-
-          //$archivo = "cliente/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
 
           $archivo = "cliente/".$nombre_carpeta.'/'.'FACTURA'.'_'.$request->num_fact.'_'.$opcion.".zip";
 
@@ -58,10 +55,15 @@ class EnviaremailController extends Controller
 
           }
 
-          //unlink(public_path('cliente/').$nombre_factura);
-          //unlink(public_path('cliente/').$nombre_xml);
+          /*Elimina ficheros de un directorio*/
 
-    
+          $files = glob('cliente/*');
+          foreach ($files as $file) {
+               if(is_file($file))
+                    unlink(public_path($file));
+          }
+
+            
           $Enviar = array();
           $Enviar = [
                'num_fact' => $request->num_fact.'_'.$opcion,
@@ -90,14 +92,9 @@ class EnviaremailController extends Controller
 
 
           $zip = new ZipArchive();
-          //$paquete_zip = "cliente_cajarapida/".$request->num_fact.'.zip';
-
-           $paquete_zip = "cliente_cajarapida/".$nombre_carpeta.'/'.$request->num_fact.'.zip';
+          $paquete_zip = "cliente_cajarapida/".$nombre_carpeta.'/'.$request->num_fact.'.zip';
 
           $zip = new ZipArchive();
-
-          //$archivo = "cliente_cajarapida/FACTURA".'_'.$request->num_fact.'_'.$opcion.".zip";
-
           $archivo = "cliente_cajarapida/".$nombre_carpeta.'/'.'FACTURA'.'_'.$request->num_fact.'_'.$opcion.".zip";
 
           sleep(10);//da tiempo de generar el PDF
@@ -118,9 +115,14 @@ class EnviaremailController extends Controller
 
           }
 
-         //unlink(public_path('cliente_cajarapida/').$nombre_factura);
-         //unlink(public_path('cliente_cajarapida/').$nombre_xml);
+         /*Elimina ficheros del directorio cliente*/
 
+         $files = glob('cliente_cajarapida/*');
+
+          foreach ($files as $file) {
+               if(is_file($file))
+                    unlink(public_path($file));
+          }
     
           $Enviar = array();
           $Enviar = [

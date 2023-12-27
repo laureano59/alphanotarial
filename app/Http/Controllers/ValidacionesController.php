@@ -19,6 +19,7 @@ use App\Compareciente;
 use App\Tarifa;
 use App\Facturascajarapida;
 use App\Detalle_cajarapidafacturas;
+use App\Reportados;
 
 class ValidacionesController extends Controller
 {
@@ -517,6 +518,25 @@ class ValidacionesController extends Controller
             }
             
 
+        }
+
+        public function ExisteReportado(Request $request){
+          $identificacion = $request->identificacion_rep;
+         
+          if (Reportados::where('identificacion_rep', $identificacion)->exists()) {
+            // El registro existe
+            $registros = Reportados::where('identificacion_rep', $identificacion)->get();
+            return response()->json([
+              "validar"=>1,
+              "reportado"=>$registros,
+              "mensaje"=>"El documento ingresado existe, si quiere actualizar solo haz clic en alguno de la lista y realiza los cambios en cada campo y guarda"
+             ]);
+          } else {
+          // El registro no existe
+             return response()->json([
+              "validar"=>0
+             ]);
+          }
         }
 
         public function ExisteFactura(Request $request){

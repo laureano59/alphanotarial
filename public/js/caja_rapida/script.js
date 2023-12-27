@@ -35,6 +35,8 @@ $("#identificacion_cli1").blur(function(){
               }
             }else if (info.validar == '1'){
               $("#nombre_cli1").val(info.nombre);
+            }else if (info.validar == '7'){
+              alert(info.concepto);
             }
           }
     });

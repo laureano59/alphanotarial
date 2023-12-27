@@ -4,6 +4,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
     var total_conceptos = 0;
     var total_recaudo = 0;
     var total_aporteespecial = 0;
+    var total_impuesto_timbre = 0;
     var total_retencion = 0;
     var total_iva = 0;
     var total = 0;
@@ -17,6 +18,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         total_conceptos = parseFloat(data[item].conceptos) + total_conceptos;
         total_recaudo = parseFloat(data[item].recaudo) + total_recaudo;
         total_aporteespecial = parseFloat(data[item].aporteespecial) + total_aporteespecial;
+        total_impuesto_timbre = parseFloat(data[item].impuesto_timbre) + total_impuesto_timbre;
         total_retencion = parseFloat(data[item].retencion) + total_retencion;
         total_iva = parseFloat(data[item].iva) + total_iva;
         total = parseFloat(data[item].total) + total;
@@ -47,6 +49,8 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
             '<td align="right">' + formatNumbderechos(Math.round(data[item].recaudo)) +
             '</td>' +
              '<td align="right">' + formatNumbderechos(Math.round(data[item].aporteespecial)) +
+            '</td>' +
+            '<td align="right">' + formatNumbderechos(Math.round(data[item].impuesto_timbre)) +
             '</td>' +
             '<td align="right">' + formatNumbderechos(Math.round(data[item].retencion)) +
             '</td>' +
@@ -90,6 +94,9 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td align="right"><b>' + formatNumbderechos(Math.round(total_recaudo)) + '</b>' +
         '</td>' +
         '<td align="right"><b>' + formatNumbderechos(Math.round(total_aporteespecial)) + '</b>' +
+        '</td>' +
+        '</td>' +
+        '<td align="right"><b>' + formatNumbderechos(Math.round(total_impuesto_timbre)) + '</b>' +
         '</td>' +
         '<td align="right"><b>' + formatNumbderechos(Math.round(total_retencion)) + '</b>' +
         '</td>' +
@@ -157,7 +164,17 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td>' +
         formatNumbderechos(Math.round(total_aporteespecial)) +
         '</td>' +
-        '</tr>' +
+         '<td>' +
+         '</tr>'+
+         '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Impuesto Timbre</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_impuesto_timbre)) +
+        '</td>' +
+         '<td>' +
+         '</tr>'+
         '<tr>' +
         '<td>' +
         '<font size="2"><b>Total Retención</b></font>' +
@@ -210,6 +227,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
     var total_conceptos_otros = 0;
     var total_recaudo_otros = 0;
     var total_aporteespecial_otros = 0;
+    var total_impuesto_timbre_otros = 0;
     var total_retencion_otros = 0;
     var total_iva_otros = 0;
     var total_otros = 0;
@@ -224,6 +242,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         total_conceptos_otros = parseFloat(caja_diario_otros[item2].conceptos) + total_conceptos_otros;
         total_recaudo_otros = parseFloat(caja_diario_otros[item2].recaudo) + total_recaudo_otros;
         total_aporteespecial_otros = parseFloat(caja_diario_otros[item2].aporteespecial) + total_aporteespecial_otros;
+        total_impuesto_timbre_otros = parseFloat(caja_diario_otros[item2].impuesto_timbre) + total_impuesto_timbre_otros;
         total_retencion_otros = parseFloat(caja_diario_otros[item2].retencion) + total_retencion_otros;
         total_iva_otros = parseFloat(caja_diario_otros[item2].iva) + total_iva_otros;
         total_otros = parseFloat(caja_diario_otros[item2].total) + total_otros;
@@ -239,6 +258,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
       var total_conceptos_resta = 0;
       var total_recaudo_resta = 0;
       var total_aporteespecial_resta = 0;
+      var total_impuesto_timbre_resta = 0;
       var total_retencion_resta = 0;
       var total_iva_resta = 0;
       var total_resta = 0;
@@ -251,6 +271,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
       total_conceptos_resta = parseInt(Math.round(total_conceptos) - Math.round(total_conceptos_otros));
       total_recaudo_resta = parseInt(Math.round(total_recaudo) - Math.round(total_recaudo_otros));
       total_aporteespecial_resta = parseInt(Math.round(total_aporteespecial) - Math.round(total_aporteespecial_otros));
+      total_impuesto_timbre_resta = parseInt(Math.round(total_impuesto_timbre) - Math.round(total_impuesto_timbre_otros));
       total_retencion_resta = parseInt(Math.round(total_retencion) - Math.round(total_retencion_otros));
       total_iva_resta = parseInt(Math.round(total_iva) - Math.round(total_iva_otros));
       total_resta = parseInt(Math.round(total) - Math.round(total_otros));
@@ -327,8 +348,22 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td>' +
         formatNumbderechos(Math.round(total_aporteespecial_otros)) +
         '</td>' +
-        '<td>' +
+         '<td>' +
         formatNumbderechos(total_aporteespecial_resta) +
+        '</td>' +
+        '</tr>'+
+
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Impuesto Timbre</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_impuesto_timbre_otros)) +
+        '</td>' +
+               
+         '<td>' +
+        formatNumbderechos(total_impuesto_timbre_resta) +
         '</td>' +
         '</tr>' +
 

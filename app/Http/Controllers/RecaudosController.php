@@ -223,13 +223,18 @@ private function ImpuestoTimbre($actos){
       $mayor_acum = 0;
       $id_array = 0;
 
+     
+      foreach ($actos as $key => $value) {//Para tomar el acto de mayor cuantia siempre y cuando ambos tengan tiembre
 
-      foreach ($actos as $key => $value) {//Para tomar el acto de mayor cuantia
-        $mayor = $value['cuantia'];
-        if($mayor > $mayor_acum){
-          $mayor_acum = $mayor;
-          $id_array = $key;//tomo el id del acto con mayor cuantia
+        if($value['impuesto_timbre'] == 'true'){//solo si se le aplica timbre
+           $mayor = $value['cuantia'];
+          if($mayor > $mayor_acum){
+            $mayor_acum = $mayor;
+            $id_array = $key;//tomo el id del acto con mayor cuantia
+          }
+
         }
+       
       }
      
 

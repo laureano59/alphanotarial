@@ -16,7 +16,7 @@ class NotacreditocajarapidaController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['caja_rapida','administrador']);
+        $request->user()->authorizeRoles(['administrador']);
         return view('notas_credito_fact.notas_credito_cajarapida');
     }
 
@@ -49,8 +49,16 @@ class NotacreditocajarapidaController extends Controller
                 "mensaje"=>"Ups!. Esta Factura ya contiene Nota Crédito"
             ]);
         }else{
+
+
+            /*Autonumerico*/
+        
+            $consecutivo = Notas_credito_cajarapida::max('id_ncf');
+            $consecutivo = $consecutivo + 1;
+
             $notacredito = new Notas_credito_cajarapida();
             $notacredito->prefijo_ncf = $prefijo_fact;
+            $notacredito->id_ncf = $consecutivo;
             $notacredito->detalle_ncf = $request->input('detalle_ncf');
             $notacredito->id_fact = $id_fact;
             $notacredito->prefijo = $prefijo_fact;

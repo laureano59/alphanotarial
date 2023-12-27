@@ -31,6 +31,11 @@
         Editar<br>Factura
       </a>
 
+      <a href="reportados"  class="btn btn-app btn-danger">
+        <i class="ace-icon fa fa-pencil-square-o bigger-230"></i>
+        Personas<br>Reportadas
+      </a>
+
     </div>
 
     </div>

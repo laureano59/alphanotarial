@@ -87,6 +87,7 @@ class EinvoiceController extends Controller
 
      $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
 
+
      foreach ($facturas as $factura) {
       $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
       $fecha_fact_completa = $factura->fecha_fact;
@@ -116,6 +117,7 @@ class EinvoiceController extends Controller
       $anio_trabajo = $factura->anio_radica;
     }
 
+
     $TotalAntesdeIva = $TotalDerechos + $TotalConceptos;
 
   }else if($opcion1 == 'NC'){
@@ -129,6 +131,7 @@ class EinvoiceController extends Controller
 
     $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact_anulada)->get();
 
+   
     foreach ($facturas as $factura) {
       $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
       $fecha_fact_completa = $factura->fecha_fact;
@@ -305,6 +308,7 @@ class EinvoiceController extends Controller
 
   $Info_cliente = Info_cliente_factura_electronica_view::where("identificacion_cli","=",$identificacioncli)->get();
 
+   
   foreach ($Info_cliente as $infocliente) {
     $nombre_cliente = $infocliente->nombre_cli;
     $pmer_nombre = $infocliente->pmer_nombrecli;
@@ -324,6 +328,7 @@ class EinvoiceController extends Controller
     $digito_verif = $infocliente->digito_verif;
   }
 
+  
     #=============================================
     #               Medio de Pago                =
     #=============================================
@@ -812,7 +817,8 @@ class EinvoiceController extends Controller
 
 
     $datosCodificados = json_encode($data_todo);
-    $url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
+    //$url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
+    $url = 'http://notaria13cali.binario.shop/factura/api-sync-invoice/';
     
     $ch = curl_init($url);
     curl_setopt_array($ch, array(

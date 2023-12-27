@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="links">
-                    <a href="#" target="_blank">Link1</a>
+                    <a href="/enviarcorreo" target="_blank">Link1</a>
                     <a href="#" target="_blank">Link2</a>
                     <a href="#" target="_blank">Link3</a>
 

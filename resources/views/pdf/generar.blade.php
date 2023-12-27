@@ -35,7 +35,7 @@
                         <td><font size="1">Radicación No: {{$id_radica}}</font></td>
                     </tr>
                     <tr>
-                        <td><font size="1">Medios de pago: {{$formadepago}}</font></td>
+                        <td><font size="1">Forma de pago: {{$formadepago}} - <font size="1">Medio de pago: {{$mediodepago}}</font></td>
                     </tr>
                     <tr>
                         <td><font size="1">A cargo de: C.C {{$a_cargo_de}} &nbsp; {{$nombrecli_acargo_de}}</font></td>

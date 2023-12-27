@@ -183,8 +183,15 @@ class FacturacionController extends Controller
             $nota_periodo = 7;
           }
 
+
+          /*Autonumerico*/
+         
+          $consecutivo = Factura::where('prefijo', $prefijo_fact)->max('id_fact');
+          $consecutivo = $consecutivo + 1;
+
           $factura = new Factura();
           $factura->prefijo = $prefijo_fact;
+          $factura->id_fact = $consecutivo;
           $factura->id_radica = $id_radica;
           $factura->anio_radica = $anio_radica;
           $factura->fecha_fact = $fecha_factura;
@@ -283,10 +290,15 @@ class FacturacionController extends Controller
              $nota_periodo = 7;
           }
 
+          
+           /*Autonumerico*/
          
+          $consecutivo = Factura::where('prefijo', $prefijo_fact)->max('id_fact');
+          $consecutivo = $consecutivo + 1;
 
           $factura = new Factura();
           $factura->prefijo = $prefijo_fact;
+          $factura->id_fact = $consecutivo;
           $factura->id_radica = $id_radica;
           $factura->anio_radica = $anio_radica;
           $factura->fecha_fact = $fecha_factura;

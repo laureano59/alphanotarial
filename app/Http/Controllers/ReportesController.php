@@ -165,6 +165,7 @@ class ReportesController extends Controller
             $cajadiario_otros_periodos[$i]['conceptos'] = $value['total_conceptos'];
             $cajadiario_otros_periodos[$i]['recaudo'] = ($value['total_fondo'] + $value['total_super']);
             $cajadiario_otros_periodos[$i]['aporteespecial'] = $value['total_aporteespecial'];
+            $cajadiario_otros_periodos[$i]['impuesto_timbre'] = $value['impuesto_timbre'];
             $cajadiario_otros_periodos[$i]['retencion'] = $value['total_rtf'];
             $cajadiario_otros_periodos[$i]['iva'] = $value['total_iva'];
             $cajadiario_otros_periodos[$i]['total'] = $value['total_fact'];
@@ -445,7 +446,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw1)->get()->toArray();
 
-     
+          
       $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<', $fecha2)
@@ -477,7 +478,7 @@ class ReportesController extends Controller
       ->groupBy('escr')
       ->select($raw4)->get()->toArray();
 
-            
+
 
       $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
       $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)

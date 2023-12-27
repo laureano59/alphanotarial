@@ -55,6 +55,7 @@ use App\Notas_credito_cajarapida;
 use App\Protocolistas_copias_view;
 use App\Consecutivo;
 use App\Ciudad;
+use App\Mediosdepago;
 
 
 class PdfController extends Controller
@@ -91,6 +92,7 @@ class PdfController extends Controller
         $total_rtf = $factura->total_rtf;
         $total_reteconsumo = $factura->total_reteconsumo;
         $total_aporteespecial = $factura->total_aporteespecial;
+        $total_impuesto_timbre = $factura->total_impuesto_timbre;
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_fact = $factura->total_fact;
@@ -114,6 +116,13 @@ class PdfController extends Controller
 
       }else if($forma_pago == false){
         $formadepago = "Efectivo";
+      }
+
+      /*Medios de Pago*/
+      
+      $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $mediodepago = $med->nombre_med;
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -233,6 +242,7 @@ class PdfController extends Controller
       $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data['detalle_acargo_de'] = $detalle_acargo_de;
       $data['porcentaje_iva'] = $porcentaje_iva;
+      $data['mediodepago'] = $mediodepago;
 
 
       $j = 0;
@@ -260,6 +270,11 @@ class PdfController extends Controller
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial;
+      }
+      if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Aporte Especial";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
       }
       if($total_iva > 0){
         $j = $j + 1;
@@ -380,6 +395,13 @@ class PdfController extends Controller
         $forma_pago = $factura->credito_fact;
         $a_cargo_de = $factura->a_cargo_de;
         $detalle_acargo_de = $factura->detalle_acargo_de;
+      }
+
+       /*Medios de Pago*/
+      
+      $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $mediodepago = $med->nombre_med;
       }
 
 
@@ -511,6 +533,7 @@ class PdfController extends Controller
       $data['a_cargo_de'] = $a_cargo_de;
       $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data['detalle_acargo_de'] = $detalle_acargo_de;
+      $data['mediodepago'] = $mediodepago;
 
 
       $j = 0;
@@ -958,6 +981,7 @@ class PdfController extends Controller
         $total_fondo_otor = $factura_otor->total_fondo;
         $total_super_otor = $factura_otor->total_super;
         $total_aporteespecial_otor = $factura_otor->total_aporteespecial;
+        $total_impuesto_timbre_otor = $factura_otor->total_impuesto_timbre;
         $total_fact_otor = $factura_otor->total_fact;
         $reteiva_otor = $factura_otor->deduccion_reteiva;
         $retertf_otor = $factura_otor->deduccion_retertf;
@@ -1113,6 +1137,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial_otor;
       }
+      if($total_impuesto_timbre_otor > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto Timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre_otor;
+      }
       if($total_rtf_otor > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -1215,6 +1244,7 @@ class PdfController extends Controller
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_aporteespecial = $factura->total_aporteespecial;
+        $total_impuesto_timbre = $factura->total_impuesto_timbre;
         $total_fact = $factura->total_fact;
         $reteiva = $factura->deduccion_reteiva;
         $retertf = $factura->deduccion_retertf;
@@ -1366,6 +1396,11 @@ class PdfController extends Controller
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial;
+      }
+       if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto Timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
       }
       if($total_rtf > 0){
         $j = $j + 1;
@@ -2086,7 +2121,7 @@ class PdfController extends Controller
       'default_font' => 'arial',
         "format" => [216, 140],//TODO: Media Carta
         //"format" => 'Letter',
-        'margin_bottom' => 10,
+        'margin_bottom' => 1,
       ]);
 
     $mpdf->defaultfooterfontsize=2;
@@ -3960,6 +3995,7 @@ class PdfController extends Controller
             $cajadiario_otros_periodos[$i]['conceptos'] = $value['total_conceptos'];
             $cajadiario_otros_periodos[$i]['recaudo'] = ($value['total_fondo'] + $value['total_super']);
             $cajadiario_otros_periodos[$i]['aporteespecial'] = $value['total_aporteespecial'];
+            $cajadiario_otros_periodos[$i]['impuesto_timbre'] = $value['impuesto_timbre'];
             $cajadiario_otros_periodos[$i]['retencion'] = $value['total_rtf'];
             $cajadiario_otros_periodos[$i]['iva'] = $value['total_iva'];
             $cajadiario_otros_periodos[$i]['total'] = $value['total_fact'];
@@ -3976,6 +4012,7 @@ class PdfController extends Controller
       $total_conceptos_otros = 0;
       $total_recaudo_otros = 0;
       $total_aporteespecial_otros = 0;
+      $impuesto_timbre_otros = 0;
       $total_retencion_otros = 0;
       $total_iva_otros = 0;
       $total_otros = 0;
@@ -3988,6 +4025,7 @@ class PdfController extends Controller
       $total_conceptos_resta = 0;
       $total_recaudo_resta = 0;
       $total_aporteespecial_resta = 0;
+      $impuesto_timbre_resta = 0;
       $total_retencion_resta = 0;
       $total_iva_resta = 0;
       $total_resta = 0;
@@ -4008,6 +4046,7 @@ class PdfController extends Controller
       $total_conceptos_otros = 0;
       $total_recaudo_otros = 0;
       $total_aporteespecial_otros = 0;
+      $impuesto_timbre_otros = 0;
       $total_retencion_otros = 0;
       $total_iva_otros = 0;
       $total_otros = 0;
@@ -4020,6 +4059,7 @@ class PdfController extends Controller
       $total_conceptos_resta = 0;
       $total_recaudo_resta = 0;
       $total_aporteespecial_resta = 0;
+      $impuesto_timbre_resta = 0;
       $total_retencion_resta = 0;
       $total_iva_resta = 0;
       $total_resta = 0;
@@ -4038,6 +4078,7 @@ class PdfController extends Controller
       $total_conceptos_otros = 0;
       $total_recaudo_otros = 0;
       $total_aporteespecial_otros = 0;
+      $impuesto_timbre_otros = 0;
       $total_retencion_otros = 0;
       $total_iva_otros = 0;
       $total_otros = 0;
@@ -4050,6 +4091,7 @@ class PdfController extends Controller
       $total_conceptos_resta = 0;
       $total_recaudo_resta = 0;
       $total_aporteespecial_resta = 0;
+      $impuesto_timbre_resta = 0;
       $total_retencion_resta = 0;
       $total_iva_resta = 0;
       $total_resta = 0;
@@ -4064,6 +4106,7 @@ class PdfController extends Controller
     $total_conceptos = 0;
     $total_recaudo = 0;
     $total_aporteespecial = 0;
+    $impuesto_timbre = 0;
     $total_retencion = 0;
     $total_iva = 0;
     $total = 0;
@@ -4077,6 +4120,7 @@ class PdfController extends Controller
       $total_conceptos =$value['conceptos'] + $total_conceptos;
       $total_recaudo = $value['recaudo'] + $total_recaudo;
       $total_aporteespecial = $value['aporteespecial'] + $total_aporteespecial;
+      $impuesto_timbre = $value['impuesto_timbre'] + $impuesto_timbre;
       $total_retencion = $value['retencion'] + $total_retencion;
       $total_iva =$value['iva'] + $total_iva;
       $total = $value['total'] + $total;
@@ -4093,6 +4137,7 @@ class PdfController extends Controller
         $total_conceptos_otros =$value['conceptos'] + $total_conceptos_otros;
         $total_recaudo_otros = $value['recaudo'] + $total_recaudo_otros;
         $total_aporteespecial_otros = $value['aporteespecial'] + $total_aporteespecial_otros;
+         $impuesto_timbre_otros = $value['impuesto_timbre'] + $impuesto_timbre_otros;
         $total_retencion_otros = $value['retencion'] + $total_retencion_otros;
         $total_iva_otros =$value['iva'] + $total_iva_otros;
         $total_otros = $value['total'] + $total_otros;
@@ -4106,6 +4151,7 @@ class PdfController extends Controller
       $total_conceptos_resta = $total_conceptos - $total_conceptos_otros;
       $total_recaudo_resta = $total_recaudo - $total_recaudo_otros;
       $total_aporteespecial_resta = $total_aporteespecial - $total_aporteespecial_otros;
+      $impuesto_timbre_resta = $impuesto_timbre - $impuesto_timbre_otros;
       $total_retencion_resta = $total_retencion - $total_retencion_otros;
       $total_iva_resta = $total_iva - $total_iva_otros;
       $total_resta = $total - $total_otros;
@@ -4195,6 +4241,7 @@ class PdfController extends Controller
     $data['total_ingresos'] = round($total_derechos + $total_conceptos);
     $data['total_recaudo'] = $total_recaudo;
     $data['total_aporteespecial'] = $total_aporteespecial;
+    $data['impuesto_timbre'] = $impuesto_timbre;
     $data['total_retencion'] = $total_retencion;
     $data['total_iva'] = round($total_iva);
     $data['total'] = $total;
@@ -4218,7 +4265,9 @@ class PdfController extends Controller
     $data['total_recaudo_resta'] = $total_recaudo_resta;
     $data['total_recaudo_otros'] = $total_recaudo_otros;
     $data['total_aporteespecial_resta'] = $total_aporteespecial_resta;
+    $data['impuesto_timbre_resta'] = $impuesto_timbre_resta;
     $data['total_aporteespecial_otros'] = $total_aporteespecial_otros;
+    $data['impuesto_timbre_otros'] = $impuesto_timbre_otros;
     $data['total_retencion_resta'] = $total_retencion_resta;
     $data['total_retencion_otros'] = $total_retencion_otros;
     $data['total_iva_resta'] = round($total_iva_resta);
@@ -4992,6 +5041,13 @@ class PdfController extends Controller
         $detalle_acargo_de = $factura_otor->detalle_acargo_de;
       }
 
+       /*Medios de Pago*/
+      
+      $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $mediodepago = $med->nombre_med;
+      }
+
       if($forma_pago == true){
         $formadepago = "Credito";
 
@@ -5133,6 +5189,7 @@ class PdfController extends Controller
       $data_otor['a_cargo_de'] = $a_cargo_de;
       $data_otor['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data_otor['detalle_acargo_de'] = $detalle_acargo_de;
+      $data_otor['mediodepago'] = $mediodepago;
 
       $j = 0;
       if($total_super_otor > 0){
@@ -5251,6 +5308,7 @@ class PdfController extends Controller
         $total_rtf = $factura->total_rtf;
         $total_reteconsumo = $factura->total_reteconsumo;
         $total_aporteespecial = $factura->total_aporteespecial;
+        $total_impuesto_timbre = $factura->total_impuesto_timbre;
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_fact = $factura->total_fact;
@@ -5268,6 +5326,13 @@ class PdfController extends Controller
         $forma_pago = $factura->credito_fact;
         $a_cargo_de = $factura->a_cargo_de;
         $detalle_acargo_de = $factura->detalle_acargo_de;
+      }
+
+       /*Medios de Pago*/
+      
+      $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $mediodepago = $med->nombre_med;
       }
 
 
@@ -5407,6 +5472,7 @@ class PdfController extends Controller
       $data['a_cargo_de'] = $a_cargo_de;
       $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data['detalle_acargo_de'] = $detalle_acargo_de;
+      $data['mediodepago'] = $mediodepago;
 
       $j = 0;
       if($total_super > 0){
@@ -5433,6 +5499,11 @@ class PdfController extends Controller
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial;
+      }
+      if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto Timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
       }
       if($total_iva > 0){
         $j = $j + 1;
@@ -5848,7 +5919,26 @@ class PdfController extends Controller
 
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
-      $mpdf = new Mpdf([
+
+      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      
+      // Configurar márgenes (en milímetros)
+      $margenes = array('left' => 5, 'right' => 5, 'top' => 5, 'bottom' => 5);
+
+
+      // Combinar las configuraciones
+      $configuracion = [
+        'format' => $tamano_hoja,
+        'margin_left' => $margenes['left'],
+        'margin_right' => $margenes['right'],
+        'margin_top' => $margenes['top'],
+        'margin_bottom' => $margenes['bottom'],
+      ];
+
+      $mpdf = new \Mpdf\Mpdf($configuracion);
+
+
+     /* $mpdf = new Mpdf([
         'fontDir' => array_merge($fontDirs, [
           public_path() . '/fonts',
         ]),
@@ -5859,9 +5949,9 @@ class PdfController extends Controller
           ],
         ],
         'default_font' => 'arial',
-          "format" => [216, 140],//Media Carta
+          "format" => [80, 250],//Media Carta
           'margin_bottom' => 10,
-        ]);
+        ]);*/
 
       $mpdf->SetHTMLFooter('
         <table width="100%">
@@ -6021,7 +6111,7 @@ class PdfController extends Controller
       if($cufe == "sin facturar"){
         $html = view('pdf.recibofactcajarapida',$data)->render();
       }else{
-        $html = view('pdf.generarcajarapida',$data)->render();
+        $html = view('pdf.generarcajarapidapos',$data)->render();
       }
       
 
@@ -6033,6 +6123,26 @@ class PdfController extends Controller
 
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
+
+      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      
+      // Configurar márgenes (en milímetros)
+      $margenes = array('left' => 5, 'right' => 5, 'top' => 5, 'bottom' => 5);
+
+
+      // Combinar las configuraciones
+      $configuracion = [
+        'format' => $tamano_hoja,
+        'margin_left' => $margenes['left'],
+        'margin_right' => $margenes['right'],
+        'margin_top' => $margenes['top'],
+        'margin_bottom' => $margenes['bottom'],
+      ];
+
+      $mpdf = new \Mpdf\Mpdf($configuracion);
+
+
+      /*
       $mpdf = new Mpdf([
         'fontDir' => array_merge($fontDirs, [
           public_path() . '/fonts',
@@ -6044,9 +6154,9 @@ class PdfController extends Controller
           ],
         ],
         'default_font' => 'arial',
-          "format" => [216, 140],//Media Carta
-          'margin_bottom' => 10,
-        ]);
+          "format" => [80, 250],//Media Carta
+          'margin_bottom' => 2,
+        ]);*/
 
       $mpdf->SetHTMLFooter('
         <table width="100%">
@@ -6200,7 +6310,7 @@ class PdfController extends Controller
       $data['totalterceros'] = round($totalterceros);
 
       if($cufe == "sin facturar"){
-        $html = view('pdf.recibofactcajarapidapos',$data)->render();
+        $html = view('pdf.recibofactcajarapida',$data)->render();
       }else{
         $html = view('pdf.generarcajarapidapos',$data)->render();
       }
@@ -6215,21 +6325,26 @@ class PdfController extends Controller
 
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
-      $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          "format" => [74, 210],//tiquet
-          'margin_bottom' => 2,
-        ]);
 
+
+      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      
+      // Configurar márgenes (en milímetros)
+      $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
+
+
+      // Combinar las configuraciones
+      $configuracion = [
+        'format' => $tamano_hoja,
+        'margin_left' => $margenes['left'],
+        'margin_right' => $margenes['right'],
+        'margin_top' => $margenes['top'],
+        'margin_bottom' => $margenes['bottom'],
+      ];
+
+      $mpdf = new \Mpdf\Mpdf($configuracion);
+     
+    
       $mpdf->SetHTMLFooter('
         <table width="100%">
         <tr>
@@ -6243,188 +6358,6 @@ class PdfController extends Controller
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"f");
       $mpdf->Output($namefile,"i");
-      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
-      //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
-      
-    }
-
-
-    public function PdfCopiaFacturaCajaRapida(Request $request){
-
-      $notaria = Notaria::find(1);
-      $prefijo_fact = $notaria->prefijo_facturarapida;
-      $id_concepto = $request->id_concepto;
-      $num_fact  = $request->session()->get('numfact');
-      //TARIFA DEL IVA
-      $porcentaje_iva = round((Tarifa::find(9)->valor1));
-      
-      $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
-      foreach ($facturas as $factura) {
-        $total_iva = $factura->total_iva;
-        $total_rtf = 0;
-        $total_reteconsumo = 0;
-        $total_aporteespecial = 0;
-        $total_fondo = 0;
-        $total_super = 0;
-        $total_fact = $factura->total_fact;
-        $reteiva = 0;
-        $retertf = 0;
-        $reteica = 0;
-        $subtotal1 = $factura->subtotal;
-        $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
-        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
-        $identificacioncli1 = $factura->a_nombre_de;
-        $forma_pago = $factura->credito_fact;
-        $cufe = $factura->cufe;
-      }
-
-      if($forma_pago == true){
-        $formadepago = "Credito";
-
-      }else if($forma_pago == false){
-        $formadepago = "Efectivo";
-      }
-
-      $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-        direccion_cli");
-      $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
-      foreach ($cliente as $key => $cli) {
-        $nombrecli1 = $cli['fullname'];
-        $direccioncli1 = $cli['direccion_cli'];
-      }
-
-      
-      
-      $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
-      ->where('id_fact', $num_fact)
-      ->get()
-      ->toArray();
-
-      $contdetalle = count ($detalle, 0);
-      
-      $subtotal_all = 0;
-      $total_iva = 0;
-      $total_all = 0;
-
-      foreach ($detalle as $Key => $value) {
-        $subtotal_all += $value['subtotal'];
-        $total_iva += $value['iva'];
-        $total_all += $value['total'];
-      }
-
-      
-
-      $nit = $notaria->nit;
-      $nombre_nota = strtoupper($notaria->nombre_nota);
-      $direccion_nota = $notaria->direccion_nota;
-      $telefono_nota = $notaria->telefono_nota;
-      $email = $notaria->email;
-      $nombre_notario = $notaria->nombre_notario;
-      $resolucion = $notaria->resolucion_cajarapida;
-      $piepagina_fact = $notaria->piepagina_factcajarapida;
-
-
-      # =====================================
-      # =           CUFE y QRCODE           =
-      # =====================================
-        if(is_null($cufe)){
-          $cufe = "sin facturar";
-        }
-      $QRCode = $cufe;
-
-      $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
-      
-      $iva = "Somos Responsables de IVA";
-      $data['nit'] = $nit;
-      $data['nombre_nota'] = $nombre_nota;
-      $data['direccion_nota'] = $direccion_nota;
-      $data['telefono_nota'] = $telefono_nota;
-      $data['email'] = $email;
-      $data['nombre_notario'] = $nombre_notario;
-      $data['resolucion'] = $resolucion;
-      $data['piepagina_fact'] = $piepagina_fact;
-      $data['IVA'] = $iva;
-      $data['prefijo_fact'] = $prefijo_fact;
-      $data['num_fact'] = $num_fact;
-      
-      $data['identificacioncli1'] = $identificacioncli1;
-      $data['nombrecli1'] = $nombrecli1;
-      $data['direccioncli1'] = $direccioncli1;
-      $data['fecha_fact'] = $fecha_fact;
-      $data['hora_fact'] = $hora_fact;
-      $data['hora_cufe'] = $hora_cufe;
-      $data['detalle'] = $detalle;
-      $data['contdetalle'] = $contdetalle;
-      $data['subtotal'] = $subtotal1;
-      $data['total_fact'] = $total_fact;
-      $data['subtotal_all'] = $subtotal_all;
-      $data['total_iva'] = $total_iva;
-      $data['total_all'] = $total_all;
-      $data['QRCode'] = $QRCode;
-      $data['cufe'] = $cufe;
-      $data['titulo'] = $FactComprobante;
-      $data['formadepago'] = $formadepago;
-      $data['porcentaje_iva'] = $porcentaje_iva;
-
-      $j = 0;
-      $terceros = [];
-      if($total_iva > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
-        $terceros[$j]['total'] = round($total_iva);
-      }
-
-      $contterceros = count ($terceros, 0);
-      $data['terceros'] = $terceros;
-      $data['contterceros'] = $contterceros;
-
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
-      $data['totalterceros'] = round($totalterceros);
-
-      if($cufe == "sin facturar"){
-        $html = view('pdf.recibofactcajarapida',$data)->render();
-      }else{
-        $html = view('pdf.generarcajarapida',$data)->render();
-      }
-      
-      //$html = view('pdf.generarcajarapida',$data)->render();
-
-      $namefile = $num_fact.'_F1'.'.pdf';
-      //$namefile = 'facturan13'.$num_fact.'.pdf';
-
-      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-      $fontDirs = $defaultConfig['fontDir'];
-
-      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-      $fontData = $defaultFontConfig['fontdata'];
-      $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          "format" => [216, 140],//Media Carta
-          'margin_bottom' => 10,
-        ]);
-
-      $mpdf->SetHTMLFooter('
-        <table width="100%">
-        <tr>
-        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-        </tr>
-        </table>');
-      //$carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
-      $mpdf->defaultfooterfontsize=2;
-      $mpdf->SetTopMargin(5);
-      $mpdf->SetDisplayMode('fullpage');
-      $mpdf->WriteHTML($html);
-      $mpdf->Output($namefile,"I");
       //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
@@ -6449,7 +6382,6 @@ class PdfController extends Controller
         $detalle_ncf = $notacre->detalle_ncf;
         $fecha_ncf = $notacre->created_at;
       }
-
 
 
       $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
@@ -6486,7 +6418,6 @@ class PdfController extends Controller
         $nombrecli1 = $cli['fullname'];
         $direccioncli1 = $cli['direccion_cli'];
       }
-
       
       
       $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
@@ -6505,7 +6436,6 @@ class PdfController extends Controller
         $total_iva += $value['iva'];
         $total_all += $value['total'];
       }
-
       
 
       $nit = $notaria->nit;
@@ -6592,7 +6522,7 @@ class PdfController extends Controller
       $data['totalterceros'] = round($totalterceros);
 
 
-      $html = view('pdf.generarnotacreditocajarapida',$data)->render();
+      $html = view('pdf.generarnotacreditocajarapidapos',$data)->render();
 
       $namefile = $id_ncf.'_NC'.'.pdf';
       //$namefile = 'facturan13'.$num_fact.'.pdf';
@@ -6602,20 +6532,23 @@ class PdfController extends Controller
 
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
-      $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          "format" => [216, 140],//Media Carta
-          'margin_bottom' => 10,
-        ]);
+
+      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      
+      // Configurar márgenes (en milímetros)
+      $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
+
+
+      // Combinar las configuraciones
+      $configuracion = [
+        'format' => $tamano_hoja,
+        'margin_left' => $margenes['left'],
+        'margin_right' => $margenes['right'],
+        'margin_top' => $margenes['top'],
+        'margin_bottom' => $margenes['bottom'],
+      ];
+
+      $mpdf = new \Mpdf\Mpdf($configuracion);
 
       $mpdf->SetHTMLFooter('
         <table width="100%">

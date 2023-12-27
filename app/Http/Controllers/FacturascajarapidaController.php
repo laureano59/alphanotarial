@@ -49,10 +49,17 @@ class FacturascajarapidaController extends Controller
         $total = $request->total;
         $total_all = $request->total_all;
         $detalle = $request->detalle;
-              
+
+        
+        /*Autonumerico*/
+         
+        $consecutivo = Facturascajarapida::where('prefijo', $prefijo_fact)->max('id_fact');
+        $consecutivo = $consecutivo + 1;
+
         $Facturascajarapida = new Facturascajarapida();
 
         $Facturascajarapida->prefijo = $prefijo_fact;
+        $Facturascajarapida->id_fact = $consecutivo;
         $Facturascajarapida->id = Auth()->user()->id;
         $Facturascajarapida->fecha_fact = $fecha_factura;
         $Facturascajarapida->a_nombre_de = $identificacion_cli1;

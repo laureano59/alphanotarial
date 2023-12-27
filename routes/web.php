@@ -25,6 +25,8 @@ Route::resource('facturaelectronica', 'FacturaelectronicaController');
 Route::resource('panel_protocolistas', 'ProtocolistasController');
 Route::resource('cpanelcertificados', 'CertificadosController');
 
+Route::resource('reportados', 'ReportadosController');
+
 Route::resource('actas_deposito', 'ActasdepositoController');
 Route::resource('guardarcertificadortf', 'Certificado_rtfController');
 Route::resource('escrituracion', 'EscrituraController');
@@ -60,6 +62,9 @@ Route::resource('cpanelcajarapida', 'Panel_cajarapidaController');
 Route::resource('facturacajarapida', 'FacturascajarapidaController');
 Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController');
 
+Route::resource('seguimientoescrituras', 'SeguimientoController');
+
+
 
 
 Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vendedores');
@@ -74,6 +79,7 @@ Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
 
 Route::get('agregaritemcajarapida', 'AgregaritemcajarapidaController@AgregarItemCajaRapida');
+
 
 Route::get('anombrede', 'FacturacionController@AnombreDe');
 Route::get('validarradicacion', 'ValidacionesController@ValidarRadicacion');
@@ -169,6 +175,8 @@ Route::get('cajadiariocajarapidaconceptos', 'PdfController@Cajadiariocajarapidac
 
 Route::get('validar_liquidacion_provisional', 'ValidacionesController@Validar_liquidacion_provisional');
 
+Route::get('validarreportados', 'ValidacionesController@ExisteReportado');
+
 
 Route::get('liquidacionpdf', 'PdfController@PdfLiquidacion');
 Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
@@ -187,6 +195,9 @@ Route::get('Imprimircomprobante_Egreso', 'PdfController@PdfComprobante_Egreso');
 
 Route::get('seguimiento', 'ConsultasController@Consultar');
 Route::get('seguimiento_secun', 'ConsultasController@Consultar_secun');
+
+Route::get('seguimiento_escr', 'SeguimientoController@Seguimiento_escrituras');
+
 
 
 Auth::routes();

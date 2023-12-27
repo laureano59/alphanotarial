@@ -20,7 +20,7 @@ class NotasdebitoController extends Controller
     {
         $Conceptos = Concepto::all();
         $Conceptos->sortBy('nombre_concep');
-        $request->user()->authorizeRoles(['liquidacion','administrador']);
+        $request->user()->authorizeRoles(['administrador']);
         return view('notas_debito_fact.notas_debito_fact', compact('Conceptos'));
     }
 
