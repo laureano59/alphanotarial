@@ -122,6 +122,14 @@
                             <th>
                                 <i class="ace-icon fa fa-caret-right blue"></i>VALOR
                             </th>
+
+                            <th>
+                                <i class="ace-icon fa fa-caret-right blue"></i>Contado
+                            </th>
+
+                            <th>
+                                <i class="ace-icon fa fa-caret-right blue"></i>Crédito
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="datos_totales"></tbody>

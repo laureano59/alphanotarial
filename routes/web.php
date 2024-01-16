@@ -135,7 +135,12 @@ Route::get('ingresoporconceptos', 'ReportesController@Ingreso_Conceptos');
 Route::get('informecartera', 'ReportesController@Informe_Cartera');
 Route::get('informerecaudos', 'ReportesController@Informe_Recaudos');
 Route::get('generarreportecajadiario', 'ReportesController@Informe_cajadiario_rapida');
+Route::get('reporte_depositos', 'ReportesController@Relaciondepositosdiarios');
+Route::get('reporte_egresos', 'ReportesController@Relacionegresosdiarios');
 
+
+Route::get('relaciondepositosdiariospdf','PdfController@DepositosDiarios');
+Route::get('relaciondeegresosdiariospdf','PdfController@EgresosDiarios');
 
 Route::get('generarreportecajadiarioporconceptos', 'ReportesController@Informe_cajadiario_rapida_conceptos');
 

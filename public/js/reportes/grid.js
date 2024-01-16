@@ -1,4 +1,8 @@
-function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
+function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros,  derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
+rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
+total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
+impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
+deduccion_retertf_credito, total_fact_credito) {
     var htmlTags = "";
     var total_derechos = 0;
     var total_conceptos = 0;
@@ -123,6 +127,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td>' +
         formatNumbderechos(Math.round(total_derechos)) +
         '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(derechos_contado)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(derechos_credito)) +
+        '</td>' +
         '</tr>' +
 
         '<tr>' +
@@ -132,6 +142,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td>' +
         formatNumbderechos(Math.round(total_conceptos)) +
         '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(conceptos_contado)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(conceptos_credito)) +
+        '</td>' +
         '</tr>' +
         '<tr>' +
         '<td>' +
@@ -139,6 +155,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '</td>' +
         '<td>' +
         formatNumbderechos(Math.round(total_gravado)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(ingresos_contado)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(ingresos_credito)) +
         '</td>' +
         '</tr>' +
         '<tr>' +
@@ -148,6 +170,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td>'+
         formatNumbderechos(Math.round(total_iva)) +
         '</td>' +
+        '<td>'+
+        formatNumbderechos(Math.round(iva_contado)) +
+        '</td>' +
+        '<td>'+
+        formatNumbderechos(Math.round(iva_credito)) +
+        '</td>' +
         '</tr>' +
         '<tr>' +
         '<td>' +
@@ -156,6 +184,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td>' +
         formatNumbderechos(Math.round(total_recaudo)) +
         '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(recaudos_contado)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(recaudos_credito)) +
+        '</td>' +
         '</tr>' +
          '<tr>' +
         '<td>' +
@@ -163,6 +197,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '</td>' +
         '<td>' +
         formatNumbderechos(Math.round(total_aporteespecial)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(aporteespecial_contado)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(aporteespecial_credito)) +
         '</td>' +
          '<td>' +
          '</tr>'+
@@ -174,6 +214,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         formatNumbderechos(Math.round(total_impuesto_timbre)) +
         '</td>' +
          '<td>' +
+        formatNumbderechos(Math.round(impuestotimbre_contado)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(impuestotimbre_credito)) +
+        '</td>' +
+         '<td>' +
          '</tr>'+
         '<tr>' +
         '<td>' +
@@ -181,6 +227,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '</td>' +
         '<td>' +
         formatNumbderechos(Math.round(total_retencion)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(rtf_contado)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(rtf_credito)) +
         '</td>' +
         '</tr>' +
         '<tr>' +
@@ -190,6 +242,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td><font color="red">(-' +
         formatNumbderechos(Math.round(total_reteiva)) +
         ')</font></td>' +
+         '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(deduccion_reteiva_contado)) +
+        ')</font></td>' +
+         '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(deduccion_reteiva_credito)) +
+        ')</font></td>' +
         '</tr>' +
         '<tr>' +
         '<td>' +
@@ -197,6 +255,14 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '</td>' +
         '<td><font color="red">(-' +
         formatNumbderechos(Math.round(total_reteica)) +
+        ')</font></td>' +
+        '</td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(deduccion_reteica_contado)) +
+        ')</font></td>' +
+        '</td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(deduccion_reteica_credito)) +
         ')</font></td>' +
         '</tr>' +
         '<tr>' +
@@ -206,6 +272,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '<td><font color="red">(-' +
         formatNumbderechos(Math.round(total_retertf)) +
         ')</font></td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(deduccion_retertf_contado)) +
+        ')</font></td>' +
+        '<td><font color="red">(-' +
+        formatNumbderechos(Math.round(deduccion_retertf_credito)) +
+        ')</font></td>' +
         '</tr>' +
         '<tr>' +
         '<td>'+
@@ -213,6 +285,12 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros) {
         '</td>'+
         '<td>' +
         formatNumbderechos(Math.round(total)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_fact_contado)) +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_fact_credito)) +
         '</td>' +
         '</tr>';
        
@@ -611,7 +689,7 @@ function CargarInformeCartera(data){
       document.getElementById('carteradata').innerHTML = htmlTags;
 }
 
-function CargarInformeCajadiario_rapida(data, contado, credito){
+function CargarInformeCajadiario_rapida(data, contado, credito, facturadores){
   var subtotal = 0;
   var total_iva = 0;
   var total_factura = 0;
@@ -748,8 +826,27 @@ function CargarInformeCajadiario_rapida(data, contado, credito){
           '</tr>';
 
           document.getElementById('data_2').innerHTML = htmlTags2;
+          
+          var htmlTags3 = '';
+          for (item3 in facturadores) {
+           htmlTags3 +=
+            '<tr>' +
+            '<td>' +
+            facturadores[item3].facturador +
+            '</td>' +
+            '<td>' +
+            formatNumbderechos(facturadores[item3].subtotal) +
+            '</td>' +
+            '<td>' +
+            formatNumbderechos(facturadores[item3].iva) +
+            '</td>' +
+            '<td>' +
+            formatNumbderechos(facturadores[item3].total) +
+            '</td>' +
+            '</tr>';
+          }
 
-
+          document.getElementById('data3').innerHTML = htmlTags3;
 }
 
 function CargarInformeCajadiario_rapida_conceptos(data){
@@ -807,3 +904,137 @@ function CargarInformeCajadiario_rapida_conceptos(data){
 
       document.getElementById('data_tabla').innerHTML = htmlTags;
 }
+
+function CargarInformeDepositos(data){
+    var totaldepositos = 0;
+    var totalsaldo = 0;
+    var htmlTags = '';
+  for (item in data) {
+    totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
+    totalsaldo = totalsaldo + parseFloat(data[item].saldo);
+    htmlTags +=
+          '<tr>' +
+           '<td>' +
+          data[item].id_act +
+          '</td>' +
+          '<td>' +
+          data[item].fecha +
+          '</td>' +
+           '<td>' +
+          data[item].identificacion_cli +
+          '</td>' +
+           '<td>' +
+          data[item].nombre +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].deposito_act) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].saldo) +
+          '</td>' +
+           '<td>' +
+          data[item].observaciones_act +
+          '</td>' +
+           '<td>' +
+          data[item].id_radica +
+          '</td>' +
+          '</tr>';
+      }
+
+       htmlTags +=
+       '<tr>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '<b>Totales:</b>'+
+          '</td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(totaldepositos) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(totalsaldo) +
+          '</b></td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>'+
+          '</tr>';
+
+      document.getElementById('data').innerHTML = htmlTags;
+}
+
+function CargarInformeEgresos(data){
+    var totaldepositos = 0;
+    var totalegresos = 0;
+    var totalsaldo = 0;
+    var htmlTags = '';
+  for (item in data) {
+    totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
+    totalsaldo = totalsaldo + parseFloat(data[item].saldo);
+    totalegresos = totalegresos + parseFloat(data[item].egreso_egr);
+    htmlTags +=
+          '<tr>' +
+           '<td>' +
+          data[item].id_act +
+          '</td>' +
+          '<td>' +
+          data[item].fecha_egreso +
+          '</td>' +
+           '<td>' +
+          data[item].identificacion_cli +
+          '</td>' +
+           '<td>' +
+          data[item].nombre +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].deposito_act) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].egreso_egr) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].saldo) +
+          '</td>' +
+           '<td>' +
+          data[item].observaciones_egr +
+          '</td>' +
+           '<td>' +
+          data[item].id_radica +
+          '</td>' +
+          '</tr>';
+      }
+
+       htmlTags +=
+       '<tr>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '<b>Totales:</b>'+
+          '</td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(totaldepositos) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(totalegresos) +
+          '</b></td>' +
+           '<td align="right"><b>' +
+          formatNumbderechos(totalsaldo) +
+          '</b></td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>'+
+          '</tr>';
+
+      document.getElementById('data').innerHTML = htmlTags;
+}
+
+

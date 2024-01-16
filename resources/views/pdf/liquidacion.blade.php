@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Factura de Venta</title>
+    <title>Liquidación</title>
 
 </head>
 
@@ -29,6 +29,11 @@
                     <tr>
                         <td>
                             <font size="2">{{$direccion_nota}} / {{$telefono_nota}}</font>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            <font size="2">Fecha de impresión. {{$fecha_impresion}}</font>
                         </td>
                     </tr>
                 </table>

@@ -39,6 +39,11 @@
                         Fecha del Reporte : {{$fecha_reporte}}
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        Fecha de impresión : {{$fecha_impresion}}
+                      </td>
+                    </tr>
                 </table>
             </td>
             <td>
@@ -198,6 +203,36 @@
 
 
                     </tbody>
+                </table>
+
+                <hr>
+                <table width="100%" border="1">
+                <thead>
+                <tr>
+                <th><font size="2">Facturador</font></th>
+                <th><font size="2">Subtotal</font></th>
+                <th><font size="2">Iva</font></th>
+                <th><font size="2">Total</font></th>
+                </tr>
+                </thead>
+                <tbody id="datos">
+                @foreach($facturadores as $item)
+                <tr>
+                <td>
+                <font size="2">{{ $item['facturador'] }}</font>
+                </td>
+                <td align="right">
+                <font size="2">{{ number_format($item['subtotal'], 2) }}</font>
+                </td>
+                <td align="right">
+                <font size="2">{{ number_format($item['iva'], 2) }}</font>
+                </td>
+                <td align="right">
+                <font size="2">{{ number_format($item['total'], 2) }}</font>
+                </td>
+                </tr>
+                @endforeach
+                </tbody>
                 </table>
 
 </body>

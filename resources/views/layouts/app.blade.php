@@ -11,7 +11,7 @@
     <title>@yield('title')</title>
 
     <script src="{{ asset('assets/js/ace-extra.min.js')}}"></script>
-
+    
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 

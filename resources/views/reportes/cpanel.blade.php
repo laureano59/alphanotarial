@@ -30,7 +30,7 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#FEFFE0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="estadisticonotarial">
               Estadístico Notarial
             </a>
@@ -46,7 +46,7 @@
         </tr>
 
         <tr>
-          <td bgcolor="#FEFFE0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="">
               Relación Notas Débito Mensual
             </a>
@@ -62,7 +62,7 @@
         </tr>
 
         <tr>
-          <td bgcolor="#FEFFE0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="informerecaudos">
               Informe de Recaudos
             </a>
@@ -85,7 +85,7 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#FEFFE0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="relacionnotascreditodiario">
               Relación Nota Crédito Diario
           </a>
@@ -99,7 +99,7 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#FFF2E0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="informerecaudosdiario">
               Relación de Facturas Diarias por Recaudos
             </a>
@@ -129,7 +129,7 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#FFF2E0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="actos_notariales_escritura">
               Informe de Actos Notariales por Escritura 
             </a>
@@ -143,7 +143,7 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#FEFFE0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="libroalfabetico">
             Libro Alfabético Notarial
           </a>
@@ -175,7 +175,7 @@
           </td>
         </tr>
         <tr>
-          <td bgcolor="#FEFFE0">
+          <td bgcolor="#F9E1E1">
             <a href="javascript://" id="informecarterames">
               Relación Cartera por Mes
           </a>
@@ -195,6 +195,31 @@
           <td bgcolor="#FEFFE0">
             <a href="javascript://" id="certificadortf">
               Retención en la Fuente
+          </a>
+          </td>
+        </tr>
+        
+      </table>
+    </div>
+  </div>
+
+  <div class="group">
+    <h3 class="accordion-header">ACTAS DE DEPOSITO</h3>
+
+    <div>
+      <table class="table table-striped table-bordered table-hover head">
+        <tr>
+          <td bgcolor="#FEFFE0">
+            <a href="javascript://" id="informedepositos">
+              Informe de Depósitos
+          </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td bgcolor="#F9E1E1">
+            <a href="javascript://" id="informeegresos">
+              Informe de Egresos
           </a>
           </td>
         </tr>

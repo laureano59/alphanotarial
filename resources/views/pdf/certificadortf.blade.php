@@ -146,7 +146,7 @@
     </tr>
   </table>
   <br><br>
-  <font size="3">FECHA CERTIFICADO: {{$fecha_certificado}}</font>
+  <font size="3">Fecha certificado: {{$fecha_certificado}}</font>
   <br><br><br>
   <table width="100%">
     <tr>

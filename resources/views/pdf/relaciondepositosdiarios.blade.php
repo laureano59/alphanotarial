@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Relación de Facturas Diarias por Conceptos</title>
+    <title>{{$nombre_reporte}}</title>
 
 </head>
 
@@ -36,10 +36,10 @@
                     </tr>
                     <tr>
                       <td>
-                        Fecha del Reporte : {{$fecha_reporte}}
+                        Fecha del reporte : {{$fecha_reporte}}
                     </td>
                 </tr>
-                <tr>
+                    <tr>
                       <td>
                         Fecha de impresión : {{$fecha_impresion}}
                     </td>
@@ -53,25 +53,51 @@
     </tr>
 </table>
 <hr>
-<table width="100%">
+<table width="100%" border="1">
     <thead>
         <tr>
-            <th><font size="2">Concepto</font></th>
-            <th><font size="2">Cantidad</font></th>
-            <th><font size="2">Valor</font></th>
+            <th><font size="2">Acta #</font></th>
+            <th><font size="2">Fecha</font></th>
+            <th><font size="2">Identificación</font></th>
+            <th><font size="2">Nombre</font></th>
+            <th><font size="2">Depósito</font></th>
+            <th><font size="2">Saldo</font></th>
+            <th><font size="2">Observaciones</font></th>
+            <th><font size="2">Rad</font></th>
         </tr>
     </thead>
     <tbody id="datos">
-        @foreach($relconceptos as $item)
+        @foreach($depositos as $item)
         <tr>
             <td>
-                <font size="2">{{ $item['concepto'] }}</font>
+                <font size="2">{{ $item['id_act'] }}</font>
             </td>
             <td align="center">
-                <font size="2">{{ $item['escrituras'] }}</font>
+                <font size="2">{{ $item['fecha'] }}</font>
             </td>
+
+            <td>
+                <font size="2">{{ $item['identificacion_cli'] }}</font>
+            </td>
+
+            <td>
+                <font size="2">{{ $item['nombre'] }}</font>
+            </td>
+
             <td align="right">
-                <font size="2">{{ number_format($item['total'], 2) }}</font>
+                <font size="2">{{ number_format($item['deposito_act'], 2) }}</font>
+            </td>
+
+            <td align="right">
+                <font size="2">{{ number_format($item['saldo'], 2) }}</font>
+            </td>
+
+             <td>
+                <font size="2">{{ $item['observaciones_act'] }}</font>
+            </td>
+
+              <td align="center">
+                <font size="2">{{ $item['id_radica'] }}</font>
             </td>
         </tr>
         @endforeach
@@ -80,25 +106,26 @@
             </td>
             <td>
             </td>
-            <td align="right">
-                ---------------------
-            </td>
-        </tr>
-
-        <tr>
             <td>
             </td>
-            <td align="right">
-                <b>Total:</b>
+            <td>
+                <b> Totales:</b>
             </td>
             <td align="right">
-                <b>{{number_format($total, 2)}}</b>
+                <font size="2"><b>{{ number_format($totaldepositos, 2) }}</b></font>
             </td>
+             <td align="right">
+                <font size="2"><b>{{ number_format($totalsaldo, 2) }}</b></font>
+            </td>
+            <td>
+            </td>
+             <td>
+            </td>
+            
         </tr>
 
     </tbody>
 </table>
-<hr>
 
 </body>
 

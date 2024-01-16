@@ -27,6 +27,9 @@ use\App\Recaudos_excenta_view;
 use App\Tarifa;
 use\App\Recaudos_sincuantia_excenta_view;
 use\App\Recaudos_concuantia_view;
+use\App\Actas_deposito_view;
+use\App\Actas_deposito_egreso_view;
+
 use App\Exports\RonExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -41,7 +44,7 @@ class ReportesController extends Controller
   public function index(Request $request)
   {
     $opcion = $request->session()->get('opcionreporte');
-
+   
     if($opcion == 1){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.cajadiario', compact('nombre_reporte'));
@@ -84,8 +87,15 @@ class ReportesController extends Controller
     }else if($opcion == 16){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.statusfactelectronicacajarapida', compact('nombre_reporte'));
+    }else if($opcion == 17){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informededepositos', compact('nombre_reporte'));
+    }else if($opcion == 18){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informedeegresos', compact('nombre_reporte'));
     }
   }
+  
 
   public function CargarTipoReporte(Request $request){
     $opcion = $request->opcionreporte;
@@ -126,6 +136,37 @@ class ReportesController extends Controller
     //$cajadiario = Cajadiariogeneral_view::whereBetween('fecha', [$fecha1, $fecha2])->get()->toArray();
     $tipo_informe = $request->tipoinforme;
     $request->session()->put('tipoinforme', $tipo_informe);
+
+    $facturas_contado = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                        ->where('credito_fact', false)
+                        ->where('nota_credito', false)
+                        ->selectRaw('SUM(total_derechos) as derechos, SUM(total_conceptos) as conceptos, SUM(total_derechos + total_conceptos) as ingresos, 
+                          SUM(total_iva) as iva, 
+                          SUM(total_fondo + total_super) as recaudos, 
+                          SUM(total_aporteespecial) as aporteespecial,
+                          SUM(total_impuesto_timbre) as impuestotimbre,
+                          SUM(total_rtf) as rtf,
+                          SUM(deduccion_reteiva) as deduccion_reteiva,
+                          SUM(deduccion_reteica) as deduccion_reteica,
+                          SUM(deduccion_retertf) as deduccion_retertf,
+                          SUM(total_fact) as total_fact')
+                        ->first();
+    $facturas_credito = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                        ->where('credito_fact', true)
+                        ->where('nota_credito', false)
+                        ->selectRaw('SUM(total_derechos) as derechos, SUM(total_conceptos) as conceptos, SUM(total_derechos + total_conceptos) as ingresos, 
+                          SUM(total_iva) as iva, 
+                          SUM(total_fondo + total_super) as recaudos, 
+                          SUM(total_aporteespecial) as aporteespecial,
+                          SUM(total_impuesto_timbre) as impuestotimbre,
+                          SUM(total_rtf) as rtf,
+                          SUM(deduccion_reteiva) as deduccion_reteiva,
+                          SUM(deduccion_reteica) as deduccion_reteica,
+                          SUM(deduccion_retertf) as deduccion_retertf,
+                          SUM(total_fact) as total_fact')
+                        ->first();
 
 
     if($tipo_informe == 'completo'){
@@ -225,7 +266,31 @@ class ReportesController extends Controller
        "cajadiario"=>$cajadiario,
        "cajadiario_otros_periodos"=>$cajadiario_otros_periodos,
        "cruces"=>$cruces,
-       "total_egreso"=>$total_egreso
+       "total_egreso"=>$total_egreso,
+       "derechos_contado"=>$facturas_contado->derechos,
+       "conceptos_contado"=>$facturas_contado->conceptos,
+       "ingresos_contado"=>$facturas_contado->ingresos,
+       "iva_contado"=>$facturas_contado->iva,
+       "recaudos_contado"=>$facturas_contado->recaudos,
+       "aporteespecial_contado"=>$facturas_contado->aporteespecial,
+       "impuestotimbre_contado"=>$facturas_contado->impuestotimbre,
+       "rtf_contado"=>$facturas_contado->rtf,
+       "deduccion_reteiva_contado"=>$facturas_contado->deduccion_reteiva,
+       "deduccion_reteica_contado"=>$facturas_contado->deduccion_reteica,
+       "deduccion_retertf_contado"=>$facturas_contado->deduccion_retertf,
+       "total_fact_contado"=>$facturas_contado->total_fact,
+       "derechos_credito"=>$facturas_credito->derechos,
+       "conceptos_credito"=>$facturas_credito->conceptos,
+       "ingresos_credito"=>$facturas_credito->ingresos,
+       "iva_credito"=>$facturas_credito->iva,
+       "recaudos_credito"=>$facturas_credito->recaudos,
+       "aporteespecial_credito"=>$facturas_credito->aporteespecial,
+       "impuestotimbre_credito"=>$facturas_credito->impuestotimbre,
+       "rtf_credito"=>$facturas_credito->rtf,
+       "deduccion_reteiva_credito"=>$facturas_credito->deduccion_reteiva,
+       "deduccion_reteica_credito"=>$facturas_credito->deduccion_reteica,
+       "deduccion_retertf_credito"=>$facturas_credito->deduccion_retertf,
+       "total_fact_credito"=>$facturas_credito->total_fact
      ]);
     }else{
        $cajadiario_otros_periodos = [];
@@ -361,7 +426,17 @@ class ReportesController extends Controller
       ->get()
       ->toArray();
 
-      
+      $facturadores =  Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('nota_credito', false)
+      ->selectRaw('MIN(name) as facturador, 
+        SUM(subtotal) as subtotal, 
+        SUM(total_iva) as iva,
+        SUM(total_fact) as total')
+      ->groupBy('id')
+      ->get()->toArray();
+
+            
        $raw1 = \DB::raw("sum(total_iva) AS total_contado_iva, sum(subtotal) AS subtotal_contado, sum(total_fact) AS total_contado_fact");
       $Contado = Cajadiario_cajarapida_view::whereDate('fecha_fact', '>=', $fecha1)
       ->whereDate('fecha_fact', '<=', $fecha2)
@@ -378,7 +453,8 @@ class ReportesController extends Controller
     return response()->json([
        "Informe_cajadiario_rapida"=>$Informe_cajadiario_rapida,
        "Contado"=>$Contado,
-       "Credito"=>$Credito
+       "Credito"=>$Credito,
+       "facturadores"=>$facturadores
      ]);
   }
  
@@ -395,7 +471,7 @@ class ReportesController extends Controller
 
     $raw = \DB::raw("min(id_concep) AS id_concep,
                     min((nombre_concep)) AS nombre_concep,
-                    count(id_concep) AS cantidad,
+                    sum(cantidad) AS cantidad,
                     sum(subtotal) AS subtotal,
                     sum(iva) AS iva,
                     sum(total) AS total");
@@ -1063,8 +1139,6 @@ class ReportesController extends Controller
   public function Ingreso_Conceptos(Request $request)
   {
     $notaria = Notaria::find(1);
-    //$anio_trabajo = $notaria->anio_trabajo;
-    $prefijo_fact = $notaria->prefijo_fact;
     $fecha1 = $request->fecha1;
     $fecha2 = $request->fecha2;
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
@@ -1077,7 +1151,15 @@ class ReportesController extends Controller
 
     $atributos = Concepto::all();
     $atributos = $atributos->sortBy('id_concep');
-    
+     $y=1;
+    foreach ($atributos as $key => $value) {
+      $dataconcept[$y]['concepto'] = '';
+      $dataconcept[$y]['escrituras'] = 0;
+      $dataconcept[$y]['total'] = 0;
+      $y++;
+    }
+
+
     $facturas = Factura::whereDate('fecha_fact', '>=', $fecha1)
     ->whereDate('fecha_fact', '<=', $fecha2)
     ->where('nota_credito','<>', true)
@@ -1085,21 +1167,13 @@ class ReportesController extends Controller
 
 
     $facturas = $this->unique_multidim_array($facturas, 'id_radica');
-    $y=1;
-    foreach ($atributos as $key => $value) {
-     $dataconcept[$y]['total'] = 0;
-     $dataconcept[$y]['escrituras'] = 0;
-      $y++;
-    }
-
-
+    
     $sum_conceptos_otros_periodos = 0;
-
+        
     foreach ($facturas as $key => $fc) {
       $id_radica = $fc['id_radica'];
       $not_per = $fc['nota_periodo'];
-
-          
+      
      
       if($not_per == 0  || $not_per == 8){
 
@@ -1117,32 +1191,27 @@ class ReportesController extends Controller
           }
       }
       
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->first();
 
-        
-      foreach ($conceptos as $key => $conc) {
-        $i = 1;
-        foreach ($atributos as $key => $atri) {
-          $atributo = $atri['nombre_concep'];
-          $totalatributo = 'total'.$atri['atributo'];
+      $canthoja = 0;
+      $i = 1;
+      foreach ($atributos as $key => $atri) {
+        $atributo = $atri['nombre_concep'];
+        $totalatributo = 'total'.$atri['atributo'];
+        $hojas = 'hojas'.$atri['atributo'];
+      
+        if($conceptos->$totalatributo > 0){
+          $total = $conceptos->$totalatributo;
+          $canthoja = $conceptos->$hojas;
+                    
+          $dataconcept[$i]['concepto'] = $atributo;
+          $dataconcept[$i]['escrituras'] += $canthoja;
+          $dataconcept[$i]['total'] += $total;
 
-          if($conc[$totalatributo] > 0){
-            $total = $conc[$totalatributo];
-            $dataconcept[$i]['concepto'] = $atributo;
-            $dataconcept[$i]['escrituras'] += 1;
-            $dataconcept[$i]['total'] += $total;
-              $i = $i + 1;
-          }
         }
+          $i++;
       }
-
-      //}
-
-
     }
-
-
-    
    
     $grantotal = 0;
     foreach ($dataconcept as $key => $value) {
@@ -1154,11 +1223,9 @@ class ReportesController extends Controller
       
       }
     }
-
    
     $grantotal = $grantotal - $sum_conceptos_otros_periodos;
 
-   
     return response()->json([
         "conceptos"=>$dataconcept,
         "grantotal"=>$grantotal
@@ -1166,6 +1233,61 @@ class ReportesController extends Controller
 
 
   }
+
+  public function Relaciondepositosdiarios(Request $request)
+  {
+    $notaria = Notaria::find(1);
+    $fecha1 = $request->fecha1;
+    $fecha2 = $request->fecha2;
+   
+    $fecha1 = date("d-m-Y", strtotime($fecha1)); //Convierte Fecha a dd-mm-YYYY
+    $fecha2 = date("d-m-Y", strtotime($fecha2));
+    
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+
+    //$anio_trabajo = date("Y", strtotime($fecha1)); //Convierte Fecha a YYYY
+
+
+    $Actas_deposito = Actas_deposito_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<=', $fecha2)
+    ->where('anulada','<>', true)
+    ->orderBy('id_act')
+    ->get()->toArray();
+
+     return response()->json([
+        "depositos"=>$Actas_deposito
+      ]);
+
+    
+  }
+
+
+  public function Relacionegresosdiarios(Request $request)
+  {
+    $notaria = Notaria::find(1);
+    $fecha1 = $request->fecha1;
+    $fecha2 = $request->fecha2;
+   
+    $fecha1 = date("d-m-Y", strtotime($fecha1)); //Convierte Fecha a dd-mm-YYYY
+    $fecha2 = date("d-m-Y", strtotime($fecha2));
+    
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+    
+    $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
+    ->whereDate('fecha_egreso', '<=', $fecha2)
+    ->orderBy('id_act')
+    ->get()->toArray();
+
+     return response()->json([
+        "egresos"=>$Actas_egreso
+      ]);
+
+    
+  }
+
+
 
   public function Ron(Request $request){
 

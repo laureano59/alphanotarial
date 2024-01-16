@@ -1,7 +1,7 @@
 $("#ron").click(function(){
 
   var opcion = 12;
-  var reporte = "Reporte de Operaciones Notariales (RON)";
+  var reporte = "Reporte de Operaciones Notariales (RON) - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -40,7 +40,7 @@ $("#certificadortf").click(function(){
 
 $("#diariocaja").click(function(){
   var opcion = 1;
-  var reporte = "Relación de Facturas Diarias";
+  var reporte = "Relación de Facturas Diarias - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -58,7 +58,7 @@ $("#diariocaja").click(function(){
 
 $("#mensualcaja").click(function(){
   var opcion = 1;
-  var reporte = "Relación de Facturas Mensual";
+  var reporte = "Relación de Facturas Mensual - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -98,7 +98,7 @@ $("#actos_notariales_escritura").click(function(){
 
 $("#libroindice").click(function(){
   var opcion = 2;
-  var reporte = "Libro Índice";
+  var reporte = "Libro Índice - Escrituración";
   var ordenar = "libroindice";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
@@ -120,7 +120,7 @@ $("#libroindice").click(function(){
 
 $("#libroalfabetico").click(function(){
   var opcion = 2;
-  var reporte = "Libro Alfabético Notarial";
+  var reporte = "Libro Alfabético Notarial - Escrituración";
   var ordenar = "pornombre";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
@@ -141,7 +141,7 @@ $("#libroalfabetico").click(function(){
 
 $("#informerecaudos").click(function(){
   var opcion = 11;
-  var reporte = "Informe de Recaudos Mes";
+  var reporte = "Informe de Recaudos Mes - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -159,7 +159,7 @@ $("#informerecaudos").click(function(){
 
 $("#informerecaudosdiario").click(function(){
   var opcion = 11;
-  var reporte = "Informe de Recaudos Caja";
+  var reporte = "Informe de Recaudos Caja - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -178,7 +178,7 @@ $("#informerecaudosdiario").click(function(){
 
 $("#relacionnotascreditomensual").click(function(){
   var opcion = 8;
-  var reporte = "Notas Crédito Mensual";
+  var reporte = "Notas Crédito Mensual - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -196,7 +196,7 @@ $("#relacionnotascreditomensual").click(function(){
 
 $("#relacionnotascreditodiario").click(function(){
   var opcion = 8;
-  var reporte = "Notas Crédito Diario";
+  var reporte = "Notas Crédito Diario - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -257,7 +257,7 @@ $("#informecarteracliente").click(function(){
 
 $("#ingresosporconcepto").click(function(){
   var opcion = 3;
-  var reporte = "Relación de Facturas Diarias por Conceptos";
+  var reporte = "Relación de Facturas Diarias por Conceptos - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -275,7 +275,7 @@ $("#ingresosporconcepto").click(function(){
 
 $("#ingresosporconceptomensual").click(function(){
   var opcion = 3;
-  var reporte = "Relación de Conceptos por Mes";
+  var reporte = "Relación de Conceptos por Mes - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -293,11 +293,13 @@ $("#ingresosporconceptomensual").click(function(){
 
 $("#estadisticonotarial").click(function(){
   var opcion = 4;
+  var reporte = "Reporte estadístico notarial - Escrituración";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
   var datos = {
-    "opcionreporte": opcion
+    "opcionreporte": opcion,
+    "reporte": reporte
   };
   __ajax(route, token, type, datos)
   .done( function( info ){
@@ -448,7 +450,36 @@ $("#generarreporte").click(function(){
         var cajadiario_otros_periodos = info.cajadiario_otros_periodos;
         var cruces = info.cruces;
         var total_egreso = info.total_egreso;
-        CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos);
+        var derechos_contado = info.derechos_contado;
+        var conceptos_contado = info.conceptos_contado;
+        var ingresos_contado = info.ingresos_contado;
+        var iva_contado = info.iva_contado;
+        var recaudos_contado = info.recaudos_contado;
+        var aporteespecial_contado = info.aporteespecial_contado;
+        var impuestotimbre_contado = info.impuestotimbre_contado;
+        var rtf_contado = info.rtf_contado;
+        var deduccion_reteiva_contado = info.deduccion_reteiva_contado;
+        var deduccion_reteica_contado = info.deduccion_reteica_contado;
+        var deduccion_retertf_contado = info.deduccion_retertf_contado;
+        var total_fact_contado = info.total_fact_contado;
+        var derechos_credito = info.derechos_credito;
+        var conceptos_credito = info.conceptos_credito;
+        var ingresos_credito = info.ingresos_credito;
+        var iva_credito = info.iva_credito;
+        var recaudos_credito = info.recaudos_credito;
+        var aporteespecial_credito = info.aporteespecial_credito;
+        var impuestotimbre_credito = info.impuestotimbre_credito;
+        var rtf_credito = info.rtf_credito;
+        var deduccion_reteiva_credito = info.deduccion_reteiva_credito;
+        var deduccion_reteica_credito = info.deduccion_reteica_credito;
+        var deduccion_retertf_credito = info.deduccion_retertf_credito;
+        var total_fact_credito = info.total_fact_credito;
+
+        CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos, derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
+rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
+total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
+impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
+deduccion_retertf_credito, total_fact_credito);
         CargarCrucesActas(cruces);
     })
 
@@ -534,7 +565,7 @@ $("#generarreportecarteracliente").click(function(){
 
 $("#informediariocajarapida").click(function(){
   var opcion = 14;
-  var reporte = "Relación de Facturas Diarias Caja Rápida";
+  var reporte = "Relación de Facturas Caja Rápida";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -604,8 +635,9 @@ $("#generarreportecajadiario").click(function(){
     var informe = info.Informe_cajadiario_rapida;
     var contado = info.Contado;
     var credito = info.Credito;
+    var facturadores = info.facturadores;
     
-    CargarInformeCajadiario_rapida(informe, contado, credito);
+    CargarInformeCajadiario_rapida(informe, contado, credito, facturadores);
   })
 });
 
@@ -626,7 +658,6 @@ $("#generarreportecajadiarioporconceptos").click(function(){
     CargarInformeCajadiario_rapida_conceptos(informe);
   })
 });
-
 
 
 $("#generarinformederecaudos").click(function(){
@@ -736,6 +767,81 @@ $("#generar_ron").click(function(){
     }
   })
 });
+
+
+$("#informedepositos").click(function(){
+  var opcion = 17;
+  var reporte = "Relación de depósitos diarios";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
+$("#informeegresos").click(function(){
+  var opcion = 18;
+  var reporte = "Relación de egresos";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
+
+$("#generarreporte_depositos").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+  var route = "/reporte_depositos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informe = info.depositos;
+    CargarInformeDepositos(informe);
+  })
+});
+
+$("#generarreporte_egresos").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+  var route = "/reporte_egresos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informe = info.egresos;
+    CargarInformeEgresos(informe);
+  })
+});
+
 
 
 //jquery accordion

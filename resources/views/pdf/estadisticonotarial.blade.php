@@ -34,12 +34,12 @@
 
                   <tr>
                       <td>
-                          <b>REPORTE ESTADÍSTICO NOTARIAL</b>
+                          <b>{{$nombre_reporte}}</b>
                       </td>
                   </tr>
                   <tr>
                       <td>
-                          <b>Fecha : {{$fecha1}} / {{$fecha2}}</b>
+                          <b>Fecha reporte : {{$fecha1}} / {{$fecha2}}</b> - Fecha impresión : {{$fecha_impresion}}
                       </td>
                   </tr>
               </table>

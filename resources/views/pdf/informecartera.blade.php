@@ -39,6 +39,11 @@
                         Fecha del Reporte : {{$fecha_reporte}}
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        Fecha de impresión : {{$fecha_impresion}}
+                      </td>
+                    </tr>
                 </table>
             </td>
             <td>

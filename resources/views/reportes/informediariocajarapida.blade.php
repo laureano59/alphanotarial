@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col-sm-12">
         <form>
-            @csrf_token
+            @csrf
             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
             <div class="widget-box">
                 <div class="widget-header">
@@ -82,6 +82,20 @@
                         </tr>
                     </thead>
                     <tbody id="data_2">
+
+                    </tbody>
+                </table>
+                <hr>
+                <table id="simple-table" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Facturador</th>
+                            <th>Sub Total</th>
+                            <th>Iva</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data3">
 
                     </tbody>
                 </table>

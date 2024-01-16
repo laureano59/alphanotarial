@@ -52,9 +52,11 @@ class LiqrecaudosController extends Controller
 
             $liq_recaudos->id_radica = $id_radica;
             $liq_recaudos->anio_radica = $anio_trabajo;
+           
             $liq_recaudos->recsuper = $request->input('totrecsuper');
             $liq_recaudos->recfondo = $request->input('totrecfondo');
             $liq_recaudos->iva = $request->input('totiva');
+
             $liq_recaudos->retefuente = $request->input('totrtf');
             $liq_recaudos->reteconsumo = $request->input('totreteconsumo');
             $liq_recaudos->aporteespecial = $request->input('totaporteespecial');

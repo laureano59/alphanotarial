@@ -66,8 +66,13 @@ $("#buscar").click(function() {
             type = 'GET';
             __ajax(route, token, type, datos)//Recaudos
             .done( function( info ){
-              CargarRecaudos(info);
+              if(info.validar == 5){
+                alert(info.mensaje);
+              }else if(info.validar == 1){
+                 CargarRecaudos(info);
               //console.table(info);
+              }
+             
             })
 
           } else if(info.validar == '0') {
@@ -150,7 +155,12 @@ function BuscarPorSession(valor){
             type = 'GET';
             __ajax(route, token, type, datos)//Recaudos
             .done( function( info ){
-              CargarRecaudos(info);
+               if(info.validar == 5){
+                alert(info.mensaje);
+              }else if(info.validar == 1){
+                CargarRecaudos(info);
+              }
+              
             })
           } else if(info.validar == '0') {
             $("#msj").html(info.mensaje);

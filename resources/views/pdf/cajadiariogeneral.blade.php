@@ -39,6 +39,11 @@
                         Fecha del Reporte : {{$fecha_reporte}}
                       </td>
                     </tr>
+                    <tr>
+                      <td>
+                        Fecha de impresión : {{$fecha_impresion}}
+                      </td>
+                    </tr>
                 </table>
             </td>
             <td>
@@ -229,6 +234,8 @@
                               <th><font size="2">VALOR</font></th>
                               <th><font size="2">OTROS PERIODOS</font></th>
                               <th><font size="2">DIFERENCIA</font></th>
+                              <th><font size="2">CONTADO</font></th>
+                              <th><font size="2">CRÉDITO</font></th>
                           </tr>
                       </thead>
                       <tbody>
@@ -245,6 +252,12 @@
                           </td>
                            <td align="right">
                             <font size="3">{{ number_format($total_derechos_resta, 2) }}</font>
+                          </td>
+                          <td align="right">
+                            <font size="3">{{ number_format($derechos_contado, 2) }}</font>
+                          </td>
+                          <td align="right">
+                            <font size="3">{{ number_format($derechos_credito, 2) }}</font>
                           </td>
                         </tr>
 
@@ -263,6 +276,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_conceptos_resta, 2) }}</font>
                           </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($conceptos_contado, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($conceptos_credito, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -279,6 +300,14 @@
 
                           <td align="right">
                             <font size="3">{{ number_format($total_gravado_resta, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($ingresos_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($ingresos_credito, 2) }}</font>
                           </td>
                         </tr>
 
@@ -297,6 +326,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_iva_resta, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($iva_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($iva_credito, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -313,6 +350,14 @@
 
                           <td align="right">
                             <font size="3">{{ number_format($total_recaudo_resta, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($recaudos_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($recaudos_credito, 2) }}</font>
                           </td>
                         </tr>
 
@@ -331,6 +376,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_aporteespecial_resta, 2) }}</font>
                           </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($aporteespecial_contado, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($aporteespecial_credito, 2) }}</font>
+                          </td>
                         </tr>
 
                          <tr>
@@ -347,6 +400,14 @@
 
                           <td align="right">
                             <font size="3">{{ number_format($impuesto_timbre_resta, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($impuestotimbre_contado, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($impuestotimbre_credito, 2) }}</font>
                           </td>
                         </tr>
 
@@ -365,6 +426,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_retencion_resta, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($rtf_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($rtf_credito, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -381,6 +450,14 @@
 
                           <td align="right">
                             <font size="3">{{ number_format($total_reteiva_resta, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($deduccion_reteiva_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($deduccion_reteiva_credito, 2) }}</font>
                           </td>
                         </tr>
 
@@ -399,6 +476,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_reteica_resta, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($deduccion_reteica_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($deduccion_reteica_credito, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -416,6 +501,14 @@
                           <td align="right">
                             <font size="3">{{ number_format($total_retertf_resta, 2) }}</font>
                           </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($deduccion_retertf_contado, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($deduccion_retertf_credito, 2) }}</font>
+                          </td>
                         </tr>
 
                         <tr>
@@ -432,6 +525,14 @@
 
                           <td align="right">
                             <font size="3">{{ number_format($total_resta, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($total_fact_contado, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($total_fact_credito, 2) }}</font>
                           </td>
                         </tr>
 

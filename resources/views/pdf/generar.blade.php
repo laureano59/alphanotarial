@@ -40,7 +40,9 @@
                     <tr>
                         <td><font size="1">A cargo de: C.C {{$a_cargo_de}} &nbsp; {{$nombrecli_acargo_de}}</font></td>
                     </tr>
-                    
+                    <tr>
+                    <td><font size="1">Fecha de impresión {{$fecha_impresion}}</font></td>
+                    </tr>
                     
                 </table>
             </td>

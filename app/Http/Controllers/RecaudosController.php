@@ -19,13 +19,32 @@ class RecaudosController extends Controller
       $impuesto_timbre = $this->ImpuestoTimbre($actos);
 
 
+      if($recsuper === null || $recsuper <=0){
+        $validar = 5;
+        $mensaje = "Ups! Algo pasa con los recaudos";
+      }else{
+        $validar = 1;
+        $mensaje = "";
+      }
+
+      if($recfondo === null || $recfondo <=0){
+        $validar = 5;
+        $mensaje = "Ups! Algo pasa con los recaudos";
+      }else{
+        $validar = 1;
+        $mensaje = "";
+      }
+  
+
       return response()->json([
          "recsuper"=>$recsuper,
          "recfondo"=>$recfondo,
          "rtf"=>$rtf,
          "reteconsumo"=>$reteconsumo,
          "aporteespecial"=>$aporteespecial,
-         "impuesto_timbre"=>$impuesto_timbre
+         "impuesto_timbre"=>$impuesto_timbre,
+         "validar"=>$validar,
+         "mensaje"=>$mensaje
       ]);
     }
 
