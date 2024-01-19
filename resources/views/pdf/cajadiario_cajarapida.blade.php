@@ -71,9 +71,18 @@
             </tr>
         </thead>
         <tbody id="datos">
+
+             {{-- Inicializar una variable para alternar colores --}}
+            @php
+                $colorAlternado = true;
+            @endphp
           @for ($i = 0; $i < $contcajadiario; $i++)
             @if (array_key_exists($i, $cajadiario))
-              <tr>
+             {{-- Alternar colores de fondo --}}
+            @php
+            $colorFondo = $colorAlternado ? '#ffffff' : '#f2f2f2';
+            @endphp
+              <tr style="background-color: {{ $colorFondo }}">
                 <td align="center">
                   <font size="2">{{ Carbon\Carbon::parse($cajadiario[$i]['fecha_fact'])->format('d/m/Y')}}</font>
                 </td>
@@ -109,6 +118,10 @@
                   <font size="2">{{ $cajadiario[$i]['name'] }}</font>
                 </td>
                 </tr>
+                 {{-- Alternar el valor de la variable para el próximo ciclo --}}
+                @php
+                $colorAlternado = !$colorAlternado;
+                @endphp
                   @endif
                 @endfor
 

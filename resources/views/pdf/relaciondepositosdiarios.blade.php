@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -53,7 +53,7 @@
     </tr>
 </table>
 <hr>
-<table width="100%" border="1">
+<table width="100%">
     <thead>
         <tr>
             <th><font size="2">Acta #</font></th>
@@ -67,8 +67,16 @@
         </tr>
     </thead>
     <tbody id="datos">
+         {{-- Inicializar una variable para alternar colores --}}
+            @php
+                $colorAlternado = true;
+            @endphp
         @foreach($depositos as $item)
-        <tr>
+         {{-- Alternar colores de fondo --}}
+            @php
+            $colorFondo = $colorAlternado ? '#ffffff' : '#f2f2f2';
+            @endphp
+        <tr style="background-color: {{ $colorFondo }}">
             <td>
                 <font size="2">{{ $item['id_act'] }}</font>
             </td>
@@ -100,6 +108,10 @@
                 <font size="2">{{ $item['id_radica'] }}</font>
             </td>
         </tr>
+        {{-- Alternar el valor de la variable para el próximo ciclo --}}
+                @php
+                $colorAlternado = !$colorAlternado;
+                @endphp
         @endforeach
         <tr>
             <td>

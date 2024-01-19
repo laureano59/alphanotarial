@@ -62,8 +62,16 @@
         </tr>
     </thead>
     <tbody id="datos">
+         {{-- Inicializar una variable para alternar colores --}}
+            @php
+                $colorAlternado = true;
+            @endphp
         @foreach($relconceptos as $item)
-        <tr>
+         {{-- Alternar colores de fondo --}}
+            @php
+            $colorFondo = $colorAlternado ? '#ffffff' : '#f2f2f2';
+            @endphp
+        <tr style="background-color: {{ $colorFondo }}">
             <td>
                 <font size="2">{{ $item['concepto'] }}</font>
             </td>
@@ -74,6 +82,10 @@
                 <font size="2">{{ number_format($item['total'], 2) }}</font>
             </td>
         </tr>
+        {{-- Alternar el valor de la variable para el próximo ciclo --}}
+                @php
+                $colorAlternado = !$colorAlternado;
+                @endphp
         @endforeach
         <tr>
             <td>

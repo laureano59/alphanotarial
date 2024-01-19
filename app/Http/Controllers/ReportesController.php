@@ -318,29 +318,9 @@ class ReportesController extends Controller
     $request->session()->put('fecha2', $fecha2);
     $ordenar = $request->session()->get('ordenar');
 
-    if($ordenar == 'pornumescritura'){ //Ordena por escritura
-      $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
-      $libroindice = Actos_notariales_escritura_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)
-      //->groupBy('num_esc')
-      ->orderBy('num_esc')
-      ->select($raw1)
-      ->get()
-      ->toArray();
+    $resultadoFinal = [];
 
-    }elseif($ordenar == 'pornombre'){//Ordena por nombre
-      
-      
-      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
-      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)
-      ->groupBy('num_esc')
-      ->orderBy('otorgante')
-      ->orderBy('fecha', 'ASC')
-      ->select($raw1)
-      ->get()
-      ->toArray();
-    }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
+    if($ordenar == 'libroindice'){ //Ordena por escritura
      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
       $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
@@ -349,10 +329,32 @@ class ReportesController extends Controller
       ->select($raw1)
       ->get()
       ->toArray();
-    }
-  
+      $resultadoFinal = $libroindice;
+
+    }elseif($ordenar == 'pornombre'){//Ordena por nombre
+
+      $alfabeto = range('A', 'Z');
+
+          foreach ($alfabeto as $letra) {
+            $libroindice = Libroindice_view::
+            whereDate('fecha', '>=', $fecha1)
+            ->whereDate('fecha', '<=', $fecha2)
+            ->where('otorgante', 'like', $letra . '%')
+            ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente, MIN(acto) AS acto')
+            ->groupBy('num_esc')
+            ->orderBy('num_esc')
+            ->orderBy('otorgante')
+            ->orderBy('fecha')
+            ->get()->toArray();
+            $resultadoFinal[$letra] = $libroindice;
+      }
+
+       $resultadoFinal = array_merge(...array_values($resultadoFinal));
+     }
+
+      
     return response()->json([
-       "libroindice"=>$libroindice
+       "libroindice"=>$resultadoFinal
      ]);
   }
 
