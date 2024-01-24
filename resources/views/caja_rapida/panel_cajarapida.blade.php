@@ -59,6 +59,13 @@
         <i class="ace-icon fa fa-credit-card bigger-160"></i>
         Cartera
       </a>
+
+
+       <a href="/consulta_cajarapida" class="btn btn-app btn btn-info">
+        <i class="ace-icon fa fa-search bigger-160"></i>
+        Consultar
+      <a>
+      
     </div>
 
     </div>

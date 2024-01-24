@@ -29,8 +29,8 @@ use\App\Recaudos_sincuantia_excenta_view;
 use\App\Recaudos_concuantia_view;
 use\App\Actas_deposito_view;
 use\App\Actas_deposito_egreso_view;
-
 use App\Exports\RonExport;
+use App\Exports\IngresosdianescriturasExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -93,6 +93,9 @@ class ReportesController extends Controller
     }else if($opcion == 18){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.informedeegresos', compact('nombre_reporte'));
+    }else if($opcion == 19){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informeingresosdian', compact('nombre_reporte'));
     }
   }
   
@@ -113,10 +116,14 @@ class ReportesController extends Controller
   public function FechaReporte(Request $request){
     $fecha1 = $request->fecha1;
     $fecha2 = $request->fecha2;
+    $ingreso = $request->ingreso;
+    $opcionreporte = $request->opcionreporte;
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
+    $request->session()->put('parametroingreso', $ingreso);
+    $request->session()->put('opcionreporte', $opcionreporte);
     return response()->json([
        "validar"=>1
      ]);
@@ -333,7 +340,7 @@ class ReportesController extends Controller
 
     }elseif($ordenar == 'pornombre'){//Ordena por nombre
 
-      $alfabeto = range('A', 'Z');
+      /*$alfabeto = range('A', 'Z');
 
           foreach ($alfabeto as $letra) {
             $libroindice = Libroindice_view::
@@ -347,10 +354,32 @@ class ReportesController extends Controller
             ->orderBy('fecha')
             ->get()->toArray();
             $resultadoFinal[$letra] = $libroindice;
+          }
+            $resultadoFinal = array_merge(...array_values($resultadoFinal));
+      */
+            
+            $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+            $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
+            ->whereDate('fecha', '<=', $fecha2)
+            ->groupBy('num_esc')
+            ->orderBy('otorgante')
+            ->orderBy('fecha', 'ASC')
+            ->select($raw1)
+            ->get()
+            ->toArray();
+            $resultadoFinal = $libroindice;
+
+    }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
+     $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+      ->groupBy('num_esc')
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
       }
 
-       $resultadoFinal = array_merge(...array_values($resultadoFinal));
-     }
 
       
     return response()->json([
@@ -1301,4 +1330,19 @@ class ReportesController extends Controller
     return Excel::download(new RonExport($fecha1, $fecha2), $nombrefile);
 
   }
+
+
+   public function Reporte_ingresos_Dian(Request $request){
+     
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fecha_reporte = date("d-m-Y");
+    $ingreso = $request->session()->get('parametroingreso');
+    $opcionreporte = $request->session()->get('opcionreporte');
+    $nombrefile = 'reporte_ingresos_dian'.'_'. $opcionreporte . '_' . $fecha_reporte.'.'.'xls';
+
+    return Excel::download(new IngresosdianescriturasExport($fecha1, $fecha2, $ingreso, $opcionreporte), $nombrefile);     
+    
+  }
+  
 }

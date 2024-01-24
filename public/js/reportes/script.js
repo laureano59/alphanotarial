@@ -18,6 +18,71 @@ $("#ron").click(function(){
 
 });
 
+$("#informeingresos_dian").click(function(){
+
+  var opcion = 19;
+  var reporte = "Informe de ingresos para la DIAN";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+
+});
+
+$("#generar_informe_ingresos_dian").click(function(){
+  
+   if (document.querySelector('input[name="seleccion"]:checked')) {
+
+    var opcionreporte = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'escrituras') {
+      opcionreporte = "escrituras";
+    }else if (seleccion == 'cajarapida') {
+      opcionreporte = "cajarapida";
+    }
+
+    if($("#ingreso").val() == '' || $("#start").val() == '' || $("#end").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
+
+      var route = "/cargarfechas";
+      var token = $("#token").val();
+      var type = 'GET';
+      var ingreso = $("#ingreso").val();
+      var fecha1 = $("#start").val();
+      var fecha2 = $("#end").val();
+      var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2,
+      "ingreso": ingreso,
+      "opcionreporte": opcionreporte
+      };
+
+    __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){
+        var url = "generar_informe_ingresos_dian";
+        $("<a>").attr("href", url)[0].click();
+      }
+    })
+  }
+  
+  }else{
+    alert("Seleccione tipo de informe");
+  }
+  
+});
+
+
 $("#certificadortf").click(function(){
   var opcion = 13;
   var reporte = "Certificado de Retención en la Fuente";
@@ -98,7 +163,7 @@ $("#actos_notariales_escritura").click(function(){
 
 $("#libroindice").click(function(){
   var opcion = 2;
-  var reporte = "Libro Índice - Escrituración";
+  var reporte = "Libro Índice de Escrituras";
   var ordenar = "libroindice";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
@@ -120,7 +185,7 @@ $("#libroindice").click(function(){
 
 $("#libroalfabetico").click(function(){
   var opcion = 2;
-  var reporte = "Libro Alfabético Notarial - Escrituración";
+  var reporte = "Libro Alfabético de Escrituras";
   var ordenar = "pornombre";
   var route = "/cargartiporeporte";
   var token = $("#token").val();

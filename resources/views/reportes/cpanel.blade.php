@@ -227,6 +227,33 @@
       </table>
     </div>
   </div>
+
+  <div class="group">
+    <h3 class="accordion-header">INFORMES PARA LA DIAN</h3>
+
+    <div>
+      <table class="table table-striped table-bordered table-hover head">
+        <tr>
+          <td bgcolor="#FEFFE0">
+            <a href="javascript://" id="informeingresos_dian">
+              Informe de Ingresos por Cliente
+          </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td bgcolor="#F9E1E1">
+            <a href="javascript://" id="enajenaciones">
+              Informe de Enajenaciones
+          </a>
+          </td>
+        </tr>
+        
+      </table>
+    </div>
+  </div>
+
+
 </div><!-- #accordion -->
 
 </div>

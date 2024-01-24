@@ -196,8 +196,7 @@ class PdfController extends Controller
       $valTot  = $total_fact;
       $NitOfe  = $nit;//Nit Notaría
       $NumAdq  = $identificacioncli1;
-      //$ClTec   = '266669c6-4b51-429d-aedb-da51c8270516'; //Clave tecnica, se encuentra en el portal de la pactura electronica que nos provve la dian
-      $TipoAmbiente = '2'; //1=AmbienteProduccion , 2: AmbientePruebas
+      $TipoAmbiente = '1'; //1=AmbienteProduccion , 2: AmbientePruebas
 
       $cufe = $request->session()->get('CUFE_SESION');
       $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
@@ -492,7 +491,7 @@ class PdfController extends Controller
       $NitOfe  = $nit;//Nit Notaría
       $NumAdq  = $identificacioncli1;
       $ClTec   = 'XXXXX'; //Clave tecnica, se encuentra en el portal de la pactura electronica que nos provve la dian
-      $TipoAmbiente = '2'; //1=AmbienteProduccion , 2: AmbientePruebas
+      $TipoAmbiente = '1'; //1=AmbienteProduccion , 2: AmbientePruebas
       
       $cufe = $request->session()->get('CUFE_SESION');
       $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
@@ -2612,24 +2611,37 @@ class PdfController extends Controller
 
     }elseif($ordenar == 'pornombre'){//Ordena por nombre
 
-          $alfabeto = range('A', 'Z');
+          /*$alfabeto = range('A', 'Z');
 
           foreach ($alfabeto as $letra) {
-          $libroindice = Libroindice_view::
+            $libroindice = Libroindice_view::
             whereDate('fecha', '>=', $fecha1)
             ->whereDate('fecha', '<=', $fecha2)
             ->where('otorgante', 'like', $letra . '%')
-            ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente, MIN(acto) AS acto')
+            ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente,  SUBSTRING(MIN(acto), 1, 30) AS acto')
             ->groupBy('num_esc')
             ->orderBy('num_esc')
             ->orderBy('otorgante')
             ->orderBy('fecha')
             ->get()->toArray();
-          
-          $resultadoFinal[$letra] = $libroindice;
-      }
+            $resultadoFinal[$letra] = $libroindice;
+          }
 
-       $resultadoFinal = array_merge(...array_values($resultadoFinal));
+          $resultadoFinal = array_merge(...array_values($resultadoFinal));
+
+          */
+
+          $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+            $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
+            ->whereDate('fecha', '<=', $fecha2)
+            ->groupBy('num_esc')
+            ->orderBy('otorgante')
+            ->orderBy('fecha', 'ASC')
+            ->select($raw1)
+            ->get()
+            ->toArray();
+            $resultadoFinal = $libroindice;
+      
 
     }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
@@ -2683,11 +2695,42 @@ class PdfController extends Controller
     'margin_bottom' => 2,
   ]);
 
+
+    // Configurar estilos y alineación del encabezado
+        $header ='
+            <table width="100%">
+            <tr>
+            <td align="center">
+            <h2>'.$nombre_nota.'</h2>
+            <br>
+            <b>'.$nombre_reporte.' -  '.$anio_trabajo.'</b>
+            
+            </td>
+
+            <td>
+            <table width="100%">
+            <tr>
+            <td align="right">
+            <img src="' . asset('images/logon13.png') . '" alt="Logo" style="float: right; margin-right: 10px;">
+            </td>
+            </tr>
+            </table>
+            </td>
+            </tr>
+            </table>
+            <hr>
+            ';
+
+        // Configurar encabezado en el PDF
+        $mpdf->SetHTMLHeader($header);
+
+
   $mpdf->defaultfooterfontsize=2;
-   $mpdf->SetTopMargin(2);
-   $mpdf->SetDisplayMode('fullpage');
-   $mpdf->WriteHTML($html);
-   $mpdf->Output($namefile,"I");
+  $mpdf->SetTopMargin(50);
+  $mpdf->SetDisplayMode('fullpage');
+   
+  $mpdf->WriteHTML($html);
+  $mpdf->Output($namefile,"I");
 
  }
 

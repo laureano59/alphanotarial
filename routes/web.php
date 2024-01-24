@@ -63,8 +63,8 @@ Route::resource('facturacajarapida', 'FacturascajarapidaController');
 Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController');
 
 Route::resource('seguimientoescrituras', 'SeguimientoController');
-
-
+Route::resource('consulta_cajarapida', 'ConsultacajarapidaController');
+Route::get('buscarencajarapida', 'ConsultacajarapidaController@Consulta_CajaRapida');
 
 
 Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vendedores');
@@ -186,7 +186,7 @@ Route::get('validarreportados', 'ValidacionesController@ExisteReportado');
 Route::get('liquidacionpdf', 'PdfController@PdfLiquidacion');
 Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
 Route::get('informe_ron', 'ReportesController@Ron');
-Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
+Route::get('generar_informe_ingresos_dian', 'ReportesController@Reporte_ingresos_Dian');
 
 
 Route::get('enlacespdf', 'PdfController@PdfEnlaces');
