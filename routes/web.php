@@ -187,6 +187,8 @@ Route::get('liquidacionpdf', 'PdfController@PdfLiquidacion');
 Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
 Route::get('informe_ron', 'ReportesController@Ron');
 Route::get('generar_informe_ingresos_dian', 'ReportesController@Reporte_ingresos_Dian');
+Route::get('informe_enejenaciones_dian', 'ReportesController@Reporte_enejenaciones_Dian');
+
 
 
 Route::get('enlacespdf', 'PdfController@PdfEnlaces');

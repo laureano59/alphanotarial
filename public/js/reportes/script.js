@@ -38,6 +38,26 @@ $("#informeingresos_dian").click(function(){
 
 });
 
+$("#enajenaciones").click(function(){
+
+  var opcion = 20;
+  var reporte = "Informe de Enajenaciones para la DIAN";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+
+});
+
 $("#generar_informe_ingresos_dian").click(function(){
   
    if (document.querySelector('input[name="seleccion"]:checked')) {
@@ -71,6 +91,51 @@ $("#generar_informe_ingresos_dian").click(function(){
     .done( function( info ){
       if(info.validar == 1){
         var url = "generar_informe_ingresos_dian";
+        $("<a>").attr("href", url)[0].click();
+      }
+    })
+  }
+  
+  }else{
+    alert("Seleccione tipo de informe");
+  }
+  
+});
+
+$("#generar_informe_enajenaciones_dian").click(function(){
+   
+   if (document.querySelector('input[name="seleccion"]:checked')) {
+
+    var opcionreporte = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'enajenacionesprincipales') {
+      opcionreporte = "enajenacionesprincipales";
+    }else if (seleccion == 'enajenacionesvendedoressecundarios') {
+      opcionreporte = "enajenacionesvendedoressecundarios";
+    }else if (seleccion == 'enajenacionescompradoressecundarios') {
+      opcionreporte = "enajenacionescompradoressecundarios";
+    }
+
+    if($("#start").val() == '' || $("#end").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
+
+      var route = "/cargarfechas";
+      var token = $("#token").val();
+      var type = 'GET';
+      var ingreso = $("#ingreso").val();
+      var fecha1 = $("#start").val();
+      var fecha2 = $("#end").val();
+      var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2,
+      "opcionreporte": opcionreporte
+      };
+
+    __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){
+        var url = "informe_enejenaciones_dian";
         $("<a>").attr("href", url)[0].click();
       }
     })

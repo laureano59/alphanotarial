@@ -31,6 +31,7 @@ use\App\Actas_deposito_view;
 use\App\Actas_deposito_egreso_view;
 use App\Exports\RonExport;
 use App\Exports\IngresosdianescriturasExport;
+use App\Exports\EnajenacionesExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -96,6 +97,9 @@ class ReportesController extends Controller
     }else if($opcion == 19){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.informeingresosdian', compact('nombre_reporte'));
+    }else if($opcion == 20){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.enajenacionesdian', compact('nombre_reporte'));
     }
   }
   
@@ -1342,6 +1346,18 @@ class ReportesController extends Controller
     $nombrefile = 'reporte_ingresos_dian'.'_'. $opcionreporte . '_' . $fecha_reporte.'.'.'xls';
 
     return Excel::download(new IngresosdianescriturasExport($fecha1, $fecha2, $ingreso, $opcionreporte), $nombrefile);     
+    
+  }
+
+  public function Reporte_enejenaciones_Dian(Request $request){
+     
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fecha_reporte = date("d-m-Y");
+    $opcionreporte = $request->session()->get('opcionreporte');
+    $nombrefile = 'enajenaciones_dian'.'_'. $opcionreporte . '_' . $fecha_reporte.'.'.'xls';
+
+    return Excel::download(new EnajenacionesExport($fecha1, $fecha2, $opcionreporte), $nombrefile);     
     
   }
   
