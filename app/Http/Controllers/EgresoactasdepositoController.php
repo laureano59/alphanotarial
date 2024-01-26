@@ -46,6 +46,7 @@ class EgresoactasdepositoController extends Controller
       $anio_trabajo = $request->anio_fiscal;//Notaria::find(1)->anio_trabajo;
       $fecha_manual = Notaria::find(1)->fecha_egreso;
       $fecha_automatica = Notaria::find(1)->fecha_egreso_automatica;
+      $nuevosaldo = $request->nuevosaldo;
       if($fecha_automatica == true){
         $fecha_egreso = date("Y/m/d");
       }else if($fecha_automatica == false){
@@ -57,7 +58,7 @@ class EgresoactasdepositoController extends Controller
         $id_acta = $request->input('id_acta');
         $descuento = $request->input('descuento');
         $concepto_egreso = $request->input('concepto_egreso');
-
+       
         $Egreso = new Egreso_acta_deposito();
         $Egreso->fecha_egreso = $fecha_egreso;
         $Egreso->id_con = $concepto_egreso;
@@ -65,6 +66,7 @@ class EgresoactasdepositoController extends Controller
         $Egreso->anio_radica = $anio_trabajo;
         $Egreso->id_act = $id_acta;
         $Egreso->egreso_egr = $descuento;
+        $Egreso->saldo = $nuevosaldo;
         $Egreso->usuario = auth()->user()->name;
         $Egreso->save();
 
@@ -87,6 +89,7 @@ class EgresoactasdepositoController extends Controller
         $Egreso->id_act = $id_acta;
         $Egreso->egreso_egr = $descuento;
         $Egreso->observaciones_egr = $observaciones;
+        $Egreso->saldo = $nuevosaldo;
         $Egreso->usuario = auth()->user()->name;
         $Egreso->save();
         $id_egr = $Egreso->id_egr;

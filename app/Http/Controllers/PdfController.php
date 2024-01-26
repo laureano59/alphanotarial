@@ -6953,9 +6953,9 @@ public function PdfInformeCartera(Request $request){
       $totalsaldo = 0;
 
       foreach ($Actas_egreso  as $key => $ad) {
-        $totaldepositos += $ad['deposito_act'];
+        //$totaldepositos += $ad['deposito_act'];
         $totalegresos += $ad['egreso_egr'];
-        $totalsaldo += $ad['saldo'];
+        //$totalsaldo += $ad['saldo'];
       }
 
      
@@ -6969,9 +6969,9 @@ public function PdfInformeCartera(Request $request){
       $data['email'] = $email;
       $data['nombre_notario'] = $nombre_notario;
       $data['egresos'] = $Actas_egreso;
-      $data['totaldepositos'] = round($totaldepositos);
+      //$data['totaldepositos'] = round($totaldepositos);
       $data['totalegresos'] = round($totalegresos);
-      $data['totalsaldo'] = round($totalsaldo);
+      //$data['totalsaldo'] = round($totalsaldo);
       $data['nombre_reporte'] = $nombre_reporte;
       $data['fecha_reporte'] = $fecha_reporte;
       $data['fecha_impresion'] = $fecha_impresion;

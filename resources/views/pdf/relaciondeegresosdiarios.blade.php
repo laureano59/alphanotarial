@@ -103,7 +103,7 @@
             </td>
 
             <td align="right">
-                <font size="2">{{ number_format($item['saldo'], 2) }}</font>
+                <font size="2">{{ number_format($item['nuevo_saldo'], 2) }}</font>
             </td>
 
              <td>
@@ -130,13 +130,13 @@
                 <b> Totales:</b>
             </td>
             <td align="right">
-                <font size="2"><b>{{ number_format($totaldepositos, 2) }}</b></font>
+                <font size="2"><b></b></font>
             </td>
              <td align="right">
                 <font size="2"><b>{{ number_format($totalegresos, 2) }}</b></font>
             </td>
              <td align="right">
-                <font size="2"><b>{{ number_format($totalsaldo, 2) }}</b></font>
+                <font size="2"><b></b></font>
             </td>
             <td>
             </td>

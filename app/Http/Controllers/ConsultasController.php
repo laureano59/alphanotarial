@@ -58,15 +58,15 @@ class ConsultasController extends Controller
                       ->toArray();
       }else if($filtro == 'otorgante'){
         $Seguimiento = Seguimiento_radicacion_view::
-                    //where('otorgante', '=', $info)
-                    where('nombre_otorgante','ilike', '%'.$info.'%')
+                    where('otorgante', '=', $info)
+                    ->orWhere('nombre_otorgante','ilike', '%'.$info.'%')
                     //->where('anio_radica', '=', $anio)
                     ->get()
                     ->toArray();
       }else if($filtro == 'compareciente'){
          $Seguimiento = Seguimiento_radicacion_view::
-                      //where('compareciente', '=', $info)
-                      where('nombre_compareciente','ilike', '%'.$info.'%')
+                      where('compareciente', '=', $info)
+                      ->orWhere('nombre_compareciente','ilike', '%'.$info.'%')
                       //->where('anio_radica', '=', $anio)
                       ->get()
                       ->toArray();

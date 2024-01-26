@@ -55,7 +55,8 @@ class SeguimientoController extends Controller
                       ->toArray();
       }else if($filtro == 'otorgante'){
         $Seguimiento = Seguimiento_radicacion_view::
-                    where('otorgante', '=', $info)
+                    //where('otorgante', '=', $info)
+                    where('otorgante','ilike', '%'. $info .'%')
                     ->orWhere('nombre_otorgante','ilike', '%'. $info .'%')
                     //->where('anio_radica', '=', $anio)
                     ->get()

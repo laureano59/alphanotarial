@@ -208,6 +208,8 @@ $("#GuardarEgreso").click(function() {
                                 .done(function(info) {
                                     if (info.validar == 1) {
                                     //Recargo grid por identificacion o por id_act
+                                        var url = "egresos";
+                                        $("<a>").attr("href", url)[0].click();
                                     }
                                 })
                         }

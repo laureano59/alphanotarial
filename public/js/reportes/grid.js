@@ -968,13 +968,11 @@ function CargarInformeDepositos(data){
 }
 
 function CargarInformeEgresos(data){
-    var totaldepositos = 0;
+    
     var totalegresos = 0;
-    var totalsaldo = 0;
     var htmlTags = '';
   for (item in data) {
-    totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
-    totalsaldo = totalsaldo + parseFloat(data[item].saldo);
+   
     totalegresos = totalegresos + parseFloat(data[item].egreso_egr);
     htmlTags +=
           '<tr>' +
@@ -997,7 +995,7 @@ function CargarInformeEgresos(data){
           formatNumbderechos(data[item].egreso_egr) +
           '</td>' +
            '<td align="right">' +
-          formatNumbderechos(data[item].saldo) +
+          formatNumbderechos(data[item].nuevo_saldo) +
           '</td>' +
            '<td>' +
           data[item].observaciones_egr +
@@ -1020,13 +1018,13 @@ function CargarInformeEgresos(data){
           '<b>Totales:</b>'+
           '</td>' +
           '<td align="right"><b>' +
-          formatNumbderechos(totaldepositos) +
+         
           '</b></td>' +
           '<td align="right"><b>' +
           formatNumbderechos(totalegresos) +
           '</b></td>' +
            '<td align="right"><b>' +
-          formatNumbderechos(totalsaldo) +
+          
           '</b></td>' +
           '<td>' +
           '</td>' +
