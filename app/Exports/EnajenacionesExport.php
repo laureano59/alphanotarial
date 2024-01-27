@@ -3,7 +3,8 @@
 namespace App\Exports;
 
 use\App\Enajenaciones_principales_view;
-use\App\Enajenaciones_secundarios_view;
+use\App\Enajenaciones_vendedores_secundarios_view;
+use\App\Enajenaciones_compradores_secundarios_view;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -107,7 +108,7 @@ class EnajenacionesExport implements FromCollection,WithHeadings
             ->whereDate('fecha_esc', '<=', $fecha2)
             ->get();
         }elseif($opcionreporte == 'enajenacionesvendedoressecundarios'){
-            $reporte = Enajenaciones_secundarios_view::select([
+            $reporte = Enajenaciones_vendedores_secundarios_view::select([
                 'escritura', 'identificacion_vendedor_principal', 
                 'identificacion_comprador_principal',
                 'tipo_doc_vendedor', 'identificacion_vendedor_secundario',   
@@ -118,7 +119,7 @@ class EnajenacionesExport implements FromCollection,WithHeadings
             ->whereDate('fecha_esc', '<=', $fecha2)
             ->get();
         }elseif($opcionreporte == 'enajenacionescompradoressecundarios'){
-            $reporte = Enajenaciones_secundarios_view::select([
+            $reporte = Enajenaciones_compradores_secundarios_view::select([
                 'escritura', 'identificacion_vendedor_principal', 
                 'identificacion_comprador_principal',
                 'tipo_doc_comprador', 'identificacion_comprador_secundario',   
