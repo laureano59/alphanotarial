@@ -588,9 +588,34 @@ function CargarLibroIndice(data){
       htmlTags +=
           '<tr>' +
           '<td>' +
+          data[item].otorgante +
+          '</td>' +
+          '<td>' +
           data[item].fecha +
           '</td>' +
           '<td>' +
+          data[item].num_esc +
+          '</td>' +
+          '<td>' +
+          data[item].compareciente +
+          '</td>' +
+          '<td>' +
+          data[item].acto +
+          '</td>' +
+          '</tr>';
+      }
+      document.getElementById('libro').innerHTML = htmlTags;
+}
+
+function CargarLibroRelacion(data){
+  var htmlTags = '';
+  for (item in data) {
+      htmlTags +=
+          '<tr>' +
+           '<td>' +
+          data[item].fecha +
+          '</td>' +
+           '<td>' +
           data[item].num_esc +
           '</td>' +
           '<td>' +
@@ -989,7 +1014,7 @@ function CargarInformeEgresos(data){
           data[item].nombre +
           '</td>' +
           '<td align="right">' +
-          formatNumbderechos(data[item].deposito_act) +
+          formatNumbderechos(data[item].saldo_de_deposito) +
           '</td>' +
           '<td align="right">' +
           formatNumbderechos(data[item].egreso_egr) +

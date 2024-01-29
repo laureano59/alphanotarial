@@ -50,8 +50,14 @@ class ReportesController extends Controller
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.cajadiario', compact('nombre_reporte'));
     }else if($opcion == 2){
+      $reporte_view = $request->session()->get('ordenar');
       $nombre_reporte = $request->session()->get('nombre_reporte');
-      return view('reportes.libroindice', compact('nombre_reporte'));
+     
+      if($reporte_view == 'pornombre'){
+         return view('reportes.libroindice', compact('nombre_reporte'));
+      }else if($reporte_view == 'porescritura'){
+        return view('reportes.librorelacion', compact('nombre_reporte'));
+      }
     }else if($opcion == 3){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.ingresosporconcepto', compact('nombre_reporte'));
@@ -328,10 +334,12 @@ class ReportesController extends Controller
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
     $ordenar = $request->session()->get('ordenar');
+    $paragrid = '';
 
     $resultadoFinal = [];
 
-    if($ordenar == 'libroindice'){ //Ordena por escritura
+    if($ordenar == 'porescritura'){ //Ordena por escritura
+      $paragrid = '1';
      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
       $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
@@ -342,9 +350,10 @@ class ReportesController extends Controller
       ->toArray();
       $resultadoFinal = $libroindice;
 
-    }elseif($ordenar == 'pornombre'){//Ordena por nombre
+    }else if($ordenar == 'pornombre'){//Ordena por nombre
+      $paragrid = '2';
 
-      /*$alfabeto = range('A', 'Z');
+      $alfabeto = range('A', 'Z');
 
           foreach ($alfabeto as $letra) {
             $libroindice = Libroindice_view::
@@ -354,40 +363,17 @@ class ReportesController extends Controller
             ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente, MIN(acto) AS acto')
             ->groupBy('num_esc')
             ->orderBy('num_esc')
-            ->orderBy('otorgante')
+            //->orderBy('otorgante')
             ->orderBy('fecha')
             ->get()->toArray();
             $resultadoFinal[$letra] = $libroindice;
           }
             $resultadoFinal = array_merge(...array_values($resultadoFinal));
-      */
+         }
             
-            $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
-            $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-            ->whereDate('fecha', '<=', $fecha2)
-            ->groupBy('num_esc')
-            ->orderBy('otorgante')
-            ->orderBy('fecha', 'ASC')
-            ->select($raw1)
-            ->get()
-            ->toArray();
-            $resultadoFinal = $libroindice;
-
-    }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
-     $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
-      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)
-      ->groupBy('num_esc')
-      ->orderBy('num_esc')
-      ->select($raw1)
-      ->get()
-      ->toArray();
-      }
-
-
-      
     return response()->json([
-       "libroindice"=>$resultadoFinal
+       "libroindice"=>$resultadoFinal,
+       "paragrid"=>$paragrid
      ]);
   }
 

@@ -60,7 +60,7 @@
             <th><font size="2">Fecha Egreso</font></th>
             <th><font size="2">Identificación</font></th>
             <th><font size="2">Nombre</font></th>
-            <th><font size="2">Depósito</font></th>
+            <th><font size="2">Saldo de depósito</font></th>
             <th><font size="2">Egreso</font></th>
             <th><font size="2">Saldo</font></th>
             <th><font size="2">Observaciones</font></th>
@@ -95,7 +95,7 @@
             </td>
 
             <td align="right">
-                <font size="2">{{ number_format($item['deposito_act'], 2) }}</font>
+                <font size="2">{{ number_format($item['saldo_de_deposito'], 2) }}</font>
             </td>
 
              <td align="right">

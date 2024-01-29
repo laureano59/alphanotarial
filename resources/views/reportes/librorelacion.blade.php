@@ -6,8 +6,9 @@
 <div class="page-header">
 
     <h1>
-         {{$nombre_reporte}}<span id="radi">
-
+      <span id="reporte">
+         {{$nombre_reporte}}
+      </span>
     </h1>
 </div><!-- /.page-header -->
 
@@ -20,12 +21,12 @@
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar Rango de Fecha</h4>
                     <span class="widget-toolbar">
-                        <a target="_blank" href="/relaciondeegresosdiariospdf">
+                        <a target="_blank" href="/libroindicepdf">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Reporte"></i>
                         </a>
                     </span>
                     <span class="widget-toolbar">
-                        <a href="#" data-action="settings" id="generarreporte_egresos">
+                        <a href="#" data-action="settings" id="generarreportelibroindice">
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
                         </a>
                     </span>
@@ -51,18 +52,14 @@
                 <table id="simple-table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Acta #</th>
-                            <th>Fecha Egreso</th>
-                            <th>Identificación</th>
-                            <th>Nombre</th>
-                            <th>Saldo de depósito</th>
-                            <th>Egreso</th>
-                            <th>Saldo</th>
-                            <th>Observaciones</th>
-                            <th>Rad</th>
+                            <th>Fecha</th>
+                            <th>No.Esc</th>
+                            <th>Pmer.Contratante</th>
+                            <th>Sgdo.Contratante</th>
+                            <th>Acto</th>
                         </tr>
                     </thead>
-                    <tbody id="data">
+                    <tbody id="libro">
 
                     </tbody>
                 </table>
@@ -70,9 +67,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 @endsection
 
@@ -82,17 +76,18 @@
 @endsection
 
 @section('scripts')
-<script src="{{asset('js/reportes/script.js')}}"></script>
-<script src="{{ asset('js/calendario.js')}}"></script>
-<script src="{{asset('js/reportes/grid.js')}}"></script>
-<script src="{{asset('assets/js/jquery-ui.custom.min.js')}}"></script>
-<script src="{{asset('assets/js/chosen.jquery.min.js')}}"></script>
-<script src="{{asset('assets/js/spinbox.min.js')}}"></script>
-<script src="{{asset('assets/js/bootstrap-datepicker.min.js')}}"></script>
-<script src="{{asset('assets/js/autosize.min.js')}}"></script>
-<script src="{{asset('assets/js/jquery.inputlimiter.min.js')}}"></script>
-<script src="{{asset('assets/js/jquery.maskedinput.min.js')}}"></script>
-<script src="{{ asset('js/solonumeros.js')}}"></script>
-<script src="{{ asset('js/formatonumero.js')}}"></script>
-<script src="{{ asset('js/numberFormat154.js')}}"></script>
+  <script src="{{ asset('js/reportes/script.js')}}"></script>
+  <script src="{{ asset('js/calendario.js')}}"></script>
+  <script src="{{ asset('js/__AJAX.js')}}"></script>
+  <script src="{{asset('js/reportes/grid.js')}}"></script>
+  <script src="{{asset('assets/js/jquery-ui.custom.min.js')}}"></script>
+  <script src="{{asset('assets/js/chosen.jquery.min.js')}}"></script>
+  <script src="{{asset('assets/js/spinbox.min.js')}}"></script>
+  <script src="{{asset('assets/js/bootstrap-datepicker.min.js')}}"></script>
+  <script src="{{asset('assets/js/autosize.min.js')}}"></script>
+  <script src="{{asset('assets/js/jquery.inputlimiter.min.js')}}"></script>
+  <script src="{{asset('assets/js/jquery.maskedinput.min.js')}}"></script>
+  <script src="{{ asset('js/solonumeros.js')}}"></script>
+  <script src="{{ asset('js/formatonumero.js')}}"></script>
+  <script src="{{ asset('js/numberFormat154.js')}}"></script>
 @endsection

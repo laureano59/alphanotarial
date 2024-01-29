@@ -229,28 +229,6 @@ $("#actos_notariales_escritura").click(function(){
 $("#libroindice").click(function(){
   var opcion = 2;
   var reporte = "Libro Índice de Escrituras";
-  var ordenar = "libroindice";
-  var route = "/cargartiporeporte";
-  var token = $("#token").val();
-  var type = 'GET';
-  var datos = {
-    "opcionreporte": opcion,
-    "reporte": reporte,
-    "ordenar": ordenar
-  };
-  __ajax(route, token, type, datos)
-  .done( function( info ){
-    if(info.validar == 1){
-        location.href="/reportes";
-    }
-  })
-});
-
-
-
-$("#libroalfabetico").click(function(){
-  var opcion = 2;
-  var reporte = "Libro Alfabético de Escrituras";
   var ordenar = "pornombre";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
@@ -266,6 +244,30 @@ $("#libroalfabetico").click(function(){
         location.href="/reportes";
     }
   })
+
+});
+
+
+
+$("#librorelaciondeescrituras").click(function(){
+  var opcion = 2;
+  var reporte = "Libro Relación de Escrituras";
+  var ordenar = "porescritura";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte,
+    "ordenar": ordenar
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+  
 });
 
 
@@ -634,7 +636,12 @@ $("#generarreportelibroindice").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     var libroindice = info.libroindice;
-    CargarLibroIndice(libroindice);
+    if(info.paragrid == '2'){
+      CargarLibroIndice(libroindice);
+    }else if(info.paragrid == '1'){
+      CargarLibroRelacion(libroindice);
+    }
+    
   })
 });
 

@@ -10,9 +10,9 @@
       <table width="100%">
         <thead>
             <tr>
-                <th><font size="2">PRIMER OTORGANTE</font></th>
                 <th><font size="2">FECHA ESCRITURA</font></th>
                 <th><font size="2">ESCRITURA</font></th>
+                <th><font size="2">PRIMER OTORGANTE</font></th>
                 <th><font size="2">SEGUNDO OTORGANTE</font></th>
                 <th><font size="2">ACTO</font></th>
             </tr>
@@ -31,14 +31,14 @@
             @endphp
            
               <tr style="background-color: {{ $colorFondo }}">
-                 <td>
-                  <font size="2">{{$item['otorgante'] }}</font>
-                </td>
                 <td align="center">
                   <font size="2">{{ $item['fecha'] }}</font>
                 </td>
-                <td  align="center">
+                 <td  align="center">
                   <font size="2">{{ $item['num_esc'] }}</font>
+                </td>
+                 <td>
+                  <font size="2">{{$item['otorgante'] }}</font>
                 </td>
                 <td>
                   <font size="2">{{ $item['compareciente'] }}</font>

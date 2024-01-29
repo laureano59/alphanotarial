@@ -138,14 +138,14 @@
         <tr>
           <td bgcolor="#FEFFE0">
             <a href="javascript://" id="libroindice">
-            Libro Índice
+            Libro Índice de Escrituras
           </a>
           </td>
         </tr>
         <tr>
           <td bgcolor="#F9E1E1">
-            <a href="javascript://" id="libroalfabetico">
-            Libro Alfabético Notarial
+            <a href="javascript://" id="librorelaciondeescrituras">
+            Libro Relación de Escrituras
           </a>
           </td>
         </tr>

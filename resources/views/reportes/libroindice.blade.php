@@ -52,9 +52,9 @@
                 <table id="simple-table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>Pmer.Contratante</th>
                             <th>Fecha</th>
                             <th>No.Esc</th>
-                            <th>Pmer.Contratante</th>
                             <th>Sgdo.Contratante</th>
                             <th>Acto</th>
                         </tr>

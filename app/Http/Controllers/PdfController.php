@@ -2594,14 +2594,16 @@ class PdfController extends Controller
     $anio_trabajo = date("Y", strtotime($fecha1));
 
     $fecha = $fecha1.' A '.$fecha2;
+     $parapdf = '';
     $resultadoFinal = [];
 
     $ordenar = $request->session()->get('ordenar');
-    if($ordenar == 'pornumescritura'){ //Ordena por escritura
-      $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
-      $libroindice = Actos_notariales_escritura_view::whereDate('fecha', '>=', $fecha1)
+    if($ordenar == 'porescritura'){ //Ordena por escritura
+       $parapdf = '1';
+      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
-      //->groupBy('num_esc')
+      ->groupBy('num_esc')
       ->orderBy('num_esc')
       ->select($raw1)
       ->get()
@@ -2609,9 +2611,11 @@ class PdfController extends Controller
 
       $resultadoFinal = $libroindice;
 
+
     }elseif($ordenar == 'pornombre'){//Ordena por nombre
 
-          /*$alfabeto = range('A', 'Z');
+          $alfabeto = range('A', 'Z');
+          $parapdf = '2';
 
           foreach ($alfabeto as $letra) {
             $libroindice = Libroindice_view::
@@ -2621,39 +2625,14 @@ class PdfController extends Controller
             ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente,  SUBSTRING(MIN(acto), 1, 30) AS acto')
             ->groupBy('num_esc')
             ->orderBy('num_esc')
-            ->orderBy('otorgante')
+            //->orderBy('otorgante')
             ->orderBy('fecha')
             ->get()->toArray();
             $resultadoFinal[$letra] = $libroindice;
           }
 
           $resultadoFinal = array_merge(...array_values($resultadoFinal));
-
-          */
-
-          $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
-            $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-            ->whereDate('fecha', '<=', $fecha2)
-            ->groupBy('num_esc')
-            ->orderBy('otorgante')
-            ->orderBy('fecha', 'ASC')
-            ->select($raw1)
-            ->get()
-            ->toArray();
-            $resultadoFinal = $libroindice;
-      
-
-    }elseif($ordenar == 'libroindice'){//Libro indice ya viene ordenado
-     $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
-     $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-     ->whereDate('fecha', '<=', $fecha2)
-     ->groupBy('num_esc')
-     ->orderBy('num_esc')
-     ->select($raw1)
-     ->get()
-     ->toArray();
-      $resultadoFinal = $libroindice;
-   }
+    }
 
   
    $nombre_reporte = $request->session()->get('nombre_reporte');
@@ -2669,10 +2648,17 @@ class PdfController extends Controller
    $data['libroindice'] = $resultadoFinal;
    $data['nombre_reporte'] = $nombre_reporte;
 
-  ini_set('pcre.backtrack_limit', 10000000);     
-   $html = view('pdf.libroindice',$data)->render();
+  
+  if($parapdf == '2'){
+    ini_set('pcre.backtrack_limit', 10000000);
+    $html = view('pdf.libroindice',$data)->render();
+    $namefile = 'libroindice_'.$fecha_impresion.'.pdf';
+  }else if($parapdf == '1'){
+    ini_set('pcre.backtrack_limit', 10000000);
+     $html = view('pdf.librorelacion',$data)->render();
+    $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';
+  }     
    
-   $namefile = 'libroindice_'.$fecha_impresion.'.pdf';
 
    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
    $fontDirs = $defaultConfig['fontDir'];
@@ -2700,17 +2686,15 @@ class PdfController extends Controller
         $header ='
             <table width="100%">
             <tr>
-            <td align="center">
-            <h2>'.$nombre_nota.'</h2>
-            <br>
-            <b>'.$nombre_reporte.' -  '.$anio_trabajo.'</b>
+            <td align="center" colspan="2" style="padding: 0;">
+            <p><h2>'.$nombre_nota.'</h2>
             
+            <b>'.$nombre_reporte.' -  '.$anio_trabajo.'</b></p>
             </td>
-
-            <td>
+            <td colspan="2" style="padding: 0;">
             <table width="100%">
             <tr>
-            <td align="right">
+            <td align="right" colspan="2" style="padding: 0;">
             <img src="' . asset('images/logon13.png') . '" alt="Logo" style="float: right; margin-right: 10px;">
             </td>
             </tr>
@@ -2723,14 +2707,11 @@ class PdfController extends Controller
 
         // Configurar encabezado en el PDF
         $mpdf->SetHTMLHeader($header);
-
-
-  $mpdf->defaultfooterfontsize=2;
-  $mpdf->SetTopMargin(50);
-  $mpdf->SetDisplayMode('fullpage');
-   
-  $mpdf->WriteHTML($html);
-  $mpdf->Output($namefile,"I");
+        $mpdf->defaultfooterfontsize=2;
+        $mpdf->SetTopMargin(42);
+        $mpdf->SetDisplayMode('fullpage');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($namefile,"I");
 
  }
 
