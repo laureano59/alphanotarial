@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -551,7 +551,7 @@ class EinvoicenotadebitoController extends Controller
 
     $datosCodificados = json_encode($data_todo);
 
-    $url = "http://notaria13.binario.shop/factura/api-sync-invoice.json";
+    $url = "http://notaria13cali.binario.shop/factura/api-sync-invoice.json";
     $ch = curl_init($url);
 
     curl_setopt_array($ch, array(

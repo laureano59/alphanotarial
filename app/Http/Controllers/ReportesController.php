@@ -33,6 +33,7 @@ use App\Exports\RonExport;
 use App\Exports\IngresosdianescriturasExport;
 use App\Exports\EnajenacionesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Protocolista;
 
 
 class ReportesController extends Controller
@@ -106,6 +107,12 @@ class ReportesController extends Controller
     }else if($opcion == 20){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.enajenacionesdian', compact('nombre_reporte'));
+    }else if($opcion == 21){
+
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+       $Protocolistas = Protocolista::all();
+      return view('reportes.ingresosporescrituradores', compact('nombre_reporte', 'Protocolistas'));
+
     }
   }
   
@@ -114,10 +121,11 @@ class ReportesController extends Controller
     $opcion = $request->opcionreporte;
     $nombre_reporte = $request->reporte;
     $ordenar = $request->ordenar;
+   
     $request->session()->put('opcionreporte', $opcion);
     $request->session()->put('nombre_reporte', $nombre_reporte);
     $request->session()->put('ordenar', $ordenar);
-
+    
     return response()->json([
        "validar"=>1
      ]);
@@ -128,6 +136,8 @@ class ReportesController extends Controller
     $fecha2 = $request->fecha2;
     $ingreso = $request->ingreso;
     $opcionreporte = $request->opcionreporte;
+    $id_proto = $request->id_proto;
+    $request->session()->put('id_proto', $id_proto);
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
@@ -1295,18 +1305,32 @@ class ReportesController extends Controller
     
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
+
+    $opcionreporte = $request->opcionreporte;
+
+    $request->session()->put('opcionreporte', $opcionreporte);
     
-    $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
-    ->whereDate('fecha_egreso', '<=', $fecha2)
-    ->orderBy('id_act')
-    ->get()->toArray();
+    if($opcionreporte == 'completo'){
+      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
+      ->whereDate('fecha_egreso', '<=', $fecha2)
+      ->orderBy('id_act')
+      ->get()->toArray();
+    }else if($opcionreporte == 'maycero'){
+      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
+      ->whereDate('fecha_egreso', '<=', $fecha2)
+      ->where('nuevo_saldo', '>', 0)
+      ->orderBy('id_act')
+      ->get()->toArray();
+    }
 
      return response()->json([
         "egresos"=>$Actas_egreso
       ]);
+  }
+  
 
     
-  }
+  
 
 
 

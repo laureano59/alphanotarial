@@ -57,6 +57,7 @@ use App\Protocolistas_copias_view;
 use App\Consecutivo;
 use App\Ciudad;
 use App\Mediosdepago;
+use App\Ingresosporescrituradores_view;
 
 
 class PdfController extends Controller
@@ -4619,7 +4620,8 @@ public function PdfInformeCartera(Request $request){
 
 
     $raw1 = \DB::raw("id_radica");
-    $subquery = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+    $subquery = Estadisticonotarial_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<=', $fecha2)
     ->groupBy('id_radica')
     ->havingRaw('count(*) = 1')
     ->select($raw1)
@@ -4629,7 +4631,8 @@ public function PdfInformeCartera(Request $request){
     $estadistico = [];
     foreach ($subquery as $key => $sub) {
       $id_radica = $sub['id_radica'];
-      $consulta = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      $consulta = Estadisticonotarial_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
       ->where('id_radica', [$id_radica])->get()->toArray();
 
       foreach ($consulta as $key2 => $con) {
@@ -4649,7 +4652,8 @@ public function PdfInformeCartera(Request $request){
 
 
     $raw2 = \DB::raw("id_radica");
-    $subquery2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+    $subquery2 = Estadisticonotarial_view::whereDate('fecha', '>=', $fecha1)
+    ->whereDate('fecha', '<=', $fecha2)
     ->groupBy('id_radica')
     ->havingRaw('count(*) > 1')
     ->select($raw2)
@@ -4660,7 +4664,8 @@ public function PdfInformeCartera(Request $request){
     $estadistico_repe = [];
     foreach ($subquery2 as $key => $sub2) {
       $id_radica = $sub2['id_radica'];
-      $consulta2 = Estadisticonotarial_view::whereBetween('fecha', [$fecha1, $fecha2])
+      $consulta2 = Estadisticonotarial_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
       ->where('id_radica', [$id_radica])->get()->toArray();
 
       foreach ($consulta2 as $key2 => $con2) {
@@ -6920,14 +6925,24 @@ public function PdfInformeCartera(Request $request){
 
       $fecha1 = $request->session()->get('fecha1');
       $fecha2 = $request->session()->get('fecha2');
+      $opcionreporte = $request->session()->get('opcionreporte');
 
       $fecha_reporte =  $fecha1." A ". $fecha2;
       $fecha_impresion = date("d/m/Y");
 
+      if($opcionreporte == 'completo'){
       $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
       ->whereDate('fecha_egreso', '<=', $fecha2)
       ->orderBy('id_act')
       ->get()->toArray();
+    }else if($opcionreporte == 'maycero'){
+      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
+      ->whereDate('fecha_egreso', '<=', $fecha2)
+      ->where('nuevo_saldo', '>', 0)
+      ->orderBy('id_act')
+      ->get()->toArray();
+    }
+
 
       $totaldepositos = 0;
       $totalegresos = 0;
@@ -6958,6 +6973,114 @@ public function PdfInformeCartera(Request $request){
       $data['fecha_impresion'] = $fecha_impresion;
       
       $html = view('pdf.relaciondeegresosdiarios',$data)->render();
+
+      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
+
+    public function IngresosporEscriturador(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      
+
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      $opcionreporte = $request->session()->get('opcionreporte');
+      $id_proto = $request->session()->get('id_proto');
+
+
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+       $resultadoFinal = [];
+
+      if($opcionreporte == 'general'){
+        $alfabeto = range('A', 'Z');
+       
+        foreach ($alfabeto as $letra) {
+          $Relingescr = Ingresosporescrituradores_view::
+          whereDate('fecha_fact', '>=', $fecha1)
+        ->whereDate('fecha_fact', '<=', $fecha2)
+        ->where('nombre_proto', 'like', $letra . '%')
+        ->orderBy('num_esc')
+        ->get()->toArray();
+          $resultadoFinal[$letra] = $Relingescr;
+        }
+
+         $resultadoFinal = array_merge(...array_values($resultadoFinal));
+        
+      }else if($opcionreporte == 'porescriturador'){
+        $Relingescr = Ingresosporescrituradores_view::
+          whereDate('fecha_fact', '>=', $fecha1)
+        ->whereDate('fecha_fact', '<=', $fecha2)
+        ->where('id_proto', '=', $id_proto)
+        ->orderBy('num_esc')
+        ->get()->toArray();
+         $resultadoFinal = $Relingescr;
+      
+      }
+
+        $totalderechos = 0;
+        $totalconceptos = 0;
+        $totalingresos = 0;
+
+      foreach ($resultadoFinal  as $key => $res) {
+        $totalderechos += $res['total_derechos'];
+        $totalconceptos += $res['total_conceptos'];
+        $totalingresos += $res['ingresos'];
+      }
+
+
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['relingescr'] = $resultadoFinal;
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+      $data['totalderechos'] = $totalderechos;
+      $data['totalconceptos'] = $totalconceptos;
+      $data['totalingresos'] = $totalingresos;
+      
+      $html = view('pdf.ingresosporescriturador',$data)->render();
 
       $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
 

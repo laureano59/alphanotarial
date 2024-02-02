@@ -45,7 +45,6 @@
 
 @section('scripts')
   <script src="{{ asset('js/__AJAX.js')}}"></script>
-  <script src="{{asset('js/reportes/script.js')}}"></script>
   <script src="{{asset('assets/js/jquery-ui.custom.min.js')}}"></script>
   <script src="{{asset('assets/js/chosen.jquery.min.js')}}"></script>
   <script src="{{asset('assets/js/spinbox.min.js')}}"></script>

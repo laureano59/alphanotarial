@@ -18,6 +18,80 @@ $("#ron").click(function(){
 
 });
 
+
+$("#ingresporescrituradores").click(function(){
+
+  var opcion = 21;
+  var reporte = "Informe de ingresos Escrituradores";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+
+});
+
+$("#imprimiringresosporescrituradores").click(function(){
+  if (document.querySelector('input[name="seleccion"]:checked')) {
+      var tipoinforme = '';
+      var id_proto = '';
+      var seleccion = $('input:radio[name=seleccion]:checked').val();
+      if (seleccion == 'general') {
+        opcionreporte = "general";
+      }else if (seleccion == 'porescriturador') {
+        opcionreporte = "porescriturador";
+        id_proto = $("#id_proto").val();
+      }
+
+      if($("#start").val() == '' || $("#end").val() == ''){
+          alert("Todos los campos son necesarios");
+      }else{
+
+        var route = "/cargarfechas";
+        var token = $("#token").val();
+        var type = 'GET';
+        var fecha1 = $("#start").val();
+        var fecha2 = $("#end").val();
+        var datos = {
+        "fecha1": fecha1,
+        "fecha2": fecha2,
+        "opcionreporte": opcionreporte,
+        "id_proto": id_proto
+        };
+
+       __ajax(route, token, type, datos)
+       .done( function( info ){
+          if(info.validar == 1){
+            var url = "/ingresosporescrituradorpdf";
+            $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+        }
+       })
+
+      }
+  }else{
+      alert("Seleccione tipo de informe");
+    }
+});
+
+function handleRadioButtonChange() {
+  var seleccion = $('input:radio[name=seleccion]:checked').val();
+  //var elemento = document.getElementById("mostrarprotocolista");
+    if (seleccion == 'general') {
+         $("#mostrarprotocolista").fadeOut();
+    }else if (seleccion == 'porescriturador') {
+           $("#mostrarprotocolista").fadeIn();
+    }
+ }
+
+
 $("#informeingresos_dian").click(function(){
 
   var opcion = 19;
@@ -961,22 +1035,41 @@ $("#generarreporte_depositos").click(function(){
   })
 });
 
-$("#generarreporte_egresos").click(function(){
-  var fecha1 = $("#start").val();
-  var fecha2 = $("#end").val();
-  var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
-  };
-  var route = "/reporte_egresos";
-  var token = $("#token").val();
-  var type = 'GET';
 
-  __ajax(route, token, type, datos)
-  .done( function( info ){
-    var informe = info.egresos;
-    CargarInformeEgresos(informe);
-  })
+$("#generarreporte_egresos").click(function(){
+  if (document.querySelector('input[name="seleccion"]:checked')) {
+    var opcionreporte = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'maycero') {
+      opcionreporte = "maycero";
+    }else if (seleccion == 'completo') {
+      opcionreporte = "completo";
+    }
+
+    if($("#start").val() == '' || $("#end").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
+
+      var fecha1 = $("#start").val();
+      var fecha2 = $("#end").val();
+      var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2,
+      "opcionreporte": opcionreporte
+      };
+      var route = "/reporte_egresos";
+      var token = $("#token").val();
+      var type = 'GET';
+
+      __ajax(route, token, type, datos)
+      .done( function( info ){
+      var informe = info.egresos;
+      CargarInformeEgresos(informe);
+      })
+    }
+   }else{
+    alert("Seleccione tipo de informe");
+  }
 });
 
 

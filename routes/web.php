@@ -50,7 +50,7 @@ Route::resource('notacreditocajarapida', 'NotacreditocajarapidaController');
 Route::resource('carteracacajarapida', 'CarteracajarapidaController');
 Route::resource('notasdebitofact', 'NotasdebitoController');
 Route::resource('detallenotadebito', 'DetallenotadebitoController');
-Route::resource('cpanelreportes', 'PanelreporteController');
+//Route::resource('cpanelreportes', 'PanelreporteController');
 Route::resource('configuracion', 'ConfiguracionController');
 Route::resource('configurarfechas', 'ConfigurarfechasController');
 Route::resource('consultas', 'ConsultasController');
@@ -188,6 +188,8 @@ Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
 Route::get('informe_ron', 'ReportesController@Ron');
 Route::get('generar_informe_ingresos_dian', 'ReportesController@Reporte_ingresos_Dian');
 Route::get('informe_enejenaciones_dian', 'ReportesController@Reporte_enejenaciones_Dian');
+
+Route::get('ingresosporescrituradorpdf', 'PdfController@IngresosporEscriturador');
 
 
 
