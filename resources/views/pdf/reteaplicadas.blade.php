@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Ingresos por escrituradores</title>
+    <title>Refuentes Aplicadas</title>
 </head>
 <body>
     <table width="100%">
@@ -54,12 +54,16 @@
 <table width="100%">
     <thead>
         <tr>
-            <th><font size="2">Escriturador</font></th>
             <th><font size="2">Fecha_Fact</font></th>
+            <th><font size="2">Factura</font></th>
             <th><font size="2">Escritura</font></th>
+            <th><font size="2">Identificación</font></th>
+            <th><font size="2">Nombre</font></th>
+            <th><font size="2">Ica</font></th>
+            <th><font size="2">Retefte</font></th>
+            <th><font size="2">Iva</font></th>
             <th><font size="2">Derechos</font></th>
             <th><font size="2">Conceptos</font></th>
-            <th><font size="2">Ingresos</font></th>
             <th><font size="2">Radicación</font></th>
         </tr>
     </thead>
@@ -68,29 +72,41 @@
             @php
                 $colorAlternado = true;
             @endphp
-        @foreach($relingescr as $item)
+        @foreach($informe as $item)
          {{-- Alternar colores de fondo --}}
             @php
             $colorFondo = $colorAlternado ? '#ffffff' : '#f2f2f2';
             @endphp
         <tr style="background-color: {{ $colorFondo }}">
-            <td width="200">
-                <font size="2">{{ $item['nombre_proto'] }}</font>
+            <td>
+                <font size="2">{{ Carbon\Carbon::parse($item['fecha_fact'])->format('d/m/Y') }}</font> 
             </td>
             <td align="center">
-                <font size="2">{{ $item['fecha_fact'] }}</font>
+                <font size="2">{{ $item['id_fact'] }}</font>
             </td>
             <td align="center">
                 <font size="2">{{ $item['num_esc'] }}</font>
+            </td>
+            <td align="center">
+                <font size="2">{{ $item['identificacion'] }}</font>
+            </td>
+            <td align="center">
+                <font size="2">{{ $item['nombre'] }}</font>
+            </td>
+            <td align="right">
+                <font size="2">{{ number_format($item['ica'], 2) }}</font>
+            </td>
+            <td align="right">
+                <font size="2">{{ number_format($item['retefte'], 2) }}</font>
+            </td>
+            <td align="right">
+                <font size="2">{{ number_format($item['reteiva'], 2) }}</font>
             </td>
             <td align="right">
                 <font size="2">{{ number_format($item['total_derechos'], 2) }}</font>
             </td>
             <td align="right">
                 <font size="2">{{ number_format($item['total_conceptos'], 2) }}</font>
-            </td>
-             <td align="right">
-                <font size="2">{{ number_format($item['ingresos'], 2) }}</font>
             </td>
              <td align="center">
                 <font size="2">{{ $item['id_radica'] }}</font>
@@ -107,18 +123,28 @@
             </td>
             <td>
             </td>
+             <td>
+            </td>
+             <td>
+            </td>
             <td>
                 <b> Totales:</b>
             </td>
                      
+              <td align="right">
+                <font size="2"><b>{{ number_format($totalreteica, 2) }}</b></font>
+            </td>
+             <td align="right">
+                <font size="2"><b>{{ number_format($totalreteiva, 2) }}</b></font>
+            </td>
+             <td align="right">
+                <font size="2"><b>{{ number_format($totalretefte, 2) }}</b></font>
+            </td>
              <td align="right">
                 <font size="2"><b>{{ number_format($totalderechos, 2) }}</b></font>
             </td>
               <td align="right">
                 <font size="2"><b>{{ number_format($totalconceptos, 2) }}</b></font>
-            </td>
-             <td align="right">
-                <font size="2"><b>{{ number_format($totalingresos, 2) }}</b></font>
             </td>
             <td>
             </td>
@@ -127,7 +153,7 @@
        
     </tbody>
 </table>
-<hr>
+
 
 </body>
 

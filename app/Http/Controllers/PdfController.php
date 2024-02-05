@@ -58,6 +58,8 @@ use App\Consecutivo;
 use App\Ciudad;
 use App\Mediosdepago;
 use App\Ingresosporescrituradores_view;
+use App\Retencionesaplicadas_view;
+use App\Retencionenlafuente_view;
 
 
 class PdfController extends Controller
@@ -2633,8 +2635,18 @@ class PdfController extends Controller
           }
 
           $resultadoFinal = array_merge(...array_values($resultadoFinal));
-    }
-
+    }else if($ordenar == 'pornumescritura'){ //Ordena por escritura
+      $parapdf = '3';
+      $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
+      $libroindice = Actos_notariales_escritura_view::
+      whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+      $resultadoFinal = $libroindice;
+      }
   
    $nombre_reporte = $request->session()->get('nombre_reporte');
 
@@ -2658,8 +2670,11 @@ class PdfController extends Controller
     ini_set('pcre.backtrack_limit', 10000000);
      $html = view('pdf.librorelacion',$data)->render();
     $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';
-  }     
-   
+  }else if($parapdf == '3'){
+    ini_set('pcre.backtrack_limit', 10000000);
+     $html = view('pdf.librorelacion',$data)->render();
+    $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';     
+   }
 
    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
    $fontDirs = $defaultConfig['fontDir'];
@@ -5043,6 +5058,7 @@ public function PdfInformeCartera(Request $request){
     $cantregcivimatrim + $cantregcivdefunc + 
     $cantescrpublicorreccomposexmasca + $cantescrpublicorreccomposexfema + 
     $cantmatrimenoredad + $cantprocedinsoleconopersonatur + $cantotros;
+    $nombre_reporte = $request->session()->get('nombre_reporte');
 
     
     $data['nit'] = $nit;
@@ -5095,6 +5111,7 @@ public function PdfInformeCartera(Request $request){
     $data ['cantmatrimenoredad'] = $cantmatrimenoredad;
     $data ['cantprocedinsoleconopersonatur'] = $cantprocedinsoleconopersonatur;
     $data ['cantotros'] = $cantotros;
+    $data ['nombre_reporte'] = $nombre_reporte;
 
     
     $data['totalcantidad'] = $totalcantidad;
@@ -7079,9 +7096,9 @@ public function PdfInformeCartera(Request $request){
       $data['totalderechos'] = $totalderechos;
       $data['totalconceptos'] = $totalconceptos;
       $data['totalingresos'] = $totalingresos;
+
       
       $html = view('pdf.ingresosporescriturador',$data)->render();
-
       $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
 
       $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
@@ -7112,6 +7129,172 @@ public function PdfInformeCartera(Request $request){
       $mpdf->Output($namefile,"I");
 
     }
+
+
+    public function Retefuentesaplicadaspdf(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      
+      $Informe = Retencionesaplicadas_view::
+          whereDate('fecha_fact', '>=', $fecha1)
+        ->whereDate('fecha_fact', '<=', $fecha2)
+        //->where('nombre_proto', 'like', $letra . '%')
+        ->orderBy('id_fact')
+        ->get()->toArray();
+         
+  
+        $totalderechos = 0;
+        $totalconceptos = 0;
+        $totalreteica = 0;
+        $totalreteiva = 0;
+        $totalretefte = 0;
+
+      foreach ($Informe  as $key => $res) {
+        $totalderechos += $res['total_derechos'];
+        $totalconceptos += $res['total_conceptos'];
+        $totalreteica += $res['ica'];
+        $totalreteiva += $res['retefte'];
+        $totalretefte += $res['reteiva'];
+      }
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['informe'] = $Informe;
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+      $data['totalderechos'] = $totalderechos;
+      $data['totalconceptos'] = $totalconceptos;
+      $data['totalreteica'] = $totalreteica;
+      $data['totalreteiva'] = $totalreteiva;
+      $data['totalretefte'] = $totalretefte;
+
+      
+      $html = view('pdf.reteaplicadas',$data)->render();
+      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
+     public function Retencionenlafuente_pdf(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      
+      $Informe = Retencionenlafuente_view::
+          whereDate('fecha_fact', '>=', $fecha1)
+        ->whereDate('fecha_fact', '<=', $fecha2)
+        ->orderBy('id_fact')
+        ->get()->toArray();
+         
+  
+        $totalretefte = 0;
+
+      foreach ($Informe  as $key => $res) {
+        $totalretefte += $res['total_rtf'];
+      }
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['informe'] = $Informe;
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+      $data['totalretefte'] = $totalretefte;
+
+      
+      $html = view('pdf.retefuentes',$data)->render();
+      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
+
 
 
     private function Trae_Nombres($identificacion){

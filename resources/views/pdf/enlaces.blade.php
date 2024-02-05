@@ -34,7 +34,7 @@
 
                   <tr>
                       <td>
-                          <b>REPORTE ACTOS JURÍDICOS NOTARIALES</b>
+                          <b>{{$nombre_reporte}}</b>
                       </td>
                   </tr>
                   <tr>

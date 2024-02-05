@@ -76,7 +76,7 @@
           <input type="text" id="num_factura2" placeholder="Escribir No. de factura" class="nav-search-input"  autocomplete="off" />
           <input type="text" size="5" id="anio_fiscal2" placeholder="Año fiscal" class="nav-search-input"  autocomplete="off" onKeyPress="return soloNumeros(event)" />
           <a href="#" id="imprimircertificadoretefuente">
-              <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Imprimir certificado timbre"></i>
+              <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Imprimir certificado de retención"></i>
           </a>
         </span>
     </div>

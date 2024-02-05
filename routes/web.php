@@ -190,8 +190,8 @@ Route::get('generar_informe_ingresos_dian', 'ReportesController@Reporte_ingresos
 Route::get('informe_enejenaciones_dian', 'ReportesController@Reporte_enejenaciones_Dian');
 
 Route::get('ingresosporescrituradorpdf', 'PdfController@IngresosporEscriturador');
-
-
+Route::get('retefuentesaplicadaspdf', 'PdfController@Retefuentesaplicadaspdf');
+Route::get('informeretefuentespdf', 'PdfController@Retencionenlafuente_pdf');
 
 Route::get('enlacespdf', 'PdfController@PdfEnlaces');
 Route::get('libroindicepdf', 'PdfController@PdfLibroIndiceNotarial');

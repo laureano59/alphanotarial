@@ -74,7 +74,6 @@ $("#imprimiringresosporescrituradores").click(function(){
             $("<a>").attr("href", url).attr("target", "_blank")[0].click();
         }
        })
-
       }
   }else{
       alert("Seleccione tipo de informe");
@@ -363,6 +362,42 @@ $("#informerecaudos").click(function(){
   })
 });
 
+$("#retefuentesaplicadas").click(function(){
+  var opcion = 22;
+  var reporte = "Informe de Retefuentes Aplicadas";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
+$("#informederetefuentes").click(function(){
+  var opcion = 23;
+  var reporte = "Informe de Retefuentes";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+});
+
 $("#informerecaudosdiario").click(function(){
   var opcion = 11;
   var reporte = "Informe de Recaudos Caja - Escrituración";
@@ -517,11 +552,13 @@ $("#estadisticonotarial").click(function(){
 
 $("#enlaces").click(function(){
   var opcion = 7;
+  var reporte = "Reporte de enlaces";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
   var datos = {
-    "opcionreporte": opcion
+    "opcionreporte": opcion,
+    "reporte": reporte
   };
   __ajax(route, token, type, datos)
   .done( function( info ){
@@ -546,6 +583,46 @@ $("#imprimirestadisticonotarial").click(function(){
   .done( function( info ){
     if(info.validar == 1){
       var url = "/estadisticonotarialpdf";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+});
+
+$("#imprimirretefuentesaplicadas").click(function(){
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      var url = "/retefuentesaplicadaspdf";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+});
+
+$("#imprimirretefuentes").click(function(){
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      var url = "/informeretefuentespdf";
       $("<a>").attr("href", url).attr("target", "_blank")[0].click();
     }
   })
@@ -714,8 +791,9 @@ $("#generarreportelibroindice").click(function(){
       CargarLibroIndice(libroindice);
     }else if(info.paragrid == '1'){
       CargarLibroRelacion(libroindice);
+    }else if(info.paragrid == '3'){
+      CargarLibroRelacion(libroindice);
     }
-    
   })
 });
 

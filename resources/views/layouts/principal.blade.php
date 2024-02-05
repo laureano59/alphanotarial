@@ -94,6 +94,18 @@
 											Ingresos por Escrituradores
 										</a>
 									</li>
+									<li>
+										<a href="javascript://" id="retefuentesaplicadas">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Informe Retefuentes Aplicadas
+										</a>
+									</li>
+									<li>
+										<a href="javascript://" id="informederetefuentes">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Informe Retefuentes
+										</a>
+									</li>
 								</ul>
 							</li>
 
@@ -132,8 +144,6 @@
 							</li>
 
 
-
-
 							<li style="position: relative;">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
@@ -141,9 +151,15 @@
 								</a>
 								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
 									<li>
-										<a href="javascript://" id="enlaces">
+										<a href="javascript://" id="actos_notariales_escritura">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
 											Actos Jurídicos Notariales  
+										</a>
+									</li>
+									<li>
+										<a href="javascript://" id="enlaces">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Enlaces  
 										</a>
 									</li>
 									<li>

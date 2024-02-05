@@ -6,9 +6,8 @@
 <div class="page-header">
 
     <h1>
-      
-         {{$nombre_reporte}}
-     
+        {{$nombre_reporte}}
+
     </h1>
 </div><!-- /.page-header -->
 
@@ -21,7 +20,7 @@
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar Rango de Fecha</h4>
                     <span class="widget-toolbar">
-                        <a href="#" data-action="settings" id="imprimirenlaces">
+                        <a href="#" data-action="settings" id="imprimirretefuentes">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
                         </a>
                     </span>
@@ -50,8 +49,6 @@
 @section('scripts')
   <script src="{{ asset('js/__AJAX.js')}}"></script>
   <script src="{{ asset('js/calendario.js')}}"></script>
-  
-  <script src="{{asset('js/reportes/grid.js')}}"></script>
   <script src="{{asset('assets/js/jquery-ui.custom.min.js')}}"></script>
   <script src="{{asset('assets/js/chosen.jquery.min.js')}}"></script>
   <script src="{{asset('assets/js/spinbox.min.js')}}"></script>

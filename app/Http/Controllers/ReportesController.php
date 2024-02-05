@@ -58,6 +58,8 @@ class ReportesController extends Controller
          return view('reportes.libroindice', compact('nombre_reporte'));
       }else if($reporte_view == 'porescritura'){
         return view('reportes.librorelacion', compact('nombre_reporte'));
+      }else if($reporte_view == 'pornumescritura'){
+        return view('reportes.librorelacion', compact('nombre_reporte'));
       }
     }else if($opcion == 3){
       $nombre_reporte = $request->session()->get('nombre_reporte');
@@ -69,7 +71,8 @@ class ReportesController extends Controller
     }else if($opcion == 6){
       return view('reportes.registrocivil');
     }else if($opcion == 7){
-      return view('reportes.enlaces');
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.enlaces', compact('nombre_reporte'));
     }else  if($opcion == 8){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.notascredito', compact('nombre_reporte'));
@@ -108,11 +111,15 @@ class ReportesController extends Controller
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.enajenacionesdian', compact('nombre_reporte'));
     }else if($opcion == 21){
-
       $nombre_reporte = $request->session()->get('nombre_reporte');
-       $Protocolistas = Protocolista::all();
+      $Protocolistas = Protocolista::all();
       return view('reportes.ingresosporescrituradores', compact('nombre_reporte', 'Protocolistas'));
-
+    }else if($opcion == 22){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.retefuentesaplicadas', compact('nombre_reporte'));
+    }else if($opcion == 23){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informeretefuentes', compact('nombre_reporte'));
     }
   }
   
@@ -212,8 +219,7 @@ class ReportesController extends Controller
                       ->where('nota_credito', '=', 'false')
                       ->get()
                       ->toArray();
-       
-      
+          
         $cajadiario_otros_periodos = [];
         $i = 0;
         foreach ($cajadiario_otros_periodos1 as $key => $value) {
@@ -350,7 +356,7 @@ class ReportesController extends Controller
 
     if($ordenar == 'porescritura'){ //Ordena por escritura
       $paragrid = '1';
-     $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
+      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
       $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)
       ->groupBy('num_esc')
@@ -362,24 +368,36 @@ class ReportesController extends Controller
 
     }else if($ordenar == 'pornombre'){//Ordena por nombre
       $paragrid = '2';
-
       $alfabeto = range('A', 'Z');
 
-          foreach ($alfabeto as $letra) {
-            $libroindice = Libroindice_view::
-            whereDate('fecha', '>=', $fecha1)
-            ->whereDate('fecha', '<=', $fecha2)
-            ->where('otorgante', 'like', $letra . '%')
-            ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente, MIN(acto) AS acto')
-            ->groupBy('num_esc')
-            ->orderBy('num_esc')
-            //->orderBy('otorgante')
-            ->orderBy('fecha')
-            ->get()->toArray();
-            $resultadoFinal[$letra] = $libroindice;
-          }
-            $resultadoFinal = array_merge(...array_values($resultadoFinal));
-         }
+      foreach ($alfabeto as $letra) {
+        $libroindice = Libroindice_view::
+        whereDate('fecha', '>=', $fecha1)
+        ->whereDate('fecha', '<=', $fecha2)
+        ->where('otorgante', 'like', $letra . '%')
+        ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente, MIN(acto) AS acto')
+        ->groupBy('num_esc')
+        ->orderBy('num_esc')
+          //->orderBy('otorgante')
+        ->orderBy('fecha')
+        ->get()->toArray();
+          $resultadoFinal[$letra] = $libroindice;
+      }
+        $resultadoFinal = array_merge(...array_values($resultadoFinal));
+
+    }else if($ordenar == 'pornumescritura'){ //Ordena por escritura
+      $paragrid = '3';
+      $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
+      $libroindice = Actos_notariales_escritura_view::
+      whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+        //->groupBy('num_esc')
+      ->orderBy('num_esc')
+      ->select($raw1)
+      ->get()
+      ->toArray();
+      $resultadoFinal = $libroindice;
+      }
             
     return response()->json([
        "libroindice"=>$resultadoFinal,
