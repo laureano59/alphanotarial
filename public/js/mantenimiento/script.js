@@ -50,6 +50,9 @@ $("#editaracargode").click(function(){
       setTimeout(function(){ $("#msj-error7").fadeOut(); }, 3000);
     }else if(info.validar == '7'){
       location.href='/factura_acargo_de';
+    }else if(info.validar == '8'){
+      $("#msj7").html(info.mensaje);
+      $("#msj-error7").fadeIn();
     }
   })
 });

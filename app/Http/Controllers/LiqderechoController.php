@@ -347,13 +347,12 @@ public function store(Request $request)
   }
 }
 
-//TODO: Cargar Derechos
 public function Cargar_Derechos(Request $request){
   if($request->ajax()){
 
     $anio_trabajo = Notaria::find(1)->anio_trabajo;
     $id_radica = $request->input('id_radica');
-      $request->session()->put('key', $id_radica); //TODO:Inicia Variable de Session con la radicacion
+      $request->session()->put('key', $id_radica); //Inicia Variable de Session con la radicacion
       if (Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
         $liq_dere = Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
         foreach ($liq_dere as $key => $value) {

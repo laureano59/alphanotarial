@@ -535,30 +535,37 @@ class FacturacionController extends Controller
       }
     }
 
+   
     public function A_cargo_De(Request $request){
+      // Verificar si el usuario tiene el rol de administrador
+      if (!$request->user()->hasRole('administrador')) {
+            return response()->json([
+              "validar"=> "8",
+              "mensaje"=> "Acceso denegado. No tienes permiso para realizar esta acción."
+            ]);
+      }
+
+      // Si el usuario tiene el rol de administrador, continuar con la lógica del controlador
       $num_fact = $request->num_fact;
       $prefijo = $request->prefijo;
 
-      if (Factura::where('prefijo', $prefijo)->where('id_fact', $num_fact)->exists()){
-         $factura = Factura_a_cargo_de_view::where('prefijo', $prefijo)
-                ->where('id_fact', $num_fact)
-                ->get();
-
-      $request->session()->put('factura', $factura);
-      return response()->json([
-             "validar"=> "7"
-           ]);
-
-
+      if (Factura::where('prefijo', $prefijo)
+          ->where('id_fact', $num_fact)->exists()){
+            $factura = Factura_a_cargo_de_view::where('prefijo', $prefijo)
+            ->where('id_fact', $num_fact)
+            ->get();
+            $request->session()->put('factura', $factura);
+            return response()->json([
+            "validar"=> "7"
+            ]);
       }else{
-        return response()->json([
-             "validar"=> "1",
-             "mensaje"=> "La factura ingresada no existe"
-           ]);
+            return response()->json([
+            "validar"=> "1",
+            "mensaje"=> "La factura ingresada no existe"
+            ]);
+          }
+}
 
-      }
-    
-    }
 
     public function Update_a_cargo_de_Editar(Request $request){
       $identificacion = $request->identificacion;

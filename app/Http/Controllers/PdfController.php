@@ -689,7 +689,7 @@ class PdfController extends Controller
       $notario_encargado = $not->fullname;
     }
 
-    $fecha_recibido = $fecha_radica->format('d/m/yy');
+    $fecha_recibido = $fecha_radica->format('d/m/Y');
     $hora_recibido = $fecha_radica->format("g:i a");
 
     $rawsolicitado = \DB::raw("MIN(id_actoperrad) as id_actoperrad, MIN(CONCAT(pmer_nombrecli1, ' ', sgndo_nombrecli1, ' ', pmer_apellidocli1, ' ', sgndo_apellidocli1, empresa1)) as fullname, MIN(telefono_cli1) as telefono_cli1, MIN(direccion_cli1) as direccion_cli1, MIN(email_cli1) as email_cli1");
@@ -5782,7 +5782,7 @@ public function PdfInformeCartera(Request $request){
         $hojasatributo = 'hojas'.$atri['atributo'];
         if($conc1[$totalatributo] > 0){
           $dataconcept[$i]['concepto'] = $atributo;
-          $dataconcept[$i]['cantidad'] = "";
+          $dataconcept[$i]['cantidad'] = $conc1[$hojasatributo];
           $dataconcept[$i]['total'] = $conc1[$totalatributo];
           $total_conceptos = $dataconcept[$i]['total'] + $total_conceptos;
           $i++;

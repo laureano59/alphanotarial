@@ -8,6 +8,7 @@ class EditaracargodeController extends Controller
 {
      public function index(Request $request)
     {
+       $request->user()->authorizeRoles(['administrador']);
        $Factura = $request->session()->get('factura');
 
        foreach ($Factura as $value) {
