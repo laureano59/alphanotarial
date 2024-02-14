@@ -74,6 +74,7 @@ class ActasdepositoController extends Controller
       $actas_deposito->saldo = $request->input('deposito_act');
       $actas_deposito->observaciones_act = $request->input('observaciones_act');
       $actas_deposito->efectivo = $request->input('efectivo');
+       $actas_deposito->transferencia_bancaria = $request->transferencia_bancaria;
       $actas_deposito->cheque = $request->input('cheque');
       $actas_deposito->tarjeta_credito = $request->input('tarjeta_credito');
       $actas_deposito->num_cheque = $request->input('num_cheque');

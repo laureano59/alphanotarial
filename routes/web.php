@@ -207,8 +207,6 @@ Route::get('seguimiento_secun', 'ConsultasController@Consultar_secun');
 
 Route::get('seguimiento_escr', 'SeguimientoController@Seguimiento_escrituras');
 
-
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

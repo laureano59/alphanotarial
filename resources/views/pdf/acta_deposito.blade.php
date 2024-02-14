@@ -111,6 +111,22 @@
         <td>
         </td>
       </tr>
+      <tr>
+        <td width="18%">
+          <b>Transferencia:</b>
+        </td>
+        <td width="18%">
+          ${{ number_format($transferencia, 2) }}
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+      </tr>
 
       <tr>
         <td>

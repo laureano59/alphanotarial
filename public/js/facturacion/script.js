@@ -248,7 +248,7 @@ $("#identificacion_cli2").blur(function(){
 });
 
 $("#guardarfacturaunica").click(function() {
-    /********NOTE:Valida que forma pago esté seleccionado*********/
+    /********Valida que forma pago esté seleccionado*********/
     if (document.querySelector('input[name="formapago"]:checked')) {
       var mediopago = $("#mediopago option:selected").val();
       if(mediopago != ''){

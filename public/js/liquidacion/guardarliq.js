@@ -1,6 +1,6 @@
 $("#guardarliq").click(function() {
    CalConceptos();
-  /******NOTE: Se Valida que La Radicación esté Completa********/
+  /******Se Valida que La Radicación esté Completa********/
   var id_radica = $("#radicacion").val();
   var datos = {
       "id_radica": id_radica
@@ -23,7 +23,7 @@ $("#guardarliq").click(function() {
           $("#msj-errorrad1").fadeOut();
       }, 4000);
     }else if(info.validar == 2){
-      /***********NOTE:Derechos Notariales**************/
+      /***********Derechos Notariales**************/
       var id_radica, datos;
       id_radica = $("#radicacion").val();
 
@@ -37,7 +37,7 @@ $("#guardarliq").click(function() {
       .done( function( info ){
         if(info.validarliqd == 1){
 
-          /***********NOTE:Conceptos **********
+          /***********Conceptos **********
           Insertar Elementos a Objeto dinamicamente************/
 
           datos = {
@@ -69,7 +69,7 @@ $("#guardarliq").click(function() {
               .done( function( info ){
                 if(info.validarliqc == 1){
 
-                  /***********NOTE:Recaudos**************/
+                  /***********Recaudos**************/
                   var totrecsuper, totrecfondo, totiva, totrtf, totreteconsumo,
                   totalrecaudos, totaporteespecial, total_impuesto_timbre, grantotalliq;
                   totrecsuper = $("#totrecsuper").val();

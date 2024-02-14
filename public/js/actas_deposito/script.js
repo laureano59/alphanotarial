@@ -35,7 +35,8 @@ $("#identificacion_cli1").blur(function() {
 $("#GuardarActaDeposito").click(function() {
     var identificacion_cli, id_tip, proyecto, deposito_act, id_radica,
         efectivo, cheque, tarjeta_credito, num_cheque, num_tarjetacredito,
-        observaciones_act, codigo_ban, anio_fiscal;
+        observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, validar_suma;
+        validar_suma = 0;
 
     identificacion_cli = $("#identificacion_cli1").val();
     id_tip = $("#id_tip option:selected").val();
@@ -44,6 +45,7 @@ $("#GuardarActaDeposito").click(function() {
     anio_fiscal = $("#anio_fiscal").val();
     id_radica = $("#id_radica").val();
     efectivo = $("#efectivo").val();
+    transferencia_bancaria = $("#transferencia_bancaria").val();
     cheque = $("#cheque").val();
     tarjeta_credito = $("#tarjeta_credito").val();
     num_cheque = $("#num_cheque").val();
@@ -51,9 +53,17 @@ $("#GuardarActaDeposito").click(function() {
     observaciones_act = $("#observaciones_act").val();
     codigo_ban = $("#codigo_ban option:selected").val();
 
+    validar_suma = parseFloat(efectivo) + 
+                    parseFloat(transferencia_bancaria) + 
+                    parseFloat(cheque) + 
+                    parseFloat(tarjeta_credito);
+    console.log(validar_suma);
+
+
     if (identificacion_cli != '' && id_tip != '' && proyecto != '' &&
         deposito_act != '') {
-        var datos = {
+        if(validar_suma == deposito_act){
+            var datos = {
             "identificacion_cli": identificacion_cli,
             "id_tip": id_tip,
             "proyecto": proyecto,
@@ -61,6 +71,7 @@ $("#GuardarActaDeposito").click(function() {
             "id_radica": id_radica,
             "anio_fiscal": anio_fiscal,
             "efectivo": efectivo,
+            "transferencia_bancaria": transferencia_bancaria,
             "cheque": cheque,
             "tarjeta_credito": tarjeta_credito,
             "num_cheque": num_cheque,
@@ -79,9 +90,40 @@ $("#GuardarActaDeposito").click(function() {
                 CargarGridActas(info.actas_depo_all);
             })
 
+        $("#btnguardar").fadeOut();
+        $("#btnnuevo").fadeIn();
+        
+
+        }else{
+            alert("El total de los medios de pago debe ser igual al depósito");
+        }
+        
+
     } else {
         alert("Los campos con título Azul son obligatorios");
     }
+});
+
+$("#nuevaacta").click(function() {
+    window.location.reload();
+    $("#nombre_cli1").val('');
+    $("#identificacion_cli1").val('');
+    $("#id_tip option:selected").val('');
+    $("#proyecto").val('');
+    $("#deposito_act").val('');
+    $("#anio_fiscal").val('');
+    $("#id_radica").val('');
+    $("#num_cheque").val('');
+    $("#efectivo").val(0);
+    $("#transferencia_bancaria").val(0);
+    $("#cheque").val(0);
+    $("#tarjeta_credito").val(0);
+    $("#num_tarjetacredito").val('');
+    $("#observaciones_act").val('');
+    $("#codigo_ban option:selected").val('');
+    $("#btnguardar").fadeIn();
+    $("#btnnuevo").fadeOut();
+
 });
 
 $("#buscarporidentif").click(function() {

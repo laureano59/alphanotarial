@@ -40,8 +40,8 @@ public function index(Request $request)
   return view('liquidacion.liquidacion', compact('Conceptos'));
 }
 
-/***TODO: Derechos Trae las tarifas de la base de datos y calcula los derechos***
-según el acto y retorna un array de los actos con su liquidacion*/
+/***Trae las tarifas de la base de datos y calcula los derechos
+según el acto y retorna un array de los actos con su liquidacion***/
 
 public function derechos(Request $request){
   if($request->ajax()){
@@ -64,7 +64,7 @@ public function derechos(Request $request){
       $iva = 0;
       foreach ($derechos as $key => $value) {
         if($value['derechos'] > 0){
-          if($value['iva'] == true){
+          if($value['iva'] === true){
             $iva = ($value['derechos'] * $porcentaje) + $iva;
           }
         }
@@ -90,7 +90,7 @@ public function derechos(Request $request){
       //print_r($dere);
       foreach ($dere as $key => $values):
         $op = $values['id_tar'];
-        if($op == 1){//TODO:Tarifa General
+        if($op == 1){//Tarifa General
           if( $values['cuantia'] ==  $values['valor1']){
             $dere[$key]['derechos']= $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
@@ -119,10 +119,10 @@ public function derechos(Request $request){
                $dere[$key]['derechos']=$valor;
 
           }
-        }else if($op == 2){//TODO:Tarifa Especifica
+        }else if($op == 2){//Tarifa Especifica
           $dere[$key]['derechos'] = $values['valor1'];
           $dere[$key]['valor_aporte_especial'] = 0;
-        }else if($op == 3){//TODO:Tarifa Conciliación
+        }else if($op == 3){//Tarifa Conciliación
           if( $values['cuantia'] <=  $values['valor1']){
             $dere[$key]['derechos']=  $this->Redondear($values['valor2'] * $values['valor3']);
             $dere[$key]['valor_aporte_especial'] = 0;
@@ -133,7 +133,7 @@ public function derechos(Request $request){
             $dere[$key]['derechos']= $values['valor8'] * $values['valor3'];
             $dere[$key]['valor_aporte_especial'] = 0;
           }
-        }else if($op == 13){//TODO:Tarifa Sucesión
+        }else if($op == 13){//Tarifa Sucesión
           if($values['cuantia'] == $values['valor1']){
             $dere[$key]['derechos'] = $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
@@ -154,10 +154,10 @@ public function derechos(Request $request){
                }
                   $dere[$key]['derechos'] = $valor;
             }
-        }else if($op == 14){//TODO:Costo base varios actos
+        }else if($op == 14){//Costo base varios actos
             $dere[$key]['derechos'] = $values['valor1'];
             $dere[$key]['valor_aporte_especial'] = 0;
-          }else if($op == 15){//TODO:Tarifa Liquidación Conyugal
+          }else if($op == 15){//Tarifa Liquidación Conyugal
              if($values['cuantia'] == $values['valor1']){
                 $dere[$key]['derechos'] = $values['valor2'];
                 $dere[$key]['valor_aporte_especial'] = 0;
@@ -178,7 +178,7 @@ public function derechos(Request $request){
                       }
                       $dere[$key]['derechos'] = $valor;
                 }
-          }else if($op == 16){//TODO:Tarifa Cancelación Vivienda Familiar
+          }else if($op == 16){//Tarifa Cancelación Vivienda Familiar
               if( $values['cuantia'] ==  $values['valor1']){
                  $dere[$key]['derechos']= $values['valor2'];
                  $dere[$key]['valor_aporte_especial'] = 0;
@@ -199,7 +199,7 @@ public function derechos(Request $request){
                     }
                     $dere[$key]['derechos'] = $valor;
               }
-          }else if($op == 17){//TODO:Tarifa General Cancelaciones
+          }else if($op == 17){//Tarifa General Cancelaciones
               if( $values['cuantia'] ==  $values['valor1']){
                 $dere[$key]['derechos']=  $this->Redondear($values['valor2'] / 2);
                 $dere[$key]['valor_aporte_especial'] = 0;
@@ -220,7 +220,7 @@ public function derechos(Request $request){
                     }
                     $dere[$key]['derechos'] = $valor;
               }
-          }else if($op == 18){//TODO:Tarifa Corrección al Reg Civil
+          }else if($op == 18){//Tarifa Corrección al Reg Civil
               $dere[$key]['derechos']= $values['valor1'];
               $dere[$key]['valor_aporte_especial'] = 0;
           }else if($op == 19 || $op == 20 || $op == 21){//TODO:Tarifa Hipoteca Vis 10%, 40%, 70%
@@ -236,13 +236,13 @@ public function derechos(Request $request){
                     $dere[$key]['derechos'] = $valor;
                     $dere[$key]['valor_aporte_especial'] = 0;
                   }
-          }else if($op == 22){//TODO:Tarifa Matrimonio fuera del despacho
+          }else if($op == 22){//Tarifa Matrimonio fuera del despacho
               $dere[$key]['derechos']= $values['valor1'];
               $dere[$key]['valor_aporte_especial'] = 0;
-          }else if($op == 23){//TODO:Tarifa Venta Vivienda Vipa
+          }else if($op == 23){//Tarifa Venta Vivienda Vipa
               $dere[$key]['derechos']= $values['valor1'];
               $dere[$key]['valor_aporte_especial'] = 0;
-          }else if($op == 24){//TODO:Tarifa Venta Vis 50%
+          }else if($op == 24){//Tarifa Venta Vis 50%
               if( $values['cuantia'] ==  $values['valor1']){
                  $dere[$key]['derechos']= $values['valor2'];
                  $dere[$key]['valor_aporte_especial'] = 0;
@@ -255,7 +255,7 @@ public function derechos(Request $request){
                     $dere[$key]['derechos'] = $valor;
                     $dere[$key]['valor_aporte_especial'] = 0;
                   }
-          }else if($op == 25){//TODO:Tarifa Venta Vis con el Estado
+          }else if($op == 25){//Tarifa Venta Vis con el Estado
               if($values['cuantia'] == $values['valor1']){
                 $dere[$key]['derechos'] = $values['valor2'] / 2;
                 $dere[$key]['valor_aporte_especial'] = 0;
@@ -276,7 +276,7 @@ public function derechos(Request $request){
                       }
                       $dere[$key]['derechos'] = $valor;
                   }
-          }else if($op == 7){//TODO:Tarifa Venta Vivienda Vipa
+          }else if($op == 7){//Tarifa Venta Vivienda Vipa
              $dere[$key]['derechos']= $values['valor1'];
              $dere[$key]['valor_aporte_especial'] = 0;
             }
@@ -317,18 +317,49 @@ public function store(Request $request)
       $liq_derechos->id_radica = $id_radica;
       $liq_derechos->anio_radica = $anio_trabajo;
 
+
       if (Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
         //No hace nada si ya exixte
       }else{
         $liq_derechos->save();
         $id_liqd = $liq_derechos->id_liqd;
 
+        /************Calcular Derechos e IVA Otorgante y Compareciente*************/
+        $porcentaje = (Tarifa::find(9)->valor1)/100;
+        $derechos_otor = 0;
+        $derechos_compa = 0;
+        $iva_derechos_otor = 0;
+        $iva_derechos_compa = 0;
         foreach ($derechos as $key => $value) {
+          if($value['retefuente'] === true){
+            $derechos_otor = $value['derechos'] / 2;
+            $derechos_compa = $value['derechos'] / 2;
+            if($value['derechos'] > 0){
+              if($value['iva'] === true){
+                $iva_derechos_otor = ($derechos_otor * $porcentaje);
+                $iva_derechos_compa = ($derechos_compa * $porcentaje);
+              }
+            }
+          }else if($value['retefuente'] === false){
+            $derechos_otor = 0;
+            $derechos_compa = $value['derechos'];
+            if($value['derechos'] > 0){
+              if($value['iva'] === true){
+                $iva_derechos_otor = ($derechos_otor * $porcentaje);
+                $iva_derechos_compa = ($derechos_compa * $porcentaje);
+              }
+            }
+          }
+     
           $detalleliqderechos = new Detalle_liqderecho();
           $detalleliqderechos->id_liqd = $id_liqd;
           $detalleliqderechos->nombre_acto = $value['nombre_acto'];
           $detalleliqderechos->derechos = $value['derechos'];
           $detalleliqderechos->cuantia = $value['cuantia'];
+          $detalleliqderechos->derechos_otorgante =  $derechos_otor;
+          $detalleliqderechos->derechos_compareciente = $derechos_compa;
+          $detalleliqderechos->iva_derechos_otor = $iva_derechos_otor;
+          $detalleliqderechos->iva_derechos_compa = $iva_derechos_compa;
           $detalleliqderechos->save();
         }
 

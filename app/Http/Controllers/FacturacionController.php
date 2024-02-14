@@ -237,8 +237,8 @@ class FacturacionController extends Controller
           $pago->prefijo = $prefijo;
           $pago->codigo_med = $request->mediopago;
           $valor = $request->input('valor');
-          $valor = str_replace(",", " ", $valor);//TODO:Reemplaza las comas por espacios
-          $valor = str_replace(" ", "", $valor);//TODO:elimina los espacios
+          $valor = str_replace(",", " ", $valor);//Reemplaza las comas por espacios
+          $valor = str_replace(" ", "", $valor);//elimina los espacios
           $pago->valor = $valor;
 
           $pago->numcheque = $request->input('numcheque');

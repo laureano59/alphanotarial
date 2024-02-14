@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Notaria;
 use App\Facturascajarapida;
 use App\Detalle_cajarapidafacturas;
+use App\Pagos_cajarapida;
 
 class FacturascajarapidaController extends Controller
 {
@@ -101,7 +102,23 @@ class FacturascajarapidaController extends Controller
             $detalle_factura->total = $det['total'];
             $detalle_factura->save(); 
         }
-      
+
+
+        # =======================================
+        # =           Guardar medio pago        =
+        # =======================================
+
+        $pago = new Pagos_cajarapida();
+        $pago->codigo_ban = $request->id_banco;
+        $pago->id_fact = $numfactrapida;
+        $pago->prefijo = $prefijo_fact;
+        $pago->codigo_med = $request->mediopago;
+        //$valor = $request->input('valor');
+        //$valor = str_replace(",", " ", $valor);//Reemplaza las comas por espacios
+        //$valor = str_replace(" ", "", $valor);//elimina los espacios
+        //$pago->valor = $valor;
+        //$pago->numcheque = $request->input('numcheque');
+        $pago->save();
         
         return response()->json([
             "validar"=>1,

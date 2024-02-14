@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Tipoidentificacion;
 use App\Departamento;
 use App\Conceptos_cajarapida;
+use App\Banco;
+use App\Medios_pago;
 
 class CajarapidaController extends Controller
 {
@@ -33,11 +35,17 @@ class CajarapidaController extends Controller
         $Departamentos = $Departamentos->sortBy('nombre_depa');
         $Conceptos = Conceptos_cajarapida::all();
         $Conceptos = $Conceptos->sortBy('id_concep');
+
+        $Banco = Banco::all();
+        $Banco = $Banco->Sort();
+      
+        $MediosdePago = Medios_pago::all();
+        $MediosdePago = $MediosdePago->Sort();
         
         if($opcion == 1){
-          return view('caja_rapida.cajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos'));  
+          return view('caja_rapida.cajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'MediosdePago'));  
         }else if($opcion == 2){
-          return view('caja_rapida.editarcajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos'));  
+          return view('caja_rapida.editarcajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'MediosdePago'));  
         }
         
     }

@@ -99,13 +99,19 @@
                           <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Imprimir Acta"></i>
                       </a>
                   </div>
-                  <div class="widget-toolbar">
+                  <div class="widget-toolbar" id="btnguardar">
                       <a href="javascript://" id="GuardarActaDeposito" data-action="reload">
                           <i><img src="{{ asset('images/almacenar.png') }}" width="28 px" height="28 px" title="Guardar Acta"></i>
                       </a>
                   </div>
+
+                  <div class="widget-toolbar" id="btnnuevo" style="display:none">
+                      <a href="javascript://" id="nuevaacta" data-action="reload">
+                          <i><img src="{{ asset('images/nuevo7.png') }}" width="28 px" height="28 px" title="Nuevo depósito"></i>
+                      </a>
+                  </div>
                     <center>
-                        <h4 class="widget-title">Forma de Pago</h4>
+                        <h4 class="widget-title">Medios de Pago</h4>
                     </center>
                 </div>
 
@@ -116,19 +122,25 @@
                           <tr>
                             <td width="30%"><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">Efectivo</b></td>
                             <td>
-                              <input type="text" id="efectivo" onKeyPress="return soloNumeros(event)"/>
+                              <input type="text" id="efectivo" value="0" onKeyPress="return soloNumeros(event)"/>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td width="30%"><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">Transferencia</b></td>
+                            <td>
+                              <input type="text" id="transferencia_bancaria" value="0" onKeyPress="return soloNumeros(event)"/>
                             </td>
                           </tr>
                           <tr>
                             <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">Cheque</b></td>
                             <td>
-                              <input type="text" id="cheque" onKeyPress="return soloNumeros(event)"/>
+                              <input type="text" id="cheque" value="0" onKeyPress="return soloNumeros(event)"/>
                             </td>
                           </tr>
                           <tr>
                             <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">T.Crédito</b></td>
                             <td>
-                              <input type="text" id="tarjeta_credito" onKeyPress="return soloNumeros(event)"/>
+                              <input type="text" id="tarjeta_credito" value="0" onKeyPress="return soloNumeros(event)"/>
                             </td>
                           </tr>
                           <tr>

@@ -2075,6 +2075,7 @@ class PdfController extends Controller
     $fecha = $Actas_deposito->fecha;
     $descripcion_tip = $Actas_deposito->descripcion_tip;
     $efectivo = $Actas_deposito->efectivo;
+    $transferencia = $Actas_deposito->transferencia_bancaria;
     $cheque = $Actas_deposito->cheque;
     $tarjeta_credito = $Actas_deposito->tarjeta_credito;
     $num_cheque = $Actas_deposito->num_cheque;
@@ -2097,8 +2098,8 @@ class PdfController extends Controller
     $data['descripcion_tip'] = $descripcion_tip;
     $data['num_escritura'] = $num_escritura;
     $data['id_radica'] = $id_radica;
-
     $data['efectivo'] = $efectivo;
+    $data['transferencia'] = $transferencia;
     $data['cheque'] = $cheque;
     $data['tarjeta_credito'] = $tarjeta_credito;
     $data['num_cheque'] = $num_cheque;
@@ -2694,8 +2695,9 @@ class PdfController extends Controller
     'default_font' => 'arial',
         //"format" => [216, 140],//TODO: Media Carta
     "format" => 'Letter-L',
-    'margin_bottom' => 2,
+    'margin_bottom' => 10,//espacio inferior en mm
   ]);
+
 
 
     // Configurar estilos y alineación del encabezado
@@ -2721,9 +2723,10 @@ class PdfController extends Controller
             <hr>
             ';
 
+
         // Configurar encabezado en el PDF
         $mpdf->SetHTMLHeader($header);
-        $mpdf->defaultfooterfontsize=2;
+       
         $mpdf->SetTopMargin(42);
         $mpdf->SetDisplayMode('fullpage');
         $mpdf->WriteHTML($html);
@@ -4455,7 +4458,7 @@ public function PdfInformeCartera(Request $request){
         ],
       ],
       'default_font' => 'arial',
-        //"format" => [216, 140],//TODO: Media Carta
+        //"format" => [216, 140],//Media Carta
       "format" => 'Letter-L',
       'margin_bottom' => 10,
     ]);
@@ -5762,8 +5765,18 @@ public function PdfInformeCartera(Request $request){
     ->get()->toArray();
 
     $total_derechos = 0;
+    $total_derechos_otorgante = 0;
+    $total_derechos_compareciente = 0;
+    $iva_derechos_otor = 0;
+    $iva_derechos_compa = 0;
+
     foreach ($sumaderechos as $key => $sum) {
       $total_derechos = $sum['derechos'] + $total_derechos;
+      $total_derechos_otorgante = $sum['derechos_otorgante'] + $total_derechos_otorgante;
+      $total_derechos_compareciente = $sum['derechos_compareciente'] + $total_derechos_compareciente;
+
+      $iva_derechos_otor = $sum['iva_derechos_otor'] + $iva_derechos_otor;
+      $iva_derechos_compa = $sum['iva_derechos_compa'] + $iva_derechos_compa;
     }
 
     $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
@@ -5792,7 +5805,17 @@ public function PdfInformeCartera(Request $request){
 
     $subtotal1 = $total_derechos + $total_conceptos;
 
-    $contdataconcept = count($dataconcept, 0);
+   
+    if (isset($dataconcept)) {
+      $contdataconcept = count($dataconcept, 0);
+    } else {
+    // Redirigir a la página de error
+    //return redirect('errors/erroresgenerales');
+      $Mensaje = "Undefined variable: dataconcept ";
+      return view('errors.erroresgenerales', compact('Mensaje'));
+    }
+
+    //$contdataconcept = count($dataconcept, 0);
     $nit = $notaria->nit;
     $nombre_nota = strtoupper($notaria->nombre_nota);
     $direccion_nota = $notaria->direccion_nota;
@@ -5887,6 +5910,47 @@ public function PdfInformeCartera(Request $request){
       $total_fact = $totalterceros + $subtotal1;
       $data['totalterceros'] = $totalterceros;
       $data['total_fact'] = $total_fact;
+
+       /*********TOTALES OTORGANTE Y COMPARECIENTE**********/
+
+       $total_conceptos_otorgante = $total_conceptos / 2;
+       $total_conceptos_compareciente = $total_conceptos / 2;
+       $recaudos_otor = ($total_fondo + $total_super) / 2;
+       $recaudos_compa = ($total_fondo + $total_super) / 2;
+       $iva_conceptos_otor = ($total_iva - ($iva_derechos_otor + $iva_derechos_compa)) / 2;
+       $iva_conceptos_compa = ($total_iva - ($iva_derechos_otor + $iva_derechos_compa)) / 2;
+
+       $reteconsumo_otor = $total_reteconsumo / 2;
+       $reteconsumo_compa = $total_reteconsumo / 2;
+       $aporteespecial_otor = $total_aporteespecial / 2;
+       $aporteespecial_compa = $total_aporteespecial / 2;
+       $impuesto_tiembre_otor = $total_impuesto_tiembre / 2;
+       $impuesto_tiembre_compa = $total_impuesto_tiembre / 2;
+
+       
+       $total_otorgante = $total_rtf 
+       + $total_conceptos_otorgante 
+       + $total_derechos_otorgante 
+       + $iva_derechos_otor
+       + $iva_conceptos_otor
+       + $recaudos_otor
+       + $reteconsumo_otor
+       + $aporteespecial_otor
+       + $impuesto_tiembre_otor;
+       
+
+       $total_compareciente = $total_conceptos_compareciente 
+       + $total_derechos_compareciente
+       + $iva_derechos_compa
+       + $recaudos_compa
+       + $iva_conceptos_compa
+       + $reteconsumo_compa
+       + $aporteespecial_compa
+       + $impuesto_tiembre_compa;
+
+       $data['total_otorgante'] = $total_otorgante;
+       $data['total_compareciente'] = $total_compareciente;
+
 
       $html = view('pdf.liquidacion',$data)->render();
 
