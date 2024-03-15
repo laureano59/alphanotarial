@@ -120,6 +120,12 @@ class ReportesController extends Controller
     }else if($opcion == 23){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.informeretefuentes', compact('nombre_reporte'));
+    }else if($opcion == 24){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.consolidadocaja', compact('nombre_reporte'));
+    }else if($opcion == 25){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informedegastos', compact('nombre_reporte'));
     }
   }
   
@@ -667,6 +673,8 @@ class ReportesController extends Controller
       
       $excenta = array_merge($excenta, $sincuantiaexcenta);
 
+
+
       # ====================================================================
       # =           Identifica excentas que van para con cuantia           =
       # ====================================================================
@@ -1115,7 +1123,7 @@ class ReportesController extends Controller
         $sinctotal = 0;
       }
 
-
+     
       $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
                           $ran6escr + $sincescr + $excescr;
       $total_super =  $ran1super +  $ran2super +  $ran3super +  $ran4super +

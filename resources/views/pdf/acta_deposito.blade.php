@@ -37,7 +37,7 @@
                 </table>
             </td>
             <td>
-                <img src="{{ asset('images/logoposn13.png') }}" width="14 px" height="14 px"></br>
+                <img src="{{ asset('images/logoposn13.png') }}" width="70px" height="70px"></br>
                 <center>{{$email}}</center>
             </td>
         </tr>
@@ -95,93 +95,25 @@
     <hr>
     <br>
     <table width="100%" border="0">
-      <tr>
-        <td width="18%">
-          <b>Efectivo:</b>
-        </td>
-        <td width="18%">
-          ${{ number_format($efectivo, 2) }}
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <b>Transferencia:</b>
-        </td>
-        <td width="18%">
-          ${{ number_format($transferencia, 2) }}
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-      </tr>
 
-      <tr>
-        <td>
-          <b>Cheque:</b>
-        </td>
-        <td>
-          ${{ number_format($cheque, 2) }}
-        </td>
-        <td width="22%">
-          <b>No.Cheque:</b>
-        </td>
-        <td>
-          {{$num_cheque}}
-        </td>
-        <td>
-          <b>Banco:</b>
-        </td>
-        <td>
-          <font size="1">{{$nombre_ban}}</font>
-        </td>
+      @foreach($mediosdepago as $item)
+        <tr>
+          <td width="18%">
+            <b>{{ $item['medio'] }}</b>
+          </td>
+          <td width="18%">
+            ${{ number_format($item['total'], 2) }}
+          </td>
+        </tr>
+      @endforeach 
       </tr>
-
-      <tr>
-        <td>
-          <b>T.Crédito:</b>
-        </td>
-        <td>
-          ${{ number_format($tarjeta_credito, 2) }}
-        </td>
-        <td width="22%">
-          <b>No.T.Crédito:</b>
-        </td>
-        <td>
-          {{$num_tarjetacredito}}
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-      </tr>
-
+     
       <tr>
         <td>
         -------------------
         </td>
         <td>
         -------------------
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
         </td>
       </tr>
 
@@ -191,15 +123,6 @@
         </td>
         <td>
         ${{ number_format($total_recibido, 2) }}
-        </td>
-        <td>
-          <font size="1">{{$total_en_letras}}</font>
-        </td>
-        <td>
-        </td>
-        <td>
-        </td>
-        <td>
         </td>
       </tr>
     </table>

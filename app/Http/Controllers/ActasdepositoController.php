@@ -54,6 +54,7 @@ class ActasdepositoController extends Controller
     public function store(Request $request)
     {
       $anio_radica = $request->anio_fiscal;//Notaria::find(1)->anio_trabajo;
+      $id_radica = $request->input('id_radica');
       $fecha_manual = Notaria::find(1)->fecha_acta;
       $fecha_automatica = Notaria::find(1)->fecha_acta_automatica;
       if($fecha_automatica == true){
@@ -61,24 +62,72 @@ class ActasdepositoController extends Controller
       }else if($fecha_automatica == false){
         $fecha_acta = $fecha_manual;
       }
-      $id_radica = $request->input('id_radica');
+
+
+      $efectivo = $request->efectivo;
+       if($efectivo === '' || is_null($efectivo)){
+            $efectivo = 0;
+        }
+      
+      $cheque = $request->cheque;
+       if($cheque === '' || is_null($cheque)){
+            $cheque = 0;
+        }
+      
+      $consignacion_bancaria = $request->consignacion_bancaria;
+      if($consignacion_bancaria === '' || is_null($consignacion_bancaria)){
+            $consignacion_bancaria = 0;
+        }
+      
+      $pse = $request->pse;
+       if($pse === '' || is_null($pse)){
+            $pse = 0;
+        }
+      
+      $transferencia_bancaria = $request->transferencia_bancaria;
+      if($transferencia_bancaria === '' || is_null($transferencia_bancaria)){
+            $transferencia_bancaria = 0;
+        }
+      
+      $tarjeta_credito = $request->tarjeta_credito;
+      if($tarjeta_credito === '' || is_null($tarjeta_credito)){
+            $tarjeta_credito = 0;
+        }
+      
+      $tarjeta_debito = $request->tarjeta_debito;
+       if($tarjeta_debito === '' || is_null($tarjeta_debito)){
+            $tarjeta_debito = 0;
+        }
+
+
+        if($request->id_tip == 2 || $request->id_tip == 3){
+            if($id_radica === '' || is_null($id_radica) || $anio_radica === '' || is_null($anio_radica)){
+                    return response()->json([
+                        "validar"=>888
+                    ]);
+            }
+        }
+      
       $actas_deposito = new Actas_deposito();
       $actas_deposito->id_radica = $id_radica;
       $actas_deposito->anio_radica = $anio_radica;
       $actas_deposito->fecha_acta = $fecha_acta;
-      $actas_deposito->id_tip = $request->input('id_tip');
-      $actas_deposito->codigo_ban = $request->input('codigo_ban');
-      $actas_deposito->identificacion_cli = $request->input('identificacion_cli');
-      $actas_deposito->proyecto = $request->input('proyecto');
-      $actas_deposito->deposito_act = $request->input('deposito_act');
-      $actas_deposito->saldo = $request->input('deposito_act');
-      $actas_deposito->observaciones_act = $request->input('observaciones_act');
-      $actas_deposito->efectivo = $request->input('efectivo');
-       $actas_deposito->transferencia_bancaria = $request->transferencia_bancaria;
-      $actas_deposito->cheque = $request->input('cheque');
-      $actas_deposito->tarjeta_credito = $request->input('tarjeta_credito');
-      $actas_deposito->num_cheque = $request->input('num_cheque');
-      $actas_deposito->num_tarjetacredito = $request->input('num_tarjetacredito');
+      $actas_deposito->id_tip = $request->id_tip;
+      $actas_deposito->codigo_ban = $request->codigo_ban;
+      $actas_deposito->identificacion_cli = $request->identificacion_cli;
+      $actas_deposito->proyecto = $request->proyecto;
+      $actas_deposito->deposito_act = $request->deposito_act;
+      $actas_deposito->saldo = $request->deposito_act;
+      $actas_deposito->observaciones_act = $request->observaciones_act;
+      $actas_deposito->efectivo = $efectivo;
+      $actas_deposito->cheque = $cheque;
+      $actas_deposito->consignacion_bancaria = $consignacion_bancaria;
+      $actas_deposito->pse = $pse;
+      $actas_deposito->transferencia_bancaria = $transferencia_bancaria;
+      $actas_deposito->tarjeta_credito = $tarjeta_credito;
+      $actas_deposito->tarjeta_debito = $tarjeta_debito;
+      $actas_deposito->num_tarjetacredito = $request->num_tarjetacredito;
+      $actas_deposito->num_cheque = $request->num_cheque;
       $actas_deposito->usuario = auth()->user()->name;
       $actas_deposito->save();
       $id_act = $actas_deposito->id_act;
@@ -87,6 +136,7 @@ class ActasdepositoController extends Controller
       $actas_depo_all = Actas_deposito_view::where('identificacion_cli', $actas_deposito->identificacion_cli)->get();
 
       return response()->json([
+        "validar"=>1,
          "id_act"=>$id_act,
          "actas_depo_all"=>$actas_depo_all
        ]);

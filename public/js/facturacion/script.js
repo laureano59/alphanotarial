@@ -1,6 +1,6 @@
 function Factura(num_radica, opcion) {
  
-  /********NOTE:Comprueba si La radicación está liquidada********/
+  /********Comprueba si La radicación está liquidada********/
   var id_radica = num_radica;
   var route = "/factderechos";
   var token = $("#token").val();
@@ -11,12 +11,12 @@ function Factura(num_radica, opcion) {
   };
   __ajax(route, token, type, datos)
   .done(function(info) {
-    if (info.validarliqd == '1') { //NOTE:Si la radicación ya está liquidada
+    if (info.validarliqd == '1') { // Si la radicación ya está liquidada
       var actosliquidados = info.actos;
       var conceptos = info.conceptos;
       var recaudos = info.recaudos;
 
-      /********NOTE:Comprueba si La radicación está facturada********/
+      /********Comprueba si La radicación está facturada********/
       var route = "/validarexixtefact";
       var token = $("#token").val();
       var type = 'GET';
@@ -31,7 +31,7 @@ function Factura(num_radica, opcion) {
               setTimeout(function() {
                   $("#msj-error2").fadeOut();
               }, 2000);
-              /*******NOTE: Carga datos factura********/
+              /*******  Carga datos factura********/
               $("#num_factura").html(info.prefijo+' - '+info.id_fact);
               $("#fecha_fact").html(info.fecha_fact);
               $("#num_escritura").html(info.num_esc);
@@ -62,30 +62,30 @@ function Factura(num_radica, opcion) {
                 CargarRecaudos(recaudos);
                 CagarConceptos(conceptos);
               }else if(opcion == 2){
-                CargarDerechos_FactDoble(actosliquidados);
-                CargarRecaudos_Fact_Doble(recaudos);
-                CagarConceptos(conceptos);
+                //CargarDerechos_FactDoble(actosliquidados);
+                //CargarRecaudos_Fact_Doble(recaudos);
+                //CagarConceptos(conceptos);
               }else if(opcion == 3){
                 CargarDerechos_Fact_Multiple(actosliquidados);
                 CargarRecaudos_Fact_Multiple(recaudos);
                 CagarConceptos_Fact_Multiple(conceptos);
               }
 
-            } else if (info.validarliqd == '0') { //NOTE:si la radicación no se ha liquidado
+            } else if (info.validarliqd == '0') { // si la radicación no se ha liquidado
                 $("#msj1").html(info.mensaje);
                 $("#msj-error1").fadeIn();
                 setTimeout(function() {
                   $("#msj-error1").fadeOut();
                 }, 3000);
               }
-          })//NOTE:AJAX Si la radicación está liquidada
+          })// AJAX Si la radicación está liquidada
         }//sí está liquidada
-          })//NOTE:AJAX Si está facturada la radicación
+          })// AJAX Si está facturada la radicación
 }
 
 function CarGarDatosFactMulRadio(){
   Clean_Fact_Mul();
-  /********NOTE:Comprueba si La radicación está liquidada********/
+  /******** Comprueba si La radicación está liquidada********/
   var id_radica = $("#id_radica").val();
   var route = "/factderechos";
   var token = $("#token").val();
@@ -96,7 +96,7 @@ function CarGarDatosFactMulRadio(){
   };
   __ajax(route, token, type, datos)
   .done(function(info) {
-    if (info.validarliqd == '1') { //NOTE:Si la radicación ya está liquidada
+    if (info.validarliqd == '1') { // Si la radicación ya está liquidada
       var actosliquidados = info.actos;
       var conceptos = info.conceptos;
       var recaudos = info.recaudos;
@@ -172,7 +172,7 @@ $("#identificacion_cli1").blur(function() {
     if ($("#identificacion_cli1").val() != '') {
         var identificacion_cli = $("#identificacion_cli1").val();
         var tipo_doc = $("#id_tipoident1").val();
-        var calidad = 1; //NOTE:Para distinguir en que input se muestra el nombre del cliente
+        var calidad = 1; // Para distinguir en que input se muestra el nombre del cliente
         var datos = {
             "identificacion_cli": identificacion_cli,
             "tipo_doc": tipo_doc
@@ -185,12 +185,12 @@ $("#identificacion_cli1").blur(function() {
                 if (info.validar == '0') {
                     $("#tipo_documento").val(info.tipo_doc);
                     if (info.tipo_doc == 4) { //Si es empresa
-                        $("#calidad").val(calidad); //NOTE:Campo oculto en modal cliente
+                        $("#calidad").val(calidad); // Campo oculto en modal cliente
                         $("#identificacion_empresa").val(info.identificacion_cli);
                         LimpiarClientes();
                         $("#modalcliente-empresa").modal('toggle');
                     } else {
-                        $("#calidad").val(calidad); //NOTE:Campo oculto en modal cliente
+                        $("#calidad").val(calidad); // Campo oculto en modal cliente
                         $("#identificacion").val(info.identificacion_cli);
                         LimpiarClientes();
                         $("#modalcliente").modal('toggle');
@@ -202,14 +202,14 @@ $("#identificacion_cli1").blur(function() {
     }
 });
 
-//------------NOTE:Calidad2-------------------
+//------------ Calidad2-------------------
 
 $("#identificacion_cli2").blur(function(){
 
   if($("#identificacion_cli2").val() != ''){
     var identificacion_cli = $("#identificacion_cli2").val();
     var tipo_doc = $("#id_tipoident2").val();
-    var calidad = 2; //NOTE:Para distinguir en que input se muestra el nombre del cliente
+    var calidad = 2; // Para distinguir en que input se muestra el nombre del cliente
     var datos = {
         "identificacion_cli": identificacion_cli,
         "tipo_doc": tipo_doc
@@ -228,13 +228,13 @@ $("#identificacion_cli2").blur(function(){
         success: function(info) {
             if (info.validar == '0') {
               $("#tipo_documento").val(info.tipo_doc);
-              if(info.tipo_doc == 4){ //NOTE:Si es empresa
-                $("#calidad").val(calidad);//NOTE:Campo oculto en modal cliente
+              if(info.tipo_doc == 4){ // Si es empresa
+                $("#calidad").val(calidad);// Campo oculto en modal cliente
                 LimpiarClientes();
                 $("#identificacion_empresa").val(info.identificacion_cli);
                 $("#modalcliente-empresa").modal('toggle');
               }else{
-                $("#calidad").val(calidad);//NOTE:Campo oculto en modal cliente
+                $("#calidad").val(calidad);// Campo oculto en modal cliente
                 LimpiarClientes();
                 $("#identificacion").val(info.identificacion_cli);
                 $("#modalcliente").modal('toggle');
@@ -250,11 +250,11 @@ $("#identificacion_cli2").blur(function(){
 $("#guardarfacturaunica").click(function() {
     /********Valida que forma pago esté seleccionado*********/
     if (document.querySelector('input[name="formapago"]:checked')) {
-      var mediopago = $("#mediopago option:selected").val();
-      if(mediopago != ''){
-        /******NOTE:Valida que a nombre de no esté vacío*******/
+      //var mediopago = $("#mediopago option:selected").val();
+      //if(mediopago != ''){
+        /****** Valida que a nombre de no esté vacío*******/
         if ($("#identificacion_cli1").val() != '' && $("#nombre_cli1").val() != '') {
-            /*****NOTE:Envío datos de la factura******/
+            /***** Envío datos de la factura******/
             var formapago = $('input:radio[name=formapago]:checked').val();
             if (formapago == 'contado') {
                 formapago = false;
@@ -280,14 +280,22 @@ $("#guardarfacturaunica").click(function() {
             var doc_acargo_de = $("#doc_acargo_de").val();
             var detalle_acargo_de = $("#detalle_acargo_de").val();
 
-            var valor = $("#valor").val();
+            var efectivo = $("#efectivo").val();
+            var cheque = $("#cheque").val();
+            var consignacion_bancaria = $("#consignacion_bancaria").val();
+            var pse = $("#pse").val();
+            var transferencia_bancaria = $("#transferencia_bancaria").val();
+            var tarjeta_credito = $("#tarjeta_credito").val();
+            var tarjeta_debito = $("#tarjeta_debito").val();
+
+            //var valor = $("#valor").val();
             var numcheque = $("#numcheque").val();
             var id_banco = $("#id_banco option:selected").val();
 
             var datos = {
                 "id_radica": id_radica,
                 "formapago": formapago,
-                "mediopago": mediopago,
+                //"mediopago": mediopago,
                 "identificacion_cli1": identificacion_cli1,
                 "nombre_cli1": nombre_cli1,
                 "total_derechos": total_derechos,
@@ -303,7 +311,13 @@ $("#guardarfacturaunica").click(function() {
                 "reteiva": reteiva,
                 "retertf": retertf,
                 "reteica": reteica,
-                "valor": valor,
+                "efectivo": efectivo,
+                "cheque": cheque,
+                "consignacion_bancaria": consignacion_bancaria,
+                "pse": pse,
+                "transferencia_bancaria": transferencia_bancaria,
+                "tarjeta_credito": tarjeta_credito,
+                "tarjeta_debito": tarjeta_debito,
                 "numcheque": numcheque,
                 "id_banco": id_banco,
                 "doc_acargo_de": doc_acargo_de,
@@ -320,7 +334,7 @@ $("#guardarfacturaunica").click(function() {
                         var fecha_fact = info.fecha_fact;
                         $("#num_factura").html(prefijo_fact+'-'+id_fact);
                         $("#fecha_fact").html(fecha_fact);
-                        /*******NOTE:Se envía datos para escrituras*********/
+                        /******* Se envía datos para escrituras*********/
                         datos = {
                           "id_radica": id_radica
                         };
@@ -389,14 +403,17 @@ $("#guardarfacturaunica").click(function() {
                                 }
                             })
 
-                    } else if (info.validar == 0) { //NOTE:Valida que la radicación ya ha sido facturada
+                    } else if (info.validar == 0) { //Valida que la radicación ya ha sido facturada
                         $("#msj2").html(info.mensaje);
                         $("#msj-error2").fadeIn();
                         setTimeout(function() {
                             $("#msj-error2").fadeOut();
                         }, 4000);
-                    }
-                }) //NOTE:Ajax de la factura
+                    }  else if (info.validar == 888) {
+                        alert("Los medios de pago deben ser igual que el total a pagar");
+
+                                }
+                }) // Ajax de la factura
 
         } else {
             $("#msj1").html("Debe especificar documento y a nombre de quien va la factura");
@@ -406,9 +423,9 @@ $("#guardarfacturaunica").click(function() {
             }, 4000);
         }
 
-      }else{
-        alert("Debe Seleccionar el medio de pago");
-        }
+      //}else{
+        //alert("Debe Seleccionar el medio de pago");
+        //}
 
     } else {
         $("#msj1").html("Por favor seleccione la forma de pago: Contado o Crédito");
@@ -421,201 +438,219 @@ $("#guardarfacturaunica").click(function() {
 
 
 $("#guardarfacturamultiple").click(function() {
-  /*******Valida totales de la factura y la liquidación*********/
+    /*******Valida totales de la factura y la liquidación*********/
+    Total_Menos_Deducciones();
 
-  datos = {
-    "id_radica": 0
-  };
-  var route = "/validartotalfactliq";
-  var token = $("#token").val();
-  var type = "GET";
-  __ajax(route, token, type, datos)
-      .done(function(info) {
+    datos = {
+        "id_radica": 0
+    };
+    var route = "/validartotalfactliq";
+    var token = $("#token").val();
+    var type = "GET";
+    __ajax(route, token, type, datos)
+    .done(function(info) {
         if(info.validar == 1){
-          /********NOTE:Valida que forma pago esté seleccionado*********/
-          if (document.querySelector('input[name="formapago"]:checked')) {
-            var mediopago = $("#mediopago option:selected").val();
-            if(mediopago != ''){
-              /******NOTE:Valida que a nombre de no esté vacío*******/
-              if ($("#identificacion_cli1").val() != '' && $("#nombre_cli1").val() != '') {
-                  /*****NOTE:Envío datos de la factura******/
-                  var formapago = $('input:radio[name=formapago]:checked').val();
-                  if (formapago == 'contado') {
-                      formapago = false;
-                  } else if (formapago == 'credito') {
+            /********Valida que forma pago esté seleccionado*********/
+          
+            if (document.querySelector('input[name="formapago"]:checked')) {
+                /******Valida que a nombre de no esté vacío*******/
+
+                if ($("#identificacion_cli1").val() != '' && $("#nombre_cli1").val() != '') {
+                    /*****Envío datos de la factura******/
+                    var formapago = $('input:radio[name=formapago]:checked').val();
+                    if (formapago == 'contado') {
+                        formapago = false;
+                    } else if (formapago == 'credito') {
                       formapago = true;
-                  }
-                  var id_radica = $("#id_radica").val();
-                  var identificacion_cli1 = $("#identificacion_cli1").val();
-                  var nombre_cli1 = $("#nombre_cli1").val();
-                  var total_derechos = $("#totderechos").val();
-                  var total_conceptos = $("#totconceptos").val();
-                  var total_iva = $("#totiva").val();
-                  var total_rtf = $("#totrtf").val();
-                  var total_reteconsumo = $("#totreteconsumo").val();
-                  var total_fondo = $("#totfondo").val();
-                  var total_super = $("#totsuper").val();
-                  var total_aporteespecial = $("#totaporteespecial").val();
-                  var total_impuesto_timbre = $("#totimpuestotimbre").val();
-                  var total_fact = $("#grantotal").val();
-                  var reteiva = $("#reteivaide").val();
-                  var retertf = $("#retertfide").val();
-                  var reteica = $("#reteicaide").val();
-
-                  var doc_acargo_de = $("#doc_acargo_de").val();
-                  var detalle_acargo_de = $("#detalle_acargo_de").val();
-
-                  var valor = $("#valor").val();
-                  var numcheque = $("#numcheque").val();
-                  var id_banco = $("#id_banco option:selected").val();
-
-                  var datos = {
-                      "id_radica": 0
-                  };
-                  var route = "/traeconceptos";
-                  var token = $("#token").val();
-                  var type = 'GET';
-                  __ajax(route, token, type, datos)
-                  .done( function( info ){
-                    var conceptos = info.conceptos;
-                    var atributo;
-                    var id_concep;
-                    datos = {
-                      "id_radica": id_radica,
-                      "formapago": formapago,
-                      "mediopago": mediopago,
-                      "identificacion_cli1": identificacion_cli1,
-                      "nombre_cli1": nombre_cli1,
-                      "total_derechos": total_derechos,
-                      "total_conceptos": total_conceptos,
-                      "total_iva": total_iva,
-                      "total_rtf": total_rtf,
-                      "total_reteconsumo": total_reteconsumo,
-                      "total_fondo": total_fondo,
-                      "total_super": total_super,
-                      "total_aporteespecial": total_aporteespecial,
-                      "total_impuesto_timbre": total_impuesto_timbre,
-                      "total_fact": total_fact,
-                      "reteiva": reteiva,
-                      "retertf": retertf,
-                      "reteica": reteica,
-                      "valor": valor,
-                      "numcheque": numcheque,
-                      "id_banco": id_banco,
-                      "doc_acargo_de": doc_acargo_de,
-                      "detalle_acargo_de":detalle_acargo_de
-                      };
-                    for (item in conceptos) {
-                      atributo = conceptos[item].atributo;
-                      id_concep = conceptos[item].id_concep;
-                      datos["total"+atributo+"iden"] = $("#totalconcepto"+atributo+"iden").val();
                     }
+                  
+                    var id_radica = $("#id_radica").val();
+                    var identificacion_cli1 = $("#identificacion_cli1").val();
+                    var nombre_cli1 = $("#nombre_cli1").val();
+                    var total_derechos = $("#totderechos").val();
+                    var total_conceptos = $("#totconceptos").val();
+                    var total_iva = $("#totiva").val();
+                    var total_rtf = $("#totrtf").val();
+                    var total_reteconsumo = $("#totreteconsumo").val();
+                    var total_fondo = $("#totfondo").val();
+                    var total_super = $("#totsuper").val();
+                    var total_aporteespecial = $("#totaporteespecial").val();
+                    var total_impuesto_timbre = $("#totimpuestotimbre").val();
+                    var total_fact = $("#grantotal").val();
+                    var reteiva = $("#reteivaide").val();
+                    var retertf = $("#retertfide").val();
+                    var reteica = $("#reteicaide").val();
 
-                  var route = "/facturacion";
-                  var token = $("#token").val();
-                  var type = "POST";
-                  __ajax(route, token, type, datos)
-                      .done(function(info) {
-                          if (info.validar == 1) {
-                              var prefijo_fact = info.prefijo_fact;
-                              var id_fact = info.num_fact;
-                              var fecha_fact = info.fecha_fact;
-                              $("#num_factura").html(prefijo_fact+'-'+id_fact);
-                              $("#fecha_fact").html(fecha_fact);
-                              /*******NOTE:Se envía datos para escrituras*********/
-                              datos = {
-                                "id_radica": id_radica
-                              };
-                              var route = "/escrituracion";
-                              var token = $("#token").val();
-                              var type = "POST";
-                              __ajax(route, token, type, datos)
-                                  .done(function(info) {
-                                    if(info.validar == 1){
-                                      var num_escritura = info.num_esc;
-                                      $("#num_escritura").html(num_escritura);
-                                    }else if(info.validar == 0){
-                                      var num_escritura = info.num_esc;
-                                      $("#num_escritura").html(num_escritura);
-                                      $("#msj2").html(info.mensaje);
-                                      $("#msj-error2").fadeIn();
-                                      setTimeout(function() {
-                                          $("#msj-error2").fadeOut();
-                                      }, 4000);
-                                    }
-                                  }) //Ajax escritura
+                    var doc_acargo_de = $("#doc_acargo_de").val();
+                    var detalle_acargo_de = $("#detalle_acargo_de").val();
 
-                            // =============================================
-                            // =       Enviar Factura electronica          =
-                            // =============================================
+                    var efectivo = $("#efectivo").val();
+                    var cheque = $("#cheque").val();
+                    var consignacion_bancaria = $("#consignacion_bancaria").val();
+                    var pse = $("#pse").val();
+                    var transferencia_bancaria = $("#transferencia_bancaria").val();
+                    var tarjeta_credito = $("#tarjeta_credito").val();
+                    var tarjeta_debito = $("#tarjeta_debito").val();
+                    var numcheque = $("#numcheque").val();
+                    var id_banco = $("#id_banco option:selected").val();
 
-                            var opcion = "F1";
-                            var num_fact = id_fact;
-                            var route = "/enviarfactura";
-                            var token = $("#token").val();
-                            var type = 'GET';
-                            var datos = {
-                              "num_fact": num_fact,
-                              "opcion": opcion
+                    var datos = {
+                            "id_radica": 0
+                        };
+                        var route = "/traeconceptos";
+                        var token = $("#token").val();
+                        var type = 'GET';
+                        __ajax(route, token, type, datos)
+                        .done( function( info ){
+                            var conceptos = info.conceptos;
+                            var atributo;
+                            var id_concep;
+                            datos = {
+                                "id_radica": id_radica,
+                                "formapago": formapago,
+                                "identificacion_cli1": identificacion_cli1,
+                                "nombre_cli1": nombre_cli1,
+                                "total_derechos": total_derechos,
+                                "total_conceptos": total_conceptos,
+                                "total_iva": total_iva,
+                                "total_rtf": total_rtf,
+                                "total_reteconsumo": total_reteconsumo,
+                                "total_fondo": total_fondo,
+                                "total_super": total_super,
+                                "total_aporteespecial": total_aporteespecial,
+                                "total_impuesto_timbre": total_impuesto_timbre,
+                                "total_fact": total_fact,
+                                "reteiva": reteiva,
+                                "retertf": retertf,
+                                "reteica": reteica,
+                                "efectivo": efectivo,
+                                "cheque": cheque,
+                                "consignacion_bancaria": consignacion_bancaria,
+                                "pse": pse,
+                                "transferencia_bancaria": transferencia_bancaria,
+                                "tarjeta_credito": tarjeta_credito,
+                                "tarjeta_debito": tarjeta_debito,
+                                "numcheque": numcheque,
+                                "id_banco": id_banco,
+                                "doc_acargo_de": doc_acargo_de,
+                                "detalle_acargo_de":detalle_acargo_de
                             };
+
+                            for (item in conceptos) {
+                                atributo = conceptos[item].atributo;
+                                id_concep = conceptos[item].id_concep;
+                                datos["total"+atributo+"iden"] = $("#totalconcepto"+atributo+"iden").val();
+                            }
+
+                            var route = "/facturacion";
+                            var token = $("#token").val();
+                            var type = "POST";
                             __ajax(route, token, type, datos)
-                              .done(function(info) {
-                                if(info.status == 1){
-                                  var opcion2 = info.opcion2;
-                                  //Genera Factura PDF
-                                  pdfFacturaMultiple();
+                            .done(function(info) {
+                                if (info.validar == 1) {
+                                    var prefijo_fact = info.prefijo_fact;
+                                    var id_fact = info.num_fact;
+                                    var fecha_fact = info.fecha_fact;
+                                    $("#num_factura").html(prefijo_fact+'-'+id_fact);
+                                    $("#fecha_fact").html(fecha_fact);
+                                    /*******Se envía datos para escrituras*********/
+                                    datos = {
+                                        "id_radica": id_radica
+                                    };
+                                    var route = "/escrituracion";
+                                    var token = $("#token").val();
+                                    var type = "POST";
+                                    __ajax(route, token, type, datos)
+                                    .done(function(info) {
+                                        if(info.validar == 1){
+                                            var num_escritura = info.num_esc;
+                                            $("#num_escritura").html(num_escritura);
+                                        }else if(info.validar == 0){
+                                        
+                                            var num_escritura = info.num_esc;
+                                            $("#num_escritura").html(num_escritura);
+                                            $("#msj2").html(info.mensaje);
+                                            $("#msj-error2").fadeIn();
+                                            setTimeout(function() {
+                                                $("#msj-error2").fadeOut();
+                                            }, 4000);
+                                        }
+                                    }) //Ajax escritura
 
-                                  /*----------  Enviar email  ----------*/
+                                    // =============================================
+                                    // =       Enviar Factura electronica          =
+                                    // =============================================
+
+                                    var opcion = "F1";
+                                    var num_fact = id_fact;
+                                    var route = "/enviarfactura";
+                                    var token = $("#token").val();
+                                    var type = 'GET';
+                                    var datos = {
+                                        "num_fact": num_fact,
+                                        "opcion": opcion
+                                    };
+                                    __ajax(route, token, type, datos)
+                                    .done(function(info) {
+                                        if(info.status == 1){
+                                            var opcion2 = info.opcion2;
+                                            //Genera Factura PDF
+                                            pdfFacturaMultiple();
+
+                                            /*------  Enviar email  ------*/
                                   
-                                  route = "/enviarcorreo";
-                                  datos = {
-                                    "num_fact": num_fact,
-                                    "opcion": opcion,
-                                    "email_cliente":info.email_cliente,
-                                    "opcion2":opcion2
-                                  };
+                                            route = "/enviarcorreo";
+                                            datos = {
+                                                "num_fact": num_fact,
+                                                "opcion": opcion,
+                                                "email_cliente":info.email_cliente,
+                                                "opcion2":opcion2
+                                            };
 
-                                  __ajax(route, token, type, datos)
-                                  .done(function(info) {
-                                      $("#informacion").html("Muy bien! Factura Enviada y Generada");
-                                      $("#mod_factelectronica").modal('toggle');
-                                  })
+                                            __ajax(route, token, type, datos)
+                                            .done(function(info) {
+                                                $("#informacion").html("Muy bien! Factura Enviada y Generada");
+                                                $("#mod_factelectronica").modal('toggle');
+                                            })
+                                        }else if(info.status == 0){
+                                            //Genera Comprovante PDF
+                                            pdfFacturaMultiple();
+                                            $("#informacion").html(info.mensaje);
+                                            $("#mod_factelectronica").modal('toggle');
+                                        }
+                                    })
 
-                                }else if(info.status == 0){
-                                  //Genera Comprovante PDF
-                                  pdfFacturaMultiple();
-                                  $("#informacion").html(info.mensaje);
-                                  $("#mod_factelectronica").modal('toggle');
+                                } else if (info.validar == 0) { //Valida que la radicación ya ha sido facturada
+                                    $("#msj2").html(info.mensaje);
+                                    $("#msj-error2").fadeIn();
+                                    setTimeout(function() {
+                                        $("#msj-error2").fadeOut();
+                                    }, 4000);
+                                }  else if (info.validar == 888) {
+                                    alert("Los medios de pago deben ser igual que el total a pagar");
+
+                                } else if (info.validar == 999) {
+                                    alert("Los recaudos deben ser mayor a cero");
                                 }
-                            })
 
-                          } else if (info.validar == 0) { //NOTE:Valida que la radicación ya ha sido facturada
-                              $("#msj2").html(info.mensaje);
-                              $("#msj-error2").fadeIn();
-                              setTimeout(function() {
-                                  $("#msj-error2").fadeOut();
-                              }, 4000);
-                          }
-                      }) //NOTE:Ajax de la factura
-                    })//AJAX conceptos
-              } else {
-                  $("#msj1").html("Debe especificar documento y a nombre de quien va la factura");
-                  $("#msj-error1").fadeIn();
-                  setTimeout(function() {
+                            }) //Ajax de la factura
+                        })//AJAX conceptos
+                    
+                } else {
+                   $("#msj1").html("Debe especificar documento y a nombre de quien va la factura");
+                   $("#msj-error1").fadeIn();
+                   setTimeout(function() {
                       $("#msj-error1").fadeOut();
-                  }, 4000);
-              }
-
-            }else{
-              alert("Debe Seleccionar el medio de pago");
-              }
-          } else {
+                   }, 4000);
+                 }
+           
+            } else {
               $("#msj1").html("Por favor seleccione la forma de pago: Contado o Crédito");
               $("#msj-error1").fadeIn();
               setTimeout(function() {
                   $("#msj-error1").fadeOut();
               }, 4000);
-          }
+            }
 
         }else if(info.validar == 0){
           $("#msj2").html(info.mensaje);
@@ -624,7 +659,7 @@ $("#guardarfacturamultiple").click(function() {
               $("#msj-error2").fadeOut();
           }, 4000);
         }
-      }) //Ajax validar totales
+    }) //Ajax validar totales
 });
 
 

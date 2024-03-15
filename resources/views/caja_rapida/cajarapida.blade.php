@@ -41,7 +41,7 @@
     </p>
   </div><!-- #dialog-confirm -->
 
-  <div class="col-xs-12 col-sm-12">
+  <div class="col-xs-12 col-sm-6">
     <div class="widget-box">
       <div class="widget-header">
         <h4 class="widget-title">Datos del Ciente <span class="brown" id="Acto_Actual"></span></h4>
@@ -75,7 +75,7 @@
                   @endforeach
                 </select>
                 <input type="text" size="10" id="identificacion_cli1" name="identificacion_cli1" placeholder="Identificación" />
-                <input type="text" readonly size="40" id="nombre_cli1" name="nombre_cli1" />
+                <input type="text" readonly size="28" id="nombre_cli1" name="nombre_cli1" />
               </div>
             </div>
 
@@ -91,16 +91,71 @@
             </div>
 
             <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Medio_de_Pago</b></label>
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Concepto</b></label>
               <div class="col-sm-9">
-                <select id="mediopago" style="width: 150px;">
-                  <option value="" disabled selected>Seleccione</option>
-                  @foreach ($MediosdePago as $Med)
-                  <option value="{{$Med->codigo_med}}">{{$Med->codigo_med}} >> {{$Med->nombre_med}}</option>
+                <select id="id_concepto" style="width: 310px;">
+                  <option value="" disabled selected>Codigo del Concepto</option>
+                  @foreach ($Conceptos as $Concept)
+                  <option value="{{$Concept->id_concep}}">{{$Concept->id_concep}} - {{$Concept->nombre_concep}} - ${{$Concept->valor}}</option>
                   @endforeach
                 </select>
+                <input type="text" size="6" id="cantidad" name="cantidad" placeholder="Cantidad" onKeyPress="return soloNumeros(event)" />
+
+                <a href="javascript://" id="agregaritem" data-action="collapse" data-action="reload">
+                  <i><img src="{{ asset('images/nuevo.png') }}" width="28 px" height="28 px" title="Agregar Item"></i>
+                </a>
+
               </div>
             </div>
+            
+            <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Efectivo</b></label>
+              <div class="col-sm-9">
+                 <input type="text" value = '0' id="efectivo" name="efectivo" placeholder="Valor en efectivo" onKeyPress="return soloNumeros(event)" />
+                 
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Transf_banc</b></label>
+              <div class="col-sm-9">
+                 <input type="text" value = '0' id="transferencia_bancaria" name="transferencia_bancaria" placeholder="Valor Transferencia" onKeyPress="return soloNumeros(event)"/>
+                 
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">PSE</b></label>
+              <div class="col-sm-9">
+                 <input type="text" value = '0' id="pse" name="pse" placeholder="Valor pago PSE" onKeyPress="return soloNumeros(event)"/>
+                 
+              </div>
+            </div>
+
+             <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">T.Credito</b></label>
+              <div class="col-sm-9">
+                 <input type="text" value = '0' id="tarjeta_credito" name="tarjeta_credito" placeholder="Pago T.cred" onKeyPress="return soloNumeros(event)"/>
+                 
+              </div>
+            </div>
+
+             <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">T.Debito</b></label>
+              <div class="col-sm-9">
+                 <input type="text" value = '0' id="tarjeta_debito" name="tarjeta_debito" placeholder="Pago T.deb" onKeyPress="return soloNumeros(event)"/>
+                 
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Cheque</b></label>
+              <div class="col-sm-9">
+                 <input type="text" value = '0' id="cheque" name="cheque" placeholder="Valor cheque" onKeyPress="return soloNumeros(event)"/>
+                 
+              </div>
+            </div>
+
 
             <div class="form-group">
               <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Banco</b></label>
@@ -113,45 +168,15 @@
                 </select>
               </div>
             </div>
-
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Concepto</b></label>
-              <div class="col-sm-9">
-                <select id="id_concepto" style="width: 350px;">
-                  <option value="" disabled selected>Codigo del Concepto</option>
-                  @foreach ($Conceptos as $Concept)
-                  <option value="{{$Concept->id_concep}}">{{$Concept->id_concep}} - {{$Concept->nombre_concep}} - ${{$Concept->valor}}</option>
-                  @endforeach
-                </select>
-                <input type="text" size="10" id="cantidad" name="cantidad" placeholder="Cantidad" onKeyPress="return soloNumeros(event)" />
-
-                <a href="javascript://" id="agregaritem" data-action="collapse" data-action="reload">
-                  <i><img src="{{ asset('images/nuevo.png') }}" width="28 px" height="28 px" title="Agregar Item"></i>
-                </a>
-
-              </div>
-            </div>
           </form>
 
         </div>
       </div>
     </div>
   </div><!-- /.span -->
-</div><!--- /row -->
 
-<div class="row" id="clientesprincipales">
-  <div id="dialog-confirm" class="hide">
-    <div id="msg" class="alert alert-info bigger-110">
 
-    </div>
-
-    <div class="space-6"></div>
-
-    <p class="bigger-110 bolder center grey">
-    </p>
-  </div><!-- #dialog-confirm -->
-
-  <div class="col-xs-12 col-sm-12">
+  <div class="col-xs-12 col-sm-6">
     <div class="widget-box">
       <div class="widget-header">
         <h4 class="widget-title">Detalle de la Factura<span class="brown" id="Acto_Actual"></span></h4>
@@ -199,7 +224,12 @@
       </div>
     </div>
   </div><!-- /.span -->
+
+
+
+
 </div><!--- /row -->
+
 
 
 @endsection

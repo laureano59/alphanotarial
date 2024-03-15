@@ -34,7 +34,7 @@ $("#identificacion_cli1").blur(function() {
 
 $("#GuardarActaDeposito").click(function() {
     var identificacion_cli, id_tip, proyecto, deposito_act, id_radica,
-        efectivo, cheque, tarjeta_credito, num_cheque, num_tarjetacredito,
+        efectivo, cheque, tarjeta_credito, tarjeta_debito, pse, num_cheque, num_tarjetacredito,
         observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, validar_suma;
         validar_suma = 0;
 
@@ -44,10 +44,14 @@ $("#GuardarActaDeposito").click(function() {
     deposito_act = $("#deposito_act").val();
     anio_fiscal = $("#anio_fiscal").val();
     id_radica = $("#id_radica").val();
+    
     efectivo = $("#efectivo").val();
     transferencia_bancaria = $("#transferencia_bancaria").val();
     cheque = $("#cheque").val();
     tarjeta_credito = $("#tarjeta_credito").val();
+    tarjeta_debito = $("#tarjeta_debito").val();
+    pse = $("#pse").val();
+    
     num_cheque = $("#num_cheque").val();
     num_tarjetacredito = $("#num_tarjetacredito").val();
     observaciones_act = $("#observaciones_act").val();
@@ -56,10 +60,10 @@ $("#GuardarActaDeposito").click(function() {
     validar_suma = parseFloat(efectivo) + 
                     parseFloat(transferencia_bancaria) + 
                     parseFloat(cheque) + 
-                    parseFloat(tarjeta_credito);
-    console.log(validar_suma);
-
-
+                    parseFloat(tarjeta_credito) +
+                    parseFloat(tarjeta_debito) +
+                    parseFloat(pse);
+   
     if (identificacion_cli != '' && id_tip != '' && proyecto != '' &&
         deposito_act != '') {
         if(validar_suma == deposito_act){
@@ -71,6 +75,8 @@ $("#GuardarActaDeposito").click(function() {
             "id_radica": id_radica,
             "anio_fiscal": anio_fiscal,
             "efectivo": efectivo,
+            "tarjeta_debito": tarjeta_debito,
+            "pse": pse,
             "transferencia_bancaria": transferencia_bancaria,
             "cheque": cheque,
             "tarjeta_credito": tarjeta_credito,
@@ -86,13 +92,17 @@ $("#GuardarActaDeposito").click(function() {
 
         __ajax(route, token, type, datos)
             .done(function(info) {
-                $("#id_act").html(info.id_act);
-                CargarGridActas(info.actas_depo_all);
+                if(info.validar == 1){
+                    $("#btnguardar").fadeOut();
+                    $("#btnnuevo").fadeIn();
+                    $("#id_act").html(info.id_act);
+                    CargarGridActas(info.actas_depo_all);
+                }else if(info.validar == 888){
+                    alert("Para los casos de escrituras, boleta y registro la radicación es obligatoria");
+                }
             })
 
-        $("#btnguardar").fadeOut();
-        $("#btnnuevo").fadeIn();
-        
+            
 
         }else{
             alert("El total de los medios de pago debe ser igual al depósito");
@@ -102,6 +112,7 @@ $("#GuardarActaDeposito").click(function() {
     } else {
         alert("Los campos con título Azul son obligatorios");
     }
+
 });
 
 $("#nuevaacta").click(function() {
@@ -115,6 +126,8 @@ $("#nuevaacta").click(function() {
     $("#id_radica").val('');
     $("#num_cheque").val('');
     $("#efectivo").val(0);
+    $("#pse").val(0);
+    $("#tarjeta_debito").val(0);
     $("#transferencia_bancaria").val(0);
     $("#cheque").val(0);
     $("#tarjeta_credito").val(0);

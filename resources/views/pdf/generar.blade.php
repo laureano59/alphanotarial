@@ -47,7 +47,7 @@
                 </table>
             </td>
             <td>
-                <img src="{{ asset('images/logon13.png') }}" width="28 px" height="28 px"></br>
+                <img src="{{ asset('images/logon13.png') }}" width="85px" height="85px"></br>
                 <center><font size="1">{{$email}}</font></center>
                 <font size="1">Protocolista: {{$protocolista}}</font><br>
                 <font size="1">{{$IVA}}</font>

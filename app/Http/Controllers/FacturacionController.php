@@ -20,7 +20,6 @@ use App\Pago;
 use App\Departamento;
 use App\Concepto;
 use App\Banco;
-use App\Medios_pago;
 use App\Factura_a_cargo_de_view;
 
 class FacturacionController extends Controller
@@ -52,11 +51,11 @@ class FacturacionController extends Controller
       $Banco = Banco::all();
       $Banco = $Banco->Sort();
       
-      $MediosdePago = Medios_pago::all();
-      $MediosdePago = $MediosdePago->Sort();
+      //$MediosdePago = Medios_pago::all();
+      //$MediosdePago = $MediosdePago->Sort();
 
         if($opcion == 1){
-          /*******TODO:Unica Factura***********/
+          /*******Unica Factura***********/
           if (Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
             $liq_dere = Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
             foreach ($liq_dere as $key => $value) {
@@ -64,7 +63,7 @@ class FacturacionController extends Controller
             }
             $Conceptos = Concepto::all();
             $Conceptos = $Conceptos->sortBy('id_concep');
-             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'MediosdePago'));
+             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));
             }else{
               	//return redirect('/home');
                 return view('/home');
@@ -83,7 +82,7 @@ class FacturacionController extends Controller
                 }
                 $Conceptos = Concepto::all();
                 $Conceptos = $Conceptos->sortBy('id_concep');
-                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'MediosdePago'));
+                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));
                 }else{
                   	//return redirect('/home');
                     return view('/home');
@@ -135,7 +134,7 @@ class FacturacionController extends Controller
         $fecha_factura = $fecha_manual;
       }
 
-      if($opcion == 1){//TODO:Factura Unica
+      if($opcion == 1){//Factura Unica
         $id_radica = $request->input('id_radica');
         $anio_radica = Notaria::find(1)->anio_trabajo;
         if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', false)->exists()){
@@ -181,6 +180,68 @@ class FacturacionController extends Controller
             }
           }else{
             $nota_periodo = 7;
+          }
+
+          $efectivo = $request->efectivo;
+          if($efectivo === '' || is_null($efectivo)){
+            $efectivo = 0;
+          }
+          $efectivo = str_replace(",", " ", $efectivo);//comas por espacios
+          $efectivo = str_replace(" ", "", $efectivo);//elimina espacios
+
+          $cheque = $request->cheque;
+           if($cheque === '' || is_null($cheque)){
+            $cheque = 0;
+          }
+          $cheque = str_replace(",", " ", $cheque);
+          $cheque = str_replace(" ", "", $cheque);
+
+          $consignacion_bancaria = $request->consignacion_bancaria;
+          if($consignacion_bancaria === '' || is_null($consignacion_bancaria)){
+            $consignacion_bancaria = 0;
+          }
+          $consignacion_bancaria = str_replace(",", " ", $consignacion_bancaria);
+          $consignacion_bancaria = str_replace(" ", "", $consignacion_bancaria);
+
+          $pse = $request->pse;
+          if($pse === '' || is_null($pse)){
+            $pse = 0;
+          }
+          $pse = str_replace(",", " ", $pse);
+          $pse = str_replace(" ", "", $pse);
+
+          $transferencia_bancaria = $request->transferencia_bancaria;
+          if($transferencia_bancaria === '' || is_null($transferencia_bancaria)){
+            $transferencia_bancaria = 0;
+          }
+          $transferencia_bancaria = str_replace(",", " ", $transferencia_bancaria);
+          $transferencia_bancaria = str_replace(" ", "", $transferencia_bancaria);
+
+          $tarjeta_credito = $request->tarjeta_credito;
+           if($tarjeta_credito === '' || is_null($tarjeta_credito)){
+            $tarjeta_credito = 0;
+          }
+          $tarjeta_credito = str_replace(",", " ", $tarjeta_credito);
+          $tarjeta_credito = str_replace(" ", "", $tarjeta_credito);
+
+          $tarjeta_debito = $request->tarjeta_debito;
+          if($tarjeta_debito === '' || is_null($tarjeta_debito)){
+            $tarjeta_debito = 0;
+          }
+          $tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
+          $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
+
+          $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
+          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito;
+
+          if($total_mediosdepago == $request->total_fact){
+
+          }else{
+
+            return response()->json([
+            "validar"=>888
+           ]);
+
           }
 
 
@@ -235,13 +296,15 @@ class FacturacionController extends Controller
           $pago->codigo_ban = $request->input('id_banco');
           $pago->id_fact = $num_fact;
           $pago->prefijo = $prefijo;
-          $pago->codigo_med = $request->mediopago;
-          $valor = $request->input('valor');
-          $valor = str_replace(",", " ", $valor);//Reemplaza las comas por espacios
-          $valor = str_replace(" ", "", $valor);//elimina los espacios
-          $pago->valor = $valor;
+          $pago->efectivo = $efectivo;
+          $pago->cheque = $cheque;
+          $pago->consignacion_bancaria = $consignacion_bancaria;
+          $pago->pse = $pse;
+          $pago->transferencia_bancaria = $transferencia_bancaria;
+          $pago->tarjeta_credito = $tarjeta_credito;
+          $pago->tarjeta_debito = $tarjeta_debito;
 
-          $pago->numcheque = $request->input('numcheque');
+          $pago->numcheque = $request->numcheque;
           $pago->save();
 
           return response()->json([
@@ -251,7 +314,7 @@ class FacturacionController extends Controller
             "fecha_fact"=>$fecha_fact
            ]);
         }
-      } else if($opcion == 3){//TODO:Factura Multiple
+      } else if($opcion == 3){//Factura Multiple
         $id_radica = $request->input('id_radica');
         $anio_radica = Notaria::find(1)->anio_trabajo;
         if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', false)->where('factmultiple', false)->exists()){
@@ -290,7 +353,84 @@ class FacturacionController extends Controller
              $nota_periodo = 7;
           }
 
-          
+          $efectivo = $request->efectivo;
+          if($efectivo === '' || is_null($efectivo)){
+            $efectivo = 0;
+          }
+          $efectivo = str_replace(",", " ", $efectivo);//comas por espacios
+          $efectivo = str_replace(" ", "", $efectivo);//elimina espacios
+
+          $cheque = $request->cheque;
+           if($cheque === '' || is_null($cheque)){
+            $cheque = 0;
+          }
+          $cheque = str_replace(",", " ", $cheque);
+          $cheque = str_replace(" ", "", $cheque);
+
+          $consignacion_bancaria = $request->consignacion_bancaria;
+          if($consignacion_bancaria === '' || is_null($consignacion_bancaria)){
+            $consignacion_bancaria = 0;
+          }
+          $consignacion_bancaria = str_replace(",", " ", $consignacion_bancaria);
+          $consignacion_bancaria = str_replace(" ", "", $consignacion_bancaria);
+
+          $pse = $request->pse;
+          if($pse === '' || is_null($pse)){
+            $pse = 0;
+          }
+          $pse = str_replace(",", " ", $pse);
+          $pse = str_replace(" ", "", $pse);
+
+          $transferencia_bancaria = $request->transferencia_bancaria;
+          if($transferencia_bancaria === '' || is_null($transferencia_bancaria)){
+            $transferencia_bancaria = 0;
+          }
+          $transferencia_bancaria = str_replace(",", " ", $transferencia_bancaria);
+          $transferencia_bancaria = str_replace(" ", "", $transferencia_bancaria);
+
+          $tarjeta_credito = $request->tarjeta_credito;
+           if($tarjeta_credito === '' || is_null($tarjeta_credito)){
+            $tarjeta_credito = 0;
+          }
+          $tarjeta_credito = str_replace(",", " ", $tarjeta_credito);
+          $tarjeta_credito = str_replace(" ", "", $tarjeta_credito);
+
+          $tarjeta_debito = $request->tarjeta_debito;
+          if($tarjeta_debito === '' || is_null($tarjeta_debito)){
+            $tarjeta_debito = 0;
+          }
+          $tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
+          $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
+
+          $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
+          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito;
+
+
+          if($total_mediosdepago == $request->total_fact){
+
+          }else{
+
+            return response()->json([
+            "validar"=>888
+           ]);
+
+          }
+
+
+          if ($request->total_fondo < 1 || $request->total_fondo === '' || is_null($request->total_fondo)){
+             return response()->json([
+            "validar"=>999
+           ]);
+
+          }
+
+          if ($request->total_super < 1 || $request->total_super === '' || is_null($request->total_super)){
+             return response()->json([
+            "validar"=>999
+           ]);
+          }
+
+        
            /*Autonumerico*/
          
           $consecutivo = Factura::where('prefijo', $prefijo_fact)->max('id_fact');
@@ -357,12 +497,15 @@ class FacturacionController extends Controller
           $pago->codigo_ban = $request->input('id_banco');
           $pago->id_fact = $num_fact;
           $pago->prefijo = $prefijo;
-          $pago->codigo_med = $request->mediopago;
-          $valor = $request->valor;
-          $valor = str_replace(",", " ", $valor);//TODO:Reemplaza las comas por espacios
-          $valor = str_replace(" ", "", $valor);//TODO:elimina los espacios
-          $pago->valor = $valor;
-          $pago->numcheque = $request->input('numcheque');
+          $pago->efectivo = $efectivo;
+          $pago->cheque = $cheque;
+          $pago->consignacion_bancaria = $consignacion_bancaria;
+          $pago->pse = $pse;
+          $pago->transferencia_bancaria = $transferencia_bancaria;
+          $pago->tarjeta_credito = $tarjeta_credito;
+          $pago->tarjeta_debito = $tarjeta_debito;
+
+          $pago->numcheque = $request->numcheque;
           $pago->save();
 
           return response()->json([

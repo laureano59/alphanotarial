@@ -30,7 +30,8 @@
         <b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$num_fact}}</b><br>
         <font size="3">Fecha:</font>&nbsp;
         <font size="3">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font><br>
-        <font size="3">Medios de pago: {{$formadepago}}</font><br>
+        <font size="3">Forma de pago: {{$formadepago}}</font><br>
+        <font size="3">Medio de pago: {{$mediodepago}}</font><br>
     </p>
     <hr>
     <table width="100%">

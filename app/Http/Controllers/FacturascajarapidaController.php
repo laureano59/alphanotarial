@@ -39,7 +39,7 @@ class FacturascajarapidaController extends Controller
     public function store(Request $request)
     {
 
-        //$request->session()->forget('numfactrapida'); 
+        //$request->session()->forget('numfactrapida');
         
         $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
         $fecha_factura = date("Y-m-d H:i:s");//date("Y/m/d");
@@ -50,6 +50,69 @@ class FacturascajarapidaController extends Controller
         $total = $request->total;
         $total_all = $request->total_all;
         $detalle = $request->detalle;
+
+
+        $efectivo = $request->efectivo;
+         if($efectivo === '' || is_null($efectivo)){
+            $efectivo = 0;
+          }
+        //$efectivo = str_replace(",", " ", $efectivo);//comas por espacios
+        //$efectivo = str_replace(" ", "", $efectivo);//elimina espacios
+
+        $cheque = $request->cheque;
+        if($cheque === '' || is_null($cheque)){
+            $cheque = 0;
+          }
+        //$cheque = str_replace(",", " ", $cheque);
+        //$cheque = str_replace(" ", "", $cheque);
+
+        $consignacion_bancaria = $request->consignacion_bancaria;
+        if($consignacion_bancaria === '' || is_null($consignacion_bancaria)){
+            $consignacion_bancaria = 0;
+          }
+        //$consignacion_bancaria = str_replace(",", " ", $consignacion_bancaria);
+        //$consignacion_bancaria = str_replace(" ", "", $consignacion_bancaria);
+
+        $pse = $request->pse;
+        if($pse === '' || is_null($pse)){
+            $pse = 0;
+          }
+        //$pse = str_replace(",", " ", $pse);
+        //$pse = str_replace(" ", "", $pse);
+
+        $transferencia_bancaria = $request->transferencia_bancaria;
+        if($transferencia_bancaria === '' || is_null($transferencia_bancaria)){
+            $transferencia_bancaria = 0;
+          }
+        //$transferencia_bancaria = str_replace(",", " ", $transferencia_bancaria);
+        //$transferencia_bancaria = str_replace(" ", "", $transferencia_bancaria);
+
+        $tarjeta_credito = $request->tarjeta_credito;
+        if($tarjeta_credito === '' || is_null($tarjeta_credito)){
+            $tarjeta_credito = 0;
+          }
+        //$tarjeta_credito = str_replace(",", " ", $tarjeta_credito);
+        //$tarjeta_credito = str_replace(" ", "", $tarjeta_credito);
+
+        $tarjeta_debito = $request->tarjeta_debito;
+         if($tarjeta_debito === '' || is_null($tarjeta_debito)){
+            $tarjeta_debito = 0;
+          }
+        //$tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
+        //$tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
+
+        $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
+        $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito;
+
+        if($total_mediosdepago == $request->total_all){
+
+          }else{
+
+            return response()->json([
+                "validar"=>888
+            ]);
+
+          }
 
         
         /*Autonumerico*/
@@ -112,12 +175,13 @@ class FacturascajarapidaController extends Controller
         $pago->codigo_ban = $request->id_banco;
         $pago->id_fact = $numfactrapida;
         $pago->prefijo = $prefijo_fact;
-        $pago->codigo_med = $request->mediopago;
-        //$valor = $request->input('valor');
-        //$valor = str_replace(",", " ", $valor);//Reemplaza las comas por espacios
-        //$valor = str_replace(" ", "", $valor);//elimina los espacios
-        //$pago->valor = $valor;
-        //$pago->numcheque = $request->input('numcheque');
+        $pago->efectivo = $efectivo;
+        $pago->cheque = $cheque;
+        $pago->consignacion_bancaria = $consignacion_bancaria;
+        $pago->pse = $pse;
+        $pago->transferencia_bancaria = $transferencia_bancaria;
+        $pago->tarjeta_credito = $tarjeta_credito;
+        $pago->tarjeta_debito = $tarjeta_debito;
         $pago->save();
         
         return response()->json([

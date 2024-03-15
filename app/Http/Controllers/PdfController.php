@@ -27,6 +27,7 @@ use App\Liq_recaudo;
 use App\Detalle_liqderecho;
 use App\Certificado_rtf;
 use App\Actas_deposito_view;
+use App\Actas_deposito;
 use App\Concepto;
 use App\Notas_credito_factura;
 use App\Cajadiariogeneral_view;
@@ -57,9 +58,12 @@ use App\Protocolistas_copias_view;
 use App\Consecutivo;
 use App\Ciudad;
 use App\Mediosdepago;
+use App\Mediodepagocajarapida_view;
 use App\Ingresosporescrituradores_view;
 use App\Retencionesaplicadas_view;
 use App\Retencionenlafuente_view;
+use App\Gastos_notaria;
+use App\Base_cajarapida;
 
 
 class PdfController extends Controller
@@ -122,12 +126,59 @@ class PdfController extends Controller
         $formadepago = "Efectivo";
       }
 
-      /*Medios de Pago*/
+       /*Medios de Pago*/
+
+
+      $mediodepago = '';
       
       $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($Medpago as $med) {
-        $mediodepago = $med->nombre_med;
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
       }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
+      }
+
+
+      if($forma_pago == true){
+        $formadepago = "Credito";
+
+      }else if($forma_pago == false){
+        $formadepago = "Contado";
+      }
+
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
         direccion_cli");
@@ -371,12 +422,7 @@ class PdfController extends Controller
       //Ya no se usa
 
     }else if($opcion == 3){//TODO:Factura Multiple
-      //$prefijo_fact = $request->session()->get('prefijo_fact');
-      //$num_fact = $request->session()->get('numfactura');//TODO:Obtiene el número de factura por session
-      //$id_radica = $request->session()->get('key');//TODO:Obtiene el número de radicación por session
-      //$num_esc = $request->session()->get('num_esc');//TODO:Obtiene el número de escritura por session
-
-      //$factura = Factura::find($num_fact);
+            
       $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
 
       foreach ($facturas as $factura) {
@@ -403,12 +449,59 @@ class PdfController extends Controller
         $detalle_acargo_de = $factura->detalle_acargo_de;
       }
 
-      /*Medios de Pago*/
+       /*Medios de Pago*/
+
+
+      $mediodepago = '';
       
       $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($Medpago as $med) {
-        $mediodepago = $med->nombre_med;
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
       }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
+      }
+
+
+      if($forma_pago == true){
+        $formadepago = "Credito";
+
+      }else if($forma_pago == false){
+        $formadepago = "Contado";
+      }
+
 
 
       if($forma_pago == true){
@@ -837,11 +930,11 @@ class PdfController extends Controller
       'default_font' => 'arial',
       // "format" => "Letter en mm",
       "format" => [216, 140],//Media Carta
-      'margin_bottom' => 1,
+      'margin_bottom' => 10,
     ]);
 
-    $mpdf->defaultfooterfontsize=1;
-    $mpdf->SetTopMargin(1);
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
     $mpdf->SetDisplayMode('fullpage');
 
     $contador = count ($html, 0);
@@ -960,7 +1053,7 @@ class PdfController extends Controller
   }
 
 
-  /***************TODO:NOTA CREDITO FACTURA*******************/
+  /***************NOTA CREDITO FACTURA*******************/
   public function PdfNotaCreditoFact(Request $request){
     $notaria = Notaria::find(1);
     $prefijo_fact = $notaria->prefijo_fact;
@@ -2078,11 +2171,45 @@ class PdfController extends Controller
     $transferencia = $Actas_deposito->transferencia_bancaria;
     $cheque = $Actas_deposito->cheque;
     $tarjeta_credito = $Actas_deposito->tarjeta_credito;
+    $tarjeta_debito = $Actas_deposito->tarjeta_debito;
+    $pse = $Actas_deposito->pse;
     $num_cheque = $Actas_deposito->num_cheque;
     $num_tarjetacredito = $Actas_deposito->num_tarjetacredito;
     $nombre_ban = $Actas_deposito->nombre_ban;
     $total_recibido = round($Actas_deposito->deposito_act);
     $total_en_letras = strtoupper($this->convertir($total_recibido)).' '.'PESOS M/CTE';
+
+     $j = 0;
+      if($efectivo > 0){
+        $j = $j + 1;
+        $mediosdepago[$j]['medio'] = "Efectivo";
+        $mediosdepago[$j]['total'] = $efectivo;
+      }
+      if($transferencia > 0){
+        $j = $j + 1;
+        $mediosdepago[$j]['medio'] = "Transferencia";
+        $mediosdepago[$j]['total'] = $transferencia;
+      }
+      if($cheque > 0){
+        $j = $j + 1;
+        $mediosdepago[$j]['medio'] = "Cheque";
+        $mediosdepago[$j]['total'] = $cheque;
+      }
+      if($tarjeta_credito > 0){
+        $j = $j + 1;
+        $mediosdepago[$j]['medio'] = "T.crédito";
+        $mediosdepago[$j]['total'] = $tarjeta_credito;
+      }
+      if($tarjeta_debito > 0){
+        $j = $j + 1;
+        $mediosdepago[$j]['medio'] = "T.débito";
+        $mediosdepago[$j]['total'] = $tarjeta_debito;
+      }
+      if($pse > 0){
+        $j = $j + 1;
+        $mediosdepago[$j]['medio'] = "Pse";
+        $mediosdepago[$j]['total'] = $pse;
+      }
 
 
     $data['nit'] = $nit;
@@ -2098,10 +2225,11 @@ class PdfController extends Controller
     $data['descripcion_tip'] = $descripcion_tip;
     $data['num_escritura'] = $num_escritura;
     $data['id_radica'] = $id_radica;
-    $data['efectivo'] = $efectivo;
-    $data['transferencia'] = $transferencia;
-    $data['cheque'] = $cheque;
-    $data['tarjeta_credito'] = $tarjeta_credito;
+    $data['mediosdepago'] = $mediosdepago;
+    //$data['efectivo'] = $efectivo;
+   // $data['transferencia'] = $transferencia;
+   // $data['cheque'] = $cheque;
+    //$data['tarjeta_credito'] = $tarjeta_credito;
     $data['num_cheque'] = $num_cheque;
     $data['num_tarjetacredito'] = $num_tarjetacredito;
     $data['nombre_ban'] = $nombre_ban;
@@ -2142,6 +2270,151 @@ class PdfController extends Controller
   }
 
 
+   public function ReciboGastosNotaria(Request $request){
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $nit = $notaria->nit;
+    $nombre_nota = strtoupper($notaria->nombre_nota);
+    $direccion_nota = $notaria->direccion_nota;
+    $telefono_nota = $notaria->telefono_nota;
+    $email = $notaria->email;
+    $nombre_notario = $notaria->nombre_notario;
+    $identificacion_not = $notaria->identificacion_not;
+    $id_gas = $request->session()->get('numrecibo');
+    $fecha_impresion = date("d/m/Y");
+
+    $Gastos_notaria = Gastos_notaria::find($id_gas);
+    
+    $autorizado_por = $Gastos_notaria->autorizado_por;
+    $fecha_gas = $Gastos_notaria->fecha_gas;
+
+    $concepto_gas = $Gastos_notaria->concepto_gas;
+    $valor_gas = $Gastos_notaria->valor_gas;
+    $valor_letras = $this->convertir($valor_gas);
+    $valor_letras = mb_strtoupper($valor_letras);
+    
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['id_gas'] = $id_gas;
+    $data['autorizado_por'] = $autorizado_por;
+    $data['fecha_impresion'] = $fecha_impresion;
+    $data['fecha_gas'] = $fecha_gas;
+    $data['concepto_gas'] = $concepto_gas;
+    $data['valor_letras'] = $valor_letras;
+   
+    $data['valor_gas'] = $valor_gas;
+   
+    $html = view('pdf.recibo_gasto',$data)->render();
+
+    $namefile = 'recibo_'.$id_gas.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+        "format" => [216, 140],//TODO: Media Carta
+        //"format" => 'Letter',
+        'margin_bottom' => 1,
+      ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+  }
+
+  public function Informedegastos(Request $request){
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $nit = $notaria->nit;
+    $nombre_nota = strtoupper($notaria->nombre_nota);
+    $direccion_nota = $notaria->direccion_nota;
+    $telefono_nota = $notaria->telefono_nota;
+    $email = $notaria->email;
+    $nombre_notario = $notaria->nombre_notario;
+    $identificacion_not = $notaria->identificacion_not;
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+  
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+
+    $fecha_reporte =  $fecha1." A ". $fecha2;
+    $fecha_impresion = date("d/m/Y");
+
+  
+    $total_gastos = 0;
+    $informedegastos = Gastos_notaria::whereDate('fecha_gas', '>=', $fecha1)
+      ->whereDate('fecha_gas', '<=', $fecha2)
+      ->get();
+
+     
+    foreach ($informedegastos as $key => $ig) {
+      $total_gastos += $ig->valor_gas;
+    }
+     
+    
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['informedegastos'] = $informedegastos;
+    $data['fecha_impresion'] = $fecha_impresion;
+    $data['fecha_reporte'] = $fecha_reporte;
+    $data['total_gastos'] = $total_gastos;
+    $data['nombre_reporte'] = $nombre_reporte;
+   
+    $html = view('pdf.informedegastos',$data)->render();
+
+    $namefile = 'informedegastos'.$fecha_impresion.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter',
+        'margin_bottom' => 1,
+      ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+  }
+
+  
   public function PdfEstadisticoNotarial(Request $request){
     $notaria = Notaria::find(1);
     $nit = $notaria->nit;
@@ -5195,12 +5468,51 @@ public function PdfInformeCartera(Request $request){
         $detalle_acargo_de = $factura_otor->detalle_acargo_de;
       }
 
-      /*Medios de Pago*/
+     /*Medios de Pago*/
+
+
+      $mediodepago = '';
       
       $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($Medpago as $med) {
-        $mediodepago = $med->nombre_med;
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
       }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
+      }
+
 
       if($forma_pago == true){
         $formadepago = "Credito";
@@ -5486,17 +5798,55 @@ public function PdfInformeCartera(Request $request){
 
       /*Medios de Pago*/
       
+      $mediodepago = '';
+      
       $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($Medpago as $med) {
-        $mediodepago = $med->nombre_med;
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
+      }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
       }
 
 
+     
       if($forma_pago == true){
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Efectivo";
+        $formadepago = "Contado";
       }
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
@@ -6021,6 +6371,51 @@ public function PdfInformeCartera(Request $request){
         $cufe_almacenado = $factura->cufe;
       }
 
+       /*Medios de Pago*/
+
+
+      $mediodepago = '';
+      
+      $Medpago = Mediodepagocajarapida_view::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
+      }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
+      }
+
       if($forma_pago == true){
         $formadepago = "Credito";
 
@@ -6107,6 +6502,7 @@ public function PdfInformeCartera(Request $request){
       $data['cufe'] = $cufe;
       $data['titulo'] = $FactComprobante;
       $data['formadepago'] = $formadepago;
+      $data['mediodepago'] = $mediodepago;
       $data['porcentaje_iva'] = $porcentaje_iva;
 
       $j = 0;
@@ -6432,7 +6828,60 @@ public function PdfInformeCartera(Request $request){
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Efectivo";
+        $formadepago = "Contado";
+      }
+
+      /*Medios de Pago*/
+
+
+      $mediodepago = '';
+      
+      $Medpago = Mediodepagocajarapida_view::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
+      }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
+      }
+
+
+      if($forma_pago == true){
+        $formadepago = "Credito";
+
+      }else if($forma_pago == false){
+        $formadepago = "Contado";
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -6514,6 +6963,7 @@ public function PdfInformeCartera(Request $request){
       $data['cufe'] = $cufe;
       $data['titulo'] = $FactComprobante;
       $data['formadepago'] = $formadepago;
+      $data['mediodepago'] = $mediodepago;
       $data['porcentaje_iva'] = $porcentaje_iva;
 
       $j = 0;
@@ -7327,6 +7777,372 @@ public function PdfInformeCartera(Request $request){
 
       
       $html = view('pdf.retefuentes',$data)->render();
+      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
+    
+     public function ConsolidadoCaja(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+
+      $escri_contado = 0;
+      $escri_credito = 0;
+      $facturas_contado = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('credito_fact', false)
+                      ->where('nota_credito', false)
+                      ->selectRaw('SUM(total_fact) as total_fact')
+                      ->first();
+      $facturas_credito = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('credito_fact', true)
+                      ->where('nota_credito', false)
+                      ->selectRaw('SUM(total_fact) as total_fact')
+                      ->first();
+
+        if (!$facturas_contado) {
+          $escri_contado = 0;
+
+        } else {
+          $escri_contado = $facturas_contado->total_fact;
+        }
+
+        if (!$facturas_credito) {
+          $escri_credito = 0;
+
+        } else {
+          $escri_credito = $facturas_credito->total_fact;
+        }
+
+
+      $cajarapida_contado = 0;
+      $cajarapida_credito = 0;
+      
+      $facturas_contado_cajarapida = Facturascajarapida::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('credito_fact', false)
+                      ->where('nota_credito', false)
+                      ->selectRaw('SUM(total_fact) as total_fact')
+                      ->first();
+      $facturas_credito_cajarapida = Facturascajarapida::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('credito_fact', true)
+                      ->where('nota_credito', false)
+                      ->selectRaw('SUM(total_fact) as total_fact')
+                      ->first();
+
+        if (!$facturas_contado_cajarapida) {
+          $cajarapida_contado = 0;
+
+        } else {
+          $cajarapida_contado = $facturas_contado_cajarapida->total_fact;
+        }
+
+        if (!$facturas_credito_cajarapida) {
+          $cajarapida_credito = 0;
+
+        } else {
+          $cajarapida_credito = $facturas_credito_cajarapida->total_fact;
+        }
+
+
+      $total_contado = $escri_contado + $cajarapida_contado;
+      $total_credito = $escri_credito + $cajarapida_credito;
+      $total_escrituras = $escri_contado + $escri_credito;
+      $total_cajarapida = $cajarapida_contado + $cajarapida_credito;
+      $total = $total_escrituras + $total_cajarapida;
+
+
+      $Base_cajarapida = Base_cajarapida::whereDate('fecha_base', '>=', $fecha1)
+        ->whereDate('fecha_base', '<=', $fecha2)
+        ->get()->toArray();
+  
+        if(!$Base_cajarapida){
+          $cajarapida_base = 0;
+        }else{
+          foreach ($Base_cajarapida  as $key => $res) {
+            $cajarapida_base = $res['valor_base'];
+          }
+        }
+
+      $actas_base = 0;
+      $escrituras_base = 0;
+      $total_base = $cajarapida_base;
+
+
+      $facturas_escrituras = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('nota_credito', false)
+                      ->get();
+
+       $facturas_cajarapida = Facturascajarapida::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('nota_credito', false)
+                      ->get();
+
+          $efectivo_es = 0;
+          $cheque_es = 0;
+          $consignacion_bancaria_es = 0;
+          $pse_es = 0;
+          $transferencia_bancaria_es = 0;
+          $tarjeta_credito_es = 0;
+          $tarjeta_debito_es = 0;
+
+          $efectivo_cr = 0;
+          $cheque_cr = 0;
+          $consignacion_bancaria_cr = 0;
+          $pse_cr = 0;
+          $transferencia_bancaria_cr = 0;
+          $tarjeta_credito_cr = 0;
+          $tarjeta_debito_cr = 0;
+
+          $efectivo_act = 0;
+          $cheque_act = 0;
+          $consignacion_bancaria_act = 0;
+          $pse_act = 0;
+          $transferencia_bancaria_act = 0;
+          $tarjeta_credito_act = 0;
+          $tarjeta_debito_act = 0;
+
+          if (!$facturas_escrituras) {
+            $efectivo_es = 0;
+            $cheque_es = 0;
+            $consignacion_bancaria_es = 0;
+            $pse_es = 0;
+            $transferencia_bancaria_es = 0;
+            $tarjeta_credito_es = 0;
+            $tarjeta_debito_es = 0;
+          }else{
+            foreach ($facturas_escrituras as $key => $fe) {
+              $num_fact = $fe->id_fact;
+              $prefijo_fact = $fe->prefijo;
+
+              $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+              foreach ($Medpago as $med) {
+                $efectivo_es += $med->efectivo;
+                $cheque_es += $med->cheque;
+                $consignacion_bancaria_es += $med->consignacion_bancaria;
+                $pse_es += $med->pse;
+                $transferencia_bancaria_es += $med->transferencia_bancaria;
+                $tarjeta_credito_es += $med->tarjeta_credito;
+                $tarjeta_debito_es += $med->tarjeta_debito;
+              }
+            }
+
+          }
+
+           if (!$facturas_cajarapida) {
+            $efectivo_cr = 0;
+            $cheque_cr = 0;
+            $consignacion_bancaria_cr = 0;
+            $pse_cr = 0;
+            $transferencia_bancaria_cr = 0;
+            $tarjeta_credito_cr = 0;
+            $tarjeta_debito_cr = 0;
+          }else{
+            foreach ($facturas_cajarapida as $key => $fc) {
+              $num_fact = $fc->id_fact;
+              $prefijo_fact = $fc->prefijo;
+
+              $Medpago = Mediodepagocajarapida_view::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+              foreach ($Medpago as $med) {
+                $efectivo_cr += $med->efectivo;
+                $cheque_cr += $med->cheque;
+                $consignacion_bancaria_cr += $med->consignacion_bancaria;
+                $pse_cr += $med->pse;
+                $transferencia_bancaria_cr += $med->transferencia_bancaria;
+                $tarjeta_credito_cr += $med->tarjeta_credito;
+                $tarjeta_debito_cr += $med->tarjeta_debito;
+              }
+            }
+          }
+
+
+         $actas_deposito = Actas_deposito::whereDate('fecha_acta', '>=', $fecha1)
+                      ->whereDate('fecha_acta', '<=', $fecha2)
+                      ->where('anulada', false)
+                      ->get();
+         
+         if ($actas_deposito->isEmpty()) {
+            $efectivo_act = 0;
+            $cheque_act = 0;
+            $consignacion_bancaria_act = 0;
+            $pse_act = 0;
+            $transferencia_bancaria_act = 0;
+            $tarjeta_credito_act = 0;
+            $tarjeta_debito_act = 0;
+         }else{
+           foreach ($actas_deposito as $med) {
+            $efectivo_act += $med->efectivo;
+            $cheque_act += $med->cheque;
+            $consignacion_bancaria_act += $med->consignacion_bancaria;
+            $pse_act += $med->pse;
+            $transferencia_bancaria_act += $med->transferencia_bancaria;
+            $tarjeta_credito_act += $med->tarjeta_credito;
+            $tarjeta_debito_act += $med->tarjeta_debito;
+          }
+         }
+
+        $total_efectivo = $efectivo_es + 
+                          $efectivo_cr + 
+                          $efectivo_act;
+
+        $total_transbanc = $transferencia_bancaria_es + 
+                           $transferencia_bancaria_cr + 
+                           $transferencia_bancaria_act;
+
+        $total_consgbanc =  $consignacion_bancaria_es +
+                            $consignacion_bancaria_cr +
+                            $consignacion_bancaria_act;
+
+        $total_pse =  $pse_es +
+                      $pse_cr +
+                      $pse_act;
+
+        $total_tcredito = $tarjeta_credito_es +
+                          $tarjeta_credito_cr +
+                          $tarjeta_credito_act;
+
+        $total_tdebito = $tarjeta_debito_es +
+                          $tarjeta_debito_cr +
+                          $tarjeta_debito_act;
+
+        $total_cheque = $cheque_es +
+                        $cheque_cr +
+                        $cheque_act;
+
+
+        $total_mediosescrituras = $cheque_es +
+                                  $tarjeta_debito_es +
+                                  $tarjeta_credito_es +
+                                  $pse_es +
+                                  $consignacion_bancaria_es +
+                                  $transferencia_bancaria_es +
+                                  $efectivo_es +
+                                  $escrituras_base;
+
+        $total_medioscajarapida = $cheque_cr +
+                                  $tarjeta_debito_cr +
+                                  $tarjeta_credito_cr +
+                                  $pse_cr +
+                                  $consignacion_bancaria_cr +
+                                  $transferencia_bancaria_cr +
+                                  $efectivo_cr +
+                                  $cajarapida_base;
+
+        $total_mediosactas =  $cheque_act +
+                              $tarjeta_debito_act +
+                              $tarjeta_credito_act +
+                              $pse_act +
+                              $consignacion_bancaria_act +
+                              $transferencia_bancaria_act +
+                              $efectivo_act +
+                              $actas_base;
+
+
+        $totalmediosdepago =  $total_mediosescrituras +
+                              $total_medioscajarapida + 
+                              $total_mediosactas;
+ 
+
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+      $data['escri_contado'] = $escri_contado;
+      $data['cajarapida_contado'] = $cajarapida_contado;
+      $data['total_contado'] = $total_contado;
+      $data['escri_credito'] = $escri_credito;
+      $data['cajarapida_credito'] = $cajarapida_credito;
+      $data['total_credito'] = $total_credito;
+      $data['total_escrituras'] = $total_escrituras;
+      $data['total_cajarapida'] = $total_cajarapida;
+      $data['total'] = $total;
+      $data['actas_base'] = $actas_base;
+      $data['escrituras_base'] = $escrituras_base;
+      $data['cajarapida_base'] = $cajarapida_base;
+      $data['efectivo_act'] = $efectivo_act;
+      $data['efectivo_es'] = $efectivo_es;
+      $data['efectivo_cr'] = $efectivo_cr;
+      $data['total_efectivo'] = $total_efectivo;
+      $data['transferencia_bancaria_act'] = $transferencia_bancaria_act;
+      $data['transferencia_bancaria_es'] = $transferencia_bancaria_es;
+      $data['transferencia_bancaria_cr'] = $transferencia_bancaria_cr;
+      $data['total_transbanc'] = $total_transbanc;
+      $data['consignacion_bancaria_act'] = $consignacion_bancaria_act;
+      $data['consignacion_bancaria_es'] = $consignacion_bancaria_es;
+      $data['consignacion_bancaria_cr'] = $consignacion_bancaria_cr;
+      $data['total_consgbanc'] = $total_consgbanc;
+      $data['pse_act'] = $pse_act;
+      $data['pse_es'] = $pse_es;
+      $data['pse_cr'] = $pse_cr;
+      $data['total_pse'] = $total_pse;
+      $data['tarjeta_credito_act'] = $tarjeta_credito_act;
+      $data['tarjeta_credito_es'] = $tarjeta_credito_es;
+      $data['tarjeta_credito_cr'] = $tarjeta_credito_cr;
+      $data['total_tcredito'] = $total_tcredito;
+      $data['tarjeta_debito_act'] = $tarjeta_debito_act;
+      $data['tarjeta_debito_es'] = $tarjeta_debito_es;
+      $data['tarjeta_debito_cr'] = $tarjeta_debito_cr;
+      $data['total_tdebito'] = $total_tdebito;
+      $data['cheque_act'] = $cheque_act;
+      $data['cheque_es'] = $cheque_es;
+      $data['cheque_cr'] = $cheque_cr;
+      $data['total_cheque'] = $total_cheque;
+      $data['total_mediosactas'] = $total_mediosactas;
+      $data['total_mediosescrituras'] = $total_mediosescrituras;
+      $data['total_medioscajarapida'] = $total_medioscajarapida;
+      $data['totalmediosdepago'] = $totalmediosdepago;
+      $data['total_base'] = $total_base;
+                
+      $html = view('pdf.informeconsolidadocaja',$data)->render();
       $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
 
       $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();

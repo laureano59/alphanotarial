@@ -106,6 +106,12 @@
 											Informe Retefuentes
 										</a>
 									</li>
+									<li>
+										<a href="javascript://" id="informedegastos">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Informe de Gastos
+										</a>
+									</li>
 								</ul>
 							</li>
 
@@ -275,6 +281,22 @@
 							</li>
 
 
+							<li style="position: relative;">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
+									Informes consolidados
+								</a>
+								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
+									<li>
+										<a href="javascript://" id="consolidadocaja">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Consolidado de Caja 
+										</a>
+									</li>
+								</ul>
+							</li>
+
+
 						</ul>
 					</li>
 				</ul>
@@ -406,6 +428,14 @@
  							<a href="/seguimientoescrituras">
  								<i class="menu-icon"><img src="{{ asset('images/trazabilidad.png') }}" width="30 px" height="30 px"></i>
  					    	<span class="menu-text"> Seguimiento escrituras </span>
+ 					    </a>
+ 					      <b class="arrow"></b>
+ 					   </li>
+
+ 					   <li>
+ 							<a href="/gastos_notaria">
+ 								<i class="menu-icon"><img src="{{ asset('images/gastos.png') }}" width="30 px" height="30 px"></i>
+ 					    	<span class="menu-text"> Gastos </span>
  					    </a>
  					      <b class="arrow"></b>
  					   </li>

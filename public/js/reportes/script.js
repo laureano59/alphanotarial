@@ -131,6 +131,85 @@ $("#enajenaciones").click(function(){
 
 });
 
+$("#consolidadocaja").click(function(){
+  var opcion = 24;
+  var reporte = "Consolidado de Caja";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+
+});
+
+$("#imprimirconsolidadocaja").click(function(){
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      var url = "/imprimirconsolidadocajapdf";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+});
+
+
+$("#informedegastos").click(function(){
+  var opcion = 25;
+  var reporte = "Informe de Gastos";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+        location.href="/reportes";
+    }
+  })
+
+});
+
+$("#imprimirinformedegastos").click(function(){
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      var url = "informedegastos";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+});
+
 $("#generar_informe_ingresos_dian").click(function(){
   
    if (document.querySelector('input[name="seleccion"]:checked')) {

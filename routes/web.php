@@ -45,6 +45,8 @@ Route::resource('egresos', 'EgresoactasdepositoController');
 Route::resource('actasdeposito', 'OpcionesdeactasController');
 Route::resource('egreso', 'EgresoactasdepositoController');
 
+Route::resource('gastos_notaria', 'Gastos_notariaController');
+
 Route::resource('notascreditofact', 'NotascreditofacturaController');
 Route::resource('notacreditocajarapida', 'NotacreditocajarapidaController');
 Route::resource('carteracacajarapida', 'CarteracajarapidaController');
@@ -64,6 +66,9 @@ Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController
 
 Route::resource('seguimientoescrituras', 'SeguimientoController');
 Route::resource('consulta_cajarapida', 'ConsultacajarapidaController');
+
+Route::resource('guardarbasecajarapida', 'BasecajarapidaController');
+
 Route::get('buscarencajarapida', 'ConsultacajarapidaController@Consulta_CajaRapida');
 
 
@@ -138,11 +143,22 @@ Route::get('generarreportecajadiario', 'ReportesController@Informe_cajadiario_ra
 Route::get('reporte_depositos', 'ReportesController@Relaciondepositosdiarios');
 Route::get('reporte_egresos', 'ReportesController@Relacionegresosdiarios');
 
+Route::get('consultar_gasto', 'Gastos_notariaController@validar_existencia');
+
+
+Route::get('recibogastospdf', 'PdfController@ReciboGastosNotaria');
+Route::get('informedegastos', 'PdfController@Informedegastos');
+
+
 
 Route::get('relaciondepositosdiariospdf','PdfController@DepositosDiarios');
 Route::get('relaciondeegresosdiariospdf','PdfController@EgresosDiarios');
 
 Route::get('generarreportecajadiarioporconceptos', 'ReportesController@Informe_cajadiario_rapida_conceptos');
+
+
+
+Route::get('imprimirconsolidadocajapdf','PdfController@ConsolidadoCaja');
 
 
 

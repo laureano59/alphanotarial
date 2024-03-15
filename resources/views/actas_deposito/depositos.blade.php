@@ -110,6 +110,12 @@
                           <i><img src="{{ asset('images/nuevo7.png') }}" width="28 px" height="28 px" title="Nuevo depósito"></i>
                       </a>
                   </div>
+
+                   <div class="widget-toolbar">
+                      <a href="#">
+                          <i><img src="{{ asset('images/ayuda1.png') }}" width="28px" height="28px" title="Para imprimir copia de un comprobante anterior ingresa el No de acta en el campo que dice Buscar por No.de Acta y luego clic en el Ícono de la impresora"></i>
+                      </a>
+                  </div>
                     <center>
                         <h4 class="widget-title">Medios de Pago</h4>
                     </center>
@@ -131,10 +137,10 @@
                               <input type="text" id="transferencia_bancaria" value="0" onKeyPress="return soloNumeros(event)"/>
                             </td>
                           </tr>
-                          <tr>
-                            <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">Cheque</b></td>
+                           <tr>
+                            <td width="30%"><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">PSE</b></td>
                             <td>
-                              <input type="text" id="cheque" value="0" onKeyPress="return soloNumeros(event)"/>
+                              <input type="text" id="pse" value="0" onKeyPress="return soloNumeros(event)"/>
                             </td>
                           </tr>
                           <tr>
@@ -143,6 +149,19 @@
                               <input type="text" id="tarjeta_credito" value="0" onKeyPress="return soloNumeros(event)"/>
                             </td>
                           </tr>
+                          <tr>
+                            <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">T.Débito</b></td>
+                            <td>
+                              <input type="text" id="tarjeta_debito" value="0" onKeyPress="return soloNumeros(event)"/>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">Cheque</b></td>
+                            <td>
+                              <input type="text" id="cheque" value="0" onKeyPress="return soloNumeros(event)"/>
+                            </td>
+                          </tr>
+                          
                           <tr>
                             <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">No.Cheque</b></td>
                             <td>

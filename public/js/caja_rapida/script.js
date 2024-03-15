@@ -43,6 +43,52 @@ $("#identificacion_cli1").blur(function(){
   }
 });
 
+
+$("#aperturacajarapida").click(function() {
+
+  $("#modalapertura").modal("show");
+
+});
+
+$("#guardarbase").click(function() {
+  var valor_base = $("#valor_base").val();
+  if (valor_base == '' || valor_base <= 0){
+    alert("Debe contener un valor mayor a cero");
+  }else{
+
+    var route = "/guardarbasecajarapida";
+    var token = $("#token").val();
+    var type = 'POST';
+    var datos = {
+    "valor_base": valor_base
+    };
+
+      __ajax(route, token, type, datos)
+      .done(function(info) {
+          if(info.validar == 1){
+            $("#msj2").html(info.mensaje);
+            $("#msj-error2").fadeIn();
+            setTimeout(function() {
+              $("#msj-error2").fadeOut();
+            }, 3000);
+          }else if(info.validar == 2){
+            $("#msj2").html(info.mensaje);
+            $("#msj-error2").fadeIn();
+            setTimeout(function() {
+              $("#msj-error2").fadeOut();
+            }, 3000);
+          }else if(info.validar == 7){
+            $("#msj2").html(info.mensaje);
+            $("#msj-error2").fadeIn();
+            setTimeout(function() {
+              $("#msj-error2").fadeOut();
+            }, 3000);
+          }
+      })
+  }
+});
+
+
 $("#cajarapida").click(function() {
 
   var route = "/sessionescajarapida";
@@ -124,10 +170,16 @@ $("#actualizar_cambios") .click(function() {
 
 $("#guardar").click(function() {
   var x = document.getElementById("guardar_btn");
-  x.style.display = "none";
   var identificacion_cli1 = $("#identificacion_cli1").val();
   var formapago = $("#id_formapago").val();
-  var mediopago = $("#mediopago option:selected").val();
+  //var mediopago = $("#mediopago option:selected").val();
+  var efectivo = $("#efectivo").val();
+  var cheque = $("#cheque").val();
+  var consignacion_bancaria = $("#consignacion_bancaria").val();
+  var pse = $("#pse").val();
+  var transferencia_bancaria = $("#transferencia_bancaria").val();
+  var tarjeta_credito = $("#tarjeta_credito").val();
+  var tarjeta_debito = $("#tarjeta_debito").val();
   var id_banco = $("#id_banco option:selected").val();
   var tipo_fact = "cajarapida";
   var route = "/facturacajarapida";
@@ -141,7 +193,13 @@ $("#guardar").click(function() {
     "total":total,
     "total_all":total_all,
     "detalle":detalle,
-    "mediopago":mediopago,
+    "efectivo":efectivo,
+    "cheque":cheque,
+    "consignacion_bancaria":consignacion_bancaria,
+    "pse":pse,
+    "transferencia_bancaria":transferencia_bancaria,
+    "tarjeta_credito":tarjeta_credito,
+    "tarjeta_debito":tarjeta_debito,
     "id_banco":id_banco
 
   };
@@ -149,18 +207,21 @@ $("#guardar").click(function() {
   __ajax(route, token, type, datos)
   .done(function(info) {
     if(info.validar == 1){
+       x.style.display = "none";
       $("#impresora").fadeIn();
       var prefijo, id_fact;
       prefijo = info.prefijo;
       id_fact = info.id_fact;
       $("#numfactrapida").val(id_fact);
       $("#numfat").html(prefijo + '-' + ' ' + id_fact);
-    }else{
-      alert("Error al generar la factura");
+     }else if(info.validar == 888){
+      alert("Los medios de pago deben ser igual que el total a pagar");
     }
-
+   
   })
 });
+
+
 
 var detalle = [];
 var total_iva = 0;
@@ -176,8 +237,8 @@ $("#agregaritem").click(function() {
     var formapago = $("#id_formapago").val();
 
     if(identificacion_cli1 != '' && formapago != null){
-      var mediopago = $("#mediopago option:selected").val();
-      if(mediopago != ''){
+      //var mediopago = $("#mediopago option:selected").val();
+      //if(mediopago != ''){
 
         var id_concepto, cantidad, identificacion_cli1;
         id_concepto = $("#id_concepto").val();
@@ -226,9 +287,9 @@ $("#agregaritem").click(function() {
           }
         })
 
-      } else{
-        alert("Debe Seleccionar el medio de pago");
-      }
+      //} else{
+        //alert("Debe Seleccionar el medio de pago");
+      //}
       
 
     }else{
@@ -363,7 +424,7 @@ $("#imprimircopiafacturacajarapida").click(function() {
 });
 
 
-$("#editarfacturacajarapida").click(function() {
+/*$("#editarfacturacajarapida").click(function() {
   var route = "/sessionescajarapida";
   var token = $("#token").val();
   var type = 'GET';
@@ -380,7 +441,7 @@ $("#editarfacturacajarapida").click(function() {
     }
 
   })
-});
+});*/
 
 $("#validarfacturaparaeditar").click(function() {
 

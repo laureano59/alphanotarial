@@ -83,13 +83,7 @@
                 <div class="title m-b-md">
                     <img src="{{ asset('images/logo.png') }}" width="400 px" height="263 px">
                 </div>
-
-                <div class="links">
-                    <a href="/enviarcorreo" target="_blank">Link1</a>
-                    <a href="#" target="_blank">Link2</a>
-                    <a href="#" target="_blank">Link3</a>
-
-                </div>
+              
             </div>
         </div>
     </body>

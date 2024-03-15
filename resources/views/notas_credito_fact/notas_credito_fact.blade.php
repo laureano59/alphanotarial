@@ -37,6 +37,13 @@
                 <i><img src="{{ asset('images/comprobar.png') }}" width="28 px" height="28 px" title="Crear nota Credito Factura"></i>
             </a>
           </span>
+
+
+          <span class="nav-search widget-toolbar">
+          <a href="#">
+              <i><img src="{{ asset('images/ayuda1.png') }}" width="28px" height="28px" title="Para imprimir una copia ingresa el número de la factura, escribe copia en detalle, click en el ícono de visto bueno verde y  click en el ícono de la impresora"></i>
+          </a>
+        </span>
       </div>
     </form>
 

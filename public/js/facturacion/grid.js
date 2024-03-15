@@ -17,102 +17,6 @@ function CargarDerechos_FactUnica(validar) {
     $("#totderechos").val(Math.round(totalderechos));
 }
 
-function CargarDerechos_FactDoble(validar) {
-    var htmlTags = "";
-    var totalderechos = 0;
-    var i = 1;
-    var longitud = validar.length;
-    for (item in validar) {
-        //totalderechos += parseFloat(validar[item].derechos);
-        htmlTags +=
-            '<tr>' +
-            '<td>' +
-            '<font size="1">' + validar[item].nombre_acto + '</font>' +
-            '</td>' +
-            '<td bgcolor="#ccffcc" align="right">' + formatNumbderechos(validar[item].derechos) +
-            '</td>' +
-            '<td>' +
-            '<input type="text" id="porcentajeotor' + i + '" maxlength="3" class="col-xs-10 col-sm-8" onblur="porcentaje_otor(\'' + validar[item].derechos + '\',\'' + i + '\',\'' + longitud + '\'' + ')" onKeyPress="return soloNumeros(event)" />' +
-            '</td>' +
-            '<td bgcolor="#ccffcc" align="right">' +
-            '<span id="totalotorgante' + i + '"></span>' +
-            '<input type="hidden" id="sumotor' + i + '" />' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" id="porcentajecompa' + i + '" maxlength="3" class="col-xs-10 col-sm-8" onblur="porcentaje_compa(\'' + validar[item].derechos + '\',\'' + i + '\',\'' + longitud + '\'' + ')" />' +
-            '</td>' +
-            '<td bgcolor="#ccffcc" align="right">' +
-            '<span id="totalcompareciente' + i + '"></span>' +
-            '<input type="hidden" id="sumcompa' + i + '" />' +
-            '</td>' +
-            '</tr>';
-        i++;
-    }
-    htmlTags +=
-        '<tr>' +
-        '<td>' +
-        '</td>' +
-        '<td>' +
-        '</td>' +
-        '<td bgcolor="#aef78c" align="right">' +
-        '<b>Total</b>' +
-        '</td>' +
-        '<td bgcolor="#aef78c" align="right">' +
-        '<b><span id="tototorgante"></span></b>' +
-        '</td>' +
-        '<td bgcolor="#aef78c" align="right">' +
-        '<b>Total</b>' +
-        '</td>' +
-        '<td bgcolor="#aef78c" align="right">' +
-        '<b><span id="totcompareciente"></span></b>' +
-        '</td>' +
-        '</tr>';
-
-    document.getElementById('actos').innerHTML = htmlTags;
-    $("#totderechos").val(Math.round(totalderechos));
-
-}
-
-function porcentaje_otor(derechos, i, longitud) {
-    var porcentaje = $("#porcentajeotor" + i).val();
-    porcentaje = (parseInt(porcentaje)) / 100;
-    var derechos_otor = 0;
-    derechos_otor = parseFloat(derechos) * porcentaje;
-    $("#sumotor" + i).val(derechos_otor);
-
-
-    if ($("#porcentajecompa" + i).val() == '') {
-        $("#porcentajecompa" + i).val(0);
-    }
-    var validar = parseInt($("#porcentajecompa" + i).val()) + parseInt($("#porcentajeotor" + i).val());
-    if (validar > 100) {
-        alert("La suma de los porcentajes deben ser igual a 100");
-    } else if (validar <= 100) {
-        $("#totalotorgante" + i).html(formatNumbderechos(derechos_otor));
-    }
-
-    SumarTotales(derechos_otor, longitud);
-
-}
-
-function porcentaje_compa(derechos, i, longitud) {
-    var porcentaje = $("#porcentajecompa" + i).val();
-    porcentaje = (parseInt(porcentaje)) / 100;
-    var derechos_compa = 0;
-    derechos_compa = parseFloat(derechos) * porcentaje;
-    $("#sumcompa" + i).val(derechos_compa);
-    if ($("#porcentajeotor" + i).val() == '') {
-        $("#porcentajeotor" + i).val(0);
-    }
-    var validar = parseInt($("#porcentajecompa" + i).val()) + parseInt($("#porcentajeotor" + i).val());
-    if (validar > 100) {
-        alert("La suma de los porcentajes deben ser igual a 100");
-    } else if (validar <= 100) {
-        $("#totalcompareciente" + i).html(formatNumbderechos(derechos_compa));
-    }
-
-    SumarTotales(derechos_compa, longitud);
-}
 
 function SumarTotales(valor, longitud) {
 
@@ -143,7 +47,7 @@ function SumarTotales(valor, longitud) {
     $("#subtotcomparecienteiden").val(subtotalcompareciente);
     $("#subtotcompareciente").html(formatNumbderechos(subtotalcompareciente));
 
-    /***NOTE: Porcentaje del iva****/
+    /***Porcentaje del iva****/
     var id_tar = 9;
     var route = "/tarifas";
     var token = $("#token").val();
@@ -262,7 +166,7 @@ function SumarTotalesFactMutiple(valor, longitud) {
     var subtotal = parseFloat($("#totconceptos").val()) + parseFloat($("#totderechos").val());
     $("#subtotal").html(formatNumbderechos(Math.round(subtotal)));
 
-    /***NOTE: Porcentaje del iva****/
+    /***Porcentaje del iva****/
     var id_tar = 9;
     var route = "/tarifas";
     var token = $("#token").val();
@@ -447,8 +351,7 @@ function CargarRecaudos_Fact_Multiple(validar) {
             $("#totalimpuestotimbreparticipacioniden").val(0);
         }
     }
-    // $("#grantotal").val(grantotal);
-    // $("#totalcompleto").html(formatNumbderechos(Math.round($("#grantotal").val())));
+    
 }
 
 function Calcular_Recaudos_FactMultiple() {
@@ -494,7 +397,7 @@ function Calcular_Recaudos_FactMultiple() {
     $("#aporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
     $("#impuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
 
-   // totalcompleto = 
+   
 }
 
 function CagarConceptos(validar) {
@@ -534,160 +437,6 @@ function CagarConceptos(validar) {
 
     var subtotal = parseFloat($("#totconceptos").val()) + parseFloat($("#totderechos").val());
     $("#subtotal").html(formatNumbderechos(Math.round(subtotal)));
-}
-
-
-function Conceptos_FactDoble_Otor(totaliden, porcentajeotor, totalotor, totalotoriden) {
-    var porcentaje = parseInt($("#" + porcentajeotor).val());
-    porcentaje = porcentaje / 100;
-    var total = parseFloat($("#" + totaliden).val()) * porcentaje;
-    $("#" + totalotoriden).val(total);
-    SumarConceptosOtor();
-    /********Reemplaza cadena otor por compa**********/
-    var re = /otor/gi;
-    var str = porcentajeotor;
-    var compareciente = str.replace(re, "compa");
-    if ($("#" + compareciente).val() == '') {
-        $("#" + compareciente).val(0);
-    }
-    var validar = parseInt($("#" + compareciente).val()) + parseInt($("#" + porcentajeotor).val());
-    if (validar > 100) {
-        alert("La suma de los porcentajes deben ser igual a 100");
-    } else if (validar <= 100) {
-        $("#" + totalotor).html(formatNumbderechos(total));
-    }
-}
-
-function Conceptos_FactDoble_Compa(totaliden, porcentajecompa, totalcompa, totalcompaiden) {
-    var porcentaje = parseInt($("#" + porcentajecompa).val());
-    porcentaje = porcentaje / 100;
-    var total = parseFloat($("#" + totaliden).val()) * porcentaje;
-    $("#" + totalcompaiden).val(total);
-    SumarConceptosCompa();
-    /********Reemplaza cadena compa por otor**********/
-    var re = /compa/gi;
-    var str = porcentajecompa;
-    var otorgante = str.replace(re, "otor");
-    if ($("#" + otorgante).val() == '') {
-        $("#" + otorgante).val(0);
-    }
-    var validar = parseInt($("#" + otorgante).val()) + parseInt($("#" + porcentajecompa).val());
-    if (validar > 100) {
-        alert("La suma de los porcentajes deben ser igual a 100");
-    } else if (validar <= 100) {
-        $("#" + totalcompa).html(formatNumbderechos(total));
-    }
-}
-
-function SumarConceptosOtor() {
-    var datos = {
-        "id_radica": 0
-    };
-    var route = "/traeconceptos";
-    var token = $("#token").val();
-    var type = 'GET';
-    __ajax(route, token, type, datos)
-        .done(function(info) {
-            var conceptos = info.conceptos;
-            var sumatoria = 0;
-            for (item in conceptos) {
-                sumatoria = parseInt($("#total" + conceptos[item].atributo + "otoriden").val()) + sumatoria;
-            }
-
-            $("#tototorganteconc").html(formatNumbderechos(sumatoria));
-            $("#grantotalotorconceptosiden").val(sumatoria);
-
-
-            var subtotalotorgante = sumatoria + parseFloat($("#grantotalotorderechosiden").val());
-            $("#subtototorganteiden").val(subtotalotorgante);
-            $("#subtototorgante").html(formatNumbderechos(subtotalotorgante));
-
-            /***NOTE: Porcentaje del iva****/
-            var id_tar = 9;
-            var route = "/tarifas";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_tar": id_tar
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    var porcentajeiva = parseFloat((info.porcentajeiva) / 100);
-                    var totalivaotorgante = parseFloat(subtotalotorgante * porcentajeiva);
-                    $("#totalivaotoriden").val(Math.round(totalivaotorgante));
-                    $("#totalivaotor").html(formatNumbderechos(Math.round(totalivaotorgante)));
-                })
-
-            var grantotalotorgante = 0;
-            if ($("#rtfotoriden").val() == '') {
-                $("#rtfotoriden").val(0);
-            }
-
-            grantotalotorgante = parseFloat($("#subtototorganteiden").val()) +
-                parseFloat($("#totalivaotoriden").val()) + parseFloat($("#rtfotoriden").val()) +
-                parseFloat($("#impconsumootoriden").val()) + parseFloat($("#totalsuperotoriden").val()) +
-                parseFloat($("#totalfondootoriden").val());
-            $("#grantotalotorganteiden").val(Math.round(grantotalotorgante));
-            $("#grantotalotorgante").html(formatNumbderechos(Math.round(grantotalotorgante)));
-
-        })
-}
-
-function SumarConceptosCompa() {
-    var datos = {
-        "id_radica": 0
-    };
-    var route = "/traeconceptos";
-    var token = $("#token").val();
-    var type = 'GET';
-    __ajax(route, token, type, datos)
-        .done(function(info) {
-            var conceptos = info.conceptos;
-            var sumatoria2 = 0;
-            for (item in conceptos) {
-                sumatoria2 = parseInt($("#total" + conceptos[item].atributo + "compaiden").val()) + sumatoria2;
-            }
-
-
-            $("#totcomparecienteconc").html(formatNumbderechos(Math.round(sumatoria2)));
-            $("#grantotalcompaconceptosiden").val(Math.round(sumatoria2));
-
-            var subtotalcompareciente = sumatoria2 + parseFloat($("#grantotalcompaderechosiden").val());
-            $("#subtotcompareciente").val(Math.round(subtotalcompareciente));
-            $("#subtotcomparecienteiden").val(Math.round(subtotalcompareciente));
-            $("#subtotcompareciente").html(formatNumbderechos(Math.round(subtotalcompareciente)));
-
-            /***NOTE: Porcentaje del iva****/
-            var id_tar = 9;
-            var route = "/tarifas";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_tar": id_tar
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    var porcentajeiva = parseFloat((info.porcentajeiva) / 100);
-                    var totalivacompareciente = parseFloat(subtotalcompareciente * porcentajeiva);
-                    $("#totalivacompaiden").val(Math.round(totalivacompareciente));
-                    $("#totalivacompa").html(formatNumbderechos(Math.round(totalivacompareciente)));
-                })
-
-            if ($("#rtfcompaiden").val() == '') {
-                $("#rtfcompaiden").val(0);
-            }
-
-            var grantotalcompareciente = 0;
-            grantotalcompareciente = parseFloat($("#subtotcomparecienteiden").val()) +
-                parseFloat($("#totalivacompaiden").val()) + parseFloat($("#rtfcompaiden").val()) +
-                parseFloat($("#impconsumocompaiden").val()) + parseFloat($("#totalsupercompaiden").val()) +
-                parseFloat($("#totalfondocompaiden").val());
-            $("#grantotalcomparecienteiden").val(Math.round(grantotalcompareciente));
-            $("#grantotalcompareciente").html(formatNumbderechos(Math.round(grantotalcompareciente)));
-
-
-
-        })
 }
 
 
@@ -753,86 +502,6 @@ function CargarRecaudos(validar) {
     $("#totalcompleto").html(formatNumbderechos(Math.round($("#grantotal").val())));
 }
 
-function CargarRecaudos_Fact_Doble(validar) {
-    for (item in validar) {
-        if (parseFloat(validar[item].retefuente) > 0) {
-            $("#rtfotoriden").val(parseFloat(validar[item].retefuente));
-            $("#rtfotor").html(formatNumbderechos(validar[item].retefuente));
-            $("#rtfcompa").html('$0.00');
-            $("#rtfcompaiden").val(0);
-        } else if (parseFloat(validar[item].retefuente) < 1) {
-            $("#rtfotor").html('$0.00');
-            $("#rtfotoriden").val(0);
-            $("#rtfcompa").html('$0.00');
-            $("#rtfcompaiden").val(0);
-        } else {
-            $("#rtfotor").html('$0.00');
-            $("#rtfotoriden").val(0);
-            ("#rtfcompa").html('$0.00');
-            $("#rtfcompaiden").val(0);
-        }
-
-        if (parseFloat(validar[item].reteconsumo) > 0) {
-            $("#impconsumootor").html(formatNumbderechos(parseFloat(validar[item].reteconsumo)));
-            $("#impconsumootoriden").val(validar[item].reteconsumo);
-            $("#impconsumocompa").html('$0.00');
-            $("#impconsumocompaiden").val(0);
-        } else if (parseFloat(validar[item].reteconsumo) < 1) {
-            $("#impconsumootor").html(formatNumbderechos(validar[item].reteconsumo));
-            $("#impconsumocompa").html(formatNumbderechos(validar[item].reteconsumo));
-        }
-
-        if (parseFloat(validar[item].recsuper) > 0) {
-            $("#racaudosuper").html(formatNumbderechos(validar[item].recsuper));
-            $("#racaudosuperiden").val(parseFloat(validar[item].recsuper));
-        } else if (parseFloat(validar[item].recsuper) < 1) {
-            $("#racaudosuper").html('0.00');
-        }
-
-        if (parseFloat(validar[item].recfondo) > 0) {
-            $("#recaudofondoiden").val(parseFloat(validar[item].recfondo));
-            $("#recaudofondo").html(formatNumbderechos(parseFloat(validar[item].recfondo)));
-        } else if (parseFloat(validar[item].recfondo) < 1) {
-            $("#recaudofondo").html('0.00');
-        }
-    }
-}
-
-function porcentaje_super_otor() {
-    var racaudosuper = $("#racaudosuperiden").val();
-    var porcentajesuperotor = ($("#porcentajesuperotor").val()) / 100;
-    var totalsuperotoriden = parseFloat(racaudosuper) * parseFloat(porcentajesuperotor);
-    $("#totalsuperotoriden").val(Math.round(totalsuperotoriden));
-    $("#totalsuperotor").html(formatNumbderechos(Math.round(totalsuperotoriden)));
-    SumarConceptosOtor();
-}
-
-function porcentaje_super_compa() {
-    var racaudosuper = $("#racaudosuperiden").val();
-    var porcentajesupercompa = ($("#porcentajesupercompa").val()) / 100;
-    var totalsupercompaiden = parseFloat(racaudosuper) * parseFloat(porcentajesupercompa);
-    $("#totalsupercompaiden").val(Math.round(totalsupercompaiden));
-    $("#totalsupercompa").html(formatNumbderechos(Math.round(totalsupercompaiden)));
-    SumarConceptosCompa();
-}
-
-function porcentaje_fondo_otor() {
-    var racaudofondo = $("#recaudofondoiden").val();
-    var porcentajefondootor = ($("#porcentajefondootor").val()) / 100;
-    var totalfondootoriden = parseFloat(racaudofondo) * parseFloat(porcentajefondootor);
-    $("#totalfondootoriden").val(Math.round(totalfondootoriden));
-    $("#totalfondootor").html(formatNumbderechos(Math.round(totalfondootoriden)));
-    SumarConceptosOtor();
-}
-
-function porcentaje_fondo_compa() {
-    var racaudofondo = $("#recaudofondoiden").val();
-    var porcentajefondocompa = ($("#porcentajefondocompa").val()) / 100;
-    var totalfondocompaiden = parseFloat(racaudofondo) * parseFloat(porcentajefondocompa);
-    $("#totalfondocompaiden").val(Math.round(totalfondocompaiden));
-    $("#totalfondocompa").html(formatNumbderechos(Math.round(totalfondocompaiden)));
-    SumarConceptosCompa();
-}
 
 function CargarAnombreDe(validar, calidad) {
     var htmlTags = "";
@@ -1316,7 +985,7 @@ function Llevar(doc, nombre, autoreteiva, autoretertf, autoreteica, id_ciud, cal
 }
 
 function Total_Menos_Deducciones() {
-    /******NOTE:Recalcula Gran Total con las deducciones******/
+    /******Recalcula Gran Total con las deducciones******/
     var grantotal = parseFloat($("#totderechos").val()) +
         parseFloat($("#totconceptos").val()) +
         parseFloat($("#totiva").val()) +
@@ -1341,7 +1010,7 @@ function Total_Menos_Deducciones() {
 }
 
 function Total_Menos_Deducciones_Otor() {
-    /******NOTE:Recalcula Gran Total con las deducciones******/
+    /******Recalcula Gran Total con las deducciones******/
     var grantotal = parseFloat($("#grantotalotorderechosiden").val()) +
         parseFloat($("#grantotalotorconceptosiden").val()) +
         parseFloat($("#totalivaotoriden").val()) +
@@ -1361,7 +1030,7 @@ function Total_Menos_Deducciones_Otor() {
 }
 
 function Total_Menos_Deducciones_Compa() {
-    /******NOTE:Recalcula Gran Total con las deducciones******/
+    /******Recalcula Gran Total con las deducciones******/
     var grantotal = parseFloat($("#grantotalcompaderechosiden").val()) +
         parseFloat($("#grantotalcompaconceptosiden").val()) +
         parseFloat($("#totalivacompaiden").val()) +
@@ -1418,7 +1087,6 @@ function Cargar_Actas_Cliente(data) {
     }
 
     document.getElementById('datos_acta').innerHTML = htmlTags;
-    //$("#totderechos").val(Math.round(totalderechos));
 }
 
 function GenerarDescuento(id_acta, i, sald, identificacion_cli) {

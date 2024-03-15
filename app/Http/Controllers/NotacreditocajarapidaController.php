@@ -44,6 +44,18 @@ class NotacreditocajarapidaController extends Controller
 
         if (Notas_credito_cajarapida::where('id_fact', $id_fact)->where('prefijo', $prefijo_fact)->exists()){
             $request->session()->put('numfact', $id_fact);
+
+            $notc = Notas_credito_cajarapida::where('id_fact', $id_fact)->where('prefijo', $prefijo_fact)->get();
+
+            foreach ($notc as $key => $nc) {
+                $id_ncf = $nc->id_ncf;
+                $cufe = $nc->cufe;
+            }
+            
+            $request->session()->put('id_ncf', $id_ncf);
+            $request->session()->put('CUFE_SESION', $cufe);
+            
+            
             return response()->json([
                 "validar"=>0,
                 "mensaje"=>"Ups!. Esta Factura ya contiene Nota Crédito"

@@ -2,6 +2,7 @@
 @section('title', 'Alpha-Notarial')
 @section('titulo_link', 'Panel de Control')
 @section('content')
+@include('caja_rapida.modalbase')
 
   <div class="page-header">
 
@@ -15,7 +16,11 @@
     <div class="col-xs-12">
 
       <br>
+
     <div class="center">
+      <a href="javascript://" id="aperturacajarapida"  class="btn btn-app btn-pink">
+        Apertura
+      </a>
       <a href="javascript://" id="cajarapida"  class="btn btn-app btn-pink">
         <i class="ace-icon glyphicon glyphicon-qrcode bigger-230"></i>
         Facturar
@@ -26,10 +31,10 @@
         Nota CT
       </a>
 
-      <a href="javascript://" id="editarfacturacajarapida" class="btn btn-app btn-primary">
+      <!--<a href="javascript://" id="editarfacturacajarapida" class="btn btn-app btn-primary">
         <i class="ace-icon glyphicon glyphicon-pencil bigger-150"></i>
         Editar
-      </a>
+      </a>-->
          
 
       <a href="javascript://" id="copiasfacturarapida" class="btn btn-app btn-light">
@@ -71,6 +76,22 @@
     </div>
   </div>
 
+   <div class="widget-body">
+        <div class="widget-main">
+            <div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                      <div class="alert alert-success" role="alert" id="msj-error2" style="display:none">
+                        <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                        <strong id="msj2"></strong>
+                      </div>
+                    </div>
+                </div>
+                <div class="space-10"></div>
+            </div>
+        </div>
+    </div>
+
   <div class="widget-box" id="guycopiafacturacajarapida" style="display:none">
   <form>
     @csrf
@@ -86,7 +107,7 @@
     </div>
   </form>
 
-    <div class="widget-body">
+      <div class="widget-body">
         <div class="widget-main">
             <div>
                 <div class="form-horizontal">
@@ -102,6 +123,10 @@
         </div>
     </div>
 </div>
+
+
+<script src="{{ asset('assets/js/jquery-2.1.4.min.js')}}"></script>
+
 @endsection
 
 @section('scripts')
