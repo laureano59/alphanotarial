@@ -1026,6 +1026,9 @@ function CargarInformeEgresos(data){
           data[item].observaciones_egr +
           '</td>' +
            '<td>' +
+          data[item].descripcion_tip +
+          '</td>' +
+           '<td>' +
           data[item].id_radica +
           '</td>' +
           '</tr>';
@@ -1054,6 +1057,8 @@ function CargarInformeEgresos(data){
           '<td>' +
           '</td>' +
           '<td>' +
+          '</td>'+
+           '<td>' +
           '</td>'+
           '</tr>';
 

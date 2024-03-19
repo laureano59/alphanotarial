@@ -77,6 +77,7 @@
                             <th>Egreso</th>
                             <th>Saldo</th>
                             <th>Observaciones</th>
+                            <th>Tipo_Egreso</th>
                             <th>Rad</th>
                         </tr>
                     </thead>

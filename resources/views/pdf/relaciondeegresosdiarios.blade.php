@@ -64,6 +64,7 @@
             <th><font size="2">Egreso</font></th>
             <th><font size="2">Saldo</font></th>
             <th><font size="2">Observaciones</font></th>
+             <th><font size="2">Tipo_Egreso</font></th>
             <th><font size="2">Rad</font></th>
         </tr>
     </thead>
@@ -108,6 +109,9 @@
 
              <td>
                 <font size="2">{{ $item['observaciones_egr'] }}</font>
+            </td>
+             <td>
+                <font size="2">{{ $item['descripcion_tip'] }}</font>
             </td>
 
               <td align="center">
