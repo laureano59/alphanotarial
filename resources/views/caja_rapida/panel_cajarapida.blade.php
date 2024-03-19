@@ -50,6 +50,11 @@
         R.Diario
       </a>
 
+       <a href="javascript://" id="relnotcreditcajarapida" class="btn btn-app btn-light">
+        <i class="ace-icon  glyphicon  glyphicon-th-large bigger-160"></i>
+        R.NotaC
+      </a>
+
       <a href="javascript://" id="informeporconceptoscajarapida" class="btn btn-app btn-purple">
         <i class="ace-icon  glyphicon  glyphicon-th-large bigger-160"></i>
         R.Grupos

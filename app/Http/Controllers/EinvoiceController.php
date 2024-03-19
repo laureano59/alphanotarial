@@ -333,13 +333,13 @@ class EinvoiceController extends Controller
     #               Medio de Pago                =
     #=============================================
 
-  $Medios_de_pago = Pago::where("id_fact","=",$numfact)->get();
-  foreach ($Medios_de_pago as $med) {
-    $MediodePago = $med->codigo_med;
-  }
+  //$Medios_de_pago = Pago::where("id_fact","=",$numfact)->get();
+  //foreach ($Medios_de_pago as $med) {
+    //$MediodePago = $med->codigo_med;
+  //}
 
-  $Medio_pago = Medios_pago::find($MediodePago);
-  $paymentmethod = $Medio_pago->codigo_med;
+  $Medio_pago = //Medios_pago::find($MediodePago);
+  $paymentmethod = 10; //$Medio_pago->codigo_med;
 
   $InvoiceAuthorization = $NumAutorizacionDian;
   $StartDate = $StarPeriodo;
@@ -432,7 +432,7 @@ class EinvoiceController extends Controller
 
 		/*----------  Medios de Pago  ----------*/
 		
-		$PaymentMeansCode = $MediodePago;
+		$PaymentMeansCode = 10;//$MediodePago;
 
 
 		# =============================================

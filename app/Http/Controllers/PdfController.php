@@ -64,6 +64,8 @@ use App\Retencionesaplicadas_view;
 use App\Retencionenlafuente_view;
 use App\Gastos_notaria;
 use App\Base_cajarapida;
+use App\Relacion_nota_credito_print_view;
+use App\Relacion_nota_credito_caja_rapida_view;
 
 
 class PdfController extends Controller
@@ -3008,71 +3010,123 @@ class PdfController extends Controller
  }
 
  public function PdfRelacionNotaCredito(Request $request){
-  $notaria = Notaria::find(1);
-  $anio_trabajo = $notaria->anio_trabajo;
-  $nit = $notaria->nit;
-  $nombre_nota = strtoupper($notaria->nombre_nota);
-  $direccion_nota = $notaria->direccion_nota;
-  $telefono_nota = $notaria->telefono_nota;
-  $email = $notaria->email;
-  $nombre_notario = $notaria->nombre_notario;
-  $identificacion_not = $notaria->identificacion_not;
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+     
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+
+             
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+
+      $anio_trabajo = date("Y", strtotime($fecha1)); //Convierte Fecha a YYYY
+
+      
+      $cajadiario = Relacion_nota_credito_print_view::whereDate('fecha', '>=', $fecha1)
+      ->whereDate('fecha', '<=', $fecha2)
+      ->where('anio_esc', '=', $anio_trabajo)
+       ->where('nota_credito', true)
+      ->get()
+      ->toArray();
+   
+
+    $contcajadiario = count ($cajadiario, 0);
+    $total_derechos = 0;
+    $total_conceptos = 0;
+    $total_recaudo = 0;
+    $total_aporteespecial = 0;
+    $impuesto_timbre = 0;
+    $total_retencion = 0;
+    $total_iva = 0;
+    $total = 0;
+    $total_gravado = 0;
+    $total_reteiva = 0;
+    $total_reteica = 0;
+    $total_retertf = 0;
+
+    foreach ($cajadiario as $key => $value) {
+      $total_derechos = $value['derechos'] + $total_derechos;
+      $total_conceptos =$value['conceptos'] + $total_conceptos;
+      $total_recaudo = $value['recaudo'] + $total_recaudo;
+      $total_aporteespecial = $value['aporteespecial'] + $total_aporteespecial;
+      $impuesto_timbre = $value['impuesto_timbre'] + $impuesto_timbre;
+      $total_retencion = $value['retencion'] + $total_retencion;
+      $total_iva =$value['iva'] + $total_iva;
+      $total = $value['total'] + $total;
+      $total_gravado = $value['total_gravado'] + $total_gravado;
+      $total_reteiva =$value['reteiva'] + $total_reteiva;
+      $total_reteica = $value['reteica'] + $total_reteica;
+      $total_retertf = $value['retertf'] + $total_retertf;
+    }
+  
+   
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['cajadiario'] = $cajadiario;
+    $data['contcajadiario'] = $contcajadiario;
+    $data['total_derechos'] = round($total_derechos);
+    $data['total_conceptos'] = $total_conceptos;
+    $data['total_ingresos'] = round($total_derechos + $total_conceptos);
+    $data['total_recaudo'] = $total_recaudo;
+    $data['total_aporteespecial'] = $total_aporteespecial;
+    $data['impuesto_timbre'] = $impuesto_timbre;
+    $data['total_retencion'] = $total_retencion;
+    $data['total_iva'] = round($total_iva);
+    $data['total'] = $total;
+    $data['total_gravado'] = $total_gravado;
+    $data['total_reteiva'] = $total_reteiva;
+    $data['total_reteica'] = $total_reteica;
+    $data['total_retertf'] = $total_retertf;
+   
+    $data['fecha_reporte'] = $fecha_reporte;
+    $data['fecha_impresion'] = $fecha_impresion;
+   
+    $data['nombre_reporte'] = $nombre_reporte;
  
-  $fecha1 = $request->session()->get('fecha1');
-  $fecha2 = $request->session()->get('fecha2');
 
-  $fecha_reporte =  $fecha1." A ". $fecha2;
-  $fecha_impresion = date("d/m/Y");
+    $html = view('pdf.relacionnotacredito',$data)->render();
 
-  $rel_notas_credito = Relacion_notas_credito_view::whereDate('fecha', '>=', $fecha1)
-  ->whereDate('fecha', '<=', $fecha2)
-  ->orderBy('id_ncf')->get()->toArray();
-  $cont_rel_notas_credito = count ($rel_notas_credito, 0);
+    $namefile = 'relacion_nota_credito_'.$fecha_reporte.'.pdf';
 
-  $nombre_reporte = $request->session()->get('nombre_reporte');
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
 
-  $data['nit'] = $nit;
-  $data['nombre_nota'] = $nombre_nota;
-  $data['direccion_nota'] = $direccion_nota;
-  $data['telefono_nota'] = $telefono_nota;
-  $data['email'] = $email;
-  $data['nombre_notario'] = $nombre_notario;
-  $data['fecha_reporte'] = $fecha_reporte;
-  $data['fecha_impresion'] = $fecha_impresion;
-  $data['rel_notas_credito'] = $rel_notas_credito;
-  $data['cont_rel_notas_credito'] = $cont_rel_notas_credito;
-  $data['nombre_reporte'] = $nombre_reporte;
-
-  $html = view('pdf.relacionnotacredito',$data)->render();
-
-  $namefile = 'relnotacredito'.$fecha_reporte.'.pdf';
-
-  $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-  $fontDirs = $defaultConfig['fontDir'];
-
-  $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-  $fontData = $defaultFontConfig['fontdata'];
-  $mpdf = new Mpdf([
-    'fontDir' => array_merge($fontDirs, [
-      public_path() . '/fonts',
-    ]),
-    'fontdata' => $fontData + [
-      'arial' => [
-        'R' => 'arial.ttf',
-        'B' => 'arialbd.ttf',
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
       ],
-    ],
-    'default_font' => 'arial',
-        //"format" => [216, 140],//TODO: Media Carta
-    "format" => 'Letter-L',
-    'margin_bottom' => 10,
-  ]);
+      'default_font' => 'arial',
+        //"format" => [216, 140],//Media Carta
+      "format" => 'Letter-L',
+      'margin_bottom' => 10,
+    ]);
 
-  $mpdf->defaultfooterfontsize=2;
-  $mpdf->SetTopMargin(5);
-  $mpdf->SetDisplayMode('fullpage');
-  $mpdf->WriteHTML($html);
-  $mpdf->Output($namefile,"I");
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
 
 }
 
@@ -4313,6 +4367,96 @@ public function PdfInformeCartera(Request $request){
 
     }
 
+
+     public function RelacionNotaCreditoCajaRapidaPdf(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+     
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+
+      $cajadiario = Relacion_nota_credito_caja_rapida_view::whereDate('fecha_fact', '>=', $fecha1)
+      ->whereDate('fecha_fact', '<=', $fecha2)
+      ->where('nota_credito', '=', true)
+      ->orderBy('id_ncf')
+      ->get()
+      ->toArray();
+
+      
+      $contcajadiario = count ($cajadiario, 0);
+      $subtotal = 0;
+      $total_iva = 0;
+      $total_fact = 0;
+
+      foreach ($cajadiario as $key => $value) {
+        $subtotal = $value['subtotal'] + $subtotal;
+        $total_iva =$value['total_iva'] + $total_iva;
+        $total_fact = $value['total_fact'] + $total_fact;
+      }
+
+    //Consulta para sacar las facturas de contado y credito
+    //
+
+     
+
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['cajadiario'] = $cajadiario;
+      $data['contcajadiario'] = $contcajadiario;
+      $data['subtotal'] = round($subtotal);
+      $data['total_iva'] = $total_iva;
+      $data['total_fact'] = round($total_fact);
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+     
+      $html = view('pdf.relacionnotacreditocajarapida',$data)->render();
+
+      $namefile = 'relacionnotacredito_cajarapida_'.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
     public function PdfCajaDiarioGeneral(Request $request){
       $notaria = Notaria::find(1);
       $nit = $notaria->nit;
@@ -4743,6 +4887,8 @@ public function PdfInformeCartera(Request $request){
     $mpdf->Output($namefile,"I");
 
   }
+
+
 
   public function PdfRelaciondeFacturasPorConceptos(Request $request){
     $notaria = Notaria::find(1);
@@ -6332,7 +6478,7 @@ public function PdfInformeCartera(Request $request){
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
+      //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
 
     }
@@ -6420,7 +6566,7 @@ public function PdfInformeCartera(Request $request){
         $formadepago = "Credito";
 
       }else if($forma_pago == false){
-        $formadepago = "Efectivo";
+        $formadepago = "Contado";
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -6523,7 +6669,7 @@ public function PdfInformeCartera(Request $request){
       if($cufe == "sin facturar"){
         $html = view('pdf.recibofactcajarapida',$data)->render();
       }else{
-        $html = view('pdf.generarcajarapida',$data)->render();
+        $html = view('pdf.generarcajarapidapos',$data)->render();
       }
       
 
@@ -6541,7 +6687,7 @@ public function PdfInformeCartera(Request $request){
       $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
       
       // Configurar márgenes (en milímetros)
-      $margenes = array('left' => 5, 'right' => 5, 'top' => 5, 'bottom' => 5);
+      $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
 
 
       // Combinar las configuraciones
@@ -6556,21 +6702,6 @@ public function PdfInformeCartera(Request $request){
       $mpdf = new \Mpdf\Mpdf($configuracion);
 
 
-     /* $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          "format" => [80, 250],//Media Carta
-          'margin_bottom' => 10,
-        ]);*/
-
         $mpdf->SetHTMLFooter('
           <table width="100%">
           <tr>
@@ -6582,8 +6713,8 @@ public function PdfInformeCartera(Request $request){
         $mpdf->SetTopMargin(5);
         $mpdf->SetDisplayMode('fullpage');
         $mpdf->WriteHTML($html);
-        $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+        $mpdf->Output($namefile,"i");
+      $mpdf->Output($carpeta_destino_cliente.$namefile, 'f'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       $request->session()->forget('numfactrapida');
 
@@ -6628,6 +6759,51 @@ public function PdfInformeCartera(Request $request){
 
       }else if($forma_pago == false){
         $formadepago = "Efectivo";
+      }
+
+       /*Medios de Pago*/
+
+
+      $mediodepago = '';
+      
+      $Medpago = Mediodepagocajarapida_view::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+      foreach ($Medpago as $med) {
+        $efectivo = $med->efectivo;
+        $cheque = $med->cheque;
+        $consignacion_bancaria = $med->consignacion_bancaria;
+        $pse = $med->pse;
+        $transferencia_bancaria = $med->transferencia_bancaria;
+        $tarjeta_credito = $med->tarjeta_credito;
+        $tarjeta_debito = $med->tarjeta_debito;
+      }
+
+      if($efectivo > 0){
+        $mediodepago = 'Efectivo';
+      }
+
+      if($cheque > 0){
+        $mediodepago = $mediodepago.', '.'Cheque';
+      }
+
+       if($consignacion_bancaria > 0){
+          $mediodepago = $mediodepago.', '.'Consig_banc';
+      }
+
+     
+      if($pse > 0){
+        $mediodepago = $mediodepago.', '.'Pse';
+      }
+
+      if($transferencia_bancaria > 0){
+        $mediodepago = $mediodepago.', '.'Transfe_banca';
+      }
+
+      if($tarjeta_credito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_cred';
+      }
+
+      if($tarjeta_debito > 0){
+        $mediodepago = $mediodepago.', '.'Tarj_deb';
       }
 
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
@@ -6709,6 +6885,7 @@ public function PdfInformeCartera(Request $request){
       $data['cufe'] = $cufe;
       $data['titulo'] = $FactComprobante;
       $data['formadepago'] = $formadepago;
+      $data['mediodepago'] = $mediodepago;
       $data['porcentaje_iva'] = $porcentaje_iva;
 
       $j = 0;

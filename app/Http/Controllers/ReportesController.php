@@ -126,6 +126,9 @@ class ReportesController extends Controller
     }else if($opcion == 25){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.informedegastos', compact('nombre_reporte'));
+    }else if($opcion == 26){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.relacionnotacreditocajarapida', compact('nombre_reporte'));
     }
   }
   

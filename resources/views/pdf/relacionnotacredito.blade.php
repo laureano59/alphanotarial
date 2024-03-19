@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Relación Notas Crédito</title>
+    <title>Relación de Notas Crédito</title>
 
 </head>
 
@@ -56,37 +56,182 @@
     <table width="100%">
         <thead>
             <tr>
-                <th><font size="2">No.nota</font></th>
-                <th><font size="2">No.Fact</font></th>
-                <th><font size="2">No.Radi</font></th>
-                <th><font size="2">Total</font></th>
-                <th><font size="2">Detalle</font></th>
+                <th><font size="2">No.Not</font></th>
+                <th><font size="2">No.Fac</font></th>
+                <th><font size="2">Fecha</font></th>
+                <th><font size="2">No.Esc</font></th>
+                <th><font size="2">Derechos</font></th>
+                <th><font size="2">Conceptos</font></th>
+                <th><font size="2">Total_Ingresos</font></th>
+                <th><font size="2">I.V.A</font></th>
+                <th><font size="2">Recaudos</font></th>
+                <th><font size="2">Ap_Especial</font></th>
+                <th><font size="2">Imp_Timbre</font></th>
+                <th><font size="2">Retención</font></th>
+                <th><font size="2">ReteIva</font></th>
+                <th><font size="2">ReteIca</font></th>
+                <th><font size="2">Retefuente</font></th>
+                <th><font size="2">Gran Total</font></th>
+                
+               
             </tr>
         </thead>
         <tbody id="datos">
-          @for ($i = 0; $i < $cont_rel_notas_credito; $i++)
-            @if (array_key_exists($i, $rel_notas_credito))
-              <tr>
+           {{-- Inicializar una variable para alternar colores --}}
+            @php
+                $colorAlternado = true;
+            @endphp
+          @for ($i = 0; $i < $contcajadiario; $i++)
+            @if (array_key_exists($i, $cajadiario))
+             {{-- Alternar colores de fondo --}}
+            @php
+            $colorFondo = $colorAlternado ? '#ffffff' : '#f2f2f2';
+            @endphp
+              <tr style="background-color: {{ $colorFondo }}">
                 <td align="center">
-                  <font size="2">{{ $rel_notas_credito[$i]['id_ncf'] }}</font>
+                  <font size="2">{{ $cajadiario[$i]['id_ncf'] }}</font>
+                </td>
+                <td>
+                  <font size="2">{{ $cajadiario[$i]['numfact'] }}</font>
+                </td>
+                <td>
+                    <font size="2">{{ Carbon\Carbon::parse($cajadiario[$i]['fecha'])->format('d/m/Y') }}</font>
                 </td>
                 <td align="center">
-                  <font size="2">{{ $rel_notas_credito[$i]['id_fact'] }}</font>
-                </td>
-                <td align="center">
-                  <font size="2">{{ $rel_notas_credito[$i]['id_radica'] }}</font>
+                  <font size="2">{{ $cajadiario[$i]['num_esc'] }}</font>
                 </td>
                 <td align="right">
-                  <font size="2">{{ number_format($rel_notas_credito[$i]['total_fact']),2 }}</font>
+                  <font size="2">{{ number_format(round($cajadiario[$i]['derechos']), 2) }}</font>
                 </td>
-                <td align="center">
-                  <font size="2">{{ $rel_notas_credito[$i]['detalle'] }}</font>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['conceptos'], 2) }}</font>
                 </td>
-                
+                <td align="right">
+                  <font size="2">{{ number_format(round($cajadiario[$i]['total_gravado']), 2) }}</font>
+                </td>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['iva'], 2) }}</font>
+                </td>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['recaudo'], 2) }}</font>
+                </td>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['aporteespecial'], 2) }}</font>
+                </td>
+                 <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['impuesto_timbre'], 2) }}</font>
+                </td>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['retencion'], 2) }}</font>
+                </td>
+                <td align="right">
+                  <font size="2">(-{{ number_format($cajadiario[$i]['reteiva'], 2) }})</font>
+                </td>
+                <td align="right">
+                  <font size="2">(-{{ number_format($cajadiario[$i]['reteica'], 2) }})</font>
+                </td>
+                <td align="right">
+                  <font size="2">(-{{ number_format($cajadiario[$i]['retertf'], 2) }})</font>
+                </td>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['total'], 2) }}</font>
+                </td>
                 </tr>
+                 {{-- Alternar el valor de la variable para el próximo ciclo --}}
+                @php
+                $colorAlternado = !$colorAlternado;
+                @endphp
                   @endif
                 @endfor
-                    
+                <tr>
+                  <td> </td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                      <hr>
+                  </td>
+                  <td>
+                     <hr>
+                  </td>
+                  <td> 
+                    <hr>
+                  </td>
+                   <td> 
+                    <hr>
+                  </td>
+                  </tr>
+
+                  <tr>
+                    <td>  <font size="2"><b>Total</b></font></td>
+                    <td></td>
+                    <td></td>
+                     <td></td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total_derechos, 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total_conceptos, 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format(round($total_gravado), 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total_iva, 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total_recaudo, 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total_aporteespecial, 2) }}</b></font>
+                    </td>
+                     <td align="right">
+                      <font size="2"><b>{{ number_format($impuesto_timbre, 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total_retencion, 2) }}</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>(-{{ number_format($total_reteiva, 2) }})</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>(-{{ number_format($total_reteica, 2) }})</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>(-{{ number_format($total_retertf, 2) }})</b></font>
+                    </td>
+                    <td align="right">
+                      <font size="2"><b>{{ number_format($total, 2) }}</b></font>
+                    </td>
+                    <td>
+                    </td>
+                    <td></td>
+                    </tr>
             </tbody>
             </table>
             <hr>

@@ -149,6 +149,9 @@ Route::get('consultar_gasto', 'Gastos_notariaController@validar_existencia');
 Route::get('recibogastospdf', 'PdfController@ReciboGastosNotaria');
 Route::get('informedegastos', 'PdfController@Informedegastos');
 
+Route::get('relacionnotacreditocajarapida', 'PdfController@RelacionNotaCreditoCajaRapidaPdf');
+
+
 
 
 Route::get('relaciondepositosdiariospdf','PdfController@DepositosDiarios');
