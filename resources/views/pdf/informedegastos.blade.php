@@ -56,7 +56,8 @@
 
 <table width="100%">
     <thead>
-        <tr>
+        <tr>    
+            <th><font size="2">No.Recibo</font></th>
             <th><font size="2">Concepto</font></th>
             <th><font size="2">Fecha</font></th>
             <th><font size="2">Valor</font></th>
@@ -74,10 +75,13 @@
        $colorFondo = $colorAlternado ? '#f2f2f2' : '#ffffff';
        @endphp
        <tr style="background-color: {{ $colorFondo }}">
+         <td align="center">
+            <font size="2">{{ $item['id_gas'] }}</font>
+        </td>
         <td align="center">
             <font size="2">{{ $item['concepto_gas'] }}</font>
         </td>
-        <td>
+        <td align="center"  >
             <font size="2">{{ Carbon\Carbon::parse($item['fecha_fact'])->format('d/m/Y') }}</font> 
         </td>
         <td align="right">
@@ -96,12 +100,14 @@
     <tr>
         <td></td>
         <td></td>
+         <td></td>
         <td align="right">-----------------------</td>
         <td></td>
     </tr>
      <tr>
         <td></td>
         <td></td>
+         <td></td>
         <td align="right"><b>{{ number_format($total_gastos, 2) }}</b></td>
         <td></td>
     </tr>

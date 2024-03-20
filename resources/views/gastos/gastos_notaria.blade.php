@@ -30,6 +30,12 @@
                           <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Imprimir Recibo"></i>
                       </a>
                   </div>
+
+                  <div class="widget-toolbar">
+                      <a href="#">
+                          <i><img src="{{ asset('images/ayuda1.png') }}" width="28 px" height="28 px" title="Para imprimir copias de recibos anteriores, escribe en <<Buscar por No.de Recibo>> el número que necesita, luego clic en la lupa, se activará el ícono de imprimir para que lo imprimas. Así mismo si quieres modificar, da clic en el número de recibo que aparece en la tabla y luego la información saldrá en los campos del lado izquierdo   para que los actualice"></i>
+                      </a>
+                  </div>
                   <div class="widget-toolbar" id="btnguardar">
                       <a href="javascript://" id="guardargasto" data-action="reload">
                           <i><img src="{{ asset('images/almacenar.png') }}" width="28 px" height="28 px" title="Guardar"></i>
