@@ -11,6 +11,7 @@ use App\Departamento;
 use App\Banco;
 use App\Actas_deposito;
 use App\Actas_deposito_view;
+use App\Egreso_acta_deposito;
 
 
 class ActasdepositoController extends Controller
@@ -163,7 +164,36 @@ class ActasdepositoController extends Controller
      */
     public function edit($id)
     {
-        //
+
+    }
+
+    public function Anular(Request $request){
+
+        $id_act = $request->id_act;
+
+        if (Egreso_acta_deposito::where('id_act', $id_act)->exists()) {
+            
+            return response()->json([
+                "validar"=> "888",
+                "mensaje"=> "El acta de depósito no se puede anular porque tiene cruces comprometidos"
+            ]);
+
+        } else {
+            
+            $actas_deposito = Actas_deposito::find($id_act);
+            $actas_deposito->anulada = true;
+            $actas_deposito->motivo_anulacion = $request->motivo_anulacion;
+            $actas_deposito->save();
+
+            $actas_depo_all = Actas_deposito_view::where('id_act', $id_act)
+            ->where('anulada', false)
+            ->get();
+            
+            return response()->json([
+                "validar"=> "1",
+                "data"=> $actas_depo_all
+            ]);
+        }
     }
 
     /**

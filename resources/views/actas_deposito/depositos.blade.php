@@ -4,6 +4,7 @@
 @section('content')
 @include('radicacion.modalcliente')
 @include('radicacion.modalcliente-empresa')
+@include('actas_deposito.modal_anular')
 
 <div class="page-header">
     <h1>Depósito de Clientes
@@ -22,6 +23,7 @@
     @csrf
     <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
     <input type="hidden" id="tipogrid" value="depositos">
+    <input type="hidden" id="id_acta">
     <table width="100%" border="0">
         <tr>
 
@@ -113,7 +115,7 @@
 
                    <div class="widget-toolbar">
                       <a href="#">
-                          <i><img src="{{ asset('images/ayuda1.png') }}" width="28px" height="28px" title="Para imprimir copia de un comprobante anterior ingresa el No de acta en el campo que dice Buscar por No.de Acta y luego clic en el Ícono de la impresora"></i>
+                          <i><img src="{{ asset('images/ayuda1.png') }}" width="28px" height="28px" title="Para imprimir copia de un comprobante anterior ingresa el No de acta en el campo que dice Buscar por No.de Acta, luego clic en la lupa y clic en el Ícono de la impresora. Así mismo si necesita anular un depósito buscas el acta y en la tabla de abajo donde aparece el icono rojo con la X presionas y sigues los pasos"></i>
                       </a>
                   </div>
                     <center>
@@ -227,6 +229,7 @@
                                 <th>
                                     $ Saldo
                                 </th>
+                                <th>Anular</th>
                             </tr>
                         </thead>
                         <tbody id="datos"></tbody>

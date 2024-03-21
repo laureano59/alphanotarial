@@ -27,6 +27,7 @@ Route::resource('cpanelcertificados', 'CertificadosController');
 
 Route::resource('reportados', 'ReportadosController');
 
+
 Route::resource('actas_deposito', 'ActasdepositoController');
 Route::resource('guardarcertificadortf', 'Certificado_rtfController');
 Route::resource('escrituracion', 'EscrituraController');
@@ -84,6 +85,10 @@ Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
 
 Route::get('agregaritemcajarapida', 'AgregaritemcajarapidaController@AgregarItemCajaRapida');
+
+
+Route::get('anularacta', 'ActasdepositoController@Anular');
+
 
 
 Route::get('anombrede', 'FacturacionController@AnombreDe');

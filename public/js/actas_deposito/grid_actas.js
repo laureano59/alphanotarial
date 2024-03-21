@@ -20,11 +20,45 @@ function CargarGridActas(data) {
             '</td>' +
             '<td bgcolor="#ccffcc" align="right">' + formatNumbderechos(Math.round(data[item].saldo)) +
             '</td>' +
+             '<td>'+
+                '<a href="javascript://" onclick="AbrirmodalAnular(\'' + data[item].id_act + '\');">' +
+                '<i><img src="images/cancelar.png" width="28 px" height="28 px" title="Anular"></i>'+
+                '</a>'+
+            '</td>'+
             '</tr>';
     }
 
     document.getElementById('datos').innerHTML = htmlTags;
 }
+
+function AbrirmodalAnular(id_act){
+    $("#id_acta").val(id_act);
+    $('#modalanularacta').modal('show');
+}
+
+
+$("#Anularacta").click(function() {
+    var motivo_anulacion = $("#motivo_anulacion").val();
+    var id_act = $("#id_acta").val();
+    var route = '/anularacta';
+    var token = $("#token").val();
+    var type = 'GET';
+    var datos = {
+        "id_act": id_act,
+        "motivo_anulacion": motivo_anulacion
+    };
+    __ajax(route, token, type, datos)
+    .done(function(info) {
+        if(info.validar == 1){
+            CargarGridActas(info.data);
+             $('#modalanularacta').modal('hide');
+        }else  if(info.validar == 888){
+            $('#modalanularacta').modal('hide');
+            alert(info.mensaje);
+        }
+               
+    })
+});
 
 function CargarGridActasEgreso(data) {
     var htmlTags = "";
