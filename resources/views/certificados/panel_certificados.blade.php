@@ -21,10 +21,10 @@
         Timbre
       </a>
 
-      <a href="javascript://" id="certirtf" class="btn btn-app btn-warning">
+      <!--<a href="javascript://" id="certirtf" class="btn btn-app btn-warning">
         <i class="ace-icon glyphicon glyphicon-list-alt bigger-230"></i>
         Retefuente
-      </a>
+      </a>-->
 
     </div>
 

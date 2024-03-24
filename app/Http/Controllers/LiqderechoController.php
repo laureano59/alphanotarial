@@ -44,14 +44,14 @@ public function index(Request $request)
 según el acto y retorna un array de los actos con su liquidacion***/
 
 public function derechos(Request $request){
-  if($request->ajax()){
+   if($request->ajax()){
     $anio_trabajo = Notaria::find(1)->anio_trabajo;
     $id_radica = $request->id_radica;
 
     if (Radicacion::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
 
       if($id_radica == 0){
-        $der_view = Derechos_cotiza_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+        $der_view = Derechos_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
         $derechos = $this->Derechos_Not($der_view);
       }else{
         $der_view = Derechos_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
@@ -330,8 +330,9 @@ public function store(Request $request)
         $derechos_compa = 0;
         $iva_derechos_otor = 0;
         $iva_derechos_compa = 0;
+
         foreach ($derechos as $key => $value) {
-          if($value['retefuente'] === true){
+          if($value['pagos_otor_compa'] == '0'){
             $derechos_otor = $value['derechos'] / 2;
             $derechos_compa = $value['derechos'] / 2;
             if($value['derechos'] > 0){
@@ -340,9 +341,18 @@ public function store(Request $request)
                 $iva_derechos_compa = ($derechos_compa * $porcentaje);
               }
             }
-          }else if($value['retefuente'] === false){
+          }else if($value['pagos_otor_compa'] == '1'){
             $derechos_otor = 0;
             $derechos_compa = $value['derechos'];
+            if($value['derechos'] > 0){
+              if($value['iva'] === true){
+                $iva_derechos_otor = ($derechos_otor * $porcentaje);
+                $iva_derechos_compa = ($derechos_compa * $porcentaje);
+              }
+            }
+          }else if($value['pagos_otor_compa'] == '2'){
+            $derechos_otor = $value['derechos'];
+            $derechos_compa = 0;
             if($value['derechos'] > 0){
               if($value['iva'] === true){
                 $iva_derechos_otor = ($derechos_otor * $porcentaje);

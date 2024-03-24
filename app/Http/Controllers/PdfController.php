@@ -66,6 +66,7 @@ use App\Gastos_notaria;
 use App\Base_cajarapida;
 use App\Relacion_nota_credito_print_view;
 use App\Relacion_nota_credito_caja_rapida_view;
+//use App\Http\Controllers\LiqderechoController;
 
 
 class PdfController extends Controller
@@ -6409,6 +6410,10 @@ public function PdfInformeCartera(Request $request){
 
        /*********TOTALES OTORGANTE Y COMPARECIENTE**********/
 
+      //$calcularderechos = new LiqderechoController();
+      //$infoderechos = $calcularderechos->derechos_para_pagos_otor_compa($request);
+
+     
        $total_conceptos_otorgante = $total_conceptos / 2;
        $total_conceptos_compareciente = $total_conceptos / 2;
        $recaudos_otor = ($total_fondo + $total_super) / 2;

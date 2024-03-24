@@ -1,6 +1,6 @@
 $("#buscar").click(function() {
 
-  /********NOTE:Comprueba si La radicación está liquidada********/
+  /********Comprueba si La radicación está liquidada********/
   var id_radica = $("#radicacion").val();
   var route = "/mostrarliq";
   var token = $("#token").val();
@@ -10,7 +10,7 @@ $("#buscar").click(function() {
   };
   __ajax(route, token, type, datos)
   .done( function( info ){
-    if(info.validarliqd == '1') {//NOTE:Si la radicación ya está liquidada
+    if(info.validarliqd == '1') {//Si la radicación ya está liquidada
       $("#botoncalcular").fadeOut();
       var derechos = info.derechos;
       CargarLiqDerechos(derechos);
@@ -39,7 +39,7 @@ $("#buscar").click(function() {
         }
       })
 
-    } else if(info.validarliqd == '0'){//NOTE:si la radicación no se ha liquidado
+    } else if(info.validarliqd == '0'){//si la radicación no se ha liquidado
       $("#botoncalcular").fadeIn();
       LimpiarConceptos();
       OcultarConcepto();
@@ -128,7 +128,7 @@ function BuscarPorSession(valor){
         }
       })
 
-    } else if(info.validarliqd == '0'){//NOTE:si la radicación no se ha liquidado
+    } else if(info.validarliqd == '0'){//Si la radicación no se ha liquidado
       $("#botoncalcular").fadeIn();
       LimpiarConceptos();
       OcultarConcepto();
