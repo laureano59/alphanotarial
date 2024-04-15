@@ -12,7 +12,7 @@ $("#ron").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -33,7 +33,7 @@ $("#ingresporescrituradores").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -41,54 +41,54 @@ $("#ingresporescrituradores").click(function(){
 
 $("#imprimiringresosporescrituradores").click(function(){
   if (document.querySelector('input[name="seleccion"]:checked')) {
-      var tipoinforme = '';
-      var id_proto = '';
-      var seleccion = $('input:radio[name=seleccion]:checked').val();
-      if (seleccion == 'general') {
-        opcionreporte = "general";
-      }else if (seleccion == 'porescriturador') {
-        opcionreporte = "porescriturador";
-        id_proto = $("#id_proto").val();
-      }
+    var tipoinforme = '';
+    var id_proto = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'general') {
+      opcionreporte = "general";
+    }else if (seleccion == 'porescriturador') {
+      opcionreporte = "porescriturador";
+      id_proto = $("#id_proto").val();
+    }
 
-      if($("#start").val() == '' || $("#end").val() == ''){
-          alert("Todos los campos son necesarios");
-      }else{
+    if($("#start").val() == '' || $("#end").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
 
-        var route = "/cargarfechas";
-        var token = $("#token").val();
-        var type = 'GET';
-        var fecha1 = $("#start").val();
-        var fecha2 = $("#end").val();
-        var datos = {
+      var route = "/cargarfechas";
+      var token = $("#token").val();
+      var type = 'GET';
+      var fecha1 = $("#start").val();
+      var fecha2 = $("#end").val();
+      var datos = {
         "fecha1": fecha1,
         "fecha2": fecha2,
         "opcionreporte": opcionreporte,
         "id_proto": id_proto
-        };
+      };
 
-       __ajax(route, token, type, datos)
-       .done( function( info ){
-          if(info.validar == 1){
-            var url = "/ingresosporescrituradorpdf";
-            $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      __ajax(route, token, type, datos)
+      .done( function( info ){
+        if(info.validar == 1){
+          var url = "/ingresosporescrituradorpdf";
+          $("<a>").attr("href", url).attr("target", "_blank")[0].click();
         }
-       })
-      }
-  }else{
-      alert("Seleccione tipo de informe");
+      })
     }
+  }else{
+    alert("Seleccione tipo de informe");
+  }
 });
 
 function handleRadioButtonChange() {
   var seleccion = $('input:radio[name=seleccion]:checked').val();
   //var elemento = document.getElementById("mostrarprotocolista");
-    if (seleccion == 'general') {
-         $("#mostrarprotocolista").fadeOut();
-    }else if (seleccion == 'porescriturador') {
-           $("#mostrarprotocolista").fadeIn();
-    }
+  if (seleccion == 'general') {
+   $("#mostrarprotocolista").fadeOut();
+ }else if (seleccion == 'porescriturador') {
+   $("#mostrarprotocolista").fadeIn();
  }
+}
 
 
 $("#informeingresos_dian").click(function(){
@@ -105,7 +105,7 @@ $("#informeingresos_dian").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -125,7 +125,7 @@ $("#enajenaciones").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -144,7 +144,7 @@ $("#consolidadocaja").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -157,8 +157,8 @@ $("#imprimirconsolidadocaja").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -184,7 +184,7 @@ $("#informedegastos").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -197,8 +197,8 @@ $("#imprimirinformedegastos").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -224,7 +224,7 @@ $("#relnotcreditcajarapida").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -237,8 +237,8 @@ $("#relacionnotacreditocajarapida").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -251,33 +251,33 @@ $("#relacionnotacreditocajarapida").click(function(){
 });
 
 $("#generar_informe_ingresos_dian").click(function(){
-  
-   if (document.querySelector('input[name="seleccion"]:checked')) {
 
-    var opcionreporte = '';
-    var seleccion = $('input:radio[name=seleccion]:checked').val();
-    if (seleccion == 'escrituras') {
-      opcionreporte = "escrituras";
-    }else if (seleccion == 'cajarapida') {
-      opcionreporte = "cajarapida";
-    }
+ if (document.querySelector('input[name="seleccion"]:checked')) {
 
-    if($("#ingreso").val() == '' || $("#start").val() == '' || $("#end").val() == ''){
-      alert("Todos los campos son necesarios");
-    }else{
+  var opcionreporte = '';
+  var seleccion = $('input:radio[name=seleccion]:checked').val();
+  if (seleccion == 'escrituras') {
+    opcionreporte = "escrituras";
+  }else if (seleccion == 'cajarapida') {
+    opcionreporte = "cajarapida";
+  }
 
-      var route = "/cargarfechas";
-      var token = $("#token").val();
-      var type = 'GET';
-      var ingreso = $("#ingreso").val();
-      var fecha1 = $("#start").val();
-      var fecha2 = $("#end").val();
-      var datos = {
+  if($("#ingreso").val() == '' || $("#start").val() == '' || $("#end").val() == ''){
+    alert("Todos los campos son necesarios");
+  }else{
+
+    var route = "/cargarfechas";
+    var token = $("#token").val();
+    var type = 'GET';
+    var ingreso = $("#ingreso").val();
+    var fecha1 = $("#start").val();
+    var fecha2 = $("#end").val();
+    var datos = {
       "fecha1": fecha1,
       "fecha2": fecha2,
       "ingreso": ingreso,
       "opcionreporte": opcionreporte
-      };
+    };
 
     __ajax(route, token, type, datos)
     .done( function( info ){
@@ -288,41 +288,41 @@ $("#generar_informe_ingresos_dian").click(function(){
     })
   }
   
-  }else{
-    alert("Seleccione tipo de informe");
-  }
-  
+}else{
+  alert("Seleccione tipo de informe");
+}
+
 });
 
 $("#generar_informe_enajenaciones_dian").click(function(){
-   
-   if (document.querySelector('input[name="seleccion"]:checked')) {
 
-    var opcionreporte = '';
-    var seleccion = $('input:radio[name=seleccion]:checked').val();
-    if (seleccion == 'enajenacionesprincipales') {
-      opcionreporte = "enajenacionesprincipales";
-    }else if (seleccion == 'enajenacionesvendedoressecundarios') {
-      opcionreporte = "enajenacionesvendedoressecundarios";
-    }else if (seleccion == 'enajenacionescompradoressecundarios') {
-      opcionreporte = "enajenacionescompradoressecundarios";
-    }
+ if (document.querySelector('input[name="seleccion"]:checked')) {
 
-    if($("#start").val() == '' || $("#end").val() == ''){
-      alert("Todos los campos son necesarios");
-    }else{
+  var opcionreporte = '';
+  var seleccion = $('input:radio[name=seleccion]:checked').val();
+  if (seleccion == 'enajenacionesprincipales') {
+    opcionreporte = "enajenacionesprincipales";
+  }else if (seleccion == 'enajenacionesvendedoressecundarios') {
+    opcionreporte = "enajenacionesvendedoressecundarios";
+  }else if (seleccion == 'enajenacionescompradoressecundarios') {
+    opcionreporte = "enajenacionescompradoressecundarios";
+  }
 
-      var route = "/cargarfechas";
-      var token = $("#token").val();
-      var type = 'GET';
-      var ingreso = $("#ingreso").val();
-      var fecha1 = $("#start").val();
-      var fecha2 = $("#end").val();
-      var datos = {
+  if($("#start").val() == '' || $("#end").val() == ''){
+    alert("Todos los campos son necesarios");
+  }else{
+
+    var route = "/cargarfechas";
+    var token = $("#token").val();
+    var type = 'GET';
+    var ingreso = $("#ingreso").val();
+    var fecha1 = $("#start").val();
+    var fecha2 = $("#end").val();
+    var datos = {
       "fecha1": fecha1,
       "fecha2": fecha2,
       "opcionreporte": opcionreporte
-      };
+    };
 
     __ajax(route, token, type, datos)
     .done( function( info ){
@@ -333,10 +333,10 @@ $("#generar_informe_enajenaciones_dian").click(function(){
     })
   }
   
-  }else{
-    alert("Seleccione tipo de informe");
-  }
-  
+}else{
+  alert("Seleccione tipo de informe");
+}
+
 });
 
 
@@ -353,7 +353,7 @@ $("#certificadortf").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -373,7 +373,7 @@ $("#diariocaja").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -391,7 +391,7 @@ $("#mensualcaja").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -411,7 +411,7 @@ $("#actos_notariales_escritura").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -433,7 +433,7 @@ $("#libroindice").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 
@@ -456,7 +456,7 @@ $("#librorelaciondeescrituras").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
   
@@ -476,7 +476,7 @@ $("#informerecaudos").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -494,7 +494,7 @@ $("#retefuentesaplicadas").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -512,7 +512,7 @@ $("#informederetefuentes").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -530,7 +530,7 @@ $("#informerecaudosdiario").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -549,7 +549,7 @@ $("#relacionnotascreditomensual").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -567,7 +567,7 @@ $("#relacionnotascreditodiario").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -588,7 +588,7 @@ $("#informecarterames").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -610,7 +610,7 @@ $("#informecarteracliente").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -628,7 +628,7 @@ $("#ingresosporconcepto").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -646,7 +646,7 @@ $("#ingresosporconceptomensual").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -664,7 +664,7 @@ $("#estadisticonotarial").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -682,7 +682,7 @@ $("#enlaces").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -694,8 +694,8 @@ $("#imprimirestadisticonotarial").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -714,8 +714,8 @@ $("#imprimirretefuentesaplicadas").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -734,8 +734,8 @@ $("#imprimirretefuentes").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -754,8 +754,8 @@ $("#imprimirenlaces").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -773,7 +773,7 @@ $("#imprimircertificadortf").click(function(){
   var type = 'GET';
   var identificacion = $("#identificacion").val();
   var datos = {
-      "identificacion": identificacion
+    "identificacion": identificacion
   };
 
   __ajax(route, token, type, datos)
@@ -797,7 +797,7 @@ $("#auxiliarcaja").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -813,7 +813,7 @@ $("#registrocivil").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -847,42 +847,42 @@ $("#generarreporte").click(function(){
     var type = 'GET';
 
     __ajax(route, token, type, datos)
-      .done( function( info ){
-        var cajadiario = info.cajadiario;
-        var cajadiario_otros_periodos = info.cajadiario_otros_periodos;
-        var cruces = info.cruces;
-        var total_egreso = info.total_egreso;
-        var derechos_contado = info.derechos_contado;
-        var conceptos_contado = info.conceptos_contado;
-        var ingresos_contado = info.ingresos_contado;
-        var iva_contado = info.iva_contado;
-        var recaudos_contado = info.recaudos_contado;
-        var aporteespecial_contado = info.aporteespecial_contado;
-        var impuestotimbre_contado = info.impuestotimbre_contado;
-        var rtf_contado = info.rtf_contado;
-        var deduccion_reteiva_contado = info.deduccion_reteiva_contado;
-        var deduccion_reteica_contado = info.deduccion_reteica_contado;
-        var deduccion_retertf_contado = info.deduccion_retertf_contado;
-        var total_fact_contado = info.total_fact_contado;
-        var derechos_credito = info.derechos_credito;
-        var conceptos_credito = info.conceptos_credito;
-        var ingresos_credito = info.ingresos_credito;
-        var iva_credito = info.iva_credito;
-        var recaudos_credito = info.recaudos_credito;
-        var aporteespecial_credito = info.aporteespecial_credito;
-        var impuestotimbre_credito = info.impuestotimbre_credito;
-        var rtf_credito = info.rtf_credito;
-        var deduccion_reteiva_credito = info.deduccion_reteiva_credito;
-        var deduccion_reteica_credito = info.deduccion_reteica_credito;
-        var deduccion_retertf_credito = info.deduccion_retertf_credito;
-        var total_fact_credito = info.total_fact_credito;
+    .done( function( info ){
+      var cajadiario = info.cajadiario;
+      var cajadiario_otros_periodos = info.cajadiario_otros_periodos;
+      var cruces = info.cruces;
+      var total_egreso = info.total_egreso;
+      var derechos_contado = info.derechos_contado;
+      var conceptos_contado = info.conceptos_contado;
+      var ingresos_contado = info.ingresos_contado;
+      var iva_contado = info.iva_contado;
+      var recaudos_contado = info.recaudos_contado;
+      var aporteespecial_contado = info.aporteespecial_contado;
+      var impuestotimbre_contado = info.impuestotimbre_contado;
+      var rtf_contado = info.rtf_contado;
+      var deduccion_reteiva_contado = info.deduccion_reteiva_contado;
+      var deduccion_reteica_contado = info.deduccion_reteica_contado;
+      var deduccion_retertf_contado = info.deduccion_retertf_contado;
+      var total_fact_contado = info.total_fact_contado;
+      var derechos_credito = info.derechos_credito;
+      var conceptos_credito = info.conceptos_credito;
+      var ingresos_credito = info.ingresos_credito;
+      var iva_credito = info.iva_credito;
+      var recaudos_credito = info.recaudos_credito;
+      var aporteespecial_credito = info.aporteespecial_credito;
+      var impuestotimbre_credito = info.impuestotimbre_credito;
+      var rtf_credito = info.rtf_credito;
+      var deduccion_reteiva_credito = info.deduccion_reteiva_credito;
+      var deduccion_reteica_credito = info.deduccion_reteica_credito;
+      var deduccion_retertf_credito = info.deduccion_retertf_credito;
+      var total_fact_credito = info.total_fact_credito;
 
-        CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos, derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
-rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
-total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
-impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
-deduccion_retertf_credito, total_fact_credito);
-        CargarCrucesActas(cruces);
+      CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos, derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
+        rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
+        total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
+        impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
+        deduccion_retertf_credito, total_fact_credito);
+      CargarCrucesActas(cruces);
     })
 
   }else{
@@ -896,8 +896,8 @@ $("#generarreportelibroindice").click(function(){
   var fecha2 = $("#end").val();
 
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/libroindice";
   var token = $("#token").val();
@@ -921,8 +921,8 @@ $("#generarreporterelacionnotascredito").click(function(){
   var fecha2 = $("#end").val();
 
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/relacionnotacredito";
   var token = $("#token").val();
@@ -935,30 +935,67 @@ $("#generarreporterelacionnotascredito").click(function(){
   })
 });
 
+
+
 $("#generarreportecarterames").click(function(){
-  var fecha1 = $("#start").val();
-  var fecha2 = $("#end").val();
 
-  var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
-  };
-  var route = "/informecartera";
-  var token = $("#token").val();
-  var type = 'GET';
+  if (document.querySelector('input[name="seleccion"]:checked')) {
+    var opcionreporte = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'maycero') {
+      opcionreporte = "maycero";
+    }else if (seleccion == 'completo') {
+      opcionreporte = "completo";
+    }
 
-  __ajax(route, token, type, datos)
-  .done( function( info ){
-    var informecartera = info.informecartera;
-    CargarInformeCartera(informecartera);
-  })
+    if($("#start").val() == '' || $("#end").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
+
+      var fecha1 = $("#start").val();
+      var fecha2 = $("#end").val();
+
+      var datos = {
+        "fecha1": fecha1,
+        "fecha2": fecha2,
+        "opcionreporte": opcionreporte
+      };
+      var route = "/informecartera";
+      var token = $("#token").val();
+      var type = 'GET';
+
+      __ajax(route, token, type, datos)
+      .done( function( info ){
+        var informecartera = info.informecartera;
+        CargarInformeCartera(informecartera);
+      })
+    }
+  }else{
+    alert("Seleccione tipo de informe");
+  }
 });
 
+
+
 $("#generarreportecarteracliente").click(function(){
-  var identificacion_cli = $("#identificacion_cli").val();
-  
-  var datos = {
-      "identificacion_cli": identificacion_cli
+ if (document.querySelector('input[name="seleccion"]:checked')) {
+  var opcionreporte = '';
+  var seleccion = $('input:radio[name=seleccion]:checked').val();
+  if (seleccion == 'maycero') {
+    opcionreporte = "maycero";
+  }else if (seleccion == 'completo') {
+    opcionreporte = "completo";
+  }
+
+  if( $("#identificacion_cli").val() == ''){
+    alert("Todos los campos son necesarios");
+  }else{
+
+   var identificacion_cli = $("#identificacion_cli").val();
+
+   var datos = {
+    "identificacion_cli": identificacion_cli,
+    "opcionreporte": opcionreporte
   };
   var route = "/informecartera";
   var token = $("#token").val();
@@ -969,6 +1006,11 @@ $("#generarreportecarteracliente").click(function(){
     var informecartera = info.informecartera;
     CargarInformeCartera(informecartera);
   })
+}
+}else{
+  alert("Seleccione tipo de informe");
+}
+
 });
 
 $("#informediariocajarapida").click(function(){
@@ -984,7 +1026,7 @@ $("#informediariocajarapida").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -1002,7 +1044,7 @@ $("#statusfactelectronicacajarapida").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -1020,7 +1062,7 @@ $("#informeporconceptoscajarapida").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -1031,8 +1073,8 @@ $("#generarreportecajadiario").click(function(){
   var fecha2 = $("#end").val();
 
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/generarreportecajadiario";
   var token = $("#token").val();
@@ -1053,8 +1095,8 @@ $("#generarreportecajadiarioporconceptos").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/generarreportecajadiarioporconceptos";
   var token = $("#token").val();
@@ -1073,8 +1115,8 @@ $("#generarinformederecaudos").click(function(){
   var fecha2 = $("#end").val();
 
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/informerecaudos";
   var token = $("#token").val();
@@ -1082,56 +1124,56 @@ $("#generarinformederecaudos").click(function(){
 
   __ajax(route, token, type, datos)
   .done( function( info ){
-        document.getElementById('valor1').innerHTML = formatNumbderechos(info.valor1);
-        document.getElementById('valor1b').innerHTML = formatNumbderechos(info.valor1);
-        document.getElementById('valor2').innerHTML = formatNumbderechos(info.valor2);
-        document.getElementById('valor3').innerHTML = formatNumbderechos(info.valor3);
-        document.getElementById('valor4').innerHTML = formatNumbderechos(info.valor4);
-        document.getElementById('valor5').innerHTML = formatNumbderechos(info.valor5);
-        document.getElementById('valor6').innerHTML = formatNumbderechos(info.valor6);
-        document.getElementById('valor7').innerHTML = formatNumbderechos(info.valor7);
+    document.getElementById('valor1').innerHTML = formatNumbderechos(info.valor1);
+    document.getElementById('valor1b').innerHTML = formatNumbderechos(info.valor1);
+    document.getElementById('valor2').innerHTML = formatNumbderechos(info.valor2);
+    document.getElementById('valor3').innerHTML = formatNumbderechos(info.valor3);
+    document.getElementById('valor4').innerHTML = formatNumbderechos(info.valor4);
+    document.getElementById('valor5').innerHTML = formatNumbderechos(info.valor5);
+    document.getElementById('valor6').innerHTML = formatNumbderechos(info.valor6);
+    document.getElementById('valor7').innerHTML = formatNumbderechos(info.valor7);
 
-        document.getElementById('ran1escr').innerHTML = (info.ran1escr);
-        document.getElementById('ran2escr').innerHTML = info.ran2escr;
-        document.getElementById('ran3escr').innerHTML = info.ran3escr;
-        document.getElementById('ran4escr').innerHTML = info.ran4escr;
-        document.getElementById('ran5escr').innerHTML = info.ran5escr;
-        document.getElementById('ran6escr').innerHTML = info.ran6escr;
-        document.getElementById('sincescr').innerHTML = info.sincescr;
-        document.getElementById('excescr').innerHTML = info.excescr;
+    document.getElementById('ran1escr').innerHTML = (info.ran1escr);
+    document.getElementById('ran2escr').innerHTML = info.ran2escr;
+    document.getElementById('ran3escr').innerHTML = info.ran3escr;
+    document.getElementById('ran4escr').innerHTML = info.ran4escr;
+    document.getElementById('ran5escr').innerHTML = info.ran5escr;
+    document.getElementById('ran6escr').innerHTML = info.ran6escr;
+    document.getElementById('sincescr').innerHTML = info.sincescr;
+    document.getElementById('excescr').innerHTML = info.excescr;
 
-        document.getElementById('ran1super').innerHTML = formatNumbderechos(info.ran1super);
-        document.getElementById('ran2super').innerHTML = formatNumbderechos(info.ran2super);
-        document.getElementById('ran3super').innerHTML = formatNumbderechos(info.ran3super);
-        document.getElementById('ran4super').innerHTML = formatNumbderechos(info.ran4super);
-        document.getElementById('ran5super').innerHTML = formatNumbderechos(info.ran5super);
-        document.getElementById('ran6super').innerHTML = formatNumbderechos(info.ran6super);
-        document.getElementById('sincsuper').innerHTML = formatNumbderechos(info.sincsuper);
-        document.getElementById('excsuper').innerHTML = formatNumbderechos(info.excsuper);
+    document.getElementById('ran1super').innerHTML = formatNumbderechos(info.ran1super);
+    document.getElementById('ran2super').innerHTML = formatNumbderechos(info.ran2super);
+    document.getElementById('ran3super').innerHTML = formatNumbderechos(info.ran3super);
+    document.getElementById('ran4super').innerHTML = formatNumbderechos(info.ran4super);
+    document.getElementById('ran5super').innerHTML = formatNumbderechos(info.ran5super);
+    document.getElementById('ran6super').innerHTML = formatNumbderechos(info.ran6super);
+    document.getElementById('sincsuper').innerHTML = formatNumbderechos(info.sincsuper);
+    document.getElementById('excsuper').innerHTML = formatNumbderechos(info.excsuper);
 
-        document.getElementById('ran1fondo').innerHTML = formatNumbderechos(info.ran1fondo);
-        document.getElementById('ran2fondo').innerHTML = formatNumbderechos(info.ran2fondo);
-        document.getElementById('ran3fondo').innerHTML = formatNumbderechos(info.ran3fondo);
-        document.getElementById('ran4fondo').innerHTML = formatNumbderechos(info.ran4fondo);
-        document.getElementById('ran5fondo').innerHTML = formatNumbderechos(info.ran5fondo);
-        document.getElementById('ran6fondo').innerHTML = formatNumbderechos(info.ran6fondo);
-        document.getElementById('sincfondo').innerHTML = formatNumbderechos(info.sincfondo);
-        document.getElementById('excfondo').innerHTML = formatNumbderechos(info.excfondo);
-        
-        document.getElementById('ran1total').innerHTML = formatNumbderechos(info.ran1total);
-        document.getElementById('ran2total').innerHTML = formatNumbderechos(info.ran2total);
-        document.getElementById('ran3total').innerHTML = formatNumbderechos(info.ran3total);
-        document.getElementById('ran4total').innerHTML = formatNumbderechos(info.ran4total);
-        document.getElementById('ran5total').innerHTML = formatNumbderechos(info.ran5total);
-        document.getElementById('ran6total').innerHTML = formatNumbderechos(info.ran6total);
-        document.getElementById('sinctotal').innerHTML = formatNumbderechos(info.sinctotal);
-        document.getElementById('exctotal').innerHTML = formatNumbderechos(info.exctotal);
+    document.getElementById('ran1fondo').innerHTML = formatNumbderechos(info.ran1fondo);
+    document.getElementById('ran2fondo').innerHTML = formatNumbderechos(info.ran2fondo);
+    document.getElementById('ran3fondo').innerHTML = formatNumbderechos(info.ran3fondo);
+    document.getElementById('ran4fondo').innerHTML = formatNumbderechos(info.ran4fondo);
+    document.getElementById('ran5fondo').innerHTML = formatNumbderechos(info.ran5fondo);
+    document.getElementById('ran6fondo').innerHTML = formatNumbderechos(info.ran6fondo);
+    document.getElementById('sincfondo').innerHTML = formatNumbderechos(info.sincfondo);
+    document.getElementById('excfondo').innerHTML = formatNumbderechos(info.excfondo);
 
-        document.getElementById('total_escrituras').innerHTML = info.total_escrituras;
-        document.getElementById('total_recaudos').innerHTML = formatNumbderechos(info.total_recaudos);
+    document.getElementById('ran1total').innerHTML = formatNumbderechos(info.ran1total);
+    document.getElementById('ran2total').innerHTML = formatNumbderechos(info.ran2total);
+    document.getElementById('ran3total').innerHTML = formatNumbderechos(info.ran3total);
+    document.getElementById('ran4total').innerHTML = formatNumbderechos(info.ran4total);
+    document.getElementById('ran5total').innerHTML = formatNumbderechos(info.ran5total);
+    document.getElementById('ran6total').innerHTML = formatNumbderechos(info.ran6total);
+    document.getElementById('sinctotal').innerHTML = formatNumbderechos(info.sinctotal);
+    document.getElementById('exctotal').innerHTML = formatNumbderechos(info.exctotal);
 
-        document.getElementById('total_super').innerHTML = formatNumbderechos(info.total_super);
-        document.getElementById('total_fondo').innerHTML = formatNumbderechos(info.total_fondo);
+    document.getElementById('total_escrituras').innerHTML = info.total_escrituras;
+    document.getElementById('total_recaudos').innerHTML = formatNumbderechos(info.total_recaudos);
+
+    document.getElementById('total_super').innerHTML = formatNumbderechos(info.total_super);
+    document.getElementById('total_fondo').innerHTML = formatNumbderechos(info.total_fondo);
 
   })
 });
@@ -1141,8 +1183,8 @@ $("#generarreporte_conceptos").click(function(){
   var fecha2 = $("#end").val();
 
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/ingresoporconceptos";
   var token = $("#token").val();
@@ -1163,8 +1205,8 @@ $("#generar_ron").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -1190,7 +1232,7 @@ $("#informedepositos").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -1208,7 +1250,7 @@ $("#informeegresos").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-        location.href="/reportes";
+      location.href="/reportes";
     }
   })
 });
@@ -1218,8 +1260,8 @@ $("#generarreporte_depositos").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
   var route = "/reporte_depositos";
   var token = $("#token").val();
@@ -1250,9 +1292,9 @@ $("#generarreporte_egresos").click(function(){
       var fecha1 = $("#start").val();
       var fecha2 = $("#end").val();
       var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2,
-      "opcionreporte": opcionreporte
+        "fecha1": fecha1,
+        "fecha2": fecha2,
+        "opcionreporte": opcionreporte
       };
       var route = "/reporte_egresos";
       var token = $("#token").val();
@@ -1260,11 +1302,11 @@ $("#generarreporte_egresos").click(function(){
 
       __ajax(route, token, type, datos)
       .done( function( info ){
-      var informe = info.egresos;
-      CargarInformeEgresos(informe);
+        var informe = info.egresos;
+        CargarInformeEgresos(informe);
       })
     }
-   }else{
+  }else{
     alert("Seleccione tipo de informe");
   }
 });
@@ -1272,19 +1314,19 @@ $("#generarreporte_egresos").click(function(){
 
 
 //jquery accordion
-        $( "#accordion" ).accordion({
-          collapsible: true ,
-          heightStyle: "content",
-          animate: 250,
-          header: ".accordion-header"
-        }).sortable({
-          axis: "y",
-          handle: ".accordion-header",
-          stop: function( event, ui ) {
+$( "#accordion" ).accordion({
+  collapsible: true ,
+  heightStyle: "content",
+  animate: 250,
+  header: ".accordion-header"
+}).sortable({
+  axis: "y",
+  handle: ".accordion-header",
+  stop: function( event, ui ) {
             // IE doesn't register the blur when sorting
             // so trigger focusout handlers to remove .ui-state-focus
-            ui.item.children( ".accordion-header" ).triggerHandler( "focusout" );
-          }
-        });
+    ui.item.children( ".accordion-header" ).triggerHandler( "focusout" );
+  }
+});
         //jquery tabs
-        $( "#tabs" ).tabs();
+$( "#tabs" ).tabs();

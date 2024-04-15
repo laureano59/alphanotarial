@@ -11,9 +11,9 @@ $("#identificacion_cli1").blur(function() {
         var token = $("#token").val();
         var type = "GET";
         __ajax(route, token, type, datos)
-            .done(function(info) {
-                if (info.validar == '0') {
-                    $("#tipo_documento").val(info.tipo_doc);
+        .done(function(info) {
+            if (info.validar == '0') {
+                $("#tipo_documento").val(info.tipo_doc);
                     if (info.tipo_doc == 31) { //Si es empresa
                         $("#calidad").val(calidad); //NOTE:Campo oculto en modal cliente
                         $("#identificacion_empresa").val(info.identificacion_cli);
@@ -34,9 +34,9 @@ $("#identificacion_cli1").blur(function() {
 
 $("#GuardarActaDeposito").click(function() {
     var identificacion_cli, id_tip, proyecto, deposito_act, id_radica,
-        efectivo, cheque, tarjeta_credito, tarjeta_debito, pse, num_cheque, num_tarjetacredito,
-        observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, validar_suma;
-        validar_suma = 0;
+    efectivo, cheque, tarjeta_credito, tarjeta_debito, pse, num_cheque, num_tarjetacredito,
+    observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, validar_suma;
+    validar_suma = 0;
 
     identificacion_cli = $("#identificacion_cli1").val();
     id_tip = $("#id_tip option:selected").val();
@@ -58,39 +58,39 @@ $("#GuardarActaDeposito").click(function() {
     codigo_ban = $("#codigo_ban option:selected").val();
 
     validar_suma = parseFloat(efectivo) + 
-                    parseFloat(transferencia_bancaria) + 
-                    parseFloat(cheque) + 
-                    parseFloat(tarjeta_credito) +
-                    parseFloat(tarjeta_debito) +
-                    parseFloat(pse);
-   
+    parseFloat(transferencia_bancaria) + 
+    parseFloat(cheque) + 
+    parseFloat(tarjeta_credito) +
+    parseFloat(tarjeta_debito) +
+    parseFloat(pse);
+
     if (identificacion_cli != '' && id_tip != '' && proyecto != '' &&
         deposito_act != '') {
         if(validar_suma == deposito_act){
             var datos = {
-            "identificacion_cli": identificacion_cli,
-            "id_tip": id_tip,
-            "proyecto": proyecto,
-            "deposito_act": deposito_act,
-            "id_radica": id_radica,
-            "anio_fiscal": anio_fiscal,
-            "efectivo": efectivo,
-            "tarjeta_debito": tarjeta_debito,
-            "pse": pse,
-            "transferencia_bancaria": transferencia_bancaria,
-            "cheque": cheque,
-            "tarjeta_credito": tarjeta_credito,
-            "num_cheque": num_cheque,
-            "num_tarjetacredito": num_tarjetacredito,
-            "observaciones_act": observaciones_act,
-            "codigo_ban": codigo_ban
-        };
+                "identificacion_cli": identificacion_cli,
+                "id_tip": id_tip,
+                "proyecto": proyecto,
+                "deposito_act": deposito_act,
+                "id_radica": id_radica,
+                "anio_fiscal": anio_fiscal,
+                "efectivo": efectivo,
+                "tarjeta_debito": tarjeta_debito,
+                "pse": pse,
+                "transferencia_bancaria": transferencia_bancaria,
+                "cheque": cheque,
+                "tarjeta_credito": tarjeta_credito,
+                "num_cheque": num_cheque,
+                "num_tarjetacredito": num_tarjetacredito,
+                "observaciones_act": observaciones_act,
+                "codigo_ban": codigo_ban
+            };
 
-        var route = "/actas_deposito";
-        var token = $("#token").val();
-        var type = 'POST';
+            var route = "/actas_deposito";
+            var token = $("#token").val();
+            var type = 'POST';
 
-        __ajax(route, token, type, datos)
+            __ajax(route, token, type, datos)
             .done(function(info) {
                 if(info.validar == 1){
                     $("#btnguardar").fadeOut();
@@ -157,14 +157,14 @@ $("#buscarporidentif").click(function() {
         }
 
         __ajax(route, token, type, datos)
-            .done(function(info) {
-                if (tipogrid == 'retiros') {
-                    var actas_depo_all = info.actas_depo_all;
-                    CargarGridActasEgreso(actas_depo_all);
-                } else if (tipogrid == 'depositos') {
-                    CargarGridActas(info.actas_depo_all);
-                }
-            })
+        .done(function(info) {
+            if (tipogrid == 'retiros') {
+                var actas_depo_all = info.actas_depo_all;
+                CargarGridActasEgreso(actas_depo_all);
+            } else if (tipogrid == 'depositos') {
+                CargarGridActas(info.actas_depo_all);
+            }
+        })
     } else {
         alert("Aún no ha escrito el número de Documento que desea buscar");
     }
@@ -188,14 +188,14 @@ $("#buscarpornumacta").click(function() {
         }
 
         __ajax(route, token, type, datos)
-            .done(function(info) {
-                if (tipogrid == 'retiros') {
-                    var actas_depo_all = info.actas_depo_all;
-                    CargarGridActasEgreso(actas_depo_all);
-                } else if (tipogrid == 'depositos') {
-                    CargarGridActas(info.actas_depo_all);
-                }
-            })
+        .done(function(info) {
+            if (tipogrid == 'retiros') {
+                var actas_depo_all = info.actas_depo_all;
+                CargarGridActasEgreso(actas_depo_all);
+            } else if (tipogrid == 'depositos') {
+                CargarGridActas(info.actas_depo_all);
+            }
+        })
     } else {
         alert("Aún no ha escrito el número de Acta que desea buscar");
     }
@@ -204,7 +204,7 @@ $("#buscarpornumacta").click(function() {
 
 
 $("#GuardarEgreso").click(function() {
-    var descuento, saldo, nuevosaldo, opcion, id_acta, concepto_egreso, id_radica, observaciones, anio_fiscal;
+    var descuento, saldo, nuevosaldo, opcion, id_con, id_acta, concepto_egreso, id_radica, prefijo, id_fact, observaciones, anio_fiscal;
     id_acta = $("#id_act_iden").val();
     observaciones = $("#observaciones").val();
 
@@ -220,23 +220,29 @@ $("#GuardarEgreso").click(function() {
         }else{
 
             id_radica = $("#id_radica").val();
+            prefijo = $("#prefijo").val();
+            id_fact = $("#id_fact").val();
             anio_fiscal = $("#anio_fiscal").val();
+            id_con = $("#id_con").val();
             if(id_radica == '' && anio_fiscal == ''){
-                alert("Debe ingresar el número de radicación y el año fiscal");
+                alert("Debe ingresar el número de radicación");
             }else{
 
-            $("#id_act_iden").val(0);
+                $("#id_act_iden").val(0);
 
-            if (descuento != '') {
-                if (saldo >= descuento) {
-                    nuevosaldo = saldo - descuento;
+                if (descuento != '') {
+                    if (saldo >= descuento) {
+                        nuevosaldo = saldo - descuento;
                     opcion = 2; //Cuando se hace sin factura ni número de radicación
                     var route = "/egreso";
                     var token = $("#token").val();
                     var type = 'POST';
                     var datos = {
                         "id_acta": id_acta,
+                        "id_con": id_con,
                         "id_radica": id_radica,
+                        "prefijo": prefijo,
+                        "id_fact": id_fact,
                         "anio_fiscal": anio_fiscal,
                         "nuevosaldo": nuevosaldo,
                         "descuento": descuento,
@@ -260,35 +266,30 @@ $("#GuardarEgreso").click(function() {
                                 "nuevosaldo": nuevosaldo
                             };
                             __ajax(route, token, type, datos)
-                                .done(function(info) {
-                                    if (info.validar == 1) {
+                            .done(function(info) {
+                                if (info.validar == 1) {
                                     //Recargo grid por identificacion o por id_act
-                                        var url = "egresos";
-                                        $("<a>").attr("href", url)[0].click();
-                                    }
-                                })
+                                    var url = "egresos";
+                                    $("<a>").attr("href", url)[0].click();
+                                }
+                            })
+                        } else if (info.validar == 888) {
+                            alert(info.mensaje);
+                        }else if (info.validar == 555) {
+                            alert(info.mensaje);
                         }
                     }) //AJAX Nuevo Saldo
 
-        } else {
-            alert("El Saldo es Insuficiente Para este descuento");
-        }
-    } else {
-        alert("Debes asignar el valor a descontar");
-    }
-
+                } else {
+                    alert("El Saldo es Insuficiente Para este descuento");
+                }
+            } else {
+                alert("Debes asignar el valor a descontar");
             }
-
-
-
         }
 
-
-        
-
     }
-
-    
+}
 });
 
 function mayus(e) {

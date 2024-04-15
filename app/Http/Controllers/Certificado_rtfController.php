@@ -52,7 +52,7 @@ class Certificado_rtfController extends Controller
       $nombre_ciud = $ciudad->nombre_ciud;
       $porcentaje_rtf = (Tarifa::find(11)->valor1)/100;
 
-      $id_radica = $request->session()->get('key');//TODO:Obtiene el número de radicación por session
+      $id_radica = $request->session()->get('key');//Obtiene el número de radicación por session
       $Escritura = Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
       foreach ($Escritura as $esc) {
         $num_escritura = $esc->num_esc;

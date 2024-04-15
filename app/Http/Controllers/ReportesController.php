@@ -440,30 +440,48 @@ class ReportesController extends Controller
     $anio_trabajo = $notaria->anio_trabajo;
     $fecha1 = $request->fecha1;
     $fecha2 = $request->fecha2;
+    $opcionreporte = $request->opcionreporte;
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
     $identificacion_cli = $request->identificacion_cli;
     $request->session()->put('identificacion_cli', $identificacion_cli);
+    $request->session()->put('opcionreporte', $opcionreporte);
     $ordenar = $request->session()->get('ordenar');
+
     if($ordenar == 'porfecha'){ //por fecha
-      //$informecartera = Informe_cartera_view::whereBetween('fecha_fact', [$fecha1, $fecha2])->orderBy('id_fact')->get()->toArray();
-      $informecartera = Informe_cartera_view::whereDate('fecha_fact', '>=', $fecha1)
-      ->whereDate('fecha_fact', '<=', $fecha2)
+      if($opcionreporte == 'maycero'){
+        $informecartera = Informe_cartera_view::whereDate('fecha_abono', '>=', $fecha1)
+      ->whereDate('fecha_abono', '<=', $fecha2)
       ->where('nota_credito', false)
       ->where('saldo_fact', '>=', 1)
       ->orderBy('id_fact')->get()
       ->toArray();
-    }elseif($ordenar == 'porcliente'){//por cliente
-      $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
+      }else if($opcionreporte == 'completo'){
+       $informecartera = Informe_cartera_view::whereDate('fecha_abono', '>=', $fecha1)
+      ->whereDate('fecha_abono', '<=', $fecha2)
       ->where('nota_credito', false)
-      ->where('saldo_fact', '>=', 1)
-      ->orderBy('id_fact')
-      ->get()
+      ->orderBy('id_fact')->get()
       ->toArray();
+      }
+    }elseif($ordenar == 'porcliente'){//por cliente
+      if($opcionreporte == 'maycero'){
+        $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
+        ->where('nota_credito', false)
+        ->where('saldo_fact', '>=', 1)
+        ->orderBy('id_fact')
+        ->get()
+        ->toArray();
+      }else  if($opcionreporte == 'completo'){
+        $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
+        ->where('nota_credito', false)
+        ->orderBy('id_fact')
+        ->get()
+        ->toArray();
+      }
     }
-
+   
     return response()->json([
        "informecartera"=>$informecartera
      ]);
@@ -676,8 +694,7 @@ class ReportesController extends Controller
       
       $excenta = array_merge($excenta, $sincuantiaexcenta);
 
-
-
+      
       # ====================================================================
       # =           Identifica excentas que van para con cuantia           =
       # ====================================================================

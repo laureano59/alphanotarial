@@ -60,6 +60,7 @@
             <th><font size="2">Derechos</font></th>
             <th><font size="2">Conceptos</font></th>
             <th><font size="2">Ingresos</font></th>
+            <th><font size="2">Factura</font></th>
             <th><font size="2">Radicación</font></th>
         </tr>
     </thead>
@@ -91,6 +92,9 @@
             </td>
              <td align="right">
                 <font size="2">{{ number_format($item['ingresos'], 2) }}</font>
+            </td>
+             <td align="center">
+                <font size="2">{{ $item['id_fact'] }}</font>
             </td>
              <td align="center">
                 <font size="2">{{ $item['id_radica'] }}</font>
@@ -127,6 +131,7 @@
        
     </tbody>
 </table>
+Cantidad de escrituras: {{$cantescrituras}}
 <hr>
 
 </body>

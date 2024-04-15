@@ -3144,6 +3144,8 @@ public function PdfInformeCartera(Request $request){
   
   $fecha1 = $request->session()->get('fecha1');
   $fecha2 = $request->session()->get('fecha2');
+  $opcionreporte = $request->session()->get('opcionreporte');
+  
 
   $fecha_reporte =  $fecha1." A ". $fecha2;
   $fecha_impresion = date("d/m/Y");
@@ -3151,25 +3153,41 @@ public function PdfInformeCartera(Request $request){
   $identificacion_cli = $request->session()->get('identificacion_cli');
   $ordenar = $request->session()->get('ordenar');
     if($ordenar == 'porfecha'){ //por fecha
-      $informecartera = Informe_cartera_view::whereDate('fecha_fact', '>=', $fecha1)
-      ->whereDate('fecha_fact', '<=', $fecha2)
-      ->where('nota_credito', false)
-      ->where('saldo_fact', '>=', 1)
-      ->orderBy('id_fact')
-      ->get()
-      ->toArray();
+
+      if($opcionreporte == 'maycero'){
+         $informecartera = Informe_cartera_view::whereDate('fecha_abono', '>=', $fecha1)
+          ->whereDate('fecha_abono', '<=', $fecha2)
+          ->where('nota_credito', false)
+          ->where('saldo_fact', '>=', 1)
+          ->orderBy('id_fact')
+          ->get()
+          ->toArray();
+      }else if($opcionreporte == 'completo'){
+         $informecartera = Informe_cartera_view::whereDate('fecha_abono', '>=', $fecha1)
+          ->whereDate('fecha_abono', '<=', $fecha2)
+          ->where('nota_credito', false)
+          ->orderBy('id_fact')
+          ->get()
+          ->toArray();
+      }
     }elseif($ordenar == 'porcliente'){//por cliente
-      $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
-      ->where('nota_credito', false)
-      ->where('saldo_fact', '>=', 1)
-      ->orderBy('id_fact')->get()->toArray();
+      if($opcionreporte == 'maycero'){
+        $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
+          ->where('nota_credito', false)
+          ->where('saldo_fact', '>=', 1)
+          ->orderBy('id_fact')->get()->toArray();
+      }else if($opcionreporte == 'completo'){
+        $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
+          ->where('nota_credito', false)
+          ->orderBy('id_fact')->get()->toArray();
+      }
+      
     }
 
     $total_pago = 0;
     $total_saldo = 0;
     foreach ($informecartera as $key => $inf) {
-      $total_pago = $inf['total_fact'] + $total_pago;
-      $total_saldo = $inf['saldo_fact'] + $total_saldo;
+      $total_saldo = $inf['abono_car'] + $total_saldo;
     }
 
     $continformecartera = count ($informecartera, 0);
@@ -7754,6 +7772,7 @@ public function PdfInformeCartera(Request $request){
         }
 
          $resultadoFinal = array_merge(...array_values($resultadoFinal));
+         $cantescrituras = 'Solo cuando el informe es agrupado por Escriturador';
         
       }else if($opcionreporte == 'porescriturador'){
         $Relingescr = Ingresosporescrituradores_view::
@@ -7763,7 +7782,15 @@ public function PdfInformeCartera(Request $request){
         ->orderBy('num_esc')
         ->get()->toArray();
          $resultadoFinal = $Relingescr;
-      
+
+         $cantidad = Ingresosporescrituradores_view::
+          whereDate('fecha_fact', '>=', $fecha1)
+          ->whereDate('fecha_fact', '<=', $fecha2)
+          ->where('id_proto', '=', $id_proto)
+          ->groupBy('num_esc')
+          ->selectRaw('num_esc, count(*) as cantidad')
+          ->get();
+        $cantescrituras = $cantidad->count();
       }
 
         $totalderechos = 0;
@@ -7792,6 +7819,7 @@ public function PdfInformeCartera(Request $request){
       $data['totalderechos'] = $totalderechos;
       $data['totalconceptos'] = $totalconceptos;
       $data['totalingresos'] = $totalingresos;
+      $data['cantescrituras'] = $cantescrituras;
 
       
       $html = view('pdf.ingresosporescriturador',$data)->render();

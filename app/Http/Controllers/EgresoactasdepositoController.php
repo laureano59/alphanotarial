@@ -8,6 +8,7 @@ use App\Egreso_acta_deposito;
 use App\Concepto_egreso;
 use App\Actas_deposito;
 use App\Actas_deposito_view;
+use App\Factura;
 
 class EgresoactasdepositoController extends Controller
 {
@@ -75,16 +76,43 @@ class EgresoactasdepositoController extends Controller
          ]);
 
       }else if($opcion == 2){
+
         $id_acta = $request->input('id_acta');
         $id_radica = $request->id_radica;
+        $prefijo = $request->prefijo;
+        $id_fact = $request->id_fact;
         $descuento = $request->input('descuento');
         $concepto_egreso = $request->input('concepto_egreso');
         $observaciones = $request->observaciones;
+        $id_con = $request->id_con;
+
+        if($id_con == 1){//si el concepto es escritura
+            if($prefijo == '' ||   $id_fact  == ''){
+                return response()->json([
+                    "validar"=> 888,
+                    "mensaje"=> "!Ups. Para el caso de Escrituras el número de factura es obligatorio."
+                ]);
+            }else{
+                /******validar que la factura exista y no esté anulada****/
+                if (Factura::where('prefijo', $prefijo)->where('id_fact', $id_fact)->where('nota_credito', false)->exists()){
+                    //No hace nada y sigue
+                }else{
+                    return response()->json([
+                        "validar"=>555,
+                        "mensaje"=>"!UPS. Es posible que la factura no exista o que tenga nota crédito"
+                    ]);
+
+                }
+
+            }
+        }
 
         $Egreso = new Egreso_acta_deposito();
         $Egreso->fecha_egreso = $fecha_egreso;
         $Egreso->id_con = $concepto_egreso;
         $Egreso->id_radica = $id_radica;
+        $Egreso->prefijo = $prefijo;
+        $Egreso->id_fact = $id_fact;
         $Egreso->anio_radica = $anio_trabajo;
         $Egreso->id_act = $id_acta;
         $Egreso->egreso_egr = $descuento;
@@ -95,7 +123,7 @@ class EgresoactasdepositoController extends Controller
         $id_egr = $Egreso->id_egr;
         $request->session()->put('id_egr', $id_egr);
         return response()->json([
-           "validar"=> "1",
+           "validar"=> 1,
            "mensaje"=> "!Muy bien. Cruce Exitoso"
          ]);
       }

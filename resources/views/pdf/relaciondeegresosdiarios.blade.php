@@ -65,6 +65,7 @@
             <th><font size="2">Saldo</font></th>
             <th><font size="2">Observaciones</font></th>
              <th><font size="2">Tipo_Egreso</font></th>
+              <th><font size="2">Fact</font></th>
             <th><font size="2">Rad</font></th>
         </tr>
     </thead>
@@ -112,6 +113,9 @@
             </td>
              <td>
                 <font size="2">{{ $item['descripcion_tip'] }}</font>
+            </td>
+             <td align="center">
+                <font size="2">{{ $item['id_fact'] }}</font>
             </td>
 
               <td align="center">

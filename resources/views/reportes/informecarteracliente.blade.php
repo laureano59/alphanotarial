@@ -15,8 +15,28 @@
 <div class="row">
     <div class="col-sm-12">
         <form>
+             @csrf
+            <form>
             @csrf
             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+            <div class="control-group">
+              <label class="control-label bolder blue">Seleccione Tipo de Informe</label>
+              <div class="radio">
+                <label>
+                  <input name="seleccion" id="maycero" value="maycero" type="radio" class="ace input-lg" />
+                  <span class="lbl bigger-120">Informe con saldos mayor a Cero</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input name="seleccion" id="completo" value="completo" type="radio" class="ace input-lg" />
+                  <span class="lbl bigger-120">Informe completo</span>
+                </label>
+              </div>
+
+              
+            </div>  
             <div class="widget-box">
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar Identificación del Cliente</h4>
@@ -48,13 +68,17 @@
                 <table id="simple-table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>No.Abono</th>
                             <th>No.Fact</th>
                             <th>Fecha.Fact</th>
+                            <th>Fecha.Abono</th>
                             <th>No.Esc</th>
                             <th>Identificación</th>
                             <th>Cliente</th>
-                            <th>Total Factura</th>
+                            <th>Saldo General</th>
+                            <th>Valor Abono</th>
                             <th>Saldo</th>
+                            <th>Total Factura</th>
                         </tr>
                     </thead>
                     <tbody id="carteradata">
@@ -74,7 +98,7 @@
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('js/reportes/script.js')}}"></script>
+ 
   <script src="{{ asset('js/calendario.js')}}"></script>
   <script src="{{ asset('js/__AJAX.js')}}"></script>
   <script src="{{asset('js/reportes/grid.js')}}"></script>

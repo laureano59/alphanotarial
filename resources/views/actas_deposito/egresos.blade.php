@@ -103,6 +103,12 @@
                                 <div class="col-sm-9">
                                     <input type="text" id="id_radica" placeholder="Radicación" class="col-xs-10 col-sm-5" onKeyPress="return soloNumeros(event)"/>
                                 </div>
+                                <label class="col-sm-3 control-label no-padding-right orange" for="form-field-1"> <b>No.Factura</b></label>
+                               
+                                <div class="col-sm-9">
+                                     <input type="text" style="width: 60px;" id="prefijo" placeholder="prefijo" class="col-xs-10 col-sm-5"/>
+                                    <input type="text" id="id_fact" placeholder="No.Fact" class="col-xs-10 col-sm-5" onKeyPress="return soloNumeros(event)"/>
+                                </div>
 
                             </div>
 
@@ -127,7 +133,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                	<br><br><br><br>
+                                	<br><br><br><br><br><br>
                             </div>
 
 

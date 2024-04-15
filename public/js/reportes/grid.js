@@ -658,19 +658,23 @@ function CargarRelNotasCredito(data){
 }
 
 function CargarInformeCartera(data){
-  var total_factura = 0;
   var total_saldo = 0;
   var htmlTags = '';
   for (item in data) {
-    total_factura = total_factura + parseFloat(data[item].total_fact);
-    total_saldo = total_saldo + parseFloat(data[item].saldo_fact);
+    total_saldo = total_saldo + parseFloat(data[item].abono_car);
       htmlTags +=
           '<tr>' +
+          '<td>' +
+          data[item].id_car +
+          '</td>' +
           '<td>' +
           data[item].id_fact +
           '</td>' +
           '<td>' +
           data[item].fecha_fact +
+          '</td>' +
+            '<td>' +
+          data[item].fecha_abono +
           '</td>' +
           '<td>' +
           data[item].num_esc +
@@ -682,11 +686,18 @@ function CargarInformeCartera(data){
           data[item].cliente +
           '</td>' +
           '<td align="right">' +
-          formatNumbderechos(data[item].total_fact) +
+          formatNumbderechos(data[item].saldogeneral) +
           '</td>' +
           '<td align="right">' +
-          formatNumbderechos(data[item].saldo_fact) +
+          formatNumbderechos(data[item].abono_car) +
           '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].nuevo_saldo) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].total_fact) +
+          '</td>' +
+         
           '</tr>';
       }
 
@@ -699,16 +710,23 @@ function CargarInformeCartera(data){
           '</td>' +
           '<td>' +
           '</td>' +
+           '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
           '<td>' +
           '</td>' +
           '<td>' +
           '</td>' +
-          '<td align="right"><b>' +
-          formatNumbderechos(total_factura) +
-          '</b></td>' +
+           '<td>' +
+          '</td>' +
           '<td align="right"><b>' +
           formatNumbderechos(total_saldo) +
           '</b></td>' +
+          '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
           '</tr>';
 
       document.getElementById('carteradata').innerHTML = htmlTags;
@@ -1027,6 +1045,9 @@ function CargarInformeEgresos(data){
           '</td>' +
            '<td>' +
           data[item].descripcion_tip +
+          '</td>' +
+           '<td>' +
+          data[item].id_fact +
           '</td>' +
            '<td>' +
           data[item].id_radica +

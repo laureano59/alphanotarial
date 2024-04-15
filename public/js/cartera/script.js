@@ -66,7 +66,8 @@ $("#GuardarAbono").click(function() {
             var type = 'POST';
             var datos = {
                 "id_fact": id_fact,
-                "abono": abono
+                "abono": abono,
+                "saldo": nuevosaldo
             };
             __ajax(route, token, type, datos)
                 .done(function(info) {

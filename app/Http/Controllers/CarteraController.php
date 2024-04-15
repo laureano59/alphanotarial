@@ -43,11 +43,13 @@ class CarteraController extends Controller
       $prefijo_fact = Notaria::find(1)->prefijo_fact;
       $id_fact = $request->input('id_fact');
       $abono = $request->input('abono');
+      $saldo = $request->saldo;
 
       $cartera = new Cartera_fact();
       $cartera->id_fact = $id_fact;
       $cartera->prefijo = $prefijo_fact;
       $cartera->abono_car = $abono;
+      $cartera->saldo = $saldo;
       $cartera->usuario = auth()->user()->name;
       $cartera->save();
 
