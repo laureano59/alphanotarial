@@ -7,6 +7,7 @@ use App\Notaria;
 use App\Radicacion;
 use App\Factura;
 use App\Escritura;
+use App\Facturascajarapida;
 
 class HomeController extends Controller
 {
@@ -25,7 +26,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
       $AnioTrabajo = Notaria::find(1);
       $prefijo = $AnioTrabajo->prefijo_fact;
@@ -47,6 +48,37 @@ class HomeController extends Controller
       foreach ($escritura as $esc) {
         $Num_esc = $esc->num_escr;
       }
+
+
+      $facturas_dian = Factura::select(\DB::raw("prefijo, id_fact, TO_CHAR(fecha_fact, 'DD-MM-YYYY') AS fecha_fact"))
+      ->where('status_factelectronica', '0')
+      ->where('fecha_fact', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
+      ->get();
+
+      $facturas_dian_cr = Facturascajarapida::select(\DB::raw("prefijo, id_fact, TO_CHAR(fecha_fact, 'DD-MM-YYYY') AS fecha_fact"))
+      ->where('status_factelectronica', '0')
+      ->where('fecha_fact', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
+      ->get();
+
+      $Fact_Dian = '0';
+      
+    if ($facturas_dian->isEmpty()) {
+      $Fact_Dian = '0';//No hay facturas para enviar
+    } else {
+      $Fact_Dian = '1';//Hay facturas para enviar
+    }
+
+    $request->session()->put('Fact_Dian', $Fact_Dian);
+
+    $Fact_Dian_cr = '0';
+
+    if ($facturas_dian_cr->isEmpty()) {
+      $Fact_Dian_cr = '0';//No hay facturas para enviar
+    } else {
+      $Fact_Dian_cr = '1';//Hay facturas para enviar
+    }
+
+    $request->session()->put('Fact_Dian_cr', $Fact_Dian_cr);
 
 
       return view('home', compact('Id_radica', 'AnioTrabajo', 'Id_fact', 'Num_esc'));

@@ -22,6 +22,7 @@ use App\Concepto;
 use App\Banco;
 use App\Factura_a_cargo_de_view;
 
+
 class FacturacionController extends Controller
 {
   /**
@@ -40,8 +41,8 @@ class FacturacionController extends Controller
      */
     public function index(Request $request)
     {
-      $request->user()->authorizeRoles(['facturacion','administrador']);
-
+       $request->user()->authorizeRoles(['facturacion','administrador']);
+     
       $opcion = $request->session()->get('opcion');//TODO:Session para tipo de factura
       $anio_trabajo = Notaria::find(1)->anio_trabajo;
       $id_radica = $request->session()->get('key');

@@ -17,6 +17,7 @@ use App\Tipoidentificacion;
 use App\Calidad1;
 use App\Calidad2;
 use App\Departamento;
+use App\Facturascajarapida;
 
 class RadicacionController extends Controller
 {
@@ -27,7 +28,7 @@ class RadicacionController extends Controller
    */
   public function __construct()
   {
-      $this->middleware('auth');
+    $this->middleware('auth');
   }
     /**
      * Display a listing of the resource.
@@ -52,19 +53,57 @@ class RadicacionController extends Controller
      */
     public function create(Request $request)
     {
+
+       /*VALIDA SI HAY FACTURAS PARA ENVIAR A LA DIAN Y SACAR EL MENSAJE*/
+
+
+       $facturas_dian = Factura::select(\DB::raw("prefijo, id_fact, TO_CHAR(fecha_fact, 'DD-MM-YYYY') AS fecha_fact"))
+       ->where('status_factelectronica', '0')
+       ->where('fecha_fact', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
+       ->get();
+
+       $facturas_dian_cr = Facturascajarapida::select(\DB::raw("prefijo, id_fact, TO_CHAR(fecha_fact, 'DD-MM-YYYY') AS fecha_fact"))
+       ->where('status_factelectronica', '0')
+       ->where('fecha_fact', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
+       ->get();
+
+       $Fact_Dian = '0';
+
+       if ($facturas_dian->isEmpty()) {
+      $Fact_Dian = '0';//No hay facturas para enviar
+    } else {
+      $Fact_Dian = '1';//Hay facturas para enviar
+    }
+
+    $request->session()->put('Fact_Dian', $Fact_Dian);
+
+    $Fact_Dian_cr = '0';
+
+    if ($facturas_dian_cr->isEmpty()) {
+      $Fact_Dian_cr = '0';//No hay facturas para enviar
+    } else {
+      $Fact_Dian_cr = '1';//Hay facturas para enviar
+    }
+
+    $request->session()->put('Fact_Dian_cr', $Fact_Dian_cr);
+
+
+
+      /*RADICACIÓN*/
       $request->user()->authorizeRoles(['radicacion','administrador']);
-       $AnioTrabajo = Notaria::find(1);
-       $Protocolistas = Protocolista::all();
-       $Actos = Acto::all();
-       $calidad1 = Calidad1::all();
-       $calidad1 = $calidad1->sortBy('nombre_cal1');
-       $calidad2 = Calidad2::all();
-       $calidad2 = $calidad2->sortBy('nombre_cal2');
-       $Departamentos = Departamento::all();
+      $AnioTrabajo = Notaria::find(1);
+      $Protocolistas = Protocolista::all();
+      $Actos = Acto::all();
+      $calidad1 = Calidad1::all();
+      $calidad1 = $calidad1->sortBy('nombre_cal1');
+      $calidad2 = Calidad2::all();
+      $calidad2 = $calidad2->sortBy('nombre_cal2');
+      $Departamentos = Departamento::all();
        $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
        $TipoIdentificaciones = Tipoidentificacion::all();
        return view('radicacion.create', compact('AnioTrabajo', 'Protocolistas', 'Actos', 'TipoIdentificaciones', 'calidad1', 'calidad2', 'Departamentos'));
-    }
+      
+  }
 
     /**
      * Store a newly created resource in storage.
@@ -82,8 +121,8 @@ class RadicacionController extends Controller
         $radicacion->save();
         return response()->json([
            //"mensaje"=> $request->all()
-           "idradica"=> $radicacion->id_radica
-         ]);
+         "idradica"=> $radicacion->id_radica
+       ]);
       }
     }
 
@@ -127,9 +166,9 @@ class RadicacionController extends Controller
       $radicacion->id_proto = $request->input('id_proto');
       $radicacion->save();
       return response()->json([
-           "validar"=> 1,
-           "mensaje"=> "Muy bien!. Se actualizó el protocolista de la radicación"
-         ]);
+       "validar"=> 1,
+       "mensaje"=> "Muy bien!. Se actualizó el protocolista de la radicación"
+     ]);
     }
 
     /**
@@ -150,9 +189,9 @@ class RadicacionController extends Controller
       if (Radicacion::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
         if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->where('nota_credito', false)->exists()){
           return response()->json([
-             "validar"=> "1",
-             "mensaje"=> "La radicación ya está Facturada, No es posible liberarla"
-           ]);
+           "validar"=> "1",
+           "mensaje"=> "La radicación ya está Facturada, No es posible liberarla"
+         ]);
 
         }else{
           //Eliminar liquidación
@@ -174,19 +213,19 @@ class RadicacionController extends Controller
           $liq_derecho->delete();
 
           return response()->json([
-             "validar"=> "7",
-             "mensaje"=> "Muy bien : La radicación se ha liberado Exitosamente"
-           ]);
+           "validar"=> "7",
+           "mensaje"=> "Muy bien : La radicación se ha liberado Exitosamente"
+         ]);
 
 
         }
 
       }else{
         return response()->json([
-           "validar"=> "0",
-           "mensaje"=> "La radicación no existe"
-         ]);
+         "validar"=> "0",
+         "mensaje"=> "La radicación no existe"
+       ]);
       }
 
     }
-}
+  }

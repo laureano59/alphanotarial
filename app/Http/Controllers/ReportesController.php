@@ -239,8 +239,6 @@ class ReportesController extends Controller
          $tempo = Factura::where('id_fact', '=', $num_fact_otros_p)
                                      ->get()
                                      ->toArray();
-
-
    
           
           foreach ($tempo as $key => $value) {
@@ -248,7 +246,7 @@ class ReportesController extends Controller
             $cajadiario_otros_periodos[$i]['conceptos'] = $value['total_conceptos'];
             $cajadiario_otros_periodos[$i]['recaudo'] = ($value['total_fondo'] + $value['total_super']);
             $cajadiario_otros_periodos[$i]['aporteespecial'] = $value['total_aporteespecial'];
-            $cajadiario_otros_periodos[$i]['impuesto_timbre'] = $value['impuesto_timbre'];
+            $cajadiario_otros_periodos[$i]['impuesto_timbre'] = $value['total_impuesto_timbre'];
             $cajadiario_otros_periodos[$i]['retencion'] = $value['total_rtf'];
             $cajadiario_otros_periodos[$i]['iva'] = $value['total_iva'];
             $cajadiario_otros_periodos[$i]['total'] = $value['total_fact'];
