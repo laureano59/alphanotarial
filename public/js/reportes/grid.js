@@ -732,6 +732,66 @@ function CargarInformeCartera(data){
       document.getElementById('carteradata').innerHTML = htmlTags;
 }
 
+
+function CargarInformeCartera_facturas_activas(data){
+  var total_saldo = 0;
+  var total_facturas = 0;
+  var htmlTags = '';
+  for (item in data) {
+    total_saldo = total_saldo + parseFloat(data[item].saldo_fact);
+    total_facturas = total_facturas + parseFloat(data[item].total_fact);
+      htmlTags +=
+          '<tr>' +
+          
+          '<td>' +
+          data[item].id_fact +
+          '</td>' +
+          '<td>' +
+          data[item].fecha_fact +
+          '</td>' +
+         '<td>' +
+          data[item].num_esc +
+          '</td>' +
+          '<td>' +
+          data[item].identificacion_cli +
+          '</td>' +
+          '<td>' +
+          data[item].cliente +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].saldo_fact) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].total_fact) +
+          '</td>' +
+         
+          '</tr>';
+      }
+
+      htmlTags +=
+       '<tr>' +
+          '<td>' +
+         '<b>Totales:</b>'+
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+           '</td>' +
+           '<td>' +
+           '</td>' +
+           '<td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(total_saldo) +
+          '</b></td>' +
+         '<td align="right"><b>' +
+          formatNumbderechos(total_saldo) +
+          '</b></td>' +
+          '</tr>';
+
+      document.getElementById('carteradata').innerHTML = htmlTags;
+}
+
 function CargarInformeCajadiario_rapida(data, contado, credito, facturadores){
   var subtotal = 0;
   var total_iva = 0;

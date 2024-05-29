@@ -594,6 +594,28 @@ $("#informecarterames").click(function(){
 });
 
 
+$("#informecarterafacturasactivas").click(function(){
+  var opcion = 27;
+  var reporte = "Relación de Cartera Facturas Activas";
+  var ordenar = "facturasactivas";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte,
+    "ordenar": ordenar
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
+
+
 
 $("#informecarteracliente").click(function(){
   var opcion = 10;
@@ -1010,6 +1032,24 @@ $("#generarreportecarteracliente").click(function(){
 }else{
   alert("Seleccione tipo de informe");
 }
+
+});
+
+
+$("#generarreportecarterafacturasactivas").click(function(){
+  var opcionreporte = '';
+   var datos = {
+    "opcionreporte": opcionreporte
+  };
+  var route = "/informecartera";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informecartera = info.informecartera;
+    CargarInformeCartera_facturas_activas(informecartera);
+  })
 
 });
 

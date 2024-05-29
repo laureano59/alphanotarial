@@ -233,6 +233,12 @@
 											Relación Cartera por Mes  
 										</a>
 									</li>
+									<li>
+										<a href="javascript://" id="informecarterafacturasactivas">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Relación Cartera Facturas Activas 
+										</a>
+									</li>
 
 								</ul>
 							</li>

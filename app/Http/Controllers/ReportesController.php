@@ -129,6 +129,9 @@ class ReportesController extends Controller
     }else if($opcion == 26){
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.relacionnotacreditocajarapida', compact('nombre_reporte'));
+    }else if($opcion == 27){
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      return view('reportes.informecarterafacturasactivas', compact('nombre_reporte'));
     }
   }
   
@@ -478,6 +481,12 @@ class ReportesController extends Controller
         ->get()
         ->toArray();
       }
+    }elseif($ordenar == 'facturasactivas'){
+       $informecartera = Informe_cartera_view::
+      where('nota_credito', false)
+      ->where('saldo_fact', '>=', 1)
+      ->orderBy('id_fact')->get()
+      ->toArray();
     }
    
     return response()->json([

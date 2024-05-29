@@ -3182,6 +3182,12 @@ public function PdfInformeCartera(Request $request){
           ->orderBy('id_fact')->get()->toArray();
       }
       
+    }else if($ordenar == 'facturasactivas'){
+       $informecartera = Informe_cartera_view::
+      where('nota_credito', false)
+      ->where('saldo_fact', '>=', 1)
+      ->orderBy('id_fact')->get()
+      ->toArray();
     }
 
     $total_pago = 0;
@@ -3208,7 +3214,22 @@ public function PdfInformeCartera(Request $request){
     $data['total_pago'] = $total_pago;
     $data['total_saldo'] = $total_saldo;
 
-    $html = view('pdf.informecartera',$data)->render();
+    if($ordenar == 'facturasactivas'){
+      $total_saldo = 0;
+      $total_factura = 0;
+      foreach ($informecartera as $key => $inf) {
+      $total_saldo = $inf['saldo_fact'] + $total_saldo;
+      $total_factura = $inf['total_fact'] + $total_factura;
+       $data['total_saldo'] = $total_saldo;
+      $data['total_factura'] = $total_factura;
+    }
+      $html = view('pdf.informecarterafacturasactivas',$data)->render();
+
+    }else{
+      $html = view('pdf.informecartera',$data)->render();
+    }
+
+    
 
     $namefile = 'informecartera_'.$fecha_reporte.'.pdf';
 
