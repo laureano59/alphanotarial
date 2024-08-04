@@ -2,6 +2,7 @@
 @section('title', 'Liquidación')
 @section('titulo_link', 'Panel de Control')
 @section('content')
+@include('liquidacion.mod_anombrede_liq')
 
 <div class="page-header">
     <h1>
@@ -97,7 +98,8 @@
                 </h5>
               </div>
               <div class="widget-toolbar">
-                  <a href="#" id="imprimirliquidacion_provisional">
+                  <!--<a href="#" id="imprimirliquidacion_provisional">-->
+                    <a href="#" id="imprimirliquidacion_provisional">
                       <i><img src="{{ asset('images/impreprovi.png') }}" width="28 px" height="28 px" title="Provisional"></i>
                   </a>
               </div>

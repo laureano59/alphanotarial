@@ -170,6 +170,12 @@
 											Relación de Facturas Diarias por Recaudos 
 										</a>
 									</li>
+									<li>
+										<a href="javascript://" id="escrisinfact">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Escrituras pendientes de Factura 
+										</a>
+									</li>
 								</ul>
 							</li>
 

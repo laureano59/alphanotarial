@@ -2672,7 +2672,7 @@ class PdfController extends Controller
         $ingreliqsocie += $ingresos;
       }
 
-      if (in_array("8", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) ) {
+      if (in_array("8", $arr_codigo) && !in_array("18", $arr_codigo) && !in_array("14", $arr_codigo) && !in_array("9", $arr_codigo) && !in_array("3", $arr_codigo) && !in_array("4", $arr_codigo) && !in_array("1", $arr_codigo) ) {
 
         $cantreforsocial++;
         $ingrereforsocial += $ingresos;
@@ -3030,10 +3030,11 @@ class PdfController extends Controller
       $anio_trabajo = date("Y", strtotime($fecha1)); //Convierte Fecha a YYYY
 
       
-      $cajadiario = Relacion_nota_credito_print_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)
+      $cajadiario = Relacion_nota_credito_print_view::whereDate('fecha_nc', '>=', $fecha1)
+      ->whereDate('fecha_nc', '<=', $fecha2)
       ->where('anio_esc', '=', $anio_trabajo)
        ->where('nota_credito', true)
+        ->orderBy('id_ncf')
       ->get()
       ->toArray();
    
@@ -4897,6 +4898,9 @@ public function PdfInformeCartera(Request $request){
 
     $html = view('pdf.cajadiariogeneral',$data)->render();
 
+    ini_set('pcre.backtrack_limit', '5000000'); // Ajusta el valor según sea necesario
+    ini_set('memory_limit', '1024M'); // Ajusta el valor según sea necesario
+
     $namefile = 'cajadiario_'.$fecha_reporte.'.pdf';
 
     $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
@@ -4961,6 +4965,7 @@ public function PdfInformeCartera(Request $request){
     $facturas = Factura::whereDate('fecha_fact', '>=', $fecha1)
     ->whereDate('fecha_fact', '<=', $fecha2)
     ->where('nota_credito','<>', true)
+    ->where('nota_periodo', '<>', 0)
     ->get()->toArray();
 
     $facturas = $this->unique_multidim_array($facturas, 'id_radica');
@@ -8008,6 +8013,100 @@ public function PdfInformeCartera(Request $request){
 
       
       $html = view('pdf.retefuentes',$data)->render();
+      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
+    public function Escrituras_Sin_Factura(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      
+      // Subconsulta para obtener facturas con nota de crédito
+        $facturasConNotaCredito = Factura::join('escrituras', function($join) {
+                $join->on('facturas.id_radica', '=', 'escrituras.id_radica')
+                     ->on('facturas.anio_radica', '=', 'escrituras.anio_radica');
+            })
+            ->where('facturas.nota_credito', true)
+            ->whereBetween('facturas.fecha_fact', [$fecha1, $fecha2])
+            ->select('facturas.id_fact', 'facturas.id_radica', 'facturas.anio_radica', 'escrituras.num_esc', 'escrituras.fecha_esc')
+            ->get();
+
+        // Subconsulta para obtener facturas sin nota de crédito
+        $facturasSinNotaCredito = Factura::join('escrituras', function($join) {
+                $join->on('facturas.id_radica', '=', 'escrituras.id_radica')
+                     ->on('facturas.anio_radica', '=', 'escrituras.anio_radica');
+            })
+            ->where('facturas.nota_credito', false)
+            ->whereBetween('facturas.fecha_fact', [$fecha1, $fecha2])
+            ->select('facturas.id_fact', 'facturas.id_radica', 'facturas.anio_radica', 'escrituras.num_esc', 'escrituras.fecha_esc')
+            ->get();
+
+        // Filtrar las escrituras que no tienen una nota de crédito correspondiente
+        $result = $facturasConNotaCredito->filter(function($fcnc) use ($facturasSinNotaCredito) {
+            return !$facturasSinNotaCredito->contains('num_esc', $fcnc->num_esc);
+        });
+
+        // Transformar el resultado al formato deseado
+        $finalResult = $result->map(function($item) {
+            return [
+                'num_esc' => $item->num_esc,
+                'fecha_esc'=> $item->fecha_esc,
+                'id_radica' => $item->id_radica,
+            ];
+        });
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['informe'] = $finalResult;
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+           
+      $html = view('pdf.informeescriturassinfactura',$data)->render();
       $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
 
       $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();

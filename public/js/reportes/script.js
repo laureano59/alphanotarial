@@ -1238,6 +1238,43 @@ $("#generarreporte_conceptos").click(function(){
   })
 });
 
+$("#escrituras_sin_factura").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2
+  };
+  var route = "/escripendtfact";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var EscSinFact = info.Reporte;
+    CargarEscrSinFact(EscSinFact);
+  })
+});
+
+$("#escrisinfact").click(function(){
+  var opcion = 28;
+  var reporte = "Escrituras Pendientes de Factura";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
 $("#generar_ron").click(function(){
   var route = "/cargarfechas";
   var token = $("#token").val();

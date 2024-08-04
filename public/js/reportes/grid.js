@@ -1146,4 +1146,24 @@ function CargarInformeEgresos(data){
       document.getElementById('data').innerHTML = htmlTags;
 }
 
+function CargarEscrSinFact(data){
+  var htmlTags = '';
+  for (item in data) {
+    htmlTags +=
+          '<tr>' +
+           '<td>' +
+          data[item].num_esc +
+          '</td>' +
+          '<td>' +
+          data[item].fecha_esc +
+          '</td>' +
+           '<td>' +
+          data[item].id_radica +
+          '</td>' +
+          '</tr>';
+      }
+
+      document.getElementById('data').innerHTML = htmlTags;
+}
+
 

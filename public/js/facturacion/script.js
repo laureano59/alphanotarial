@@ -123,6 +123,13 @@ $("#mostrarparticipantes").click(function() {
         })
 });
 
+$("#habilitarparticipantes").click(function() {
+    
+    $("#btnmostrar").fadeIn();
+    Total_Menos_Deducciones();
+    
+});
+
 $("#mostrarparticipantesfactmultiple").click(function() {
     var id_radica = $("#id_radica").val();
     var route = "/anombrede";
@@ -439,6 +446,7 @@ $("#guardarfacturaunica").click(function() {
 
 $("#guardarfacturamultiple").click(function() {
     /*******Valida totales de la factura y la liquidación*********/
+    $("#btnmostrar").fadeOut();//ocultar boton mostrar participantes
     Total_Menos_Deducciones();
 
     datos = {

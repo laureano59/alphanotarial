@@ -104,7 +104,7 @@
                     </select></td>
                     <td><input type="text" size="10" id="identificacion_cli1" name="identificacion_cli1" placeholder="Identificación" /></td>
                     <td><input type="text" readonly size="40" id="nombre_cli1" name="nombre_cli1" /></td>
-                    <td>
+                    <td id="btnmostrar" style="display:none">
                         <a href="javascript://" id="mostrarparticipantesfactmultiple">
                             <span class="label label-warning label-white middle">Mostrar</span>
                         </a>
@@ -201,6 +201,26 @@
         </tr>
     </thead>
     <tbody id="recaudofondoysuper">
+
+        <tr id="recartf">
+          <td>Retención en la Fuente</td>
+          <td bgcolor="#ccffcc" align="right">
+              <span id="totalrtf"></span>
+              <input type="hidden" id="totrtfiden">
+          </td>
+          <td bgcolor="#FFF9BB" align="right">
+              <span id="totalrtfparticipacion"></span>
+              <input type="hidden" id="totalrtfparticipacioniden"/>
+          </td>
+          <td width="10%">
+            <input type="text" id="porcentajertf" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+        </td>
+        <td width="20%" bgcolor="#ccffcc" align="right">
+            <span id="pagortf"></span>
+            <input type="hidden" id="pagortfiden" value="0" />
+        </td>
+    </tr>
+
       <tr id="recaudosuper">
           <td>Recaudo Super</td>
           <td bgcolor="#ccffcc" align="right">
@@ -276,6 +296,10 @@
 </tr>
 </tbody>
 </table>
+
+<div align="right"><a href="javascript://" id="habilitarparticipantes" class="btn btn-warning btn-lg">
+                        Habilitar participantes
+                    </a></div>
 </div>
 
 <!---Menu Totales--->
@@ -383,6 +407,7 @@
                     </table>
                 </div>
             </div>
+
             <div class="space-4"></div>
             <div class="borde_title_pago">
                 <div class="box_title_pago">

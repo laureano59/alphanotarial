@@ -303,6 +303,18 @@ function CargarRecaudos_Fact_Multiple(validar) {
 
     var grantotal = 0;
     for (item in validar) {
+        if (parseFloat(validar[item].retefuente) > 0) {
+            $("#totalrtf").html(formatNumbderechos(validar[item].retefuente));
+            $("#totalrtfiden").val(validar[item].retefuente);
+            $("#totalrtfparticipacion").html(formatNumbderechos(validar[item].retefuente * porcentaje));
+            $("#totalrtfparticipacioniden").val(validar[item].retefuente * porcentaje);
+        } else if (parseFloat(validar[item].retefuente) < 1) {
+            $("#totalrtf").html('0.00');
+            $("#totalrtfiden").val(0);
+            $("#totalrtfparticipacion").html('0.00');
+            $("#totalrtfparticipacioniden").val(0);
+        }
+
         if (parseFloat(validar[item].recsuper) > 0) {
             $("#totalsuper").html(formatNumbderechos(validar[item].recsuper));
             $("#totalsuperiden").val(validar[item].recsuper);
@@ -359,39 +371,46 @@ function Calcular_Recaudos_FactMultiple() {
     pagoaporteespecial, pagoaporteespecialiden, 
     pagoimpuestotimbre, pagoimpuestotimbreiden, porcentajeimpuestotimbre,
     totalcompleto, porcentajesuper, porcentajefondo, porcentajeaporteespecial, totalsuperparticipacioniden,
-    totalfondoparticipacioniden;
+    totalfondoparticipacioniden, pagortf, pagortfiden;
 
+    porcentajertf = parseFloat($("#porcentajertf").val() / 100);
     porcentajesuper = parseFloat($("#porcentajesuper").val() / 100);
     porcentajefondo = parseFloat($("#porcentajefondo").val() / 100);
     porcentajeaporteespecial = parseFloat($("#porcentajeaporteespecial").val() / 100);
     porcentajeimpuestotimbre = parseFloat($("#porcentajeimpuestotimbre").val() / 100);
    
+    totalrtfparticipacioniden = $("#totalrtfparticipacioniden").val();
     totalsuperparticipacioniden = $("#totalsuperparticipacioniden").val();
     totalfondoparticipacioniden = $("#totalfondoparticipacioniden").val();
     totalaporteespecialparticipacioniden = $("#totalaporteespecialparticipacioniden").val();
     totalimpuestotimbreparticipacioniden = $("#totalimpuestotimbreparticipacioniden").val();
     
+    pagortf = parseFloat(totalrtfparticipacioniden * porcentajertf);
     pagosuper = parseFloat(totalsuperparticipacioniden * porcentajesuper);
     pagofondo = parseFloat(totalfondoparticipacioniden * porcentajefondo);
     pagoaporteespecial = parseFloat(totalaporteespecialparticipacioniden * porcentajeaporteespecial);
     pagoimpuestotimbre = parseFloat(totalimpuestotimbreparticipacioniden * porcentajeimpuestotimbre);
 
+    $("#totrtf").val(pagortf);
     $("#totfondo").val(pagofondo);
     $("#totsuper").val(pagosuper);
     $("#totaporteespecial").val(pagoaporteespecial);
     $("#totimpuestotimbre").val(pagoimpuestotimbre);
 
 
+    $("#pagortf").html(formatNumbderechos(Math.round(pagortf)));
     $("#pagosuper").html(formatNumbderechos(Math.round(pagosuper)));
     $("#pagofondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#pagoaporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
     $("#pagoimpuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
     
+    $("#pagortfiden").val(pagortf);
     $("#pagosuperiden").val(pagosuper);
     $("#pagofondoiden").val(pagofondo);
     $("#pagoaporteespecialiden").val(pagoaporteespecial);
     $("#pagoimpuestotimbreiden").val(pagoimpuestotimbre);
 
+    $("#rtf").html(formatNumbderechos(Math.round(pagortf)));
     $("#super").html(formatNumbderechos(Math.round(pagosuper)));
     $("#fondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#aporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
@@ -651,220 +670,28 @@ function Llevar(doc, nombre, autoreteiva, autoretertf, autoreteica, id_ciud, cal
                 }
             })
 
-
-    } else if (calidad == 1) { //Factura Otorgante
-        $("#identificacion_cli1").val(doc);
-        $("#nombre_cli1").val(nombre);
-
-        if (autoreteiva == 'true') {
-            var id_tar = 26;
-            var route = "/tarifas";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_tar": id_tar
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    var tarifa = info.porcentajeiva; //Tarifa reteiva
-                    var reteiva = parseFloat($("#totalivaotoriden").val() * tarifa);
-                    $("#reteivaotoriden").val(Math.round(reteiva));
-                    $("#reteivaotor").html('-' + formatNumbderechos(Math.round(reteiva)));
-                    /******NOTE:Recalcula Gran Total con las deducciones******/
-                    Total_Menos_Deducciones_Otor();
-                })
-
-        } else if (autoreteiva == 'false') {
-            var reteiva = 0;
-            $("#reteivaotoriden").val(reteiva);
-            $("#reteivaotor").html('-' + formatNumbderechos(reteiva));
-            Total_Menos_Deducciones_Otor();
-        }
-        if (autoretertf == 'true') {
-            var id_tar = 28;
-            var route = "/tarifas";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_tar": id_tar
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    var tarifa = info.porcentajeiva; //Tarifa retertf
-                    var ingresos = parseFloat($("#grantotalotorderechosiden").val()) + parseFloat($("#grantotalotorconceptosiden").val())
-                    var retertf = ingresos * tarifa;
-
-                    $("#retertfotoriden").val(Math.round(retertf));
-                    $("#retertfotor").html('-' + formatNumbderechos(Math.round(retertf)));
-                    Total_Menos_Deducciones_Otor();
-                })
-        } else if (autoretertf == 'false') {
-            var retertf = 0;
-            $("#retertfotoriden").val(retertf);
-            $("#retertfotor").html('-' + formatNumbderechos(retertf));
-            Total_Menos_Deducciones_Otor();
-        }
-
-        if (autoreteica == 'true') {
-            var route = "/validarciudad";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_ciud": id_ciud
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    if (info.validar == 1) {
-                        var id_tar = 27;
-                        var route = "/tarifas";
-                        var token = $("#token").val();
-                        var type = 'GET';
-                        var datos = {
-                            "id_tar": id_tar
-                        };
-                        __ajax(route, token, type, datos)
-                            .done(function(info) {
-                                var ingresos = parseFloat($("#grantotalotorderechosiden").val()) + parseFloat($("#grantotalotorconceptosiden").val())
-                                var tarifa = (info.porcentajeiva) / 1000; //Tarifa reteica
-                                var reteica = ingresos * tarifa;
-                                $("#reteicaotoriden").val(Math.round(reteica));
-                                $("#reteicaotor").html('-' + formatNumbderechos(Math.round(reteica)));
-                                Total_Menos_Deducciones_Otor();
-                            })
-                    } else if (info.validar == 0) {
-                        var reteica = 0;
-                        $("#reteicaotoriden").val(reteica);
-                        $("#reteicaotor").html('-' + formatNumbderechos(reteica));
-                        Total_Menos_Deducciones_Otor();
-                    }
-
-                })
-
-        } else if (autoreteica == 'false') {
-            var reteica = 0;
-            $("#reteicaotoriden").val(reteica);
-            $("#reteicaotor").html('-' + formatNumbderechos(reteica));
-            Total_Menos_Deducciones_Otor();
-        }
-        $('#mod_anombrede').modal('toggle');
-    } else if (calidad == 2) { //Factura compareciente
-        $("#identificacion_cli2").val(doc);
-        $("#nombre_cli2").val(nombre);
-
-        if (autoreteiva == 'true') {
-            var id_tar = 26;
-            var route = "/tarifas";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_tar": id_tar
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    var tarifa = info.porcentajeiva; //Tarifa reteiva
-                    var reteiva = parseFloat($("#totalivacompaiden").val() * tarifa);
-                    $("#reteivacompiden").val(Math.round(reteiva));
-                    $("#reteivacomp").html('-' + formatNumbderechos(Math.round(reteiva)));
-
-                    /******NOTE:Recalcula Gran Total con las deducciones******/
-                    Total_Menos_Deducciones_Compa();
-                })
-
-        } else if (autoreteiva == 'false') {
-            var reteiva = 0;
-            $("#reteivacompiden").val(reteiva);
-            $("#reteivacomp").html('-' + formatNumbderechos(reteiva));
-            Total_Menos_Deducciones_Compa();
-        }
-        if (autoretertf == 'true') {
-            var id_tar = 28;
-            var route = "/tarifas";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_tar": id_tar
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    var tarifa = info.porcentajeiva; //Tarifa retertf
-                    var ingresos = parseFloat($("#grantotalcompaderechosiden").val()) + parseFloat($("#grantotalcompaconceptosiden").val())
-                    var retertf = ingresos * tarifa;
-
-                    $("#retertfcompiden").val(Math.round(retertf));
-                    $("#retertfcomp").html('-' + formatNumbderechos(Math.round(retertf)));
-                    Total_Menos_Deducciones_Compa();
-                })
-
-        } else if (autoretertf == 'false') {
-            var retertf = 0;
-            $("#retertfcompiden").val(retertf);
-            $("#retertfcomp").html('-' + formatNumbderechos(retertf));
-            Total_Menos_Deducciones_Compa();
-        }
-
-        if (autoreteica == 'true') {
-            var route = "/validarciudad";
-            var token = $("#token").val();
-            var type = 'GET';
-            var datos = {
-                "id_ciud": id_ciud
-            };
-            __ajax(route, token, type, datos)
-                .done(function(info) {
-                    if (info.validar == 1) {
-                        var id_tar = 27;
-                        var route = "/tarifas";
-                        var token = $("#token").val();
-                        var type = 'GET';
-                        var datos = {
-                            "id_tar": id_tar
-                        };
-                        __ajax(route, token, type, datos)
-                            .done(function(info) {
-                                var ingresos = parseFloat($("#grantotalcompaderechosiden").val()) + parseFloat($("#grantotalcompaconceptosiden").val())
-                                var tarifa = (info.porcentajeiva) / 1000; //Tarifa reteica
-                                var reteica = ingresos * tarifa;
-                                $("#reteicacompiden").val(Math.round(reteica));
-                                $("#reteicacomp").html('-' + formatNumbderechos(Math.round(reteica)));
-                                Total_Menos_Deducciones_Compa();
-                            })
-                    } else if (info.validar == 0) {
-                        var reteica = 0;
-                        $("#reteicacompiden").val(reteica);
-                        $("#reteicacomp").html('-' + formatNumbderechos(reteica));
-                        Total_Menos_Deducciones_Compa();
-                    }
-
-                })
-
-        } else if (autoreteica == 'false') {
-            var reteica = 0;
-            $("#reteicacompiden").val(reteica);
-            $("#reteicacomp").html('-' + formatNumbderechos(reteica));
-            Total_Menos_Deducciones_Compa();
-        }
-        $('#mod_anombrede').modal('toggle');
-
     } else if (calidad == 3) { //Factura Multiple
+     
+
       /*********Se calcula retención en la Fuente con los porcentajes de
       ***********************cada vendedor*****************************/
       var identificacion_cli = doc;
-      var route = "/retefuenteporvendedor";
-      var token = $("#token").val();
-      var type = 'GET';
-      var datos = {
-          "identificacion_cli": identificacion_cli
-      };
-      __ajax(route, token, type, datos)
-          .done(function(info) {
-            if(info.validar == 0){
-            }else if(info.validar == 1){
-              var rtfcliente = info.rtfcliente;
-              $("#rtf").html(formatNumbderechos(rtfcliente));
-              $("#totrtf").val(rtfcliente);
-              Total_Menos_Deducciones();
-            }
-          })
+      //var route = "/retefuenteporvendedor";
+      //var token = $("#token").val();
+      //var type = 'GET';
+      //var datos = {
+         // "identificacion_cli": identificacion_cli
+      //};
+      //__ajax(route, token, type, datos)
+        //  .done(function(info) {
+          //  if(info.validar == 0){
+            //}else if(info.validar == 1){
+              //var rtfcliente = info.rtfcliente;
+              //$("#rtf").html(formatNumbderechos(rtfcliente));
+              //$("#totrtf").val(rtfcliente);
+              //Total_Menos_Deducciones();
+            //}
+          //})
 
         $("#identificacion_cli1").val(doc);
         $("#nombre_cli1").val(nombre);
@@ -884,7 +711,7 @@ function Llevar(doc, nombre, autoreteiva, autoretertf, autoreteica, id_ciud, cal
                     $("#reteivaide").val(Math.round(reteiva));
                     $("#reteiva").html('-' + formatNumbderechos(Math.round(reteiva)));
                     /******NOTE:Recalcula Gran Total con las deducciones******/
-                    console.log(reteiva);
+                    //console.log(reteiva);
                     Total_Menos_Deducciones();
                 })
 

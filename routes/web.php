@@ -142,6 +142,7 @@ Route::get('cajadiario', 'ReportesController@Caja_Diario');
 Route::get('libroindice', 'ReportesController@Libro_Indice');
 Route::get('relacionnotacredito', 'ReportesController@Relacion_Nota_Credito');
 Route::get('ingresoporconceptos', 'ReportesController@Ingreso_Conceptos');
+Route::get('escripendtfact', 'ReportesController@Escrituras_Sin_Factura');
 Route::get('informecartera', 'ReportesController@Informe_Cartera');
 Route::get('informerecaudos', 'ReportesController@Informe_Recaudos');
 Route::get('generarreportecajadiario', 'ReportesController@Informe_cajadiario_rapida');
@@ -153,6 +154,7 @@ Route::get('consultar_gasto', 'Gastos_notariaController@validar_existencia');
 
 Route::get('recibogastospdf', 'PdfController@ReciboGastosNotaria');
 Route::get('informedegastos', 'PdfController@Informedegastos');
+Route::get('escripendtfactpdf', 'PdfController@Escrituras_Sin_Factura');
 
 Route::get('relacionnotacreditocajarapida', 'PdfController@RelacionNotaCreditoCajaRapidaPdf');
 
