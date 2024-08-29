@@ -95,6 +95,12 @@ $("#notacredito").click(function(){
             }, 3000);
           }
         })//AJAX notascredito
+      } else if(info.validar == 7){
+          $("#msj1").html(info.mensaje);
+          $("#msj-error1").fadeIn();
+          setTimeout(function() {
+          $("#msj-error1").fadeOut();
+          }, 3000);
       }
     })//AJAX Factura
 
@@ -200,6 +206,12 @@ $("#notacreditocajarapida").click(function(){
             }, 3000);
           }
         })//AJAX notascredito
+      } else if(info.validar == 7){
+          $("#msj1").html(info.mensaje);
+          $("#msj-error1").fadeIn();
+          setTimeout(function() {
+          $("#msj-error1").fadeOut();
+          }, 3000);
       }
     })//AJAX Factura
 

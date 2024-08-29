@@ -583,14 +583,23 @@ class FacturacionController extends Controller
 
         }else{
           if($factura){
-            $id_radica = $factura->id_radica;
-            $factura->nota_credito = true;
-            $factura->nota_periodo = $nota_periodo;
-            $factura->save();
-            return response()->json([
-              "validar"=>1,
-              "id_radica"=>$id_radica
-            ]);
+            $status_fact = $factura->status_factelectronica;
+            if($status_fact == '1'){
+              $id_radica = $factura->id_radica;
+              $factura->nota_credito = true;
+              $factura->nota_periodo = $nota_periodo;
+              $factura->save();
+              return response()->json([
+                "validar"=>1,
+                "id_radica"=>$id_radica
+              ]);
+            }else if($status_fact == '0'){
+              return response()->json([
+                "validar"=>7,
+                "mensaje"=>'Esta Factura no tiene CUFE'
+              ]);
+            }
+           
           }else{
             return response()->json([
               "validar"=>0,

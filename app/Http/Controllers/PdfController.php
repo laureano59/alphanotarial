@@ -256,6 +256,9 @@ class PdfController extends Controller
       $TipoAmbiente = '1'; //1=AmbienteProduccion , 2: AmbientePruebas
 
       $cufe = $request->session()->get('CUFE_SESION');
+      if (empty($cufe)) {
+        $cufe = '0';
+      } 
       $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
       $QRCode = $cufe;
 
@@ -377,8 +380,13 @@ class PdfController extends Controller
       }
 
 
-
-      $html = view('pdf.generar',$data)->render();
+      if ($cufe == '0'){
+        $piepagina_fact = '';
+        $html = view('pdf.generar_recibo',$data)->render();
+      }else{
+        $html = view('pdf.generar',$data)->render();
+      }
+      
 
       $namefile = $num_fact.'_F1'.'.pdf';
       //$namefile = 'facturan13'.$num_fact.'.pdf';
@@ -593,6 +601,9 @@ class PdfController extends Controller
       $TipoAmbiente = '1'; //1=AmbienteProduccion , 2: AmbientePruebas
       
       $cufe = $request->session()->get('CUFE_SESION');
+      if (empty($cufe)) {
+        $cufe = '0';
+      } 
       $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
       $QRCode = $cufe;
 
@@ -711,8 +722,13 @@ class PdfController extends Controller
         $data['totaldeducciones'] = round($totaldeducciones);
       }
 
-      $html = view('pdf.generar',$data)->render();
-
+      if ($cufe == '0'){
+        $piepagina_fact = '';
+        $html = view('pdf.generar_recibo',$data)->render();
+      }else{
+        $html = view('pdf.generar',$data)->render();
+      }
+     
       //$namefile = 'facturan13'.$num_fact.'.pdf';
       $namefile = $num_fact.'_F1'.'.pdf';
 
@@ -6716,7 +6732,8 @@ public function PdfInformeCartera(Request $request){
       $data['totalterceros'] = round($totalterceros);
 
       if($cufe == "sin facturar"){
-        $html = view('pdf.recibofactcajarapida',$data)->render();
+        $piepagina_fact = '';
+        $html = view('pdf.generar_recibo_caja_rapida',$data)->render();
       }else{
         $html = view('pdf.generarcajarapidapos',$data)->render();
       }
@@ -6953,7 +6970,8 @@ public function PdfInformeCartera(Request $request){
       $data['totalterceros'] = round($totalterceros);
 
       if($cufe == "sin facturar"){
-        $html = view('pdf.recibofactcajarapida',$data)->render();
+        $piepagina_fact = '';
+        $html = view('pdf.generar_recibo_caja_rapida',$data)->render();
       }else{
         $html = view('pdf.generarcajarapidapos',$data)->render();
       }
@@ -6985,22 +7003,6 @@ public function PdfInformeCartera(Request $request){
 
       $mpdf = new \Mpdf\Mpdf($configuracion);
 
-
-      /*
-      $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          "format" => [80, 250],//Media Carta
-          'margin_bottom' => 2,
-        ]);*/
 
         $mpdf->SetHTMLFooter('
           <table width="100%">

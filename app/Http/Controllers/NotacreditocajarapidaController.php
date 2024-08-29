@@ -122,11 +122,20 @@ class NotacreditocajarapidaController extends Controller
         $factura = Facturascajarapida::where("prefijo","=",$prefijo_fact)->find($id);
                 
           if($factura){
-            $factura->nota_credito = true;
-            $factura->save();
-            return response()->json([
-              "validar"=>1,
-            ]);
+            $status_fact = $factura->status_factelectronica;
+            if($status_fact == '1'){
+                $factura->nota_credito = true;
+                $factura->save();
+                return response()->json([
+                    "validar"=>1,
+                ]);
+            }else if($status_fact == '0'){
+                return response()->json([
+                "validar"=>7,
+                "mensaje"=>'Esta Factura no tiene CUFE'
+              ]);
+            }
+            
           }else{
             return response()->json([
               "validar"=>0,
