@@ -2305,6 +2305,7 @@ class PdfController extends Controller
     $Gastos_notaria = Gastos_notaria::find($id_gas);
     
     $autorizado_por = $Gastos_notaria->autorizado_por;
+    $reembolsado_a = $Gastos_notaria->reembolsado_a;
     $fecha_gas = $Gastos_notaria->fecha_gas;
 
     $concepto_gas = $Gastos_notaria->concepto_gas;
@@ -2320,6 +2321,7 @@ class PdfController extends Controller
     $data['nombre_notario'] = $nombre_notario;
     $data['id_gas'] = $id_gas;
     $data['autorizado_por'] = $autorizado_por;
+    $data['reembolsado_a'] = $reembolsado_a;
     $data['fecha_impresion'] = $fecha_impresion;
     $data['fecha_gas'] = $fecha_gas;
     $data['concepto_gas'] = $concepto_gas;

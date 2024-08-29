@@ -76,7 +76,8 @@
           </tr>
         </tbody>
       </table>
-      <p><strong>Nombre y Firma de quien recibe:</strong></p>
+      <p><strong>Nombre de quien recibe: {{$reembolsado_a}}</strong></p>
+      <p><strong>Firma: ______________________________</strong></p>
     </div>
   </div>
 </body>

@@ -43,6 +43,7 @@ class Gastos_notariaController extends Controller
         $Gasto->concepto_gas = $request->concepto;
         $Gasto->valor_gas = $request->valor_gasto;
         $Gasto->autorizado_por = $request->autoriza;
+        $Gasto->reembolsado_a = $request->reembolsado;
         $Gasto->fecha_gas = $fecha_gasto;
         $Gasto->save();
         $nuevo_id = $Gasto->id_gas;
@@ -93,6 +94,7 @@ class Gastos_notariaController extends Controller
         $Gastos->concepto_gas = $request->concepto;
         $Gastos->valor_gas = $request->valor_gasto;
         $Gastos->autorizado_por = $request->autoriza;
+        $Gastos->reembolsado_a = $request->reembolsado;
         $Gastos->save();
 
         $registros = Gastos_notaria::where('id_gas', $id)->get();

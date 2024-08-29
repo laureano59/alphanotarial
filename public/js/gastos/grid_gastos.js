@@ -21,6 +21,9 @@ function CargarGridGastos(validar) {
          '<td>'+
         validar[item].autorizado_por+
         '</td>'+
+         '<td>'+
+        validar[item].reembolsado_a+
+        '</td>'+
         '</tr>';
     }
     document.getElementById('datos').innerHTML = htmlTags;

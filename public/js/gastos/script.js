@@ -1,12 +1,14 @@
 $("#guardargasto").click(function() {
-	var concepto, valor_gasto, autoriza;
+	var concepto, valor_gasto, autoriza, reembolsado;
 	concepto = $("#concepto").val();
 	valor_gasto = $("#valor_gasto").val();
 	autoriza = $("#autoriza").val();
+	reembolsado = $("#reembolsado").val();
+
 	
 	/*Validar Nulos*/
 
-	if(concepto == '' || valor_gasto == '' || autoriza == ''){
+	if(concepto == '' || valor_gasto == '' || autoriza == '' || reembolsado == ''){
 		alert("Todos los campos son obligatorios");
 	}else{
 		var route = "/gastos_notaria";
@@ -15,7 +17,8 @@ $("#guardargasto").click(function() {
 		var datos = {
 			"concepto": concepto,
 			"valor_gasto": valor_gasto,
-			"autoriza": autoriza
+			"autoriza": autoriza,
+			"reembolsado": reembolsado
 		};
 		__ajax(route, token, type, datos)
 		.done(function(info) {
@@ -41,14 +44,16 @@ $("#nuevogasto").click(function() {
 	$("#concepto").val('');
 	$("#valor_gasto").val('');
 	$("#autoriza").val('');
+	$("#reembolsado").val('');
 	window.location.reload();
 });
 
 $("#ActualizarGasto").click(function() {
-	var concepto, valor_gasto, autoriza, id;
+	var concepto, valor_gasto, autoriza, reembolsado, id;
 	concepto = $("#concepto").val();
 	valor_gasto = $("#valor_gasto").val();
 	autoriza = $("#autoriza").val();
+	reembolsado = $("#reembolsado").val();
 	id = $("#id_update").val();
 
    	var route = "/gastos_notaria/" + id;
@@ -57,7 +62,8 @@ $("#ActualizarGasto").click(function() {
 	var datos = {
 		"concepto": concepto,
 		"valor_gasto": valor_gasto,
-		"autoriza": autoriza
+		"autoriza": autoriza,
+		"reembolsado": reembolsado
 	};
 
     __ajax(route, token, type, datos)

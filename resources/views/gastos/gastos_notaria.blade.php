@@ -80,6 +80,12 @@
                               <input type="text" id="autoriza" size="50" />
                             </td>
                           </tr>
+                          <tr>
+                            <td><i class="ace-icon fa fa-caret-right blue"></i><b class="orange">Reembolsado a</b></td>
+                            <td>
+                              <input type="text" id="reembolsado" size="50" />
+                            </td>
+                          </tr>
                         </table>
                     </div>
                 </div>
@@ -108,6 +114,7 @@
                                 <th>Concepto</th>
                                 <th>$ Valor</th>
                                 <th>Autorizado por</th>
+                                <th>Reembolsado a</th>
                             </tr>
                         </thead>
                         <tbody id="datos"></tbody>

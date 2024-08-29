@@ -62,6 +62,7 @@
             <th><font size="2">Fecha</font></th>
             <th><font size="2">Valor</font></th>
             <th><font size="2">Autoriza</font></th>
+            <th><font size="2">Reembolsado a</font></th>
         </tr>
     </thead>
     <tbody>
@@ -89,6 +90,9 @@
         </td>
         <td>
             <font size="2">{{ $item['autorizado_por'] }}</font>
+        </td>
+        <td>
+            <font size="2">{{ $item['reembolsado_a'] }}</font>
         </td>
     </tr>
     {{-- Alternar el valor de la variable para el próximo ciclo --}}
