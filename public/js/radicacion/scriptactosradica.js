@@ -340,15 +340,18 @@ function ListingPrincipales(id, nombreacto, tradicion, cuantia) {
 
                 success: function(info) {
                     var validar = info.actos;
-                    if (validar.retefuente == false) {
+                    if (!validar.retefuente) {
                         $("#porcentajecli1").prop('disabled', true);
                         $("#porcentajecli2").prop('disabled', true);
                         $("#porcentajecli1").val(0);
                         $("#porcentajecli2").val(0);
+                    }
 
-                    } else if (validar.retefuente == true) {
+                    if (validar.retefuente || validar.porcentajes) {
                         $("#porcentajecli1").prop('disabled', false);
                         $("#porcentajecli2").prop('disabled', false);
+                        $("#porcentajecli1").val('');
+                        $("#porcentajecli2").val('');
                     }
                 }
             });
