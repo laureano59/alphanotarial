@@ -338,6 +338,15 @@
 				</ul>
 			</nav>
 
+			<div class="navbar-header pull-left">
+				<a href="/ayuda" class="navbar-brand">
+					<small>
+						<img src="{{ asset('images/ayuda1.png')}} " width="30px" height="30px"/>						
+					</small>
+				</a>
+			</div>
+
+
 			<div class="navbar-buttons navbar-header pull-right" role="navigation">
 				<ul class="nav ace-nav">
 					<li class="light-blue dropdown-modal">

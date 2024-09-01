@@ -19,6 +19,7 @@ Route::resource('radicacion', 'RadicacionController');
 Route::resource('liquidacion', 'LiqderechoController');
 Route::resource('facturacion', 'FacturacionController');
 Route::resource('factura_acargo_de', 'EditaracargodeController');
+Route::resource('ayuda', 'ayudaController');
 
 
 Route::resource('facturaelectronica', 'FacturaelectronicaController');

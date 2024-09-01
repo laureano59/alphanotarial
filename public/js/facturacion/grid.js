@@ -306,8 +306,8 @@ function CargarRecaudos_Fact_Multiple(validar) {
         if (parseFloat(validar[item].retefuente) > 0) {
             $("#totalrtf").html(formatNumbderechos(validar[item].retefuente));
             $("#totalrtfiden").val(validar[item].retefuente);
-            $("#totalrtfparticipacion").html(formatNumbderechos(validar[item].retefuente * porcentaje));
-            $("#totalrtfparticipacioniden").val(validar[item].retefuente * porcentaje);
+            $("#totalrtfparticipacion").html(formatNumbderechos(validar[item].retefuente * 1));
+            $("#totalrtfparticipacioniden").val(validar[item].retefuente * 1);
         } else if (parseFloat(validar[item].retefuente) < 1) {
             $("#totalrtf").html('0.00');
             $("#totalrtfiden").val(0);
