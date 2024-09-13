@@ -57,7 +57,7 @@
 
 <div class="form-group">
     <label class="col-sm-2 control-label no-padding-right" for="form-field-1">E-Mail</label>
-    <input type="email" size="50" id="email_cli" value="{{$cli['email_cli']}}" placeholder="Correo Electrónico" />
+    <input type="email" size="50" id="email_cli" name="email_cli" placeholder="Correo Electrónico" oninput="validarEmail(this)" />
 </div>
 
 <div class="form-group">

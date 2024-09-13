@@ -130,3 +130,11 @@ $("#identificacion_cli3").blur(function(){
     });
   }
 });
+
+
+function validarEmail(input) {
+            // Expresión regular que permite solo letras, números, puntos, guiones y @
+            const regex = /[^a-zA-Z0-9@._-]/g;
+            // Remueve los caracteres no permitidos del valor actual del campo
+            input.value = input.value.replace(regex, '');
+        }
