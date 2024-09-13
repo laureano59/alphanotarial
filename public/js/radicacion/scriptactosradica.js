@@ -350,8 +350,8 @@ function ListingPrincipales(id, nombreacto, tradicion, cuantia) {
                     if (validar.retefuente || validar.porcentajes) {
                         $("#porcentajecli1").prop('disabled', false);
                         $("#porcentajecli2").prop('disabled', false);
-                        $("#porcentajecli1").val('');
-                        $("#porcentajecli2").val('');
+                        //$("#porcentajecli1").val('');
+                        //$("#porcentajecli2").val('');
                     }
                 }
             });

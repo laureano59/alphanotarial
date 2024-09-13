@@ -194,6 +194,8 @@ return [
     |
     */
 
-    'same_site' => null,
+    //'same_site' => null,
+    //'secure' => true,
+    'same_site' => 'Lax',
 
 ];

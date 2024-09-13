@@ -85,9 +85,10 @@ class PrincipalesController extends Controller
         }
 
         $principales = Principal::find($id);
+      
 
-        /**********TODO:Envía 1 o Cero para validar los campos vacios************/
-        if ($principales){//TODO:Valida si la cosulta NÓ es vacía
+        /**********Envía 1 o Cero para validar los campos vacios************/
+        if ($principales){//Valida si la cosulta NÓ es vacía
           $validarprincipales = 1;
         }else{
           $validarprincipales = 0;

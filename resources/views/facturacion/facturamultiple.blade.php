@@ -22,6 +22,7 @@
 @endsection
 @endif
 
+
 <div class="alert alert-danger" role="alert" id="msj-error1" style="display:none">
     <strong id="msj1"></strong>
 </div>
@@ -143,7 +144,15 @@
       </table>
 
       <hr style="border-top: 1px solid #E4E4E4; background: transparent;">
-
+        <script>
+            var conceptosaux = @json($Conceptos);
+        </script>
+   <div style="text-align: right;">
+     <input type="number" id="porcentajes_automatico" min="1" max="100" style="width: 110px;" placeholder="Porcentaje"  onkeydown="return false;">
+     <a href="javascript://" id="funcionporcentajes">
+ <i><img src="{{ asset('images/comprobar.png') }}" width="28 px" height="28 px" title="Insertar"></i>
+</a>
+   </div>
       <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -181,7 +190,7 @@
                   <input type="hidden" id="total{{$con->atributo}}participacioniden"/>
               </td>
               <td width="10%">
-                <input type="text" id="porcentaje{{$con->atributo}}" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Conceptos_FactMultiple('{{$con->atributo}}','total{{$con->atributo}}');" onKeyPress="return soloNumeros(event)"/>
+                <input type="text" id="porcentaje{{$con->atributo}}" maxlength="3" class="col-xs-10 col-sm-8" onkeydown="return false;" onKeyPress="return soloNumeros(event)" readonly/>
             </td>
             <td width="20%" bgcolor="#ccffcc" align="right">
                 <span id="totalconcepto{{$con->atributo}}"></span>
@@ -213,7 +222,7 @@
               <input type="hidden" id="totalrtfparticipacioniden"/>
           </td>
           <td width="10%">
-            <input type="text" id="porcentajertf" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+            <input type="text" id="porcentajertf" maxlength="3" class="col-xs-10 col-sm-8" onKeyPress="return soloNumeros(event)" readonly/>
         </td>
         <td width="20%" bgcolor="#ccffcc" align="right">
             <span id="pagortf"></span>
@@ -232,7 +241,7 @@
               <input type="hidden" id="totalsuperparticipacioniden"/>
           </td>
           <td width="10%">
-            <input type="text" id="porcentajesuper" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+            <input type="text" id="porcentajesuper" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
         </td>
         <td width="20%" bgcolor="#ccffcc" align="right">
             <span id="pagosuper"></span>
@@ -250,7 +259,7 @@
           <input type="hidden" id="totalfondoparticipacioniden"/>
       </td>
       <td width="10%">
-        <input type="text" id="porcentajefondo" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+        <input type="text" id="porcentajefondo" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
     </td>
     <td width="20%" bgcolor="#ccffcc" align="right">
         <span id="pagofondo"></span>
@@ -268,7 +277,7 @@
       <input type="hidden" id="totalaporteespecialparticipacioniden"/>
   </td>
   <td width="10%">
-    <input type="text" id="porcentajeaporteespecial" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+    <input type="text" id="porcentajeaporteespecial" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
 </td>
 <td width="20%" bgcolor="#ccffcc" align="right">
     <span id="pagoaporteespecial"></span>
@@ -287,7 +296,7 @@
       <input type="hidden" id="totalimpuestotimbreparticipacioniden"/>
   </td>
   <td width="10%">
-    <input type="text" id="porcentajeimpuestotimbre" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple();" onKeyPress="return soloNumeros(event)"/>
+    <input type="text" id="porcentajeimpuestotimbre" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
 </td>
 <td width="20%" bgcolor="#ccffcc" align="right">
     <span id="pagoimpuestotimbre"></span>

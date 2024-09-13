@@ -83,6 +83,7 @@ class FacturacionController extends Controller
                 }
                 $Conceptos = Concepto::all();
                 $Conceptos = $Conceptos->sortBy('id_concep');
+               
                  return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));
                 }else{
                   	//return redirect('/home');

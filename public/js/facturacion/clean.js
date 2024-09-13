@@ -1,8 +1,14 @@
-function Clean_Fact_Mul(){
+async function Clean_Fact_Mul(){
   $("#totderechos").val(0);
   $("#totconceptos").val(0);
   $("#totiva").val(0);
   $("#totrtf").val(0);
+
+  $("#porcentajertf").val(0);
+  $("#pagortf").html('');
+  $("#pagortfiden").val(0);
+  
+  
   $("#totreteconsumo").val(0);
   $("#totfondo").val(0);
   $("#totsuper").val(0);
@@ -16,6 +22,17 @@ function Clean_Fact_Mul(){
   $("#pagofondoiden").val(0);
   $("#porcentajesuper").val('');
   $("#porcentajefondo").val('');
+
+  $("#pagoaporteespecial").html('');
+  $("#pagoaporteespecialiden").val(0);
+  $("#porcentajeaporteespecial").val('');
+  $("#totalaporteespecialiden").val('');
+
+  $("#pagoimpuestotimbre").html('');
+  $("#pagoimpuestotimbreiden").val(0);
+  $("#porcentajeimpuestotimbre").val('');
+  $("#totalimpuestotimbreparticipacioniden").val('');
+
 
   datos = {
       "id_radica": 0
