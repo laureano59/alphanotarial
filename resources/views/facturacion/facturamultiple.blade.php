@@ -222,7 +222,7 @@
               <input type="hidden" id="totalrtfparticipacioniden"/>
           </td>
           <td width="10%">
-            <input type="text" id="porcentajertf" maxlength="3" class="col-xs-10 col-sm-8" onKeyPress="return soloNumeros(event)" readonly/>
+            <input type="text" id="porcentajertf" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple_Individual();" onKeyPress="return soloNumeros(event)" />
         </td>
         <td width="20%" bgcolor="#ccffcc" align="right">
             <span id="pagortf"></span>
@@ -277,7 +277,7 @@
       <input type="hidden" id="totalaporteespecialparticipacioniden"/>
   </td>
   <td width="10%">
-    <input type="text" id="porcentajeaporteespecial" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
+    <input type="text" id="porcentajeaporteespecial" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple_Individual();"  onKeyPress="return soloNumeros(event)" />
 </td>
 <td width="20%" bgcolor="#ccffcc" align="right">
     <span id="pagoaporteespecial"></span>
@@ -296,7 +296,7 @@
       <input type="hidden" id="totalimpuestotimbreparticipacioniden"/>
   </td>
   <td width="10%">
-    <input type="text" id="porcentajeimpuestotimbre" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
+    <input type="text" id="porcentajeimpuestotimbre" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple_Individual();" onKeyPress="return soloNumeros(event)" />
 </td>
 <td width="20%" bgcolor="#ccffcc" align="right">
     <span id="pagoimpuestotimbre"></span>
