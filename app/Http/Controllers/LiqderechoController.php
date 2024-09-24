@@ -319,7 +319,10 @@ public function derechos(Request $request){
           }else if($op == 7){//Tarifa Venta Vivienda Vipa
              $dere[$key]['derechos']= $values['valor1'];
              $dere[$key]['valor_aporte_especial'] = 0;
-            }
+          }else if($op == 33){//Tarifa Venta Vivienda Vipa
+             $dere[$key]['derechos']= $values['valor1'];
+             $dere[$key]['valor_aporte_especial'] = 0;
+          }
       endforeach;
       return $dere;
   }
