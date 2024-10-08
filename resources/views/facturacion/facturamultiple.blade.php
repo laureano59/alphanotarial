@@ -461,6 +461,12 @@
                     </div>
 
                     <div>
+                        <label>Bono</label></br>
+                        <input type="text" id="bono" value="0" placeholder="Valor bono" />
+                        <input type="text" size="5px" id="codigo_bono" placeholder="#Bono" maxlength="20"/>
+                    </div>
+
+                    <div>
                         <label>No.Cheque</label></br>
                         <input type="text" id="numcheque" value="" onKeyPress="return soloNumeros(event)" placeholder="Número de Cheque" />
                     </div>

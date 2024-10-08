@@ -286,6 +286,12 @@
                 <label>Tar_Deb</label></br>
                 <input type="text" id="tarjeta_debito" value="0" placeholder="Valor con tarj debito" />
             </div>
+
+            <div>
+                <label>Bono</label></br>
+                <input type="text" id="bono" value="0" placeholder="Valor bono" />
+                <input type="text" size="5px" id="codigo_bono" placeholder="#Bono" maxlength="20"/>
+            </div>
             
             
             

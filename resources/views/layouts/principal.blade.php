@@ -131,6 +131,12 @@
 										</a>
 									</li>
 									<li>
+										<a href="javascript://" id="informeimptimbre">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Informe Timbre
+										</a>
+									</li>
+									<li>
 										<a href="javascript://" id="informedegastos">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
 											Informe de Gastos
@@ -168,12 +174,6 @@
 										<a href="javascript://" id="informerecaudosdiario">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
 											Relación de Facturas Diarias por Recaudos 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="escrisinfact">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Escrituras pendientes de Factura 
 										</a>
 									</li>
 								</ul>
@@ -214,6 +214,12 @@
 										<a href="javascript://" id="ron">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
 											Reporte de Operaciones Notariales (RON)  
+										</a>
+									</li>
+									<li>
+										<a href="javascript://" id="escrisinfact">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Escrituras pendientes de Factura 
 										</a>
 									</li>
 								</ul>
@@ -422,9 +428,17 @@
 				     </li>
 
 				     <li>
+				     	<a href="/bonos">
+				     		<i class="menu-icon"><img src="{{ asset('images/bonos.png') }}" width="30 px" height="30 px"></i>
+				     		<span class="menu-text"> Bonos </span>
+				     		<b class="arrow fa fa-angle-down"></b>
+				     	</a>
+				     </li>
+
+				     <li>
 				     	<a href="/actasdeposito">
-				     		<i class="menu-icon"><img src="{{ asset('images/cartera.png') }}" width="30 px" height="30 px"></i>
-				     		<span class="menu-text"> Actas de Depósito </span>
+				     		<i class="menu-icon"><img src="{{ asset('images/cartera.png') }}" width="30 px" height="30 px" alt="Actas de depósito"></i>
+				     		<span class="menu-text"> Actas </span>
 				     		<b class="arrow fa fa-angle-down"></b>
 				     	</a>
 				     </li>
@@ -472,7 +486,7 @@
 				     <li>
 				     	<a href="/seguimientoescrituras">
 				     		<i class="menu-icon"><img src="{{ asset('images/trazabilidad.png') }}" width="30 px" height="30 px"></i>
-				     		<span class="menu-text"> Seguimiento escrituras </span>
+				     		<span class="menu-text">Traza Escr</span>
 				     	</a>
 				     	<b class="arrow"></b>
 				     </li>

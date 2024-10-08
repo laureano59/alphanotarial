@@ -66,6 +66,7 @@ use App\Gastos_notaria;
 use App\Base_cajarapida;
 use App\Relacion_nota_credito_print_view;
 use App\Relacion_nota_credito_caja_rapida_view;
+use App\Informetimbre_view;
 //use App\Http\Controllers\LiqderechoController;
 
 
@@ -8017,6 +8018,81 @@ public function PdfInformeCartera(Request $request){
 
       
       $html = view('pdf.retefuentes',$data)->render();
+      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize=2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile,"I");
+
+    }
+
+     public function InformeTimbre(Request $request){
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+      $identificacion_not = $notaria->identificacion_not;
+      
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+      
+      $Informe = Informetimbre_view::
+          whereDate('fecha_fact', '>=', $fecha1)
+        ->whereDate('fecha_fact', '<=', $fecha2)
+        ->orderBy('id_fact')
+        ->get()->toArray();
+         
+  
+        $totaltimbre = 0;
+
+      foreach ($Informe  as $key => $res) {
+        $totaltimbre += $res['total_impuesto_timbre'];
+      }
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['informe'] = $Informe;
+      $data['nombre_reporte'] = $nombre_reporte;
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+      $data['totaltimbre'] = $totaltimbre;
+
+      
+      $html = view('pdf.informetimbre',$data)->render();
       $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
 
       $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();

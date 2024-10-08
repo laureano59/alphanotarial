@@ -20,6 +20,7 @@ use App\Pago;
 use App\Departamento;
 use App\Concepto;
 use App\Banco;
+use App\Bono;
 use App\Factura_a_cargo_de_view;
 
 
@@ -233,8 +234,15 @@ class FacturacionController extends Controller
           $tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
           $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
 
+          $bono = $request->bono;
+          if($bono === '' || is_null($bono)){
+            $bono = 0;
+          }
+          $bono = str_replace(",", " ", $bono);
+          $bono = str_replace(" ", "", $bono);
+
           $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
-          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito;
+          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
 
           if($total_mediosdepago == $request->total_fact){
 
@@ -305,9 +313,24 @@ class FacturacionController extends Controller
           $pago->transferencia_bancaria = $transferencia_bancaria;
           $pago->tarjeta_credito = $tarjeta_credito;
           $pago->tarjeta_debito = $tarjeta_debito;
+          $pago->bono = $bono;
 
           $pago->numcheque = $request->numcheque;
           $pago->save();
+
+          if($bono > 0){
+            $bonos = new Bono();
+            $bonos->codigo_bono =  $request->codigo_bono;
+            $bonos->id_fact = $num_fact;
+            $bonos->prefijo = $prefijo;
+            $bonos->id_radica = $id_radica;
+            $bonos->anio_radica = $anio_radica;
+            $bonos->valor_bon = $bono;
+            $bonos->saldo_bon = $bono;
+            $bonos->usuario = auth()->user()->name;
+            $bonos->save();
+          }
+          
 
           return response()->json([
             "validar"=>1,
@@ -404,8 +427,15 @@ class FacturacionController extends Controller
           $tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
           $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
 
+          $bono = $request->bono;
+          if($bono === '' || is_null($bono)){
+            $bono = 0;
+          }
+          $bono = str_replace(",", " ", $bono);
+          $bono = str_replace(" ", "", $bono);
+
           $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
-          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito;
+          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
 
 
           if($total_mediosdepago == $request->total_fact){
@@ -506,9 +536,23 @@ class FacturacionController extends Controller
           $pago->transferencia_bancaria = $transferencia_bancaria;
           $pago->tarjeta_credito = $tarjeta_credito;
           $pago->tarjeta_debito = $tarjeta_debito;
+          $pago->bono = $bono;
 
           $pago->numcheque = $request->numcheque;
           $pago->save();
+
+          if($bono > 0){
+            $bonos = new Bono();
+            $bonos->codigo_bono =  $request->codigo_bono;
+            $bonos->id_fact = $num_fact;
+            $bonos->prefijo = $prefijo;
+            $bonos->id_radica = $id_radica;
+            $bonos->anio_radica = $anio_radica;
+            $bonos->valor_bon = $bono;
+            $bonos->saldo_bon = $bono;
+            $bonos->usuario = auth()->user()->name;
+            $bonos->save();
+          }
 
           return response()->json([
             "validar"=>1,

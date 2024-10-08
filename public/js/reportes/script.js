@@ -517,6 +517,24 @@ $("#informederetefuentes").click(function(){
   })
 });
 
+$("#informeimptimbre").click(function(){
+  var opcion = 29;
+  var reporte = "Informe de Timbre";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
 $("#informerecaudosdiario").click(function(){
   var opcion = 11;
   var reporte = "Informe de Recaudos Caja - Escrituración";
@@ -756,8 +774,8 @@ $("#imprimirretefuentes").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-    "fecha1": fecha1,
-    "fecha2": fecha2
+      "fecha1": fecha1,
+      "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -768,6 +786,27 @@ $("#imprimirretefuentes").click(function(){
     }
   })
 });
+
+$("#imprimirinformetimbre").click(function(){
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+      "fecha1": fecha1,
+      "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      var url = "/informetimbre";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+});
+
 
 $("#imprimirenlaces").click(function(){
   var route = "/cargarfechas";

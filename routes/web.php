@@ -61,6 +61,7 @@ Route::resource('consultas', 'ConsultasController');
 //Route::resource('Einvoice', 'EinvoiceController');
 Route::resource('reportes', 'ReportesController');
 Route::resource('cartera', 'CarteraController');
+Route::resource('bonos', 'BonosController');
 Route::resource('cajarapida', 'CajarapidaController');
 Route::resource('cpanelcajarapida', 'Panel_cajarapidaController');
 Route::resource('facturacajarapida', 'FacturascajarapidaController');
@@ -125,6 +126,7 @@ Route::get('tarifas', 'TarifasController@Tarifas');
 Route::get('ciudad', 'CiudadController@ciudad');
 Route::get('buscaracta', 'ActasdepositoController@BuscarActa');
 Route::get('buscarcartera', 'CarteraController@BuscarCartera');
+Route::get('buscarbono', 'BonosController@BuscarBono');
 Route::get('buscarcartera_cajarapida', 'CarteracajarapidaController@BuscarCartera');
 Route::get('rastrearradicacion', 'ConsultasController@Rastrear_Radicacion');
 Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
@@ -174,6 +176,7 @@ Route::get('imprimirconsolidadocajapdf','PdfController@ConsolidadoCaja');
 
 
 Route::get('sessionabonos', 'CarteraController@SessionFact');
+Route::get('sessionabonos_bon', 'BonosController@SessionBon');
 
 
 Route::get('certificadortf','PdfController@PdfCertificadoRetecncionenlaFuente');
@@ -219,6 +222,7 @@ Route::get('informe_enejenaciones_dian', 'ReportesController@Reporte_enejenacion
 Route::get('ingresosporescrituradorpdf', 'PdfController@IngresosporEscriturador');
 Route::get('retefuentesaplicadaspdf', 'PdfController@Retefuentesaplicadaspdf');
 Route::get('informeretefuentespdf', 'PdfController@Retencionenlafuente_pdf');
+Route::get('informetimbre', 'PdfController@InformeTimbre');
 
 Route::get('enlacespdf', 'PdfController@PdfEnlaces');
 Route::get('libroindicepdf', 'PdfController@PdfLibroIndiceNotarial');
