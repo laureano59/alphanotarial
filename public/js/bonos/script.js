@@ -95,3 +95,70 @@ $("#GuardarAbono").click(function() {
 function mayus(e) {
     e.value = e.value.toUpperCase();
 }
+
+$("#cargarbonos").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2
+  };
+  var route = "/cargarbonos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var bonos = info.bonos;
+    CargarBonos(bonos);
+  })
+});
+
+
+$("#GenerarCuentaCobro").click(function(){
+
+     var seleccionados = [];
+     var itemSeleccionado = false;
+
+    // Recorre cada item del data utilizando el mismo índice del checkbox
+    for (var item in globalData) {
+        var checkbox = document.getElementById('check_' + item);
+        
+        // Verifica si el checkbox existe y está seleccionado
+        if (checkbox && checkbox.checked) {
+            seleccionados.push(globalData[item]); // Agrega el objeto data[item] al array
+            itemSeleccionado = true;
+        }
+    }
+
+    if (!itemSeleccionado) {
+        alert("Por favor, selecciona al menos un item.");
+        return; // Salimos de la función si no hay elementos seleccionados
+    }
+
+    // Llama a una función para procesar los elementos seleccionados
+    enviarSeleccionados(seleccionados);
+
+    });
+
+function enviarSeleccionados(seleccionados) {
+    var datos = {
+        "seleccionados": seleccionados
+    };
+  var route = "/cuentadecobro";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var validar = info.validar;
+    if(validar == 1){
+        var id_cce = info.id_cce;
+        var url = "/cuentadecobropdf";
+          $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }
+  })
+    
+}
+

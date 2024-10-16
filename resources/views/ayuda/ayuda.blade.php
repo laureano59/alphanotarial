@@ -32,6 +32,12 @@
         <h3>4. Modulo de Facturación parte 2</h3>
         <iframe src="https://drive.google.com/file/d/1IK3lhrTZEYemVVWHQVsagnKlnJE8R_kK/preview" width="300" height="150" allow="autoplay" allowfullscreen></iframe>
     </div>
+
+
+    <div style="flex: 1 0 50%; box-sizing: border-box; padding: 10px; text-align: center;">
+        <h3>5. Modulo Cuentas de Cobro</h3>
+        <iframe src="https://drive.google.com/file/d/1-fdTX7lm6Rcl4eJWuqabGEUW49s9hgqw/preview" width="300" height="150" allow="autoplay"></iframe>
+    </div>
 </div>
 
 

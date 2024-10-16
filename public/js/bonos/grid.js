@@ -46,3 +46,42 @@ function HacerAbono(id_fact, id_bon, valor_abono){
 
     })
 }
+
+var globalData = [];
+function CargarBonos(data) {
+    var htmlTags = "";
+    for (item in data) {
+        htmlTags +=
+            '<tr>' +
+             '<td>' +
+            data[item].codigo_bono +
+            '</td>' +
+            '<td>' +
+            data[item].id_fact +
+            '</td>' +
+            '<td>' +
+            data[item].num_esc +
+            '</td>' +
+             '<td>' +
+            data[item].id_radica +
+            '</td>' +
+            '<td>' +
+            data[item].fecha_fact +
+            '</td>' +
+            '<td>' +
+            data[item].cliente+
+            '</td>' +
+            '<td bgcolor="#ccffcc" align="right">' + formatNumbderechos(Math.round(data[item].valor_bono)) +
+            '</td>' +
+            '<td bgcolor="#ccffcc" align="center">' + 
+            '<input type="checkbox" id="check_' + item + '">' + // Aquí agregamos el checkbox
+            '</td>' +
+            '</tr>';
+    }
+
+    globalData = data;
+
+    document.getElementById('data_bono').innerHTML = htmlTags;
+}
+
+

@@ -127,6 +127,8 @@ Route::get('ciudad', 'CiudadController@ciudad');
 Route::get('buscaracta', 'ActasdepositoController@BuscarActa');
 Route::get('buscarcartera', 'CarteraController@BuscarCartera');
 Route::get('buscarbono', 'BonosController@BuscarBono');
+Route::get('cargarbonos', 'BonosController@CargarBonos');
+Route::get('cuentadecobro', 'BonosController@GuardarCuentaCobro');
 Route::get('buscarcartera_cajarapida', 'CarteracajarapidaController@BuscarCartera');
 Route::get('rastrearradicacion', 'ConsultasController@Rastrear_Radicacion');
 Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
@@ -206,6 +208,8 @@ Route::get('facturacajarapidaPost', 'PdfController@FacturaCajaRapidaPost');
 
 Route::get('cajadiariocajarapidapdf', 'PdfController@CajaDiarioCajaRapidaPdf');
 Route::get('cajadiariocajarapidaconceptos', 'PdfController@Cajadiariocajarapidaconceptospdf');
+
+Route::get('cuentadecobropdf', 'PdfController@Cuenta_de_Cobro');
 
 
 Route::get('validar_liquidacion_provisional', 'ValidacionesController@Validar_liquidacion_provisional');

@@ -67,7 +67,8 @@ use App\Base_cajarapida;
 use App\Relacion_nota_credito_print_view;
 use App\Relacion_nota_credito_caja_rapida_view;
 use App\Informetimbre_view;
-//use App\Http\Controllers\LiqderechoController;
+use App\Detalle_cuenta_cobro_escr;
+use App\Cuenta_cobro_escr;
 
 
 class PdfController extends Controller
@@ -5075,6 +5076,98 @@ public function PdfInformeCartera(Request $request){
       "format" => 'Letter-P',
       'margin_bottom' => 10,
     ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+
+}
+
+
+public function Cuenta_de_Cobro(Request $request){
+    $notaria = Notaria::find(1);
+    //$anio_trabajo = $notaria->anio_trabajo;
+    $nit = $notaria->nit;
+    $nombre_nota = strtoupper($notaria->nombre_nota);
+    $direccion_nota = $notaria->direccion_nota;
+    $piepagina_cc = $notaria->piepagina_cc;
+    $mensaje_pago_cc = $notaria->mensaje_pago_cc;
+    $piepagina_cc = $notaria->piepagina_cc;
+    $responsable_cartera = $notaria->responsable_cartera;
+    $telefono_nota = $notaria->telefono_nota;
+    $email = $notaria->email;
+    $nombre_notario = $notaria->nombre_notario;
+    $identificacion_not = $notaria->identificacion_not;
+    $id_cuentacobro = $request->session()->get('id_cuentacobro');
+    
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fecha  = $fecha1.' A '.$fecha2;
+    $fecha_impresion = date("d/m/Y");
+
+    $anio_trabajo = date("Y", strtotime($fecha1)); //Convierte Fecha a YYYY
+    
+    $CuentaCobro = Detalle_cuenta_cobro_escr::where('id_cce', $id_cuentacobro)->get()->toArray();
+    $Total = 0;
+    foreach ($CuentaCobro as $key => $value) {
+      $Total = $value['valor_bono'] + $Total;
+      $cliente = $value['nombre_cli'];
+      $id_cliente = $value['identificacion_cli'];
+      $direccion = $value['direccion_cli'];
+    }
+
+    $nombre_reporte = "Cuenta de cobro";
+
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['fecha_reporte'] = $fecha;
+    $data['fecha_impresion'] = $fecha_impresion;
+    $data['CuentaCobro'] = $CuentaCobro;
+    $data['id_cuentacobro'] = $id_cuentacobro;
+    $data['nombre_reporte'] = $nombre_reporte;
+    $data['cliente'] = $cliente;
+    $data['id_cliente'] = $id_cliente;
+    $data['direccion'] = $direccion;
+    $data['mensaje_pago_cc'] = $mensaje_pago_cc;
+    $data['responsable_cartera'] = $responsable_cartera;
+    $data['Total'] = $Total;
+
+    $html = view('pdf.cuentadecobro',$data)->render();
+
+   
+    $namefile = 'CuentadeCobro_'.$fecha_impresion.'.pdf';
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+        'R' => 'arial.ttf',
+        'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+      "format" => 'Letter-P',
+      'margin_bottom' => 10,
+    ]);
+
+    $mpdf->SetHTMLFooter('
+        <table width="100%">
+        <tr>
+        <td align="center"><font size="1">'.$piepagina_cc.'</font></td>
+        </tr>
+        </table>');
 
     $mpdf->defaultfooterfontsize=2;
     $mpdf->SetTopMargin(5);

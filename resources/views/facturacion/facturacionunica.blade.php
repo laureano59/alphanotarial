@@ -291,6 +291,13 @@
                 <label>Bono</label></br>
                 <input type="text" id="bono" value="0" placeholder="Valor bono" />
                 <input type="text" size="5px" id="codigo_bono" placeholder="#Bono" maxlength="20"/>
+
+                <select id="id_tipo_bono" style="width: 100%;">
+                        <option value="" disabled selected>Tipo Bono</option>
+                        @foreach ($TipoDeposito as $TipoDepo)
+                        <option value="{{$TipoDepo->id_tip}}">{{$TipoDepo->descripcion_tip}}</option>
+                        @endforeach
+                        </select>
             </div>
             
             

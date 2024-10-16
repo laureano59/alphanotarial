@@ -4,7 +4,7 @@
 @section('content')
 
 <div class="page-header">
-    <h1>Modulo de Bonos</h1>
+    <h1>Modulo Para Cuentas de Cobro</h1>
 </div><!-- /.page-header -->
 <form>
     @csrf
@@ -61,7 +61,7 @@
         <div class="alert alert-success" role="alert" id="msj-error1" style="display:none">
             <strong id="msj1"></strong>
         </div>
-        <div class="col-xs-12 col-sm-5">
+        <div class="col-xs-12 col-sm-4">
             <div class="widget-box">
                 <div class="widget-header">
                     <div class="widget-toolbar" style="display:none">
@@ -99,6 +99,64 @@
                 </div>
             </div>
         </div><!-- /.span -->
+
+
+       <div class="col-xs-12 col-sm-8">
+
+        <form>
+            @csrf
+            <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+            <div class="widget-box">
+                <div class="widget-header">
+                    <h4 class="widget-title">Cuentas de Cobro</h4>
+                    <span class="widget-toolbar">
+                        <a href="#" data-action="settings" id="cargarbonos">
+                            <i><img src="{{ asset('images/ojo.png') }}" width="28 px" height="28 px" title="Mostrar Bonos"></i>
+                        </a>
+
+                        <a href="#" data-action="settings" id="GenerarCuentaCobro">
+                            <i><img src="{{ asset('images/printcc.png') }}" width="28 px" height="28 px" title="Generar Cuenta de Cobro"></i>
+                        </a>
+                    </span>
+                    <span class="nav-search widget-toolbar">
+                        <div class="input-daterange input-group">
+                            <input type="text" class="input-sm form-control" name="start" id="start" placeholder="Fecha1" />
+                            <span class="input-group-addon">
+                                <i class="fa fa-exchange"></i>
+                            </span>
+                            <input type="text" class="input-sm form-control" name="end" id="end" placeholder="Fecha2"/>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </form>
+
+        <table id="simple-table" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Bono</th>
+                                    <th>Factura</th>
+                                    <th>Escritura</th>
+                                    <th>Radicación</th>
+                                    <th>Fecha Escr</th>
+                                    <th>Nombre del Cliente</th>
+                                    <th>
+                                        $ Valor Bono
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="data_bono"></tbody>
+                        </table>
+
+        
+    </div>
+
+
+
+
+
+
     </div>
 
 </form>
@@ -111,4 +169,16 @@
 <script src="{{ asset('js/numberFormat154.js')}}"></script>
 <script src="{{ asset('js/bonos/script.js')}}"></script>
 <script src="{{ asset('js/bonos/grid.js')}}"></script>
+
+<script src="{{ asset('js/calendario.js')}}"></script>
+<script src="{{asset('assets/js/jquery-ui.custom.min.js')}}"></script>
+<script src="{{asset('assets/js/chosen.jquery.min.js')}}"></script>
+<script src="{{asset('assets/js/spinbox.min.js')}}"></script>
+<script src="{{asset('assets/js/bootstrap-datepicker.min.js')}}"></script>
+<script src="{{asset('assets/js/autosize.min.js')}}"></script>
+<script src="{{asset('assets/js/jquery.inputlimiter.min.js')}}"></script>
+<script src="{{asset('assets/js/jquery.maskedinput.min.js')}}"></script>
 @endsection
+
+
+  

@@ -33,6 +33,20 @@ async function Clean_Fact_Mul(){
   $("#porcentajeimpuestotimbre").val('');
   $("#totalimpuestotimbreparticipacioniden").val('');
 
+  /*********************MEDIOS DE PAGO**************************/
+  $("#efectivo").val('');
+  $("#cheque").val('');
+  $("#consignacion_bancaria").val('');
+  $("#transferencia_bancaria").val('');
+  $("#tarjeta_credito").val('');
+  $("#tarjeta_debito").val('');
+  $("#bono").val('');
+  $("#codigo_bono").val('');
+  $("#id_tipo_bono").val('');
+  $("#numcheque").val('');
+  $("#id_banco").val('');
+
+
 
   datos = {
       "id_radica": 0

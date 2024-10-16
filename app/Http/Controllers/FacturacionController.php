@@ -22,6 +22,7 @@ use App\Concepto;
 use App\Banco;
 use App\Bono;
 use App\Factura_a_cargo_de_view;
+use App\Tipo_acta_deposito;
 
 
 class FacturacionController extends Controller
@@ -52,6 +53,9 @@ class FacturacionController extends Controller
       $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
       $Banco = Banco::all();
       $Banco = $Banco->Sort();
+
+      $TipoDeposito = Tipo_acta_deposito::all();
+      $TipoDeposito = $TipoDeposito->sortBy('descripcion_tip');
       
       //$MediosdePago = Medios_pago::all();
       //$MediosdePago = $MediosdePago->Sort();
@@ -65,7 +69,7 @@ class FacturacionController extends Controller
             }
             $Conceptos = Concepto::all();
             $Conceptos = $Conceptos->sortBy('id_concep');
-             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));
+             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito'));
             }else{
               	//return redirect('/home');
                 return view('/home');
@@ -85,7 +89,7 @@ class FacturacionController extends Controller
                 $Conceptos = Concepto::all();
                 $Conceptos = $Conceptos->sortBy('id_concep');
                
-                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));
+                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito'));
                 }else{
                   	//return redirect('/home');
                     return view('/home');
@@ -235,11 +239,19 @@ class FacturacionController extends Controller
           $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
 
           $bono = $request->bono;
+
           if($bono === '' || is_null($bono)){
             $bono = 0;
           }
           $bono = str_replace(",", " ", $bono);
           $bono = str_replace(" ", "", $bono);
+
+          if($request->tipo_bono == 2 || $request->tipo_bono == 4){
+            $bono = 0;
+            $bono_boleta = $request->bono;
+            $bono_boleta = str_replace(",", " ", $bono_boleta);
+            $bono_boleta = str_replace(" ", "", $bono_boleta);
+          }
 
           $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
           $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
@@ -314,9 +326,12 @@ class FacturacionController extends Controller
           $pago->tarjeta_credito = $tarjeta_credito;
           $pago->tarjeta_debito = $tarjeta_debito;
           $pago->bono = $bono;
-
           $pago->numcheque = $request->numcheque;
           $pago->save();
+
+          if($request->tipo_bono == 2 || $request->tipo_bono == 4){
+            $bono = $bono_boleta;
+          }
 
           if($bono > 0){
             $bonos = new Bono();
@@ -327,6 +342,7 @@ class FacturacionController extends Controller
             $bonos->anio_radica = $anio_radica;
             $bonos->valor_bon = $bono;
             $bonos->saldo_bon = $bono;
+            $bonos->id_tip = $request->tipo_bono;
             $bonos->usuario = auth()->user()->name;
             $bonos->save();
           }
@@ -434,6 +450,14 @@ class FacturacionController extends Controller
           $bono = str_replace(",", " ", $bono);
           $bono = str_replace(" ", "", $bono);
 
+          if($request->tipo_bono == 2 || $request->tipo_bono == 4){
+            $bono = 0;
+            $bono_boleta = $request->bono;
+            $bono_boleta = str_replace(",", " ", $bono_boleta);
+            $bono_boleta = str_replace(" ", "", $bono_boleta);
+          }
+
+
           $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
           $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
 
@@ -537,9 +561,13 @@ class FacturacionController extends Controller
           $pago->tarjeta_credito = $tarjeta_credito;
           $pago->tarjeta_debito = $tarjeta_debito;
           $pago->bono = $bono;
-
           $pago->numcheque = $request->numcheque;
           $pago->save();
+
+           if($request->tipo_bono == 2 || $request->tipo_bono == 4){
+               $bono = $bono_boleta;
+            }
+
 
           if($bono > 0){
             $bonos = new Bono();
@@ -550,6 +578,7 @@ class FacturacionController extends Controller
             $bonos->anio_radica = $anio_radica;
             $bonos->valor_bon = $bono;
             $bonos->saldo_bon = $bono;
+            $bonos->id_tip = $request->tipo_bono;
             $bonos->usuario = auth()->user()->name;
             $bonos->save();
           }

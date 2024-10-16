@@ -304,6 +304,7 @@ $("#guardarfacturaunica").click(function() {
             var tarjeta_debito = $("#tarjeta_debito").val();
             var bono = $("#bono").val();
             var codigo_bono = $("#codigo_bono").val();
+            var tipo_bono = $("#id_tipo_bono").val();
 
             //var valor = $("#valor").val();
             var numcheque = $("#numcheque").val();
@@ -337,6 +338,7 @@ $("#guardarfacturaunica").click(function() {
                 "tarjeta_debito": tarjeta_debito,
                 "bono" : bono,
                 "codigo_bono": codigo_bono,
+                "tipo_bono": tipo_bono,
                 "numcheque": numcheque,
                 "id_banco": id_banco,
                 "doc_acargo_de": doc_acargo_de,
@@ -516,6 +518,7 @@ $("#guardarfacturamultiple").click(async function() {
                   var tarjeta_debito = $("#tarjeta_debito").val();
                   var bono = $("#bono").val();
                   var codigo_bono = $("#codigo_bono").val();
+                  var tipo_bono = $("#id_tipo_bono").val();
                   var numcheque = $("#numcheque").val();
                   var id_banco = $("#id_banco option:selected").val();
 
@@ -557,6 +560,7 @@ $("#guardarfacturamultiple").click(async function() {
                         "tarjeta_debito": tarjeta_debito,
                         "bono": bono,
                         "codigo_bono": codigo_bono,
+                        "tipo_bono": tipo_bono,
                         "numcheque": numcheque,
                         "id_banco": id_banco,
                         "doc_acargo_de": doc_acargo_de,

@@ -430,7 +430,7 @@
 				     <li>
 				     	<a href="/bonos">
 				     		<i class="menu-icon"><img src="{{ asset('images/bonos.png') }}" width="30 px" height="30 px"></i>
-				     		<span class="menu-text"> Bonos </span>
+				     		<span class="menu-text"> Cuentas X C  </span>
 				     		<b class="arrow fa fa-angle-down"></b>
 				     	</a>
 				     </li>
