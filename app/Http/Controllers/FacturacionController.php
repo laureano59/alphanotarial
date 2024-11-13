@@ -473,18 +473,18 @@ class FacturacionController extends Controller
           }
 
 
-          if ($request->total_fondo < 1 || $request->total_fondo === '' || is_null($request->total_fondo)){
+          /*if ($request->total_fondo < 1 || $request->total_fondo === '' || is_null($request->total_fondo)){
              return response()->json([
             "validar"=>999
            ]);
 
-          }
+          }*/
 
-          if ($request->total_super < 1 || $request->total_super === '' || is_null($request->total_super)){
+          /*if ($request->total_super < 1 || $request->total_super === '' || is_null($request->total_super)){
              return response()->json([
             "validar"=>999
            ]);
-          }
+          }*/
 
         
            /*Autonumerico*/

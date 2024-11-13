@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Tarifa;
+use App\Otorgante;
+use App\Cliente;
+use App\Actosclienteradica;
 
 class RecaudosController extends Controller
 {
@@ -137,12 +140,37 @@ class RecaudosController extends Controller
       $retencion = 0;
       $valor = 0;
       $valoracum = 0;
-
-
+      $porcentaje_liq = 0;
+      
       foreach ($actos as $key => $value) {
         if($value['retefuente'] == 'true' && $value['id_tipoident'] != 31){//valida si al acto se le aplica rtf
-          $retencion = ($value['cuantia'] * $porcentaje);
-          $valor = $retencion;
+          $id_actoperrad = $value['id_actoperrad'];
+          $Actosclienteradica = Actosclienteradica::where('id_actoperrad', $id_actoperrad)->first();
+          $porcentaje_liq = $Actosclienteradica->porcentajecli1;
+         
+          $Otorgante = Otorgante::where('id_actoperrad', $id_actoperrad)
+          ->get()
+          ->toArray();
+      
+          foreach ($Otorgante as $key => $val) {
+            $Identificacion_cli = $val['identificacion_cli'];
+
+            $Cliente = Cliente::where('identificacion_cli', $Identificacion_cli)->first();
+
+            if($Cliente->id_tipoident != 31){
+             $porcentaje_liq = $porcentaje_liq + $val['porcentaje_otor'];
+          
+            }
+
+          }
+            
+            $porcentaje_liq = $porcentaje_liq / 100;
+
+            $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;
+            $valor = $retencion;
+
+                    
+
 
           # ==================================
           # =           Descuentos           =

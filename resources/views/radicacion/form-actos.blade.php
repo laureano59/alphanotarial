@@ -56,7 +56,7 @@
 
                         <div class="col-sm-9">
                             <input type="hidden" id="tradicion" name="tradicion" maxlength="4" onKeyPress="return soloNumeros(event)" class="col-xs-10 col-sm-5" />
-                        </div>
+                                              
                         
                         <div class="input-group date col-sm-4" data-provide="datepicker">
                             <input type="text" class="form-control" id="fecha_tradicion" disabled="disabled" >
@@ -64,8 +64,20 @@
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
-                       
+                       </div>  
                     </div>
+                  
+
+                     <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <b class="blue">Matri_Inmob</b> </label>
+
+                        <div class="col-sm-9">
+                            <input type="text" id="matri1" maxlength="5" class="col-xs-10 col-sm-2" placeholder="prefijo" />
+                            <input type="text" id="matri2" maxlength="30" class="col-xs-10 col-sm-7" placeholder="matricula" />
+                        </div>
+                    </div>
+
+                   
                 </div>
                 <div class="space-10"></div>
             </div>

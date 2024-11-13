@@ -148,7 +148,7 @@
             var conceptosaux = @json($Conceptos);
         </script>
    <div style="text-align: right;">
-     <input type="number" id="porcentajes_automatico" min="1" max="100" style="width: 110px;" placeholder="Porcentaje"  onkeydown="return false;">
+     <input type="number" id="porcentajes_automatico" min="0" max="100" style="width: 110px;" placeholder="Porcentaje"  onkeydown="return false;">
      <a href="javascript://" id="funcionporcentajes">
  <i><img src="{{ asset('images/comprobar.png') }}" width="28 px" height="28 px" title="Insertar"></i>
 </a>
@@ -241,7 +241,7 @@
               <input type="hidden" id="totalsuperparticipacioniden"/>
           </td>
           <td width="10%">
-            <input type="text" id="porcentajesuper" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
+            <input type="text" id="porcentajesuper" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple_Individual();"  onKeyPress="return soloNumeros(event)"/>
         </td>
         <td width="20%" bgcolor="#ccffcc" align="right">
             <span id="pagosuper"></span>
@@ -259,7 +259,7 @@
           <input type="hidden" id="totalfondoparticipacioniden"/>
       </td>
       <td width="10%">
-        <input type="text" id="porcentajefondo" maxlength="3" class="col-xs-10 col-sm-8"  onKeyPress="return soloNumeros(event)" readonly/>
+        <input type="text" id="porcentajefondo" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple_Individual();"  onKeyPress="return soloNumeros(event)" />
     </td>
     <td width="20%" bgcolor="#ccffcc" align="right">
         <span id="pagofondo"></span>
