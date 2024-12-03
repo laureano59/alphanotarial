@@ -7,7 +7,7 @@ function CargarGridBonos(data) {
             data[item].codigo_bono +
             '</td>' +
             '<td>' +
-            '<a href="javascript://" OnClick="HacerAbono(\'' + data[item].id_fact + '\',\'' + data[item].id_bon + '\',\'' + data[item].valor_bono + '\'' + ');">' +
+            '<a href="javascript://" OnClick="HacerAbono(\'' + data[item].id_fact + '\',\'' + data[item].id_bon + '\',\'' + data[item].saldo + '\'' + ');">' +
             data[item].id_fact +
             '</a>' +
             '</td>' +
@@ -26,11 +26,11 @@ function CargarGridBonos(data) {
     document.getElementById('data').innerHTML = htmlTags;
 }
 
-function HacerAbono(id_fact, id_bon, valor_abono){
+function HacerAbono(id_fact, id_bon, saldo){
     $("#num_fact").html(id_fact);
     $("#id_fact_iden").val(id_fact);
-    $("#saldo_iden").val(valor_abono);
-    $("#abono").val(valor_abono);
+    $("#saldo_iden").val(saldo);
+    //$("#abono").val(valor_abono);
 
     var factura = id_fact;
     var route = "/sessionabonos_bon";

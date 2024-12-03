@@ -61,12 +61,10 @@ $("#GuardarAbono").click(function() {
       if (abono != '') {
         if (saldo >= abono) {
             nuevosaldo = saldo - abono;
-            console.log(abono);
-            console.log(saldo);
-            console.log(nuevosaldo);
-            var route = "/bonos/" + id_fact;
+            
+            var route = "/abono_bonos";
             var token = $("#token").val();
-            var type = 'PUT';
+            var type = 'POST';
             var datos = {
                 "id_fact": id_fact,
                 "abono": abono,

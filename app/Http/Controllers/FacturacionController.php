@@ -253,6 +253,11 @@ class FacturacionController extends Controller
             $bono_boleta = str_replace(" ", "", $bono_boleta);
           }
 
+          $totalbono = $request->totalbono;
+          if($totalbono === '' || is_null($totalbono)){
+            $totalbono = 0;
+          }
+
           $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
           $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
 
@@ -329,19 +334,19 @@ class FacturacionController extends Controller
           $pago->numcheque = $request->numcheque;
           $pago->save();
 
-          if($request->tipo_bono == 2 || $request->tipo_bono == 4){
-            $bono = $bono_boleta;
-          }
+          //if($request->tipo_bono == 2 || $request->tipo_bono == 4){
+            //$totalbono = $bono_boleta;
+          //}
 
-          if($bono > 0){
+          if($totalbono > 0){
             $bonos = new Bono();
             $bonos->codigo_bono =  $request->codigo_bono;
             $bonos->id_fact = $num_fact;
             $bonos->prefijo = $prefijo;
             $bonos->id_radica = $id_radica;
             $bonos->anio_radica = $anio_radica;
-            $bonos->valor_bon = $bono;
-            $bonos->saldo_bon = $bono;
+            $bonos->valor_bon = $totalbono;
+            $bonos->saldo_bon = $totalbono;
             $bonos->id_tip = $request->tipo_bono;
             $bonos->usuario = auth()->user()->name;
             $bonos->save();
@@ -458,6 +463,12 @@ class FacturacionController extends Controller
           }
 
 
+          $totalbono = $request->totalbono;
+          if($totalbono === '' || is_null($totalbono)){
+            $totalbono = 0;
+          }
+
+
           $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
           $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
 
@@ -564,20 +575,20 @@ class FacturacionController extends Controller
           $pago->numcheque = $request->numcheque;
           $pago->save();
 
-           if($request->tipo_bono == 2 || $request->tipo_bono == 4){
+           /*if($request->tipo_bono == 2 || $request->tipo_bono == 4){
                $bono = $bono_boleta;
-            }
+            }*/
 
 
-          if($bono > 0){
+          if($totalbono > 0){
             $bonos = new Bono();
             $bonos->codigo_bono =  $request->codigo_bono;
             $bonos->id_fact = $num_fact;
             $bonos->prefijo = $prefijo;
             $bonos->id_radica = $id_radica;
             $bonos->anio_radica = $anio_radica;
-            $bonos->valor_bon = $bono;
-            $bonos->saldo_bon = $bono;
+            $bonos->valor_bon = $totalbono;
+            $bonos->saldo_bon = $totalbono;
             $bonos->id_tip = $request->tipo_bono;
             $bonos->usuario = auth()->user()->name;
             $bonos->save();

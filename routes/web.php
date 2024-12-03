@@ -47,6 +47,8 @@ Route::resource('egresos', 'EgresoactasdepositoController');
 Route::resource('actasdeposito', 'OpcionesdeactasController');
 Route::resource('egreso', 'EgresoactasdepositoController');
 
+Route::resource('abono_bonos', 'Abono_bonosController');
+
 Route::resource('gastos_notaria', 'Gastos_notariaController');
 
 Route::resource('notascreditofact', 'NotascreditofacturaController');

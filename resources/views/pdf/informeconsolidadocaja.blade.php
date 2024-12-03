@@ -254,7 +254,24 @@
                 <font size="2">{{number_format($total_cheque, 2)}}</font>
             </td>
         </tr>
-         <tr style="background-color: #f2f2f2;">
+        <tr style="background-color: #f2f2f2;">
+            <td>
+                <font size="2"><b>Bonos</b></font>
+            </td>
+            <td align="right">
+                <font size="2">({{number_format($bono_act, 2)}})</font>
+            </td>
+            <td align="right">
+                <font size="2">({{number_format($bonos_es, 2)}})</font>
+            </td>
+             <td align="right">
+                <font size="2">{{number_format(0, 2)}}</font>
+            </td>
+             <td align="right">
+                <font size="2">{{number_format(0, 2)}}</font>
+            </td>
+        </tr>
+         <tr style="background-color: #ffffff;">
             <td>
             </td>
             <td align="right">
@@ -270,9 +287,58 @@
                 <font size="2"><b>{{number_format($totalmediosdepago, 2)}}</b></font>
             </td>
         </tr>
+
+        <tr style="background-color: #f2f2f2;">
+            <td>
+                <font size="2"><b>Cruces de Actas Escr</b></font>
+            </td>
+            <td align="right">
+                <font size="2">{{number_format(0, 2)}}</font>
+            </td>
+            <td align="right">
+                <font size="2">({{number_format($total_cruces_escr, 2)}})</font>
+            </td>
+             <td align="right">
+                <font size="2">{{number_format(0, 2)}}</font>
+            </td>
+             <td align="right">
+                <font size="2">{{number_format(0, 2)}}</font>
+            </td>
+        </tr>
        
     </tbody>
 </table>
+<hr>
+
+<table>
+        <tr style="background-color: #f2f2f2;">
+            <td>
+                <font size="2"><b>Abonos a cartera:</b></font>
+            </td>
+            <td align="right">
+                <font size="2">{{number_format($abonos_cartera_fact, 2)}}</font>
+            </td>
+        </tr>
+
+         <tr style="background-color: #ffffff;">
+            <td>
+                <font size="2"><b>Abonos a cuentas de cobro:</b></font>
+            </td>
+            <td align="right">
+                <font size="2">{{number_format($abonobonos, 2)}}</font>
+            </td>
+        </tr>
+
+        <tr style="background-color: #f2f2f2;">
+            <td>
+                <font size="2"><b>Gastos:</b></font>
+            </td>
+            <td align="right">
+                <font size="2">{{number_format($gastos, 2)}}</font>
+            </td>
+        </tr>
+    </table>
+
 </body>
 
 </html>

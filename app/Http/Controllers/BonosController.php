@@ -78,7 +78,7 @@ class BonosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $id = $request->session()->get('id_bon');
+        /*$id = $request->session()->get('id_bon');
         $bono = Bono::find($id);
         $bono->saldo_bon = $request->saldo;
         $bono->fecha_abono = date("Y-m-d H:i:s");
@@ -87,7 +87,7 @@ class BonosController extends Controller
         return response()->json([
            "validar"=> "1",
            "mensaje"=> "Muy bien! El abono fue exitoso"
-         ]);
+         ]);*/
     }
 
     /**

@@ -298,6 +298,7 @@
                         <option value="{{$TipoDepo->id_tip}}">{{$TipoDepo->descripcion_tip}}</option>
                         @endforeach
                         </select>
+                          <input type="text" id="totalbono" placeholder="Total del bono" />
             </div>
             
             

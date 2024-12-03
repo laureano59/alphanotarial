@@ -69,6 +69,7 @@ use App\Relacion_nota_credito_caja_rapida_view;
 use App\Informetimbre_view;
 use App\Detalle_cuenta_cobro_escr;
 use App\Cuenta_cobro_escr;
+use App\Abono_bonos;
 
 
 class PdfController extends Controller
@@ -5118,7 +5119,7 @@ public function Cuenta_de_Cobro(Request $request){
       $direccion = $value['direccion_cli'];
     }
 
-    $nombre_reporte = "Cuenta de cobro";
+    $nombre_reporte = "Informe de bono";
 
     $data['nit'] = $nit;
     $data['nombre_nota'] = $nombre_nota;
@@ -8417,6 +8418,7 @@ public function Cuenta_de_Cobro(Request $request){
       $facturas_escrituras = Factura::whereDate('fecha_fact', '>=', $fecha1)
                       ->whereDate('fecha_fact', '<=', $fecha2)
                       ->where('nota_credito', false)
+                      ->where('credito_fact', false)
                       ->get();
 
        $facturas_cajarapida = Facturascajarapida::whereDate('fecha_fact', '>=', $fecha1)
@@ -8431,6 +8433,7 @@ public function Cuenta_de_Cobro(Request $request){
           $transferencia_bancaria_es = 0;
           $tarjeta_credito_es = 0;
           $tarjeta_debito_es = 0;
+          $bonos_es = 0;
 
           $efectivo_cr = 0;
           $cheque_cr = 0;
@@ -8447,6 +8450,7 @@ public function Cuenta_de_Cobro(Request $request){
           $transferencia_bancaria_act = 0;
           $tarjeta_credito_act = 0;
           $tarjeta_debito_act = 0;
+          $bono_act = 0;
 
           if (!$facturas_escrituras) {
             $efectivo_es = 0;
@@ -8456,6 +8460,7 @@ public function Cuenta_de_Cobro(Request $request){
             $transferencia_bancaria_es = 0;
             $tarjeta_credito_es = 0;
             $tarjeta_debito_es = 0;
+            $bonos_es = 0;
           }else{
             foreach ($facturas_escrituras as $key => $fe) {
               $num_fact = $fe->id_fact;
@@ -8470,6 +8475,7 @@ public function Cuenta_de_Cobro(Request $request){
                 $transferencia_bancaria_es += $med->transferencia_bancaria;
                 $tarjeta_credito_es += $med->tarjeta_credito;
                 $tarjeta_debito_es += $med->tarjeta_debito;
+                $bonos_es += $med->bono;
               }
             }
 
@@ -8501,6 +8507,43 @@ public function Cuenta_de_Cobro(Request $request){
             }
           }
 
+          /******************Abonos a cartera********************/
+
+          $Cartera_fact = Cartera_fact::whereDate('created_at', '>=', $fecha1)
+                      ->whereDate('created_at', '<=', $fecha2)
+                      ->get();
+
+          $abonos_cartera_fact = 0;
+
+          foreach ($Cartera_fact as $carf) {
+            $abonos_cartera_fact += $carf->abono_car;
+          }
+
+          /**************Abonos Bonos************/
+
+          $Abono_bonos = Abono_bonos::whereDate('fecha_abono', '>=', $fecha1)
+                      ->whereDate('fecha_abono', '<=', $fecha2)
+                      ->get();
+
+          $abonobonos = 0;
+
+          foreach ($Abono_bonos as $abon) {
+            $abonobonos += $abon->valor_abono;
+          }
+
+          /**********************Gastos********************/
+
+          $Gastos_notaria = Gastos_notaria::whereDate('fecha_gas', '>=', $fecha1)
+                      ->whereDate('fecha_gas', '<=', $fecha2)
+                      ->where('anulada', false)
+                      ->get();
+           $gastos = 0;
+
+          foreach ($Gastos_notaria as $gas) {
+            $gastos += $gas->valor_gas;
+          }
+
+
 
          $actas_deposito = Actas_deposito::whereDate('fecha_acta', '>=', $fecha1)
                       ->whereDate('fecha_acta', '<=', $fecha2)
@@ -8515,6 +8558,7 @@ public function Cuenta_de_Cobro(Request $request){
             $transferencia_bancaria_act = 0;
             $tarjeta_credito_act = 0;
             $tarjeta_debito_act = 0;
+            $bono_act = 0;
          }else{
            foreach ($actas_deposito as $med) {
             $efectivo_act += $med->efectivo;
@@ -8524,6 +8568,7 @@ public function Cuenta_de_Cobro(Request $request){
             $transferencia_bancaria_act += $med->transferencia_bancaria;
             $tarjeta_credito_act += $med->tarjeta_credito;
             $tarjeta_debito_act += $med->tarjeta_debito;
+            $bono_act += $med->bono;
           }
          }
 
@@ -8587,7 +8632,24 @@ public function Cuenta_de_Cobro(Request $request){
         $totalmediosdepago =  $total_mediosescrituras +
                               $total_medioscajarapida + 
                               $total_mediosactas;
- 
+
+        $fecha1 = date("d-m-Y", strtotime($fecha1)); //Convierte Fecha a dd-mm-YYYY
+        $fecha2 = date("d-m-Y", strtotime($fecha2));
+
+       
+        $Actas_egreso = Actas_deposito_egreso_view::
+        whereDate('fecha_egreso', '>=', $fecha1)
+      ->whereDate('fecha_egreso', '<=', $fecha2)
+      ->whereNotNull('id_fact')
+      ->orderBy('id_act')
+      ->get()->toArray();
+
+      $total_cruces_escr = 0;
+      foreach ($Actas_egreso as $act_egre) {
+        $total_cruces_escr += $act_egre['egreso_egr']; // Acceso como arreglo
+      }
+
+      $total_cruces_escr = $total_cruces_escr * (-1);
 
 
       $data['nit'] = $nit;
@@ -8622,6 +8684,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data['consignacion_bancaria_act'] = $consignacion_bancaria_act;
       $data['consignacion_bancaria_es'] = $consignacion_bancaria_es;
       $data['consignacion_bancaria_cr'] = $consignacion_bancaria_cr;
+      $data['bonos_es'] = $bonos_es;
       $data['total_consgbanc'] = $total_consgbanc;
       $data['pse_act'] = $pse_act;
       $data['pse_es'] = $pse_es;
@@ -8644,6 +8707,11 @@ public function Cuenta_de_Cobro(Request $request){
       $data['total_medioscajarapida'] = $total_medioscajarapida;
       $data['totalmediosdepago'] = $totalmediosdepago;
       $data['total_base'] = $total_base;
+      $data['total_cruces_escr'] = $total_cruces_escr;
+      $data['bono_act'] = $bono_act;
+      $data['abonos_cartera_fact'] = $abonos_cartera_fact;
+      $data['abonobonos'] = $abonobonos;
+      $data['gastos'] = $gastos;
                 
       $html = view('pdf.informeconsolidadocaja',$data)->render();
       $namefile = $nombre_reporte.$fecha_reporte.'.pdf';

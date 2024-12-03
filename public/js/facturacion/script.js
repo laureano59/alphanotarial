@@ -305,6 +305,7 @@ $("#guardarfacturaunica").click(function() {
             var bono = $("#bono").val();
             var codigo_bono = $("#codigo_bono").val();
             var tipo_bono = $("#id_tipo_bono").val();
+            var totalbono = $("#totalbono").val();
 
             //var valor = $("#valor").val();
             var numcheque = $("#numcheque").val();
@@ -339,6 +340,7 @@ $("#guardarfacturaunica").click(function() {
                 "bono" : bono,
                 "codigo_bono": codigo_bono,
                 "tipo_bono": tipo_bono,
+                "totalbono": totalbono,
                 "numcheque": numcheque,
                 "id_banco": id_banco,
                 "doc_acargo_de": doc_acargo_de,
@@ -519,6 +521,7 @@ $("#guardarfacturamultiple").click(async function() {
                   var bono = $("#bono").val();
                   var codigo_bono = $("#codigo_bono").val();
                   var tipo_bono = $("#id_tipo_bono").val();
+                  var totalbono = $("#totalbono").val();
                   var numcheque = $("#numcheque").val();
                   var id_banco = $("#id_banco option:selected").val();
 
@@ -561,6 +564,7 @@ $("#guardarfacturamultiple").click(async function() {
                         "bono": bono,
                         "codigo_bono": codigo_bono,
                         "tipo_bono": tipo_bono,
+                        "totalbono": totalbono,
                         "numcheque": numcheque,
                         "id_banco": id_banco,
                         "doc_acargo_de": doc_acargo_de,

@@ -581,6 +581,9 @@ class EinvoiceController extends Controller
     $item = 1;
     $i=1;
     foreach ($ingresos as $key => $value) {
+      if (!isset($detalle)) {
+        $detalle = [];
+      }
       $detalle[$i]['conteo'] = $item;
       $detalle[$i]['item_id'] = $item;
       $detalle[$i]['descripcion'] = $value['concepto'];
@@ -589,10 +592,15 @@ class EinvoiceController extends Controller
       $item += 1;
       $i += 1;
     }
-    
-    foreach ($detalle as $key => $value) {
-     $det[] = $value;
-   }
+
+    $det = [];
+
+    if (!empty($detalle)) {
+      foreach ($detalle as $key => $value) {
+        $det[] = $value;
+      }
+    }    
+   
 
    $det = array(
     "detalle_factura_set"=>$det,
@@ -614,6 +622,7 @@ class EinvoiceController extends Controller
     $i += 1;
   }
 
+  $imp = [];
   foreach ($impuestos as $key => $value) {
    $imp[] = $value;
  }

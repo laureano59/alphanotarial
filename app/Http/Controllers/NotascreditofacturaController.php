@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Notas_credito_factura;
 use App\Notaria;
+use App\Bono;
 
 class NotascreditofacturaController extends Controller
 {
@@ -66,6 +67,24 @@ class NotascreditofacturaController extends Controller
         $id_ncf = $notacredito->id_ncf;
         $request->session()->put('id_ncf', $id_ncf);
         $request->session()->put('numfact', $id_fact);
+
+        /**********Si la factura tiene bono hay que anularlo***********/
+
+         $bono_factu = Bono::
+        where('id_fact', $id_fact)
+        ->where('prefijo', $prefijo_fact)
+        ->get();
+
+        if ($bono_factu->isNotEmpty()) {
+            foreach ($bono_factu as $key => $value) {
+                $id_bon = $value['id_bon'];
+            }
+
+            $bono = Bono::find($id_bon);
+            $bono->status = true;
+            $bono->save();
+        }
+
         return response()->json([
           "validar"=>1,
           "id_ncf"=>$id_ncf,

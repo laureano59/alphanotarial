@@ -190,7 +190,7 @@
                   <input type="hidden" id="total{{$con->atributo}}participacioniden"/>
               </td>
               <td width="10%">
-                <input type="text" id="porcentaje{{$con->atributo}}" maxlength="3" class="col-xs-10 col-sm-8" onkeydown="return false;" onKeyPress="return soloNumeros(event)" readonly/>
+                <input type="text" id="porcentaje{{$con->atributo}}" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Conceptos_FactMultiple('{{$con->atributo}}','total{{$con->atributo}}');"  onKeyPress="return soloNumeros(event)" />
             </td>
             <td width="20%" bgcolor="#ccffcc" align="right">
                 <span id="totalconcepto{{$con->atributo}}"></span>
@@ -464,13 +464,13 @@
                         <label>Bono</label></br>
                         <input type="text" id="bono" value="0" placeholder="Valor bono" />
                         <input type="text" size="5px" id="codigo_bono" placeholder="#Bono" maxlength="20"/>
-
                         <select id="id_tipo_bono" style="width: 100%;">
                         <option value="" disabled selected>Tipo Bono</option>
                         @foreach ($TipoDeposito as $TipoDepo)
                         <option value="{{$TipoDepo->id_tip}}">{{$TipoDepo->descripcion_tip}}</option>
                         @endforeach
                         </select>
+                        <input type="text" id="totalbono"  placeholder="Total del bono" />
                     </div>
 
                     <div>
