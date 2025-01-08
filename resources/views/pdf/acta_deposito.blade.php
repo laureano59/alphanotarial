@@ -90,6 +90,7 @@
         <td>
           {{$num_escritura}}
         </td>
+        <td><b>Observaciones:</b></td><td><font size="3">{{$observaciones}}</font></td>
       </tr>
     </table>
     <hr>

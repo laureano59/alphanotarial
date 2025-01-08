@@ -683,4 +683,15 @@ class ValidacionesController extends Controller
 
         }
 
+          public function Validar_Num_Cuenta_Cobro_pdf(Request $request){
+         
+            $id_cce = $request->id_cce;
+            $request->session()->put('id_cuentacobro', $id_cce);
+
+            return response()->json([
+              "validar"=>1
+             ]);
+
+        }
+
     }

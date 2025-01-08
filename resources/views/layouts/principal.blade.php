@@ -256,6 +256,40 @@
 							</li>
 
 
+							<li style="position: relative;">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
+									Informe de Bonos
+								</a>
+								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
+									<li>
+										<a href="javascript://" id="cuentasdecobrogeneradas">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Cuentas de cobro generadas  
+										</a>
+									</li>
+									<li>
+										<a href="javascript://" id="carterabonoscliente">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Cartera Bonos X Cliente  
+										</a>
+									</li>
+									<li>
+										<a href="javascript://" id="informecarterabonomes">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Cartera Bonos X Mes  
+										</a>
+									</li>
+									<li>
+										<a href="javascript://" id="informecarterabonosactiva">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Cartera Bonos Activos  
+										</a>
+									</li>
+								</ul>
+							</li>
+
+
 
 							<li style="position: relative;">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown">

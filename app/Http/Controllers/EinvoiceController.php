@@ -610,17 +610,28 @@ class EinvoiceController extends Controller
    $impuestos = array();
    $item = 1;
    $i=1;
+  
    foreach ($ingresos as $key => $value) {
     $impuestos[$i]['id'] = $item;
     $impuestos[$i]['item'] = $item;
     $impuestos[$i]['codigo'] = "01";
-    $impuestos[$i]['rate'] = $PorcentIva;
-    $impuestos[$i]['name'] = "IVA";
-    $impuestos[$i]['amount'] = $value['total'];
-    $impuestos[$i]['base'] = $value['total'] * $iva;
+    if ($value['concepto'] != 'Registro_Civil'){
+      $impuestos[$i]['rate'] = $PorcentIva;
+      $impuestos[$i]['name'] = "IVA";
+      $impuestos[$i]['amount'] = $value['total'];
+      $impuestos[$i]['base'] = $value['total'] * $iva;
+
+    }else{
+      $impuestos[$i]['rate'] = 0.00;
+      $impuestos[$i]['name'] = "IVA";
+      $impuestos[$i]['amount'] = $value['total'];
+      $impuestos[$i]['base'] = 0.00;
+
+    }
+    
     $item += 1;
     $i += 1;
-  }
+  } 
 
   $imp = [];
   foreach ($impuestos as $key => $value) {
@@ -658,11 +669,11 @@ class EinvoiceController extends Controller
  $otroscargos[4]["factor"] = "99.99";
  $otroscargos[4]["indicator"] = "true";
 
- $otroscargos[4]["name"] = "Impuesto timbre";
- $otroscargos[4]["base"] = $ImpuestoTimbre;
- $otroscargos[4]["amount"] = $ImpuestoTimbre;
- $otroscargos[4]["factor"] = "99.99";
- $otroscargos[4]["indicator"] = "true";
+ $otroscargos[5]["name"] = "Impuesto timbre";
+ $otroscargos[5]["base"] = $ImpuestoTimbre;
+ $otroscargos[5]["amount"] = $ImpuestoTimbre;
+ $otroscargos[5]["factor"] = "99.99";
+ $otroscargos[5]["indicator"] = "true";
 
 
  foreach ($otroscargos as $key => $value) {
@@ -706,11 +717,6 @@ class EinvoiceController extends Controller
 
  $todo = array_merge($encabezado, $det, $imp, $otr, $dedu);
 
-    /*$todo = json_encode($todo);
-    dd($todo);
-    exit;*/
-
-
     # ========================================================
     # =       Almacena JSON antes de enviar a la API         =
     # ========================================================
@@ -750,7 +756,6 @@ class EinvoiceController extends Controller
       $AttachedDocument = $value['fexml'];
       $numerofactura = $value['number'];
     }
-
     
     
     # ===========================================
@@ -824,9 +829,7 @@ class EinvoiceController extends Controller
 
   private function Enviar_Json($data_todo){
 
-
     $datosCodificados = json_encode($data_todo);
-    //$url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
     $url = 'http://notaria13cali.binario.shop/factura/api-sync-invoice/';
     
     $ch = curl_init($url);

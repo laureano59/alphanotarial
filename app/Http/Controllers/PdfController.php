@@ -70,6 +70,8 @@ use App\Informetimbre_view;
 use App\Detalle_cuenta_cobro_escr;
 use App\Cuenta_cobro_escr;
 use App\Abono_bonos;
+use App\Informe_cartera_bonos_view;
+use App\Protocolistas_view_2;
 
 
 class PdfController extends Controller
@@ -339,7 +341,7 @@ class PdfController extends Controller
       }
       if($total_impuesto_timbre > 0){
         $j = $j + 1;
-        $terceros[$j]['concepto'] = "Aporte Especial";
+        $terceros[$j]['concepto'] = "Impuesto al timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre;
       }
       if($total_iva > 0){
@@ -352,7 +354,7 @@ class PdfController extends Controller
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre;
       $data['totalterceros'] = round($totalterceros);
 
 
@@ -1127,6 +1129,14 @@ class PdfController extends Controller
         $num_esc = $esc->num_esc;
       }
 
+       /********************PROTOCOLISTA***********************/
+      $protocolista = Protocolistas_view_2::where('num_esc', $num_esc)
+      ->where('anio_esc', $anio_trabajo)
+      ->get();
+      foreach ($protocolista as $value) {
+        $nameprotocolista = $value['nombre_proto'];
+      }
+
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
         direccion_cli");
       $cliente_otor = Cliente::where('identificacion_cli', $identificacioncli1_otor)->select($raw)->get();
@@ -1228,6 +1238,7 @@ class PdfController extends Controller
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
       $data_otor['fecha_fact'] = $fecha_fact;
+      $data_otor['fecha_ncf'] = $fecha_ncf;
       $data_otor['hora_fact'] = $hora_fact;
       $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
@@ -1244,6 +1255,9 @@ class PdfController extends Controller
       $data_otor['a_cargo_de'] = $a_cargo_de;
       $data_otor['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data_otor['detalle_acargo_de'] = $detalle_acargo_de;
+      $data_otor['fecha_ncf'] = $fecha_ncf;
+      $data_otor['id_radica'] = $id_radica;
+      $data_otor['nameprotocolista'] = $nameprotocolista;
 
       $j = 0;
       if($total_super_otor > 0){
@@ -1391,6 +1405,14 @@ class PdfController extends Controller
         $num_esc = $esc->num_esc;
       }
 
+      /********************PROTOCOLISTA***********************/
+      $protocolista = Protocolistas_view_2::where('num_esc', $num_esc)
+      ->where('anio_esc', $anio_trabajo)
+      ->get();
+      foreach ($protocolista as $value) {
+        $nameprotocolista = $value['nombre_proto'];
+      }
+
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
         direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
@@ -1504,6 +1526,10 @@ class PdfController extends Controller
       $data['a_cargo_de'] = $a_cargo_de;
       $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data['detalle_acargo_de'] = $detalle_acargo_de;
+      $data['fecha_ncf'] = $fecha_ncf;
+      $data['id_radica'] = $id_radica;
+      $data['nameprotocolista'] = $nameprotocolista;
+
 
       $j = 0;
       if($total_super > 0){
@@ -1676,6 +1702,18 @@ class PdfController extends Controller
         $num_esc = $esc->num_esc;
       }
 
+      /********************PROTOCOLISTA***********************/
+      $protocolista = Protocolistas_view_2::where('num_esc', $num_esc)
+      ->where('anio_esc', $anio_trabajo)
+      ->get();
+
+
+      foreach ($protocolista as $value) {
+        $nameprotocolista = $value['nombre_proto'];
+      }
+
+     
+
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
         direccion_cli");
       $cliente_otor = Cliente::where('identificacion_cli', $identificacioncli1_otor)->select($raw)->get();
@@ -1793,6 +1831,9 @@ class PdfController extends Controller
       $data_otor['a_cargo_de'] = $a_cargo_de;
       $data_otor['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data_otor['detalle_acargo_de'] = $detalle_acargo_de;
+      $data_otor['fecha_ncf'] = $fecha_ncf;
+      $data_otor['id_radica'] = $id_radica;
+      $data_otor['nameprotocolista'] = $nameprotocolista;
 
       $j = 0;
       if($total_super_otor > 0){
@@ -1934,6 +1975,14 @@ class PdfController extends Controller
         $num_esc = $esc->num_esc;
       }
 
+       /********************PROTOCOLISTA***********************/
+      $protocolista = Protocolistas_view_2::where('num_esc', $num_esc)
+      ->where('anio_esc', $anio_trabajo)
+      ->get();
+      foreach ($protocolista as $value) {
+        $nameprotocolista = $value['nombre_proto'];
+      }
+
       $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
         direccion_cli");
       $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
@@ -2045,6 +2094,9 @@ class PdfController extends Controller
       $data['a_cargo_de'] = $a_cargo_de;
       $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
       $data['detalle_acargo_de'] = $detalle_acargo_de;
+      $data['fecha_ncf'] = $fecha_ncf;
+      $data['id_radica'] = $id_radica;
+      $data['nameprotocolista'] = $nameprotocolista;
 
       $j = 0;
       if($total_super > 0){
@@ -2170,6 +2222,7 @@ class PdfController extends Controller
 
     $Actas_deposito = Actas_deposito_view::find($id_act);
     $id_radica = $Actas_deposito->id_radica;
+    $observaciones = $Actas_deposito->observaciones_act;
     
     $escritura = Escritura::where('id_radica', $id_radica)
     ->where('anio_esc', $anio_trabajo)
@@ -2257,6 +2310,7 @@ class PdfController extends Controller
     $data['nombre_ban'] = $nombre_ban;
     $data['total_recibido'] = $total_recibido;
     $data['total_en_letras'] = $total_en_letras;
+    $data['observaciones'] = $observaciones;
 
 
     $html = view('pdf.acta_deposito',$data)->render();
@@ -3344,6 +3398,137 @@ public function PdfInformeCartera(Request $request){
       ],
       'default_font' => 'arial',
       "format" => 'Letter',
+      'margin_bottom' => 10,
+    ]);
+
+    $mpdf->defaultfooterfontsize=2;
+    $mpdf->SetTopMargin(5);
+    $mpdf->SetDisplayMode('fullpage');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output($namefile,"I");
+
+  }
+
+  public function PdfInformeCartera_Bonos(Request $request){
+  $notaria = Notaria::find(1);
+  $anio_trabajo = $notaria->anio_trabajo;
+  $nit = $notaria->nit;
+  $nombre_nota = strtoupper($notaria->nombre_nota);
+  $direccion_nota = $notaria->direccion_nota;
+  $telefono_nota = $notaria->telefono_nota;
+  $email = $notaria->email;
+  $nombre_notario = $notaria->nombre_notario;
+  $identificacion_not = $notaria->identificacion_not;
+  
+  $fecha1 = $request->session()->get('fecha1');
+  $fecha2 = $request->session()->get('fecha2');
+  $opcionreporte = $request->session()->get('opcionreporte');
+  
+
+  $fecha_reporte =  $fecha1." A ". $fecha2;
+  $fecha_impresion = date("d/m/Y");
+
+  $identificacion_cli = $request->session()->get('identificacion_cli');
+  $ordenar = $request->session()->get('ordenar');
+    if($ordenar == 'porfecha'){ //por fecha
+
+      if($opcionreporte == 'maycero'){
+         $informecarterabonos = Informe_cartera_bonos_view::whereDate('fecha_abono', '>=', $fecha1)
+          ->whereDate('fecha_abono', '<=', $fecha2)
+          ->where('nota_credito', false)
+          ->where('saldo_bon', '>=', 1)
+          ->orderBy('id_fact')
+          ->get()
+          ->toArray();
+      }else if($opcionreporte == 'completo'){
+         $informecarterabonos = Informe_cartera_bonos_view::whereDate('fecha_abono', '>=', $fecha1)
+          ->whereDate('fecha_abono', '<=', $fecha2)
+          ->where('nota_credito', false)
+          ->orderBy('id_fact')
+          ->get()
+          ->toArray();
+      }
+    }elseif($ordenar == 'porcliente'){//por cliente
+      if($opcionreporte == 'maycero'){
+        $informecarterabonos = Informe_cartera_bonos_view::where('identificacion_cli', $identificacion_cli)
+          ->where('nota_credito', false)
+          ->where('saldo_bon', '>=', 1)
+          ->orderBy('id_fact')->get()->toArray();
+      }else if($opcionreporte == 'completo'){
+        $informecarterabonos = Informe_cartera_bonos_view::where('identificacion_cli', $identificacion_cli)
+          ->where('nota_credito', false)
+          ->orderBy('id_fact')->get()->toArray();
+      }
+      
+    }else if($ordenar == 'bonosactivos'){
+       $informecarterabonos = Informe_cartera_bonos_view::
+      where('nota_credito', false)
+      ->where('saldo_bon', '>=', 1)
+      ->orderBy('id_fact')->get()
+      ->toArray();
+    }
+
+    $total_pago = 0;
+    $total_saldo = 0;
+    foreach ($informecarterabonos as $key => $inf) {
+      $total_saldo = $inf['valor_abono'] + $total_saldo;
+    }
+
+    $continformecarterabonos = count ($informecarterabonos, 0);
+
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['fecha_reporte'] = $fecha_reporte;
+    $data['fecha_impresion'] = $fecha_impresion;
+    $data['informecarterabonos'] = $informecarterabonos;
+    $data['continformecarterabonos'] = $continformecarterabonos;
+    $data['nombre_reporte'] = $nombre_reporte;
+    $data['total_pago'] = $total_pago;
+    $data['total_saldo'] = $total_saldo;
+
+    if($ordenar == 'facturasactivas'){
+      $total_saldo = 0;
+      $valor_abono = 0;
+      foreach ($informecarterabonos as $key => $inf) {
+      $total_saldo = $inf['saldo_bon'] + $total_saldo;
+      $valor_abono = $inf['valor_abono'] + $valor_abono;
+       $data['total_saldo'] = $total_saldo;
+      $data['valor_abono'] = $valor_abono;
+    }
+      $html = view('pdf.informecarterafacturasactivas',$data)->render();
+
+    }else{
+      $html = view('pdf.informecarterabonos',$data)->render();
+    }
+
+    
+
+    $namefile = 'informecarterabonos'.$fecha_reporte.'.pdf';
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $mpdf = new Mpdf([
+      'fontDir' => array_merge($fontDirs, [
+        public_path() . '/fonts',
+      ]),
+      'fontdata' => $fontData + [
+        'arial' => [
+          'R' => 'arial.ttf',
+          'B' => 'arialbd.ttf',
+        ],
+      ],
+      'default_font' => 'arial',
+        //"format" => [216, 140],//TODO: Media Carta
+      "format" => 'Letter-L',
       'margin_bottom' => 10,
     ]);
 
@@ -4833,6 +5018,32 @@ public function PdfInformeCartera(Request $request){
     foreach ($cruces as $key => $cru) {
       $total_egreso = $cru['valor_egreso'] + $total_egreso;
     }
+
+     /*********************BONOS***********************/
+
+     $facturas_escrituras = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('nota_credito', false)
+                      ->where('credito_fact', false)
+                      ->get();
+      $bonos_es = 0;
+
+      foreach ($facturas_escrituras as $key => $fe) {
+              $num_fact = $fe->id_fact;
+              $prefijo_fact = $fe->prefijo;
+
+              $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+              foreach ($Medpago as $med) {
+                //$efectivo_es += $med->efectivo;
+                //$cheque_es += $med->cheque;
+                //$consignacion_bancaria_es += $med->consignacion_bancaria;
+                //$pse_es += $med->pse;
+                //$transferencia_bancaria_es += $med->transferencia_bancaria;
+                //$tarjeta_credito_es += $med->tarjeta_credito;
+                //$tarjeta_debito_es += $med->tarjeta_debito;
+                $bonos_es += $med->bono;
+              }
+            }
     
     $nombre_reporte = $request->session()->get('nombre_reporte');
 
@@ -4916,6 +5127,7 @@ public function PdfInformeCartera(Request $request){
     $data['deduccion_reteica_credito'] = $facturas_credito->deduccion_reteica;
     $data['deduccion_retertf_credito'] = $facturas_credito->deduccion_retertf;
     $data['total_fact_credito'] = $facturas_credito->total_fact;
+    $data['bonos_es'] = $bonos_es;
 
     $html = view('pdf.cajadiariogeneral',$data)->render();
 
@@ -6326,7 +6538,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre;
       $data['totalterceros'] = round($totalterceros);
 
 
@@ -7502,7 +7714,8 @@ public function Cuenta_de_Cobro(Request $request){
       $data['detalle_ncf'] = $detalle_ncf;
       $data['fecha_ncf'] = $fecha_ncf;
       $data['porcentaje_iva'] = $porcentaje_iva;
-
+          
+     
       $j = 0;
       $terceros = [];
       if($total_iva > 0){
@@ -8480,6 +8693,7 @@ public function Cuenta_de_Cobro(Request $request){
             }
 
           }
+
 
            if (!$facturas_cajarapida) {
             $efectivo_cr = 0;

@@ -632,6 +632,26 @@ $("#informecarterafacturasactivas").click(function(){
   })
 });
 
+$("#informecarterabonosactiva").click(function(){
+  var opcion = 33;
+  var reporte = "Relación de Cartera Bonos Activos";
+  var ordenar = "bonosactivos";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte,
+    "ordenar": ordenar
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
 
 
 
@@ -654,6 +674,48 @@ $("#informecarteracliente").click(function(){
     }
   })
 });
+
+
+$("#carterabonoscliente").click(function(){
+  var opcion = 31;
+  var reporte = "Relación de cartera Bonos por Cliente";
+  var ordenar = "porcliente";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte,
+    "ordenar": ordenar
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
+$("#informecarterabonomes").click(function(){
+  var opcion = 32;
+  var reporte = "Relación de Cartera Bonos por Fecha";
+  var ordenar = "porfecha";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte,
+    "ordenar": ordenar
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
 
 $("#ingresosporconcepto").click(function(){
   var opcion = 3;
@@ -863,7 +925,7 @@ $("#auxiliarcaja").click(function(){
   })
 });
 
-$("#registrocivil").click(function(){
+$("#registrocivil777").click(function(){
   var opcion = 6;
   var route = "/cargartiporeporte";
   var token = $("#token").val();
@@ -937,12 +999,13 @@ $("#generarreporte").click(function(){
       var deduccion_reteica_credito = info.deduccion_reteica_credito;
       var deduccion_retertf_credito = info.deduccion_retertf_credito;
       var total_fact_credito = info.total_fact_credito;
+      var bonos_es = info.bonos_es;
 
       CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos, derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
         rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
         total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
         impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
-        deduccion_retertf_credito, total_fact_credito);
+        deduccion_retertf_credito, total_fact_credito, bonos_es);
       CargarCrucesActas(cruces);
     })
 
@@ -1036,6 +1099,44 @@ $("#generarreportecarterames").click(function(){
   }
 });
 
+$("#generarreportecarterabonosmes").click(function(){
+
+  if (document.querySelector('input[name="seleccion"]:checked')) {
+    var opcionreporte = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'maycero') {
+      opcionreporte = "maycero";
+    }else if (seleccion == 'completo') {
+      opcionreporte = "completo";
+    }
+
+    if($("#start").val() == '' || $("#end").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
+
+      var fecha1 = $("#start").val();
+      var fecha2 = $("#end").val();
+
+      var datos = {
+        "fecha1": fecha1,
+        "fecha2": fecha2,
+        "opcionreporte": opcionreporte
+      };
+      var route = "/informecarterabonos";
+      var token = $("#token").val();
+      var type = 'GET';
+
+      __ajax(route, token, type, datos)
+      .done( function( info ){
+        var informecarterabon = info.informecarterabon;
+        CargarInformeCarteraBonos(informecarterabon);
+      })
+    }
+  }else{
+    alert("Seleccione tipo de informe");
+  }
+});
+
 
 
 $("#generarreportecarteracliente").click(function(){
@@ -1089,6 +1190,59 @@ $("#generarreportecarterafacturasactivas").click(function(){
     var informecartera = info.informecartera;
     CargarInformeCartera_facturas_activas(informecartera);
   })
+
+});
+
+$("#generarreportecarterabonosactivas").click(function(){
+  var opcionreporte = '';
+   var datos = {
+    "opcionreporte": opcionreporte
+  };
+  var route = "/informecarterabonos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informecarterabon = info.informecarterabon;
+    CargarInformeCarteraBonos(informecarterabon);
+  })
+
+});
+
+$("#repcarterabonoscliente").click(function(){
+ if (document.querySelector('input[name="seleccion"]:checked')) {
+  var opcionreporte = '';
+  var seleccion = $('input:radio[name=seleccion]:checked').val();
+  if (seleccion == 'maycero') {
+    opcionreporte = "maycero";
+  }else if (seleccion == 'completo') {
+    opcionreporte = "completo";
+  }
+
+  if( $("#identificacion_cli").val() == ''){
+    alert("Todos los campos son necesarios");
+  }else{
+
+   var identificacion_cli = $("#identificacion_cli").val();
+
+   var datos = {
+    "identificacion_cli": identificacion_cli,
+    "opcionreporte": opcionreporte
+  };
+  var route = "/informecarterabonos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informecarterabon = info.informecarterabon;
+    CargarInformeCarteraBonos(informecarterabon);
+  })
+}
+}else{
+  alert("Seleccione tipo de informe");
+}
 
 });
 
@@ -1368,6 +1522,45 @@ $("#informeegresos").click(function(){
     if(info.validar == 1){
       location.href="/reportes";
     }
+  })
+});
+
+
+$("#cuentasdecobrogeneradas").click(function(){
+  var opcion = 30;
+  var reporte = "Cuentas de Cobro Generadas";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
+
+$("#cuentasdecobro_generadas").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2
+  };
+  var route = "/cuentas_cobro_generadas";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var ccg = info.cuenta_cobro_escr;    
+    CargarCuentasCobroGeneradas(ccg);
   })
 });
 

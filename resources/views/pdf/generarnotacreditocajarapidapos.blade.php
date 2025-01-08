@@ -27,12 +27,14 @@
         <font size="3"><b>Cliente:&nbsp;</b>{{$identificacioncli1}}</font><br>
         <font size="1"><b>{{$nombrecli1}}</font></b><br>
         <b><font size="3">Nota Crédito No:</font></b><br>
-        <b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$id_ncf}}</b><br>
+        <b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$id_ncf}}</b> &nbsp; Fecha:{{ Carbon\Carbon::parse($fecha_ncf)->format('d/m/Y') }}<br>
         <b>(F.No: {{$num_fact}})</b><br>
 
         <font size="3">Fecha:</font>&nbsp;
         <font size="3">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font><br>
     </p>
+    
+    <font size="2">Motivo NC:{{$detalle_ncf}}</font>
     <hr>
 
     <p align="center">

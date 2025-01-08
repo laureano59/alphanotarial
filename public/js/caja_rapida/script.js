@@ -216,6 +216,8 @@ $("#guardar").click(function() {
       $("#numfat").html(prefijo + '-' + ' ' + id_fact);
      }else if(info.validar == 888){
       alert("Los medios de pago deben ser igual que el total a pagar");
+    }else if(info.validar == 999){
+      alert("Los Item están sin cantidades o vacíos");
     }
    
   })
@@ -235,17 +237,14 @@ $("#agregaritem").click(function() {
   }else{
     var identificacion_cli1 = $("#identificacion_cli1").val();
     var formapago = $("#id_formapago").val();
+    var cantidad = $("#cantidad").val();
 
     if(identificacion_cli1 != '' && formapago != null){
-      //var mediopago = $("#mediopago option:selected").val();
-      //if(mediopago != ''){
+      if(cantidad != '' && cantidad != null){
 
-        var id_concepto, cantidad, identificacion_cli1;
+        var id_concepto;
         id_concepto = $("#id_concepto").val();
-        cantidad = $("#cantidad").val();
-        identificacion_cli1 = $("#identificacion_cli1").val();
-
-      //var route = "/detallefacturacajarapida";
+        
         var route = "/agregaritemcajarapida";
         var token = $("#token").val();
         var type = 'GET';
@@ -286,11 +285,10 @@ $("#agregaritem").click(function() {
             CargarDetalleFact(detalle);
           }
         })
-
-      //} else{
-        //alert("Debe Seleccionar el medio de pago");
-      //}
-      
+   
+      }else{
+        alert("La cantidad es obligatoria");
+      }
 
     }else{
       alert("Debes ingresar la información del cliente y la forma de pago");

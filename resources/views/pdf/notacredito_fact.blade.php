@@ -44,7 +44,8 @@
     <table width="100%">
       <tr>
         <td align="center">
-          <h6>Nota Crédito No. &nbsp; {{$prefijo_fact}} - {{$id_ncf}}</h6>
+          <h6>Nota Crédito No. &nbsp; {{$prefijo_fact}} - {{$id_ncf}} </h6> &nbsp; 
+           <font size="1">Fecha: {{ Carbon\Carbon::parse($fecha_ncf)->format('d/m/Y') }} Radicación: {{$id_radica}}&nbsp; Protocolista: {{$nameprotocolista}}</font>
         </td>
       </tr>
       <tr>

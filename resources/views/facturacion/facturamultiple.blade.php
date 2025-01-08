@@ -343,6 +343,7 @@
                 <div class="box_total">
                     <input type="hidden" id="totderechos" value="0">
                     <input type="hidden" id="totconceptos" value="0">
+                    <input type="hidden" id="totconceptosiva" value="0">
                     <input type="hidden" id="totiva" value="0">
                     <input type="hidden" id="totrtf" value="0">
                     <input type="hidden" id="totreteconsumo" value="0">

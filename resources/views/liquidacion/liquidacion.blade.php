@@ -208,6 +208,7 @@
                                                             <div>
                                                                 <center><b class="brown"><span id="totalconceptos"></span></b></center>
                                                                 <input type="hidden" id="totalconcept" value="0">
+                                                                <input type="hidden" id="totalconceptiva" value="0">
                                                             </div>
                                                         </td>
 

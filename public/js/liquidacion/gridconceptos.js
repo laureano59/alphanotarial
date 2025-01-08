@@ -51,9 +51,16 @@ function CalConceptos() {
         .done(function(info) {
             var conceptos = info.conceptos;
             var res = 0;
+            var resiva = 0;
             for (item in conceptos) {
                 res = parseInt($("#total" + conceptos[item].id_concep).val()) + res;
+                if (conceptos[item].id_concep != 2){
+                     resiva = parseInt($("#total" + conceptos[item].id_concep).val()) + resiva;
+                }
+                
             }
+            
+            $("#totalconceptiva").val(resiva);
             $("#totalconceptos").html(formatNumbderechos(Math.round(res)));
             $("#totalconcept").val(res);
         })
@@ -70,7 +77,7 @@ function CalConceptos() {
     __ajax(route, token, type, datos)
         .done(function(info) {
             var iva = info.porcentajeiva / 100;
-            var totaliva = $("#totalconcept").val() * iva;
+            var totaliva = $("#totalconceptiva").val() * iva;
             totaliva = parseFloat($("#totiva").val()) + totaliva;
             $("#totaliva").html(formatNumbderechos(Math.round(totaliva)));
             var totalrecaudos = 0;

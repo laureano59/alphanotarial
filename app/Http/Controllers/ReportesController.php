@@ -34,6 +34,9 @@ use App\Exports\IngresosdianescriturasExport;
 use App\Exports\EnajenacionesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Protocolista;
+use App\Cuenta_cobro_escr;
+use App\Mediosdepago;
+use App\Informe_cartera_bonos_view;
 
 
 class ReportesController extends Controller
@@ -138,6 +141,18 @@ class ReportesController extends Controller
   }else if($opcion == 29){
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informedetimbre', compact('nombre_reporte'));
+  }else if($opcion == 30){
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.cuentasdecobrogeneradas', compact('nombre_reporte'));
+  }else if($opcion == 31){
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.carterabonoscliente', compact('nombre_reporte'));
+  }else if($opcion == 32){
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.carterabonosmes', compact('nombre_reporte'));
+  }else if($opcion == 33){
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.informecarterabonosactiva', compact('nombre_reporte'));
   }
 }
 
@@ -358,6 +373,31 @@ public function FechaReporte(Request $request){
       $total_egreso = $cru['valor_egreso'] + $total_egreso;
     }
 
+    /*********************BONOS***********************/
+
+     $facturas_escrituras = Factura::whereDate('fecha_fact', '>=', $fecha1)
+                      ->whereDate('fecha_fact', '<=', $fecha2)
+                      ->where('nota_credito', false)
+                      ->where('credito_fact', false)
+                      ->get();
+      $bonos_es = 0;
+
+      foreach ($facturas_escrituras as $key => $fe) {
+              $num_fact = $fe->id_fact;
+              $prefijo_fact = $fe->prefijo;
+
+              $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+              foreach ($Medpago as $med) {
+                //$efectivo_es += $med->efectivo;
+                //$cheque_es += $med->cheque;
+                //$consignacion_bancaria_es += $med->consignacion_bancaria;
+                //$pse_es += $med->pse;
+                //$transferencia_bancaria_es += $med->transferencia_bancaria;
+                //$tarjeta_credito_es += $med->tarjeta_credito;
+                //$tarjeta_debito_es += $med->tarjeta_debito;
+                $bonos_es += $med->bono;
+              }
+            }
 
 
     if($tipo_informe == 'completo'){
@@ -389,7 +429,8 @@ public function FechaReporte(Request $request){
        "deduccion_reteiva_credito"=>$facturas_credito->deduccion_reteiva,
        "deduccion_reteica_credito"=>$facturas_credito->deduccion_reteica,
        "deduccion_retertf_credito"=>$facturas_credito->deduccion_retertf,
-       "total_fact_credito"=>$facturas_credito->total_fact
+       "total_fact_credito"=>$facturas_credito->total_fact,
+       "bonos_es"=>$bonos_es
      ]);
     }else{
      $cajadiario_otros_periodos = [];
@@ -491,6 +532,28 @@ public function FechaReporte(Request $request){
    ]);
   }
 
+  
+  public function Cuentas_Cobro_Generadas(Request $request)
+  {
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $fecha1 = $request->fecha1;
+    $fecha2 = $request->fecha2;
+    $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
+    $fecha2 = date("Y-m-d", strtotime($fecha2));
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+    
+    $Cuenta_cobro_escr = Cuenta_cobro_escr::whereDate('created_at', '>=', $fecha1)
+    ->whereDate('created_at', '<=', $fecha2)
+    ->orderBy('id_cce')->get()->toArray();
+
+    return response()->json([
+     "cuenta_cobro_escr"=>$Cuenta_cobro_escr
+   ]);
+  }
+
+
   public function Informe_Cartera(Request $request)
   {
     $notaria = Notaria::find(1);
@@ -549,6 +612,68 @@ public function FechaReporte(Request $request){
      "informecartera"=>$informecartera
    ]);
  }
+
+ 
+ public function Informe_Cartera_Bonos(Request $request)
+  {
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $fecha1 = $request->fecha1;
+    $fecha2 = $request->fecha2;
+    $opcionreporte = $request->opcionreporte;
+    $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
+    $fecha2 = date("Y-m-d", strtotime($fecha2));
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+    $identificacion_cli = $request->identificacion_cli;
+    $request->session()->put('identificacion_cli', $identificacion_cli);
+    $request->session()->put('opcionreporte', $opcionreporte);
+    $ordenar = $request->session()->get('ordenar');
+
+    if($ordenar == 'porfecha'){ //por fecha
+      if($opcionreporte == 'maycero'){
+        $informecarterabonos = Informe_cartera_bonos_view::whereDate('fecha_abono', '>=', $fecha1)
+        ->whereDate('fecha_abono', '<=', $fecha2)
+        ->where('nota_credito', false)
+        ->where('saldo_bon', '>=', 1)
+        ->orderBy('id_fact')->get()
+        ->toArray();
+      }else if($opcionreporte == 'completo'){
+       $informecarterabonos = Informe_cartera_bonos_view::whereDate('fecha_abono', '>=', $fecha1)
+       ->whereDate('fecha_abono', '<=', $fecha2)
+       ->where('nota_credito', false)
+       ->orderBy('id_fact')->get()
+       ->toArray();
+     }
+    }elseif($ordenar == 'porcliente'){//por cliente
+      if($opcionreporte == 'maycero'){
+        $informecarterabonos = Informe_cartera_bonos_view::where('identificacion_cli', $identificacion_cli)
+        ->where('nota_credito', false)
+        ->where('saldo_bon', '>=', 1)
+        ->orderBy('id_fact')
+        ->get()
+        ->toArray();
+      }else  if($opcionreporte == 'completo'){
+        $informecarterabonos = Informe_cartera_bonos_view::where('identificacion_cli', $identificacion_cli)
+        ->where('nota_credito', false)
+        ->orderBy('id_fact')
+        ->get()
+        ->toArray();
+      }
+    }elseif($ordenar == 'bonosactivos'){
+     $informecarterabonos = Informe_cartera_bonos_view::
+     where('nota_credito', false)
+     ->where('saldo_bon', '>=', 1)
+     ->orderBy('id_fact')->get()
+     ->toArray();
+   }
+
+      
+   return response()->json([
+     "informecarterabon"=>$informecarterabonos
+   ]);
+ }
+
 
  public function Informe_cajadiario_rapida(Request $request)
  {
@@ -661,7 +786,7 @@ public function FechaReporte(Request $request){
     ->groupBy('escr')
     ->select($raw1)->get()->toArray();
 
-
+   
     $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
@@ -670,7 +795,6 @@ public function FechaReporte(Request $request){
     ->where('cuantia','<=', 300000000)
     ->groupBy('escr')
     ->select($raw2)->get()->toArray();
-
 
 
     $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
@@ -684,6 +808,7 @@ public function FechaReporte(Request $request){
 
 
 
+
     $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<', $fecha2)
@@ -692,8 +817,7 @@ public function FechaReporte(Request $request){
     ->where('cuantia','<=', 1000000000)
     ->groupBy('escr')
     ->select($raw4)->get()->toArray();
-
-
+ 
 
     $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -721,8 +845,7 @@ public function FechaReporte(Request $request){
     ->where('nota_periodo', '<>', 0)
     ->groupBy('escr')
     ->select($raw7)->get()->toArray();
-
-
+   
 
     $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
     $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
@@ -730,7 +853,6 @@ public function FechaReporte(Request $request){
     ->where('nota_periodo', '<>', 0)
     ->groupBy('escr')
     ->select($raw8)->get()->toArray();
-
 
 
     $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
@@ -741,6 +863,7 @@ public function FechaReporte(Request $request){
     ->select($raw9)->get()->toArray();
 
 
+   
 
     /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
 
@@ -756,6 +879,8 @@ public function FechaReporte(Request $request){
     /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
 
     $excenta = array_merge($excenta, $sincuantiaexcenta);
+
+
 
 
       # ====================================================================
@@ -942,6 +1067,8 @@ public function FechaReporte(Request $request){
         }
       }
 
+    
+
       $rango1 = array_merge($rango1, $array_rango1);
       $rango2 = array_merge($rango2, $array_rango2);
       $rango3 = array_merge($rango3, $array_rango3);
@@ -962,6 +1089,7 @@ public function FechaReporte(Request $request){
         $ran1super =  0;
         $ran1fondo = 0;
         $ran1total = 0;
+      
         foreach ($rango1 as $key => $rn1) {
           $ran1escr += 1;
           $ran1super +=  $rn1['super'];
@@ -974,6 +1102,7 @@ public function FechaReporte(Request $request){
         $ran1fondo = 0;
         $ran1total = 0;
       }
+
 
       /*----------  Rango2  ----------*/
 
@@ -1206,7 +1335,7 @@ public function FechaReporte(Request $request){
         $sinctotal = 0;
       }
 
-
+    
       $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
       $ran6escr + $sincescr + $excescr;
       $total_super =  $ran1super +  $ran2super +  $ran3super +  $ran4super +
@@ -1307,8 +1436,9 @@ public function FechaReporte(Request $request){
     //->where('nota_periodo', '<>', 8)
     ->get()->toArray();
 
-
+   
     $facturas = $this->unique_multidim_array($facturas, 'id_radica');
+    
     
     $sum_conceptos_otros_periodos = 0;
 
@@ -1333,7 +1463,7 @@ public function FechaReporte(Request $request){
         }
       }
 
-
+      
      //if($not_per <> 0  ){
       
         $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->first();

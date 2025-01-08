@@ -88,6 +88,8 @@ Route::get('editar_acargo_de', 'FacturacionController@Update_a_cargo_de_Editar')
 Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
 
+Route::get('validar_idcce', 'ValidacionesController@Validar_Num_Cuenta_Cobro_pdf');
+
 Route::get('agregaritemcajarapida', 'AgregaritemcajarapidaController@AgregarItemCajaRapida');
 
 
@@ -153,8 +155,12 @@ Route::get('escripendtfact', 'ReportesController@Escrituras_Sin_Factura');
 Route::get('informecartera', 'ReportesController@Informe_Cartera');
 Route::get('informerecaudos', 'ReportesController@Informe_Recaudos');
 Route::get('generarreportecajadiario', 'ReportesController@Informe_cajadiario_rapida');
+
+Route::get('informecarterabonos', 'ReportesController@Informe_Cartera_Bonos');
+
 Route::get('reporte_depositos', 'ReportesController@Relaciondepositosdiarios');
 Route::get('reporte_egresos', 'ReportesController@Relacionegresosdiarios');
+Route::get('cuentas_cobro_generadas', 'ReportesController@Cuentas_Cobro_Generadas');
 
 Route::get('consultar_gasto', 'Gastos_notariaController@validar_existencia');
 
@@ -235,6 +241,14 @@ Route::get('libroindicepdf', 'PdfController@PdfLibroIndiceNotarial');
 Route::get('relnotacreditopdf', 'PdfController@PdfRelacionNotaCredito');
 Route::get('printinformecartera', 'PdfController@PdfInformeCartera');
 Route::get('relacionporconceptospdf', 'PdfController@PdfRelaciondeFacturasPorConceptos');
+
+
+Route::get('printinformecarterabonos', 'PdfController@PdfInformeCartera_Bonos');
+
+
+
+
+
 Route::get('informederecaudospdf', 'PdfController@PdfInformeRecaudos');
 
 Route::get('Imprimircomprobante_Egreso', 'PdfController@PdfComprobante_Egreso');

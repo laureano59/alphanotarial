@@ -165,6 +165,7 @@ async function SumarTotalesFactMutiple(valor, longitud) {
             $("#totconceptos").val(0);
         }
         var subtotal = parseFloat($("#totconceptos").val()) + parseFloat($("#totderechos").val());
+        var subtotalparaiva = parseFloat($("#totconceptosiva").val()) + parseFloat($("#totderechos").val());
         $("#subtotal").html(formatNumbderechos(Math.round(subtotal)));
 
     /***Porcentaje del iva****/
@@ -178,7 +179,7 @@ async function SumarTotalesFactMutiple(valor, longitud) {
         __ajax(route, token, type, datos)
         .done(function(info) {
             var porcentajeiva = parseFloat((info.porcentajeiva) / 100);
-            var totaliva = parseFloat(subtotal * porcentajeiva);
+            var totaliva = parseFloat(subtotalparaiva * porcentajeiva);
             $("#totiva").val(Math.round(totaliva));
             $("#iva").html(formatNumbderechos(Math.round(totaliva)));
         })
@@ -318,6 +319,7 @@ async function SumarConceptosFactMul() {
         var conceptos = info.conceptos;
         var sumatoria = 0;
         var totalconceptoiden;
+        var sumatoriaiva = 0;
 
         for (item in conceptos) {
             totalconceptoiden = "totalconcepto" + conceptos[item].atributo + "iden";
@@ -325,8 +327,14 @@ async function SumarConceptosFactMul() {
                 $("#" + totalconceptoiden).val(0);
             }
             sumatoria += parseFloat($("#" + totalconceptoiden).val());
+
+            if (conceptos[item].id_concep != 2){
+                sumatoriaiva += parseFloat($("#" + totalconceptoiden).val());
+            }
+            
         }
 
+        $("#totconceptosiva").val(sumatoriaiva);
         $("#totconceptos").val(sumatoria);
         if ($("#totderechos").val() == '') {
             $("#totderechos").val(0);
@@ -334,13 +342,15 @@ async function SumarConceptosFactMul() {
         var subtotal = parseFloat($("#totconceptos").val()) + parseFloat($("#totderechos").val());
         $("#subtotal").html(formatNumbderechos(Math.round(subtotal)));
 
+        var subtotaliva = parseFloat($("#totconceptosiva").val()) + parseFloat($("#totderechos").val());
+
         // Segunda llamada AJAX
         var id_tar = 9;
         route = "/tarifas";
         datos = { "id_tar": id_tar };
         var infoTarifas = await __ajax(route, token, type, datos);
         var porcentajeiva = parseFloat(infoTarifas.porcentajeiva) / 100;
-        var totaliva = subtotal * porcentajeiva;
+        var totaliva = subtotaliva * porcentajeiva;
         $("#totiva").val(Math.round(totaliva));
         $("#iva").html(formatNumbderechos(Math.round(totaliva)));
 

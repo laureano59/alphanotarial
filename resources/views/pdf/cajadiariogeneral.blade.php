@@ -450,6 +450,31 @@
 
                         <tr>
                           <td>
+                            <font size="3"><b>Total Bonos</b></font>
+                          </td>
+                          <td align="right">
+                            <font size="3">{{ number_format(0, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format(0, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format(0, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">(-{{ number_format($bonos_es, 2) }})</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format(0, 2) }}</font>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
                             <font size="3"><b>Total ReteIva</b></font>
                           </td>
                           <td align="right">
@@ -521,7 +546,7 @@
                           <td align="right">
                             <font size="3">{{ number_format($deduccion_retertf_credito, 2) }}</font>
                           </td>
-                        </tr>
+                        </tr>                         
 
                         <tr>
                           <td>
@@ -540,7 +565,7 @@
                           </td>
 
                            <td align="right">
-                            <font size="3">{{ number_format($total_fact_contado, 2) }}</font>
+                            <font size="3">{{ number_format($total_fact_contado - $bonos_es, 2) }}</font>
                           </td>
 
                            <td align="right">

@@ -2,7 +2,7 @@ function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros,  derecho
 rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
 total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
 impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
-deduccion_retertf_credito, total_fact_credito) {
+deduccion_retertf_credito, total_fact_credito, bonos_es) {
     var htmlTags = "";
     var total_derechos = 0;
     var total_conceptos = 0;
@@ -235,6 +235,24 @@ deduccion_retertf_credito, total_fact_credito) {
         formatNumbderechos(Math.round(rtf_credito)) +
         '</td>' +
         '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Bonos</b></font>' +
+        '</td>' +
+        '<td><font color="blue">(-' +
+        formatNumbderechos(Math.round(0)) +
+        ')</font></td>' +
+         '<td><font color="blue">(-' +
+        formatNumbderechos(Math.round(bonos_es)) +
+        ')</font></td>' +
+         '<td><font color="blue">(-' +
+        formatNumbderechos(Math.round(0)) +
+        ')</font></td>' +
+        '</tr>' +
+
+
+
         '<tr>' +
         '<td>' +
         '<font size="2"><b>Total ReteIva</b></font>' +
@@ -287,7 +305,7 @@ deduccion_retertf_credito, total_fact_credito) {
         formatNumbderechos(Math.round(total)) +
         '</td>' +
         '<td>' +
-        formatNumbderechos(Math.round(total_fact_contado)) +
+        formatNumbderechos(Math.round(total_fact_contado - bonos_es)) +
         '</td>' +
         '<td>' +
         formatNumbderechos(Math.round(total_fact_credito)) +
@@ -582,6 +600,55 @@ function CargarIngresoConceptos(data, gtotal){
  
 }
 
+
+function CargarCuentasCobroGeneradas(data){
+  var htmlTags = '';
+  for (item in data) {
+     htmlTags +=
+     '<tr>'+
+     '<td>'+
+     data[item].id_cce +
+     '</td>'+
+     '<td>'+
+     data[item].id_cli +
+     '</td>'+
+      '<td>'+
+     data[item].nombre_cli +
+     '</td>'+
+     '<td align="center">'+
+     data[item].created_at +
+     '</td>' +
+     '<td>' +
+            '<a href="javascript://" OnClick="ImprimirCC(\'' + data[item].id_cce + '\'' + ');">' +
+            'imprimir' +
+            '</a>' +
+            '</td>' +
+     '</tr>';
+  } 
+ 
+  document.getElementById('data').innerHTML = htmlTags;
+ 
+}
+
+function ImprimirCC(id_cce){
+   
+    var route = "validar_idcce";
+    var token = $("#token").val();
+    var type = 'GET';
+    var datos = {
+            "id_cce": id_cce
+       }
+
+    __ajax(route, token, type, datos)
+     .done(function(info) {
+        if(info.validar == 1){
+            var url = "/cuentadecobropdf";
+            $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+        }
+
+    })
+}
+
 function CargarLibroIndice(data){
   var htmlTags = '';
   for (item in data) {
@@ -787,6 +854,84 @@ function CargarInformeCartera_facturas_activas(data){
          '<td align="right"><b>' +
           formatNumbderechos(total_saldo) +
           '</b></td>' +
+          '</tr>';
+
+      document.getElementById('carteradata').innerHTML = htmlTags;
+}
+
+function CargarInformeCarteraBonos(data){
+  var total_saldo = 0;
+  var htmlTags = '';
+  for (item in data) {
+    total_saldo = total_saldo + parseFloat(data[item].valor_abono);
+      htmlTags +=
+          '<tr>' +
+          '<td>' +
+          data[item].id_abono +
+          '</td>' +
+           '<td>' +
+          data[item].codigo_bono +
+          '</td>' +
+          '<td>' +
+          data[item].id_fact +
+          '</td>' +
+          '<td>' +
+          data[item].fecha_fact +
+          '</td>' +
+            '<td>' +
+          data[item].fecha_abono +
+          '</td>' +
+          '<td>' +
+          data[item].num_esc +
+          '</td>' +
+          '<td>' +
+          data[item].identificacion_cli +
+          '</td>' +
+          '<td>' +
+          data[item].cliente +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].saldogeneral) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].valor_abono) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].nuevo_saldo) +
+          '</td>' +
+          '<td align="right">' +
+          formatNumbderechos(data[item].valor_bon) +
+          '</td>' +
+         
+          '</tr>';
+      }
+
+      htmlTags +=
+       '<tr>' +
+          '<td>' +
+         '<b>Totales:</b>'+
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+          '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(total_saldo) +
+          '</b></td>' +
+          '<td>' +
+          '</td>' +
+           '<td>' +
+          '</td>' +
           '</tr>';
 
       document.getElementById('carteradata').innerHTML = htmlTags;

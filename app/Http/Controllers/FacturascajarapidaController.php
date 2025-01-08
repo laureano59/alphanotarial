@@ -51,6 +51,12 @@ class FacturascajarapidaController extends Controller
         $total_all = $request->total_all;
         $detalle = $request->detalle;
 
+        if (empty($detalle)){
+             return response()->json([
+                "validar"=>999
+            ]);
+        }
+
 
         $efectivo = $request->efectivo;
          if($efectivo === '' || is_null($efectivo)){

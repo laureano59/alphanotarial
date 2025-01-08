@@ -127,6 +127,7 @@ public function derechos(Request $request){
   private function Derechos_Not($derview){
       $dere = $derview;
       $op = 0;
+
       //print_r($dere);
       foreach ($dere as $key => $values):
         $op = $values['id_tar'];
@@ -146,12 +147,20 @@ public function derechos(Request $request){
             $aporte_especial = $tarifa['valor1'];
 
            /********IMPUESTO APORTE ESPECIAL************/
-        
-         
+                    
             if($valor > $aporte_especial){
                 $valor_aporte_especial = round($valor - $aporte_especial);
                 $dere[$key]['valor_aporte_especial']=$valor_aporte_especial;
-                $valor = $aporte_especial;
+
+                $nombre_acto = $dere[$key]['nombre_acto'];
+                if($nombre_acto == 'VENTA BIENES INMUEBLES CON EL ESTADO'){
+                   $aporte_especial = $tarifa['valor2'];
+                   $valor = $aporte_especial;
+                }else{
+                  $valor = $aporte_especial;
+                }
+
+                //$valor = $aporte_especial;
             }else{
                 $dere[$key]['valor_aporte_especial'] = 0;
               }

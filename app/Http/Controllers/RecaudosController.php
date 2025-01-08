@@ -52,13 +52,25 @@ class RecaudosController extends Controller
     }
 
     private function AporteEspecial($actos){
-      if (!isset($actos['valor_aporte_especial'])) {
-        foreach ($actos as $key => $value) {
-          $valor = $value['valor_aporte_especial'];
-          return $valor;
-        }
 
-        }else{
+      if (!isset($actos['valor_aporte_especial'])) {
+          $mayor = 0;
+          $mayor_acum = 0;
+          $id_array = 0;
+        foreach ($actos as $key => $value) {
+          $mayor = $value['valor_aporte_especial'];
+          if($mayor > $mayor_acum){
+            $mayor_acum = $mayor;
+            $id_array = $key;//tomo el id del acto con mayor cuantia
+          }
+          //$valor = $value['valor_aporte_especial'];
+
+        }
+        $act = $actos[$id_array];
+        $valor = $act['valor_aporte_especial'];
+        return $valor;
+
+      }else{
           return 0;
         }
     }
@@ -252,6 +264,7 @@ class RecaudosController extends Controller
 
 
 private function ImpuestoTimbre($actos){
+
       $tarifa = Tarifa::find(32);//:Tarifa de impuesto timbre
       $porcentaje1 = $tarifa['valor1'] / 100;//para formula 1
       $porcentaje2 = $tarifa['valor2'] / 100;//para formula 2
@@ -286,6 +299,11 @@ private function ImpuestoTimbre($actos){
      
 
       $act = $actos[$id_array];
+      $flag = 0;
+      $nombre_acto = $act['nombre_acto'];
+        if($nombre_acto == 'VENTA BIENES INMUEBLES CON EL ESTADO'){
+          $flag = 1;
+        }
 
       if($act['impuesto_timbre'] == 'true'){//valida si al acto se le aplica impuesto timbre
         $cuantia_en_uvt = ($act['cuantia']) / $uvt;
@@ -306,7 +324,10 @@ private function ImpuestoTimbre($actos){
         $valor = 0;
       }
         
-     
+     if($flag == 1){//Si es con el estado el timbre se cobra al mitad
+      $valor = $valor * 0.5;
+     }
+
       return $valor;
 
           
