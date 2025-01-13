@@ -148,7 +148,7 @@ function enviarSeleccionados(seleccionados) {
     };
   var route = "/cuentadecobro";
   var token = $("#token").val();
-  var type = 'GET';
+  var type = 'POST';
 
   __ajax(route, token, type, datos)
   .done( function( info ){

@@ -56,11 +56,11 @@ Route::resource('notacreditocajarapida', 'NotacreditocajarapidaController');
 Route::resource('carteracacajarapida', 'CarteracajarapidaController');
 Route::resource('notasdebitofact', 'NotasdebitoController');
 Route::resource('detallenotadebito', 'DetallenotadebitoController');
-//Route::resource('cpanelreportes', 'PanelreporteController');
+
 Route::resource('configuracion', 'ConfiguracionController');
 Route::resource('configurarfechas', 'ConfigurarfechasController');
 Route::resource('consultas', 'ConsultasController');
-//Route::resource('Einvoice', 'EinvoiceController');
+
 Route::resource('reportes', 'ReportesController');
 Route::resource('cartera', 'CarteraController');
 Route::resource('bonos', 'BonosController');
@@ -68,6 +68,9 @@ Route::resource('cajarapida', 'CajarapidaController');
 Route::resource('cpanelcajarapida', 'Panel_cajarapidaController');
 Route::resource('facturacajarapida', 'FacturascajarapidaController');
 Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController');
+
+Route::resource('cuentadecobro', 'BonosController');
+
 
 Route::resource('seguimientoescrituras', 'SeguimientoController');
 Route::resource('consulta_cajarapida', 'ConsultacajarapidaController');
@@ -132,7 +135,7 @@ Route::get('buscaracta', 'ActasdepositoController@BuscarActa');
 Route::get('buscarcartera', 'CarteraController@BuscarCartera');
 Route::get('buscarbono', 'BonosController@BuscarBono');
 Route::get('cargarbonos', 'BonosController@CargarBonos');
-Route::get('cuentadecobro', 'BonosController@GuardarCuentaCobro');
+
 Route::get('buscarcartera_cajarapida', 'CarteracajarapidaController@BuscarCartera');
 Route::get('rastrearradicacion', 'ConsultasController@Rastrear_Radicacion');
 Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
