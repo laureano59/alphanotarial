@@ -1,6 +1,10 @@
 $( ".chosen1" ).change(function() {
   $("#cuantia").val('');
   $("#tradicion").val('');
+  $("#catastro").val('');
+  $("#matriprefijo").val('');
+  $("#matricula").val('');  
+  
   var id_acto = $("#id_acto").val();
 
   var datos = {
@@ -8,28 +12,29 @@ $( ".chosen1" ).change(function() {
   };
   var route = "/validaractos";
   var token = $("#token").val();
-  $.ajax({
-      url: route,
-      headers: {
-          'X-CSRF-TOKEN': token
-      },
-      type: 'GET',
-      dataType: 'json',
-      data: datos,
+  var type = 'GET';
 
-      success: function(info) {
+__ajax(route, token, type, datos)
+      .done( function( info ){
+
         var validar = info.actos;
-          if(validar.cuantia == false){
+        if(validar.cuantia == false){
             $("#cuantia").prop('disabled', true);
-          }else if(validar.cuantia == true){
+        }else if(validar.cuantia == true){
             $("#cuantia").prop('disabled', false);
-          }
+        }
 
-          if(validar.tradicion == false){
+        if(validar.catastro == false){
+            $("#catastro").prop('disabled', true);
+        }else if(validar.cuantia == true){
+            $("#catastro").prop('disabled', false);
+        }
+
+        if(validar.tradicion == false){
             $("#tradicion").prop('disabled', true);
-          }else if(validar.tradicion == true){
+        }else if(validar.tradicion == true){
             $("#tradicion").prop('disabled', false);
-          }
-      }
-  });
+        }
+      })
+  
 });

@@ -57,7 +57,17 @@
 
 <div class="form-group">
     <label class="col-sm-2 control-label no-padding-right" for="form-field-1">E-Mail</label>
-    <input type="email" size="50" id="email_cli" name="email_cli" placeholder="Correo Electrónico" oninput="validarEmail(this)" />
+    <input type="email" size="50" id="email_cli" value="{{$cli['email_cli']}}" name="email_cli" placeholder="Correo Electrónico" oninput="validarEmail(this)" />
+</div>
+
+<div class="form-group">
+  <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Act_Econ</label>
+  <select id="actiecon" style="width: 600px;">
+    <option value="" disabled selected>Seleccione Actividad Económica</option>
+    @foreach ($Actividad_economica as $Acteco)
+    <option value="{{$Acteco->codigo}}">{{$Acteco->actividad}}</option>
+    @endforeach
+  </select>
 </div>
 
 <div class="form-group">

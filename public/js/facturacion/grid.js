@@ -490,6 +490,18 @@ function CargarRecaudos_Fact_Multiple(validar) {
             $("#totalimpuestotimbreparticipacion").html('0.00');
             $("#totalimpuestotimbreparticipacioniden").val(0);
         }
+
+        if (parseFloat(validar[item].timbrec) > 0) {
+            $("#totalimpuestotimbrecatatum").html(formatNumbderechos(validar[item].timbrec));
+            $("#totalimpuestotimbrecatatumiden").val(parseFloat(validar[item].timbrec));
+            $("#totalimpuestotimbrecatatumparticipacion").html(formatNumbderechos(validar[item].timbrec * porcentaje));
+            $("#totalimpuestotimbrecatatumparticipacioniden").val(validar[item].timbrec * porcentaje);
+        } else if (parseFloat(validar[item].timbrec) < 1) {
+            $("#totalimpuestotimbrecatatum").html('0.00');
+            $("#totalimpuestotimbrecatatumiden").val(0);
+            $("#totalimpuestotimbrecatatumparticipacion").html('0.00');
+            $("#totalimpuestotimbrecatatumparticipacioniden").val(0);
+        }
     }
     
 }
@@ -499,7 +511,9 @@ function Calcular_Recaudos_FactMultiple(porcentaje, quien) {
     pagoaporteespecial, pagoaporteespecialiden, 
     pagoimpuestotimbre, pagoimpuestotimbreiden, porcentajeimpuestotimbre,
     totalcompleto, porcentajesuper, porcentajefondo, porcentajeaporteespecial, totalsuperparticipacioniden,
-    totalfondoparticipacioniden, pagortf, pagortfiden;
+    totalfondoparticipacioniden, pagortf, pagortfiden,
+    pagoimpuestotimbrecatatum, pagoimpuestotimbrecatatumiden, porcentajeimpuestotimbrecatatum;
+
     if(quien == 'comprador'){
         $("#porcentajertf").val(0);
     }
@@ -510,6 +524,7 @@ function Calcular_Recaudos_FactMultiple(porcentaje, quien) {
     $("#porcentajefondo").val(porcentaje);
     $("#porcentajeaporteespecial").val(porcentaje);
     $("#porcentajeimpuestotimbre").val(porcentaje);
+    $("#porcentajeimpuestotimbrecatatum").val(porcentaje);
 
     
     porcentajertf = parseFloat($("#porcentajertf").val() / 100);
@@ -517,24 +532,28 @@ function Calcular_Recaudos_FactMultiple(porcentaje, quien) {
     porcentajefondo = parseFloat($("#porcentajefondo").val() / 100);
     porcentajeaporteespecial = parseFloat($("#porcentajeaporteespecial").val() / 100);
     porcentajeimpuestotimbre = parseFloat($("#porcentajeimpuestotimbre").val() / 100);
+    porcentajeimpuestotimbrecatatum = parseFloat($("#porcentajeimpuestotimbrecatatum").val() / 100);
 
     totalrtfparticipacioniden = $("#totalrtfparticipacioniden").val();
     totalsuperparticipacioniden = $("#totalsuperparticipacioniden").val();
     totalfondoparticipacioniden = $("#totalfondoparticipacioniden").val();
     totalaporteespecialparticipacioniden = $("#totalaporteespecialparticipacioniden").val();
     totalimpuestotimbreparticipacioniden = $("#totalimpuestotimbreparticipacioniden").val();
+    totalimpuestotimbrecatatumparticipacioniden = $("#totalimpuestotimbrecatatumparticipacioniden").val();
     
     pagortf = parseFloat(totalrtfparticipacioniden * porcentajertf);
     pagosuper = parseFloat(totalsuperparticipacioniden * porcentajesuper);
     pagofondo = parseFloat(totalfondoparticipacioniden * porcentajefondo);
     pagoaporteespecial = parseFloat(totalaporteespecialparticipacioniden * porcentajeaporteespecial);
     pagoimpuestotimbre = parseFloat(totalimpuestotimbreparticipacioniden * porcentajeimpuestotimbre);
+    pagoimpuestotimbrecatatum = parseFloat(totalimpuestotimbrecatatumparticipacioniden * porcentajeimpuestotimbrecatatum);
 
     $("#totrtf").val(pagortf);
     $("#totfondo").val(pagofondo);
     $("#totsuper").val(pagosuper);
     $("#totaporteespecial").val(pagoaporteespecial);
     $("#totimpuestotimbre").val(pagoimpuestotimbre);
+    $("#totimpuestotimbrecatatum").val(pagoimpuestotimbrecatatum);
 
 
     $("#pagortf").html(formatNumbderechos(Math.round(pagortf)));
@@ -542,18 +561,21 @@ function Calcular_Recaudos_FactMultiple(porcentaje, quien) {
     $("#pagofondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#pagoaporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
     $("#pagoimpuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
+    $("#pagoimpuestotimbrecatatum").html(formatNumbderechos(Math.round(pagoimpuestotimbrecatatum)));
     
     $("#pagortfiden").val(pagortf);
     $("#pagosuperiden").val(pagosuper);
     $("#pagofondoiden").val(pagofondo);
     $("#pagoaporteespecialiden").val(pagoaporteespecial);
     $("#pagoimpuestotimbreiden").val(pagoimpuestotimbre);
+    $("#pagoimpuestotimbrecatatumiden").val(pagoimpuestotimbrecatatum);
 
     $("#rtf").html(formatNumbderechos(Math.round(pagortf)));
     $("#super").html(formatNumbderechos(Math.round(pagosuper)));
     $("#fondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#aporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
     $("#impuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
+    $("#impuestotimbrecatatum").html(formatNumbderechos(Math.round(pagoimpuestotimbrecatatum)));
 
 }
 
@@ -562,31 +584,36 @@ function Calcular_Recaudos_FactMultiple_Individual() {
     pagoaporteespecial, pagoaporteespecialiden, 
     pagoimpuestotimbre, pagoimpuestotimbreiden, porcentajeimpuestotimbre,
     totalcompleto, porcentajesuper, porcentajefondo, porcentajeaporteespecial, totalsuperparticipacioniden,
-    totalfondoparticipacioniden, pagortf, pagortfiden;
+    totalfondoparticipacioniden, pagortf, pagortfiden
+    pagoimpuestotimbrecatatum, pagoimpuestotimbrecatatumiden, porcentajeimpuestotimbrecatatum;
 
     porcentajertf = parseFloat($("#porcentajertf").val() / 100);
     porcentajesuper = parseFloat($("#porcentajesuper").val() / 100);
     porcentajefondo = parseFloat($("#porcentajefondo").val() / 100);
     porcentajeaporteespecial = parseFloat($("#porcentajeaporteespecial").val() / 100);
     porcentajeimpuestotimbre = parseFloat($("#porcentajeimpuestotimbre").val() / 100);
+    porcentajeimpuestotimbrecatatum = parseFloat($("#porcentajeimpuestotimbrecatatum").val() / 100);
    
     totalrtfparticipacioniden = $("#totalrtfparticipacioniden").val();
     totalsuperparticipacioniden = $("#totalsuperparticipacioniden").val();
     totalfondoparticipacioniden = $("#totalfondoparticipacioniden").val();
     totalaporteespecialparticipacioniden = $("#totalaporteespecialparticipacioniden").val();
     totalimpuestotimbreparticipacioniden = $("#totalimpuestotimbreparticipacioniden").val();
+    totalimpuestotimbrecatatumparticipacioniden = $("#totalimpuestotimbrecatatumparticipacioniden").val();
     
     pagortf = parseFloat(totalrtfparticipacioniden * porcentajertf);
     pagosuper = parseFloat(totalsuperparticipacioniden * porcentajesuper);
     pagofondo = parseFloat(totalfondoparticipacioniden * porcentajefondo);
     pagoaporteespecial = parseFloat(totalaporteespecialparticipacioniden * porcentajeaporteespecial);
     pagoimpuestotimbre = parseFloat(totalimpuestotimbreparticipacioniden * porcentajeimpuestotimbre);
+    pagoimpuestotimbrecatatum = parseFloat(totalimpuestotimbrecatatumparticipacioniden * porcentajeimpuestotimbrecatatum);
 
     $("#totrtf").val(pagortf);
     $("#totfondo").val(pagofondo);
     $("#totsuper").val(pagosuper);
     $("#totaporteespecial").val(pagoaporteespecial);
     $("#totimpuestotimbre").val(pagoimpuestotimbre);
+    $("#totimpuestotimbrecatatum").val(pagoimpuestotimbrecatatum);
 
 
     $("#pagortf").html(formatNumbderechos(Math.round(pagortf)));
@@ -594,18 +621,21 @@ function Calcular_Recaudos_FactMultiple_Individual() {
     $("#pagofondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#pagoaporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
     $("#pagoimpuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
+    $("#pagoimpuestotimbrecatatum").html(formatNumbderechos(Math.round(pagoimpuestotimbrecatatum)));
     
     $("#pagortfiden").val(pagortf);
     $("#pagosuperiden").val(pagosuper);
     $("#pagofondoiden").val(pagofondo);
     $("#pagoaporteespecialiden").val(pagoaporteespecial);
     $("#pagoimpuestotimbreiden").val(pagoimpuestotimbre);
+    $("#pagoimpuestotimbrecatatumiden").val(pagoimpuestotimbrecatatum);
 
     $("#rtf").html(formatNumbderechos(Math.round(pagortf)));
     $("#super").html(formatNumbderechos(Math.round(pagosuper)));
     $("#fondo").html(formatNumbderechos(Math.round(pagofondo)));
     $("#aporteespecial").html(formatNumbderechos(Math.round(pagoaporteespecial)));
     $("#impuestotimbre").html(formatNumbderechos(Math.round(pagoimpuestotimbre)));
+    $("#impuestotimbrecatatum").html(formatNumbderechos(Math.round(pagoimpuestotimbrecatatum)));
 
    
 }
@@ -697,6 +727,13 @@ function CargarRecaudos(validar) {
             $("#impuestotimbre").html(formatNumbderechos($("#totimpuestotimbre").val()));
         } else if (parseFloat(validar[item].impuestotimbre) < 1) {
             $("#impuestotimbre").html('0.00');
+        }
+
+         if (parseFloat(validar[item].timbrec) > 0) {
+            $("#totimpuestotimbrecatatum").val(parseFloat(validar[item].timbrec));
+            $("#impuestotimbrecatatum").html(formatNumbderechos($("#totimpuestotimbrecatatum").val()));
+        } else if (parseFloat(validar[item].timbrec) < 1) {
+            $("#impuestotimbrecatatum").html('0.00');
         }
 
         if (parseFloat(validar[item].recsuper) > 0) {
@@ -1029,6 +1066,7 @@ function Total_Menos_Deducciones() {
     parseFloat($("#totreteconsumo").val()) +
     parseFloat($("#totaporteespecial").val()) +
     parseFloat($("#totimpuestotimbre").val()) +
+     parseFloat($("#totimpuestotimbrecatatum").val()) +
     parseFloat($("#totfondo").val()) +
     parseFloat($("#totsuper").val());
 
@@ -1043,8 +1081,8 @@ function Total_Menos_Deducciones() {
 
 }
 
-function Total_Menos_Deducciones_Otor() {
-    /******Recalcula Gran Total con las deducciones******/
+/*function Total_Menos_Deducciones_Otor() {
+    
     var grantotal = parseFloat($("#grantotalotorderechosiden").val()) +
     parseFloat($("#grantotalotorconceptosiden").val()) +
     parseFloat($("#totalivaotoriden").val()) +
@@ -1061,10 +1099,10 @@ function Total_Menos_Deducciones_Otor() {
     $("#grantotalotorganteiden").val(grantotal);
     $("#grantotalotorgante").html(formatNumbderechos(grantotal));
 
-}
+}*/
 
-function Total_Menos_Deducciones_Compa() {
-    /******Recalcula Gran Total con las deducciones******/
+/*function Total_Menos_Deducciones_Compa() {
+   
     var grantotal = parseFloat($("#grantotalcompaderechosiden").val()) +
     parseFloat($("#grantotalcompaconceptosiden").val()) +
     parseFloat($("#totalivacompaiden").val()) +
@@ -1081,7 +1119,7 @@ function Total_Menos_Deducciones_Compa() {
     $("#grantotalcomparecienteiden").val(grantotal);
     $("#grantotalcompareciente").html(formatNumbderechos(grantotal));
 
-}
+}*/
 
 function Cargar_Actas_Cliente(data) {
     var htmlTags = "";

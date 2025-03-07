@@ -176,6 +176,7 @@
               <input type="hidden" id="totreteconsumo" value="0">
               <input type="hidden" id="totaporteespecial" value="0">
               <input type="hidden" id="totimpuestotimbre" value="0">
+              <input type="hidden" id="totimpuestotimbrecatatum" value="0">
               <input type="hidden" id="totfondo" value="0">
               <input type="hidden" id="totsuper" value="0">
               <input type="hidden" id="reteivaide" value="0">
@@ -215,6 +216,11 @@
                 <tr>
                     <td style="width:20%;"><span style="font-size:16px;">Impuesto_Timbre:</span></td>
                     <td style="width:50%;"><span id="impuestotimbre" style="font-size:16px;"></span></td>
+                </tr>
+
+                <tr>
+                    <td style="width:20%;"><span style="font-size:16px;">Timb_Decreto_175:</span></td>
+                    <td style="width:50%;"><span id="impuestotimbrecatatum" style="font-size:16px;"></span></td>
                 </tr>
 
                 <tr>

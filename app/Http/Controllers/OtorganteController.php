@@ -45,6 +45,8 @@ class OtorganteController extends Controller
       $otorgante->porcentaje_otor = $request->input('porcentaje');
       $otorgante->id_cal1 = $id_cal1;
       $otorgante->cuantia = $request->session()->get('cuantia_otor');
+      $otorgante->catastro = $request->session()->get('catastro_otor');
+      
 
       if($request->session()->get('tradi') === 'null'){
         $tradicion = NULL;

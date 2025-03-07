@@ -17,6 +17,7 @@ function CargarDerechos(validar) {
         '<td>'+
         '<b class="purple">' + formatNumbderechos(validar[item].derechos) + '</b>' +
         '</td>'+
+       
         '</tr>';
     }
     htmlTags +='<tr>'+
@@ -54,6 +55,7 @@ function CargarLiqDerechos(validar) {
         '<td>'+
         '<b class="purple">' + formatNumbderechos(validar[item].derechos) + '</b>' +
         '</td>'+
+       
         '</tr>';
     }
     htmlTags +='<tr>'+
@@ -74,6 +76,7 @@ function CargarLiqDerechos(validar) {
 
 //NOTE: Cargar Recaudos
 function CargarRecaudos(validar) {
+
   $("#recaudos").fadeIn();
   $("#totalrecsuper").html(formatNumbderechos(validar.recsuper));
   $("#totalrecfondo").html(formatNumbderechos(validar.recfondo));
@@ -81,9 +84,8 @@ function CargarRecaudos(validar) {
   $("#totrecfondo").val(validar.recfondo);
   $("#totaporteespecial").val(validar.aporteespecial);
   $("#total_impuesto_timbre").val(validar.impuesto_timbre);
-
+  $("#totaltimbredecreto175").val(validar.timbredecreto175);
   
-
   if(validar.rtf > 0){
     $("#retefuente").fadeIn();
     $("#totalrtf").html(formatNumbderechos(validar.rtf));
@@ -118,8 +120,14 @@ function CargarRecaudos(validar) {
       $("#totalimpuestotimbre").html(formatNumbderechos(0));
   }
 
-
-
+  
+   if(validar.timbredecreto175 > 0){
+    $("#totaltimbrec").html(formatNumbderechos(validar.timbredecreto175));
+    $("#timbredecreto175").fadeIn();
+  }else{
+    $("#timbredecreto175").fadeOut();
+      $("#totaltimbrec").html(formatNumbderechos(0));
+  }
 
 }
 
@@ -159,6 +167,14 @@ function CargarRecaudosLiq(validar) {
       $("#impuesto_timbre").fadeIn();
     }else if(validar[item].impuestotimbre < 1){
         $("#impuesto_timbre").fadeOut();
+    }
+
+     if(validar[item].timbrec > 0){
+      $("#totaltimbrec").html(formatNumbderechos(validar[item].timbrec));
+      $("#timbredecreto175").fadeIn();
+    }else{
+      $("#timbredecreto175").fadeOut();
+      $("#totaltimbrec").html(formatNumbderechos(0));
     }
 
 

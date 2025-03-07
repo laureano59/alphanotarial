@@ -20,6 +20,7 @@ class RecaudosController extends Controller
       $reteconsumo = $this->ReteConsumo($actos);
       $aporteespecial = $this->AporteEspecial($actos);
       $impuesto_timbre = $this->ImpuestoTimbre($actos);
+      $timbredecreto175 = $this->ImpuestoTimbreC($actos);
 
 
       if($recsuper === null || $recsuper <=0){
@@ -46,6 +47,7 @@ class RecaudosController extends Controller
          "reteconsumo"=>$reteconsumo,
          "aporteespecial"=>$aporteespecial,
          "impuesto_timbre"=>$impuesto_timbre,
+         "timbredecreto175"=>$timbredecreto175,
          "validar"=>$validar,
          "mensaje"=>$mensaje
       ]);
@@ -178,7 +180,23 @@ class RecaudosController extends Controller
             
             $porcentaje_liq = $porcentaje_liq / 100;
 
-            $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;
+            $flag = 0;
+
+            if($value['catastro'] > 0){
+              $flag = 1;
+            }
+
+            if($flag == 1){
+               if($value['cuantia'] >= $value['catastro']){
+                  $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;
+                }else{
+                $retencion = (($value['catastro'] * $porcentaje)) * $porcentaje_liq;
+              }
+            }else{
+              $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;
+            }          
+
+            
             $valor = $retencion;
 
                     
@@ -282,17 +300,31 @@ private function ImpuestoTimbre($actos){
       $mayor = 0;
       $mayor_acum = 0;
       $id_array = 0;
+      $flagCat = 0;// flagCat = 1 Catastro;  flagCat = 0 Cuantia
 
-     
       foreach ($actos as $key => $value) {//Para tomar el acto de mayor cuantia siempre y cuando ambos tengan tiembre
 
         if($value['impuesto_timbre'] == 'true'){//solo si se le aplica timbre
-           $mayor = $value['cuantia'];
-          if($mayor > $mayor_acum){
-            $mayor_acum = $mayor;
-            $id_array = $key;//tomo el id del acto con mayor cuantia
+          if($value['catastro'] > 0){
+            $flagCat = 1;
           }
+          if($flagCat == 1){
+            if($value['cuantia'] >= $value['catastro']){
+                $mayor = $value['cuantia'];
+                if($mayor > $mayor_acum){
+                  $mayor_acum = $mayor;
+                  $id_array = $key;//tomo el id del acto con mayor cuantia
+                }
+            }else{
+               $flagCat = 2;
+               $mayor = $value['catastro'];
+                if($mayor > $mayor_acum){
+                  $mayor_acum = $mayor;
+                  $id_array = $key;//tomo el id del acto con mayor cuantia
+                }
+            }
 
+          }
         }
        
       }
@@ -306,7 +338,13 @@ private function ImpuestoTimbre($actos){
         }
 
       if($act['impuesto_timbre'] == 'true'){//valida si al acto se le aplica impuesto timbre
-        $cuantia_en_uvt = ($act['cuantia']) / $uvt;
+
+       
+        if($flagCat == 0 || $flagCat == 1){
+          $cuantia_en_uvt = ($act['cuantia']) / $uvt;
+        }else if($flagCat == 2){
+          $cuantia_en_uvt = ($act['catastro']) / $uvt;
+        }        
         
           if($cuantia_en_uvt <= $rango1){
             $valor = 0;
@@ -332,6 +370,29 @@ private function ImpuestoTimbre($actos){
 
           
 }
+
+    private function ImpuestoTimbreC($actos){
+      
+      foreach ($actos as $key => $value) {
+        $id_radica = $value['id_radica'];
+        $anio_radica = $value['anio_radica'];
+      }
+
+       $Actosclienteradica = Actosclienteradica::
+       where('id_radica', $id_radica)
+       ->where('anio_radica', $anio_radica)
+       ->get();
+
+       $timbreley175 = 0;
+
+       foreach ($Actosclienteradica as $key => $value) {
+         $timbreley175 += $value['timbrec_temp'];
+       }
+
+       return $timbreley175;
+                
+
+    }
 
     
 

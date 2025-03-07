@@ -65,18 +65,48 @@ class Certificado_rtfController extends Controller
       $fecha_factura = $request->session()->get('fecha_fact');
       $fecha_escritura = $request->session()->get('fecha_esc');
 
+
+      $flag = 0;
+      $flag2 = 0;
       $rtf = Liq_recaudo::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->first(['retefuente']);
+
       if($rtf->retefuente > 0){
         $totalretencion = $rtf->retefuente;
         $actoscliente_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
+
         foreach ($actoscliente_radica as $acr) {
           if($acr->porcentajecli1 > 0){
             $id_actoperrad = $acr->id_actoperrad;
-            $cuantia = $acr->cuantia;
-            $identificacion_cli = $acr->identificacion_cli;
-            $nombre_cli = $this->Trae_Nombres($identificacion_cli);
-            $porcentaje_cli = ($acr->porcentajecli1) / 100;
-            $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_cli));
+
+            if($acr->catastro > 0){
+              $flag = 1;
+            }
+
+             if($flag == 1){
+               if($acr->cuantia >= $acr->catastro){
+                $cuantia = $acr->cuantia;
+                $identificacion_cli = $acr->identificacion_cli;
+                $nombre_cli = $this->Trae_Nombres($identificacion_cli);
+                $porcentaje_cli = ($acr->porcentajecli1) / 100;
+                $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_cli));
+                  
+                }else{
+                  $flag2 = 1;
+                  $catastro = $acr->catastro;
+                  $identificacion_cli = $acr->identificacion_cli;
+                  $nombre_cli = $this->Trae_Nombres($identificacion_cli);
+                  $porcentaje_cli = ($acr->porcentajecli1) / 100;
+                  $total_retenido_cli = round((($catastro * $porcentaje_rtf) * $porcentaje_cli));
+                
+              }
+            }else{
+              $cuantia = $acr->cuantia;
+              $identificacion_cli = $acr->identificacion_cli;
+              $nombre_cli = $this->Trae_Nombres($identificacion_cli);
+              $porcentaje_cli = ($acr->porcentajecli1) / 100;
+              $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_cli));              
+            }             
+
             $Certificado_rtf = new Certificado_rtf();
             $Certificado_rtf->num_escritura = $num_escritura;
             $Certificado_rtf->id_radica = $id_radica;
@@ -86,7 +116,13 @@ class Certificado_rtfController extends Controller
             $Certificado_rtf->prefijo = $prefijo_fact;
             $Certificado_rtf->num_factura = $num_factura;
             $Certificado_rtf->fecha_factura = $fecha_factura;
-            $Certificado_rtf->valor_venta = $cuantia;
+            
+            if ($flag2 == 0){
+              $Certificado_rtf->valor_venta = $cuantia;
+            }else{
+              $Certificado_rtf->valor_venta = $catastro;
+            }            
+            
             $Certificado_rtf->total_retenido = $total_retenido_cli;
             $Certificado_rtf->total_retencion = $total_retenido_cli;
             $Certificado_rtf->ciudad = $nombre_ciud;
@@ -107,7 +143,13 @@ class Certificado_rtfController extends Controller
                 $Certificado_rtf->prefijo = $prefijo_fact;
                 $Certificado_rtf->num_factura = $num_factura;
                 $Certificado_rtf->fecha_factura = $fecha_factura;
-                $Certificado_rtf->valor_venta = $cuantia;
+
+                 if ($flag2 == 0){
+                    $Certificado_rtf->valor_venta = $cuantia;
+                  }else{
+                    $Certificado_rtf->valor_venta = $catastro;
+                  }   
+
                 $porcentaje_ven = ($ven->porcentaje_otor) / 100;
                 $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_ven));
                 $Certificado_rtf->total_retenido = $total_retenido_cli;

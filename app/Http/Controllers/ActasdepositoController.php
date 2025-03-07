@@ -12,6 +12,7 @@ use App\Banco;
 use App\Actas_deposito;
 use App\Actas_deposito_view;
 use App\Egreso_acta_deposito;
+Use App\Actividad_economica;
 
 
 class ActasdepositoController extends Controller
@@ -33,7 +34,12 @@ class ActasdepositoController extends Controller
       $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
       $Banco = Banco::all();
       $Banco = $Banco->Sort();
-         return view('actas_deposito.depositos', compact('TipoIdentificaciones', 'TipoDeposito', 'Departamentos', 'Banco'));
+
+        $Actividad_economica = Actividad_economica::All();
+        $Actividad_economica = $Actividad_economica->sortBy('actividad');
+
+
+         return view('actas_deposito.depositos', compact('TipoIdentificaciones', 'TipoDeposito', 'Departamentos', 'Banco', 'Actividad_economica'));
     }
 
     /**
@@ -101,13 +107,13 @@ class ActasdepositoController extends Controller
         }
 
 
-        if($request->id_tip == 2 || $request->id_tip == 3){
+        /*if($request->id_tip == 2 || $request->id_tip == 3){
             if($id_radica === '' || is_null($id_radica) || $anio_radica === '' || is_null($anio_radica)){
                     return response()->json([
                         "validar"=>888
                     ]);
             }
-        }
+        }*/
       
       $actas_deposito = new Actas_deposito();
       $actas_deposito->id_radica = $id_radica;

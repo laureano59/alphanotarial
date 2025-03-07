@@ -694,4 +694,13 @@ class ValidacionesController extends Controller
 
         }
 
+        public function Validar_Tarifa(Request $request){
+          $tarifa = Tarifa::find(34);// Timbre Catatumbo
+          $timbrec = $tarifa['uvt'];
+
+          return response()->json([
+              "timbrec"=>$timbrec
+             ]);
+        }
+
     }

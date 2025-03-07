@@ -15,14 +15,31 @@
 <div class="row">
     <div class="col-sm-12">
         <form>
-            @csrf
+             @csrf
             <form>
             @csrf
             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
-            
+            <div class="control-group">
+              <label class="control-label bolder blue">Seleccione Tipo de Informe</label>
+              <div class="radio">
+                <label>
+                  <input name="seleccion" id="maycero" value="maycero" type="radio" class="ace input-lg" />
+                  <span class="lbl bigger-120">Informe con saldos mayor a Cero</span>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input name="seleccion" id="completo" value="completo" type="radio" class="ace input-lg" />
+                  <span class="lbl bigger-120">Informe completo</span>
+                </label>
+              </div>
+
+              
+            </div>  
             <div class="widget-box">
                 <div class="widget-header">
-                    <h4 class="widget-title">Clic en la Lupa para generar reporte</h4>
+                    <h4 class="widget-title">Ingresar Identificación del Cliente</h4>
                     <span class="widget-toolbar">
                         <a target="_blank" href="/printinformecarterabonos">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Reporte"></i>
@@ -33,7 +50,16 @@
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
                         </a>
                     </span>
-                     
+                     <span id="Botonexcel" class="widget-toolbar" style="display:none">
+                        <a href="#" data-action="settings" id="excelcarteraclientebonosacti">
+                            <i><img src="{{ asset('images/icoexcel.png') }}" width="28 px" height="28 px" title="Convertir a Excel"></i>
+                        </a>
+                    </span>
+
+                     <span class="nav-search widget-toolbar">
+                        <input type="text" id="identificacion_cli" placeholder="Escribir No.Identificación" class="nav-search-input" />
+                    </span>
+
                 </div>
             </div>
         </form>
@@ -47,14 +73,14 @@
                 <table id="simple-table" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            
-                            <th>No.Fact</th>
+                            <th>Código.Bono</th>
+                            <th>Factura</th>
                             <th>Fecha.Fact</th>
-                            <th>No.Esc</th>
+                            <th>Escritura</th>
                             <th>Identificación</th>
                             <th>Cliente</th>
+                            <th>Valor Bono</th>
                             <th>Saldo</th>
-                            <th>Total Factura</th>
                         </tr>
                     </thead>
                     <tbody id="carteradata">
@@ -74,7 +100,7 @@
 @endsection
 
 @section('scripts')
-  
+ 
   <script src="{{ asset('js/calendario.js')}}"></script>
   <script src="{{ asset('js/__AJAX.js')}}"></script>
   <script src="{{asset('js/reportes/grid.js')}}"></script>

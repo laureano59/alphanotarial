@@ -61,6 +61,7 @@ class LiqrecaudosController extends Controller
             $liq_recaudos->reteconsumo = $request->input('totreteconsumo');
             $liq_recaudos->aporteespecial = $request->input('totaporteespecial');
             $liq_recaudos->impuestotimbre = $request->input('total_impuesto_timbre');
+            $liq_recaudos->timbrec = $request->totaltimbredecreto175;
             $liq_recaudos->totalrecaudos = $request->input('totalrecaudos');
             $liq_recaudos->grantotalliq = $request->input('grantotalliq');
             $liq_recaudos->save();

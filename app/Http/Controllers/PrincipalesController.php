@@ -68,8 +68,10 @@ class PrincipalesController extends Controller
         
         $cuantia = $request->valor_cuantia;
         $tradicion = $request->tradicion;
+        $catastro = $request->valor_catastro;
         $request->session()->put('cuantia_otor', $cuantia);
         $request->session()->put('tradi', $tradicion);
+        $request->session()->put('catastro_otor', $catastro);
 
         $id = $request->input('id_actoperrad');
         $raw = \DB::raw("CONCAT(pmer_nombrecli1, ' ', sgndo_nombrecli1, ' ', pmer_apellidocli1, ' ', sgndo_apellidocli1, empresa1) as fullname1, CONCAT(pmer_nombrecli2, ' ', sgndo_nombrecli2, ' ', pmer_apellidocli2, ' ', sgndo_apellidocli2, empresa2) as fullname2");

@@ -47,8 +47,20 @@
                         <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <b class="blue">Cuantia</b> </label>
 
                         <div class="col-sm-9">
-                            <input type="text" id="cuantia" name="cuantia" class="col-xs-10 col-sm-5" onKeyPress="return soloNumeros(event)" />
+                            <input type="text" id="cuantia" name="cuantia" class="col-xs-10 col-sm-5"  onblur="ImpuestoTimbreC({{$Acto->id_acto}})"  onKeyPress="return soloNumeros(event)" />
                         </div>
+
+                         <input type="hidden" id="timbredecreto175"/>
+                    </div>
+
+                     <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <b class="blue">Catastro</b> </label>
+
+                        <div class="col-sm-9">
+                        <input type="text" id="catastro" name="catastro" class="col-xs-10 col-sm-5" onKeyPress="return soloNumeros(event)" />
+                        </div>
+
+                         <input type="hidden" id="timbredecreto175"/>
                     </div>
 
                     <div class="form-group">
@@ -72,8 +84,8 @@
                         <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <b class="blue">Matri_Inmob</b> </label>
 
                         <div class="col-sm-9">
-                            <input type="text" id="matri1" maxlength="5" class="col-xs-10 col-sm-2" placeholder="prefijo" />
-                            <input type="text" id="matri2" maxlength="30" class="col-xs-10 col-sm-7" placeholder="matricula" />
+                            <input type="text" id="matriprefijo" maxlength="5" class="col-xs-10 col-sm-2" placeholder="prefijo" />
+                            <input type="text" id="matricula" maxlength="30" class="col-xs-10 col-sm-7" placeholder="matricula" />
                         </div>
                     </div>
 

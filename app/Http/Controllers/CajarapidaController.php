@@ -9,6 +9,7 @@ use App\Conceptos_cajarapida;
 use App\Banco;
 use App\Medios_pago;
 use App\Base_cajarapida;
+Use App\Actividad_economica;
 
 class CajarapidaController extends Controller
 {
@@ -45,10 +46,13 @@ class CajarapidaController extends Controller
 
           $Banco = Banco::all();
           $Banco = $Banco->Sort();
+
+          $Actividad_economica = Actividad_economica::All();
+          $Actividad_economica = $Actividad_economica->sortBy('actividad');
           
                     
           if($opcion == 1){
-            return view('caja_rapida.cajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));  
+            return view('caja_rapida.cajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'Actividad_economica'));  
           //}else if($opcion == 2){
             //return view('caja_rapida.editarcajarapida', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco'));  
           }

@@ -50,6 +50,16 @@
 </div>
 
 <div class="form-group">
+  <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Act_Econ</label>
+  <select id="actieconempre" style="width: 600px;">
+    <option value="" disabled selected>Seleccione Actividad Económica</option>
+    @foreach ($Actividad_economica as $Acteco)
+    <option value="{{$Acteco->codigo}}">{{$Acteco->actividad}}</option>
+    @endforeach
+  </select>
+</div>
+
+<div class="form-group">
   <label class="col-sm-2 control-label no-padding-right" for="form-field-1">Autoretenedor de Iva</label>
   <input name="autoreiva" id="si" value="si" type="radio" class="ace" />
   <span class="lbl"> Si</span>

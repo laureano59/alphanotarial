@@ -15,4 +15,22 @@ class ValidaractosController extends Controller
 			"actos"=>$actos
 		]);
 	}
+
+
+	public function ValidarTimbreC(Request $request){
+		$id = $request->input('id_acto');
+		$actos = Acto::find($id);
+		$timbrecata = 0;
+
+		$timbrec = $actos->timbrec;
+
+		if($timbrec === true){
+			$timbrecata = 1;
+		}
+
+		
+		return response()->json([
+			"timbrecata"=>$timbrecata
+		]);
+	}
 }

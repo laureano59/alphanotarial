@@ -286,6 +286,7 @@ $("#guardarfacturaunica").click(function() {
             var total_reteconsumo = $("#totreteconsumo").val();
             var total_aporteespecial = $("#totaporteespecial").val();
             var total_impuesto_timbre = $("#totimpuestotimbre").val();
+            var total_impuesto_timbrecatatum = $("#totimpuestotimbrecatatum").val();
             var total_fondo = $("#totfondo").val();
             var total_super = $("#totsuper").val();
             var total_fact = $("#grantotal").val();
@@ -324,6 +325,7 @@ $("#guardarfacturaunica").click(function() {
                 "total_reteconsumo": total_reteconsumo,
                 "total_aporteespecial": total_aporteespecial,
                 "total_impuesto_timbre": total_impuesto_timbre,
+                "total_impuesto_timbrecatatum": total_impuesto_timbrecatatum,
                 "total_fondo": total_fondo,
                 "total_super": total_super,
                 "total_fact": total_fact,
@@ -460,7 +462,6 @@ $("#guardarfacturaunica").click(function() {
 });
 
 
-//$("#guardarfacturamultiple").click(function() {
 $("#guardarfacturamultiple").click(async function() {
     /*******Valida totales de la factura y la liquidación*********/
     $("#btnmostrar").fadeOut();//ocultar boton mostrar participantes
@@ -503,6 +504,7 @@ $("#guardarfacturamultiple").click(async function() {
                   var total_super = $("#totsuper").val();
                   var total_aporteespecial = $("#totaporteespecial").val();
                   var total_impuesto_timbre = $("#totimpuestotimbre").val();
+                  var total_impuesto_timbre_catatum = $("#totimpuestotimbrecatatum").val();
                   var total_fact = $("#grantotal").val();
                   var reteiva = $("#reteivaide").val();
                   var retertf = $("#retertfide").val();
@@ -550,6 +552,7 @@ $("#guardarfacturamultiple").click(async function() {
                         "total_super": total_super,
                         "total_aporteespecial": total_aporteespecial,
                         "total_impuesto_timbre": total_impuesto_timbre,
+                        "total_impuesto_timbre_catatum": total_impuesto_timbre_catatum,
                         "total_fact": total_fact,
                         "reteiva": reteiva,
                         "retertf": retertf,

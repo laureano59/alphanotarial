@@ -89,32 +89,33 @@ class EinvoiceController extends Controller
 
 
      foreach ($facturas as $factura) {
-      $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-      $fecha_fact_completa = $factura->fecha_fact;
-      $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
-      $StarPeriodo =  Carbon::parse($fecha_fact)->firstOfMonth();
-      $StarPeriodo = Carbon::parse($StarPeriodo)->format('Y-m-d');
-      $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
-      $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
-      $identificacioncli = $factura->a_nombre_de;
-      $TipodePago = $factura->credito_fact;
-      $TotalFactura = $factura->total_fact;
-      $TotalDerechos = $factura->total_derechos;
-      $TotalConceptos = $factura->total_conceptos;
-      $TotalIva = $factura->total_iva;
-      $TotalRtf = $factura->total_rtf;
-      $TotalReteIva = $factura->deduccion_reteiva;
-      $TotalReteIca = $factura->deduccion_reteica;
-      $TotalReteRtf = $factura->deduccion_retertf;
-      $TotalFondo = $factura->total_fondo;
-      $TotalSuper = $factura->total_super;
-      $AporteEspecial = $factura->total_aporteespecial;
-      $ImpuestoTimbre = $factura->total_impuesto_timbre;
-      $id_radica = $factura->id_radica;
-      $comentarios_fact = $factura->comentarios_fact;
-      $diascredito_fact = $factura->dias_credito;
-      $nota_credito = $factura->nota_credito;
-      $anio_trabajo = $factura->anio_radica;
+      $fecha_fact           = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+      $fecha_fact_completa  = $factura->fecha_fact;
+      $hora_fact          = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+      $StarPeriodo        =  Carbon::parse($fecha_fact)->firstOfMonth();
+      $StarPeriodo        = Carbon::parse($StarPeriodo)->format('Y-m-d');
+      $EndPeriodo         =  Carbon::parse($fecha_fact)->endOfMonth();
+      $EndPeriodo         = Carbon::parse($EndPeriodo)->format('Y-m-d');
+      $identificacioncli  = $factura->a_nombre_de;
+      $TipodePago         = $factura->credito_fact;
+      $TotalFactura       = $factura->total_fact;
+      $TotalDerechos      = $factura->total_derechos;
+      $TotalConceptos     = $factura->total_conceptos;
+      $TotalIva           = $factura->total_iva;
+      $TotalRtf           = $factura->total_rtf;
+      $TotalReteIva       = $factura->deduccion_reteiva;
+      $TotalReteIca       = $factura->deduccion_reteica;
+      $TotalReteRtf       = $factura->deduccion_retertf;
+      $TotalFondo         = $factura->total_fondo;
+      $TotalSuper         = $factura->total_super;
+      $AporteEspecial     = $factura->total_aporteespecial;
+      $ImpuestoTimbre     = $factura->total_impuesto_timbre;
+      $total_timbrec      = $factura->total_timbrec;
+      $id_radica          = $factura->id_radica;
+      $comentarios_fact   = $factura->comentarios_fact;
+      $diascredito_fact   = $factura->dias_credito;
+      $nota_credito       = $factura->nota_credito;
+      $anio_trabajo       = $factura->anio_radica;
     }
 
 
@@ -133,32 +134,33 @@ class EinvoiceController extends Controller
 
    
     foreach ($facturas as $factura) {
-      $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-      $fecha_fact_completa = $factura->fecha_fact;
-      $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
-      $StarPeriodo =  Carbon::parse($fecha_fact)->firstOfMonth();
-      $StarPeriodo = Carbon::parse($StarPeriodo)->format('Y-m-d');
-      $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
-      $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
-      $identificacioncli = $factura->a_nombre_de;
-      $TipodePago = $factura->credito_fact;
-      $TotalFactura = $factura->total_fact;
-      $TotalDerechos = $factura->total_derechos;
-      $TotalConceptos = $factura->total_conceptos;
-      $TotalIva = $factura->total_iva;
-      $TotalRtf = $factura->total_rtf;
-      $TotalReteIva = $factura->deduccion_reteiva;
-      $TotalReteIca = $factura->deduccion_reteica;
-      $TotalReteRtf = $factura->deduccion_retertf;
-      $TotalFondo = $factura->total_fondo;
-      $TotalSuper = $factura->total_super;
-      $AporteEspecial = $factura->total_aporteespecial;
-      $ImpuestoTimbre = $factura->total_impuesto_timbre;
-      $id_radica = $factura->id_radica;
-      $comentarios_fact = $factura->comentarios_fact;
-      $diascredito_fact = $factura->dias_credito;
-      $nota_credito = $factura->nota_credito;
-      $anio_trabajo = $factura->anio_radica;
+      $fecha_fact           = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+      $fecha_fact_completa  = $factura->fecha_fact;
+      $hora_fact            = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+      $StarPeriodo          =  Carbon::parse($fecha_fact)->firstOfMonth();
+      $StarPeriodo          = Carbon::parse($StarPeriodo)->format('Y-m-d');
+      $EndPeriodo           =  Carbon::parse($fecha_fact)->endOfMonth();
+      $EndPeriodo           = Carbon::parse($EndPeriodo)->format('Y-m-d');
+      $identificacioncli    = $factura->a_nombre_de;
+      $TipodePago           = $factura->credito_fact;
+      $TotalFactura         = $factura->total_fact;
+      $TotalDerechos        = $factura->total_derechos;
+      $TotalConceptos       = $factura->total_conceptos;
+      $TotalIva             = $factura->total_iva;
+      $TotalRtf             = $factura->total_rtf;
+      $TotalReteIva         = $factura->deduccion_reteiva;
+      $TotalReteIca         = $factura->deduccion_reteica;
+      $TotalReteRtf         = $factura->deduccion_retertf;
+      $TotalFondo           = $factura->total_fondo;
+      $TotalSuper           = $factura->total_super;
+      $AporteEspecial       = $factura->total_aporteespecial;
+      $ImpuestoTimbre       = $factura->total_impuesto_timbre;
+      $total_timbrec        = $factura->total_timbrec;
+      $id_radica            = $factura->id_radica;
+      $comentarios_fact     = $factura->comentarios_fact;
+      $diascredito_fact     = $factura->dias_credito;
+      $nota_credito         = $factura->nota_credito;
+      $anio_trabajo         = $factura->anio_radica;
     }
 
     $TotalAntesdeIva = $TotalDerechos + $TotalConceptos;
@@ -674,6 +676,12 @@ class EinvoiceController extends Controller
  $otroscargos[5]["amount"] = $ImpuestoTimbre;
  $otroscargos[5]["factor"] = "99.99";
  $otroscargos[5]["indicator"] = "true";
+
+ $otroscargos[6]["name"] = "Timbre Decreto 175";
+ $otroscargos[6]["base"] = $total_timbrec;
+ $otroscargos[6]["amount"] = $total_timbrec;
+ $otroscargos[6]["factor"] = "99.99";
+ $otroscargos[6]["indicator"] = "true";
 
 
  foreach ($otroscargos as $key => $value) {

@@ -860,10 +860,9 @@ function CargarInformeCartera_facturas_activas(data){
 }
 
 function CargarInformeCarteraBonos(data){
-  var total_saldo = 0;
   var htmlTags = '';
   for (item in data) {
-    total_saldo = total_saldo + parseFloat(data[item].valor_abono);
+    
       htmlTags +=
           '<tr>' +
           '<td>' +
@@ -904,6 +903,46 @@ function CargarInformeCarteraBonos(data){
           '</td>' +
          
           '</tr>';
+      }     
+
+      document.getElementById('carteradata').innerHTML = htmlTags;
+}
+
+
+function CargarInformeCarteraBonosActivos(data){
+  var total_saldo = 0;
+  var total_bono = 0;
+  var htmlTags = '';
+  for (item in data) {
+    total_saldo = total_saldo + parseFloat(data[item].saldo);
+    total_bono = total_bono + parseFloat(data[item].valor_bono);
+      htmlTags +=
+          '<tr>' +
+          '<td>' +
+          data[item].codigo_bono +
+          '</td>' +
+           '<td>' +
+          data[item].id_fact +
+          '</td>' +
+          '<td>' +
+          data[item].fecha_fact +
+          '</td>' +
+            '<td>' +
+          data[item].num_esc +
+          '</td>' +
+          '<td>' +
+          data[item].identificacion_cli +
+          '</td>' +
+          '<td>' +
+          data[item].cliente +
+          '</td>' +
+          '<td align="right" bgcolor="#ffead8">' +
+          formatNumbderechos(data[item].valor_bono) +
+          '</td>' +
+           '<td align="right" bgcolor="#ffead8">' +
+          formatNumbderechos(data[item].saldo) +
+          '</td>' +
+          '</tr>';
       }
 
       htmlTags +=
@@ -921,17 +960,12 @@ function CargarInformeCarteraBonos(data){
           '</td>' +
           '<td>' +
           '</td>' +
-          '<td>' +
-          '</td>' +
-           '<td>' +
+           '<td align="right"><b>' +
+           formatNumbderechos(total_bono) +
           '</td>' +
           '<td align="right"><b>' +
           formatNumbderechos(total_saldo) +
           '</b></td>' +
-          '<td>' +
-          '</td>' +
-           '<td>' +
-          '</td>' +
           '</tr>';
 
       document.getElementById('carteradata').innerHTML = htmlTags;

@@ -30,13 +30,17 @@ use\App\Recaudos_concuantia_view;
 use\App\Actas_deposito_view;
 use\App\Actas_deposito_egreso_view;
 use App\Exports\RonExport;
+use App\Exports\BonosExportCli;
 use App\Exports\IngresosdianescriturasExport;
 use App\Exports\EnajenacionesExport;
+use App\Exports\BonosExportFecha;
+use App\Exports\BonosExportActivos;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Protocolista;
 use App\Cuenta_cobro_escr;
 use App\Mediosdepago;
 use App\Informe_cartera_bonos_view;
+use App\Informe2_bonos_view;
 
 
 class ReportesController extends Controller
@@ -576,13 +580,13 @@ public function FechaReporte(Request $request){
         ->whereDate('fecha_abono', '<=', $fecha2)
         ->where('nota_credito', false)
         ->where('saldo_fact', '>=', 1)
-        ->orderBy('id_fact')->get()
+        ->orderBy('fecha_abono')->get()
         ->toArray();
       }else if($opcionreporte == 'completo'){
        $informecartera = Informe_cartera_view::whereDate('fecha_abono', '>=', $fecha1)
        ->whereDate('fecha_abono', '<=', $fecha2)
        ->where('nota_credito', false)
-       ->orderBy('id_fact')->get()
+       ->orderBy('fecha_abono')->get()
        ->toArray();
      }
     }elseif($ordenar == 'porcliente'){//por cliente
@@ -590,17 +594,18 @@ public function FechaReporte(Request $request){
         $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
         ->where('nota_credito', false)
         ->where('saldo_fact', '>=', 1)
-        ->orderBy('id_fact')
+        ->orderBy('fecha_abono')
         ->get()
         ->toArray();
       }else  if($opcionreporte == 'completo'){
         $informecartera = Informe_cartera_view::where('identificacion_cli', $identificacion_cli)
         ->where('nota_credito', false)
-        ->orderBy('id_fact')
+        ->orderBy('fecha_abono')
         ->get()
         ->toArray();
       }
     }elseif($ordenar == 'facturasactivas'){
+
      $informecartera = Informe_cartera_view::
      where('nota_credito', false)
      ->where('saldo_fact', '>=', 1)
@@ -621,6 +626,7 @@ public function FechaReporte(Request $request){
     $fecha1 = $request->fecha1;
     $fecha2 = $request->fecha2;
     $opcionreporte = $request->opcionreporte;
+    $request->session()->put('opcionreporte', $opcionreporte);
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
@@ -629,20 +635,24 @@ public function FechaReporte(Request $request){
     $request->session()->put('identificacion_cli', $identificacion_cli);
     $request->session()->put('opcionreporte', $opcionreporte);
     $ordenar = $request->session()->get('ordenar');
-
+   
     if($ordenar == 'porfecha'){ //por fecha
       if($opcionreporte == 'maycero'){
         $informecarterabonos = Informe_cartera_bonos_view::whereDate('fecha_abono', '>=', $fecha1)
         ->whereDate('fecha_abono', '<=', $fecha2)
         ->where('nota_credito', false)
         ->where('saldo_bon', '>=', 1)
-        ->orderBy('id_fact')->get()
+        ->orderBy('id_fact')
+        ->orderBy('fecha_abono')
+        ->get()
         ->toArray();
       }else if($opcionreporte == 'completo'){
        $informecarterabonos = Informe_cartera_bonos_view::whereDate('fecha_abono', '>=', $fecha1)
        ->whereDate('fecha_abono', '<=', $fecha2)
        ->where('nota_credito', false)
-       ->orderBy('id_fact')->get()
+       ->orderBy('id_fact')
+       ->orderBy('fecha_abono')
+       ->get()
        ->toArray();
      }
     }elseif($ordenar == 'porcliente'){//por cliente
@@ -651,21 +661,36 @@ public function FechaReporte(Request $request){
         ->where('nota_credito', false)
         ->where('saldo_bon', '>=', 1)
         ->orderBy('id_fact')
+        ->orderBy('fecha_abono')
         ->get()
         ->toArray();
       }else  if($opcionreporte == 'completo'){
         $informecarterabonos = Informe_cartera_bonos_view::where('identificacion_cli', $identificacion_cli)
         ->where('nota_credito', false)
         ->orderBy('id_fact')
+        ->orderBy('fecha_abono')
         ->get()
         ->toArray();
       }
     }elseif($ordenar == 'bonosactivos'){
-     $informecarterabonos = Informe_cartera_bonos_view::
-     where('nota_credito', false)
-     ->where('saldo_bon', '>=', 1)
-     ->orderBy('id_fact')->get()
-     ->toArray();
+
+      if($opcionreporte == 'maycero'){
+
+        $informecarterabonos = Informe2_bonos_view::where('identificacion_cli', $identificacion_cli)
+        ->where('nota_credito', false)
+        ->where('saldo', '>=', 1)
+        ->orderBy('id_fact')
+        ->orderBy('fecha_fact')
+        ->get()
+        ->toArray();
+      }else  if($opcionreporte == 'completo'){
+        $informecarterabonos = Informe2_bonos_view::where('identificacion_cli', $identificacion_cli)
+        ->where('nota_credito', false)
+        ->orderBy('id_fact')
+        ->orderBy('fecha_fact')
+        ->get()
+        ->toArray();
+      }
    }
 
       
@@ -1597,6 +1622,45 @@ public function FechaReporte(Request $request){
     return Excel::download(new RonExport($fecha1, $fecha2), $nombrefile);
 
   }
+
+  
+  public function ExcelcarteraClienteBonos(Request $request){
+
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $opcionreporte = $request->session()->get('opcionreporte');
+    $identificacion_cli = $request->session()->get('identificacion_cli');
+    $nombrefile = 'BonosCliente'.'_'.$fecha1.'.'.'xls';
+    
+    return Excel::download(new BonosExportCli($identificacion_cli, $opcionreporte), $nombrefile);
+
+  }
+  
+
+  public function ExcelCarteraFechaBonos(Request $request){
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $opcionreporte = $request->session()->get('opcionreporte');
+    $nombrefile = 'BonosCliente'.'_'.$fecha1.'.'.'xls';
+
+
+    return Excel::download(new BonosExportFecha($fecha1, $fecha2, $opcionreporte), $nombrefile);
+
+  }
+
+   public function ExcelCarteraClienteBonosActi(Request $request){
+    
+    $fecha1 = $request->session()->get('fecha1');
+    $opcionreporte = $request->session()->get('opcionreporte');
+    $identificacion_cli = $request->session()->get('identificacion_cli');
+    $nombrefile = 'BonosCliente'.'_'.$fecha1.'.'.'xls';
+    
+    return Excel::download(new BonosExportActivos($identificacion_cli, $opcionreporte), $nombrefile);
+
+  }
+
 
 
   public function Reporte_ingresos_Dian(Request $request){

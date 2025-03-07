@@ -16,6 +16,7 @@ use App\Protocolistas_view;
 use App\Principales_radica;
 use App\Notario;
 use App\Principalesfact_view;
+use App\Secundariosfact_view;
 use App\Factura;
 use App\Cajadiario_cajarapida_view;
 use App\Cajadiario_conceptos_rapida_view;
@@ -109,6 +110,7 @@ class PdfController extends Controller
         $total_reteconsumo = $factura->total_reteconsumo;
         $total_aporteespecial = $factura->total_aporteespecial;
         $total_impuesto_timbre = $factura->total_impuesto_timbre;
+        $total_timbrec = $factura->total_timbrec;
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_fact = $factura->total_fact;
@@ -344,6 +346,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Impuesto al timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre;
       }
+      if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
       if($total_iva > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
@@ -354,7 +361,7 @@ class PdfController extends Controller
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre + $total_timbrec;
       $data['totalterceros'] = round($totalterceros);
 
 
@@ -449,6 +456,7 @@ class PdfController extends Controller
         $total_super = $factura->total_super;
         $total_aporteespecial = $factura->total_aporteespecial;
         $total_impuesto_timbre = $factura->total_impuesto_timbre;
+        $total_timbrec = $factura->total_timbrec;
         $total_fact = $factura->total_fact;
         $reteiva = $factura->deduccion_reteiva;
         $retertf = $factura->deduccion_retertf;
@@ -678,6 +686,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Impuesto Timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre;
       }
+      if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
       if($total_rtf > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -698,7 +711,7 @@ class PdfController extends Controller
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_aporteespecial +$total_impuesto_timbre;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_aporteespecial +$total_impuesto_timbre + $total_timbrec;
       $data['totalterceros'] = round($totalterceros);
 
       $k = 0;
@@ -973,8 +986,6 @@ class PdfController extends Controller
 
     $mpdf->Output($namefile,"I");
 
-
-
   }
 
 
@@ -1108,6 +1119,7 @@ class PdfController extends Controller
         $total_super_otor = $factura_otor->total_super;
         $total_aporteespecial_otor = $factura_otor->total_aporteespecial;
         $total_impuesto_timbre_otor = $factura_otor->total_impuesto_timbre;
+        $total_timbrec = $factura_otor->total_timbrec;
         $total_fact_otor = $factura_otor->total_fact;
         $reteiva_otor = $factura_otor->deduccion_reteiva;
         $retertf_otor = $factura_otor->deduccion_retertf;
@@ -1280,6 +1292,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Impuesto Timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre_otor;
       }
+       if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
       if($total_rtf_otor > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -1300,7 +1317,7 @@ class PdfController extends Controller
       $data_otor['terceros'] = $terceros;
       $data_otor['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor;
+      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor + $total_timbrec + $total_impuesto_timbre_otor;
       $data_otor['totalterceros'] = $totalterceros;
 
       $k = 0;
@@ -1383,6 +1400,7 @@ class PdfController extends Controller
         $total_super = $factura->total_super;
         $total_aporteespecial = $factura->total_aporteespecial;
         $total_impuesto_timbre = $factura->total_impuesto_timbre;
+        $total_timbrec = $factura->total_timbrec;
         $total_fact = $factura->total_fact;
         $reteiva = $factura->deduccion_reteiva;
         $retertf = $factura->deduccion_retertf;
@@ -1552,6 +1570,11 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Impuesto Timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre;
       }
+      if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
       if($total_rtf > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -1572,7 +1595,7 @@ class PdfController extends Controller
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_timbrec + $total_impuesto_timbre;
       $data['totalterceros'] = round($totalterceros);
 
 
@@ -1681,6 +1704,8 @@ class PdfController extends Controller
         $total_fondo_otor = $factura_otor->total_fondo;
         $total_super_otor = $factura_otor->total_super;
         $total_aporteespecial_otor = $factura_otor->total_aporteespecial;
+        $total_impuesto_timbre = $factura_otor->total_impuesto_timbre;
+        $total_timbrec = $factura_otor->total_timbrec;
         $total_fact_otor = $factura_otor->total_fact;
         $reteiva_otor = $factura_otor->deduccion_reteiva;
         $retertf_otor = $factura_otor->deduccion_retertf;
@@ -1851,6 +1876,16 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial_otor;
       }
+      if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
+      if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto al timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
+      }
       if($total_rtf_otor > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -1871,7 +1906,7 @@ class PdfController extends Controller
       $data_otor['terceros'] = $terceros;
       $data_otor['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor;
+      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor + $total_impuesto_timbre + $total_timbrec;
       $data_otor['totalterceros'] = $totalterceros;
 
       $k = 0;
@@ -1953,6 +1988,8 @@ class PdfController extends Controller
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_aporteespecial = $factura->total_aporteespecial;
+        $total_impuesto_timbre = $factura->total_impuesto_timbre;
+        $total_timbrec = $factura->total_timbrec;
         $total_fact = $factura->total_fact;
         $reteiva = $factura->deduccion_reteiva;
         $retertf = $factura->deduccion_retertf;
@@ -2114,6 +2151,16 @@ class PdfController extends Controller
         $terceros[$j]['concepto'] = "Aporte Especial";
         $terceros[$j]['total'] = $total_aporteespecial;
       }
+      if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
+      if($total_impuesto_timbre > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Impuesto al timbre";
+        $terceros[$j]['total'] = $total_impuesto_timbre;
+      }
       if($total_rtf > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -2134,7 +2181,8 @@ class PdfController extends Controller
       $data['terceros'] = $terceros;
       $data['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
+      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre + $total_timbrec;
+
       $data['totalterceros'] = round($totalterceros);
 
 
@@ -3221,13 +3269,23 @@ public function PdfInformeCartera(Request $request){
   $fecha1 = $request->session()->get('fecha1');
   $fecha2 = $request->session()->get('fecha2');
   $opcionreporte = $request->session()->get('opcionreporte');
-  
 
-  $fecha_reporte =  $fecha1." A ". $fecha2;
+  $ordenar = $request->session()->get('ordenar');
+
+  if($ordenar == 'porfecha'){
+    $fecha_reporte =  $fecha1." A ". $fecha2;
+  }else{
+    $fecha1 = date("d/m/Y");
+    $fecha2 = date("d/m/Y");
+
+    $fecha_reporte =  $fecha1." A ". $fecha2;
+  }
+
+  
   $fecha_impresion = date("d/m/Y");
 
   $identificacion_cli = $request->session()->get('identificacion_cli');
-  $ordenar = $request->session()->get('ordenar');
+  
     if($ordenar == 'porfecha'){ //por fecha
 
       if($opcionreporte == 'maycero'){
@@ -4581,6 +4639,9 @@ public function PdfInformeCartera(Request $request){
       $data['total_credito_fact'] = $total_credito_fact;
       $data['facturadores'] = $facturadores;
 
+      ini_set('pcre.backtrack_limit', 10000000);
+      ini_set('memory_limit', '1G');
+      set_time_limit(300);
       $html = view('pdf.cajadiario_cajarapida',$data)->render();
 
       $namefile = 'cajadiario_cajarapida_'.$fecha_reporte.'.pdf';
@@ -5322,7 +5383,11 @@ public function Cuenta_de_Cobro(Request $request){
 
     $anio_trabajo = date("Y", strtotime($fecha1)); //Convierte Fecha a YYYY
     
-    $CuentaCobro = Detalle_cuenta_cobro_escr::where('id_cce', $id_cuentacobro)->get()->toArray();
+    $CuentaCobro = Detalle_cuenta_cobro_escr::
+    where('id_cce', $id_cuentacobro)
+    ->orderBy('id_fact')
+    ->get()
+    ->toArray();
     $Total = 0;
     foreach ($CuentaCobro as $key => $value) {
       $Total = $value['valor_bono'] + $Total;
@@ -5967,6 +6032,7 @@ public function Cuenta_de_Cobro(Request $request){
         $total_super_otor = $factura_otor->total_super;
         $total_aporteespecial_otor = $factura_otor->total_aporteespecial;
         $total_impuesto_timbre = $factura_otor->total_impuesto_timbre;
+        $total_timbrec = $factura_otor->total_timbrec;
         $total_fact_otor = $factura_otor->total_fact;
         $reteiva_otor = $factura_otor->deduccion_reteiva;
         $retertf_otor = $factura_otor->deduccion_retertf;
@@ -6067,10 +6133,22 @@ public function Cuenta_de_Cobro(Request $request){
         $nombrecli_acargo_de = $acar['fullname'];
       }
 
+
+      /*************Principales****************/
+
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
         identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
-      $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
+      $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(5)->get()->toArray();
       $contprincipales = count ($principales, 0);
+    
+
+      /***************Secundarios***************/
+
+      $raws = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+      $secundarios = Secundariosfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raws)->take(5)->get()->toArray();
+      $contsecundarios = count ($secundarios, 0);
+
 
       $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->orderBy('id_actoperrad','asc')->take(30)->get()->toArray();
       $contactos = count ($actos, 0);
@@ -6157,6 +6235,8 @@ public function Cuenta_de_Cobro(Request $request){
       $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
       $data_otor['contprincipales'] = $contprincipales;
+      $data_otor['secundarios'] = $secundarios;
+      $data_otor['contsecundarios'] = $contsecundarios;
       $data_otor['actos'] = $actos;
       $data_otor['contactos'] = $contactos;//contador actos
       $data_otor['derechos'] = $derechos_otor;
@@ -6196,6 +6276,11 @@ public function Cuenta_de_Cobro(Request $request){
         $terceros[$j]['concepto'] = "Impuesto Timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre;
       }
+       if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
       if($total_rtf_otor > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Retención en la Fuente";
@@ -6216,7 +6301,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data_otor['terceros'] = $terceros;
       $data_otor['contterceros'] = $contterceros;
 
-      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor + $total_aporteespecial_otor + $total_impuesto_timbre;
+      $totalterceros = $total_iva_otor + $total_rtf_otor + $total_reteconsumo_otor + $total_fondo_otor + $total_super_otor + $total_aporteespecial_otor + $total_impuesto_timbre + $total_timbrec;
       $data_otor['totalterceros'] = $totalterceros;
 
       $k = 0;
@@ -6245,7 +6330,7 @@ public function Cuenta_de_Cobro(Request $request){
         $data_otor['totaldeducciones'] = round($totaldeducciones);
       }
 
-      $html_otor = view('pdf.generar',$data_otor)->render();
+      $html_otor = view('pdf.generarcopia',$data_otor)->render();
 
       $namefile = 'Copia_Factura'.$num_fact.'.pdf';
 
@@ -6293,6 +6378,7 @@ public function Cuenta_de_Cobro(Request $request){
         $total_reteconsumo = $factura->total_reteconsumo;
         $total_aporteespecial = $factura->total_aporteespecial;
         $total_impuesto_timbre = $factura->total_impuesto_timbre;
+        $total_timbrec = $factura->total_timbrec;
         $total_fondo = $factura->total_fondo;
         $total_super = $factura->total_super;
         $total_fact = $factura->total_fact;
@@ -6394,12 +6480,21 @@ public function Cuenta_de_Cobro(Request $request){
       }
 
 
+      /***************Principales************/
 
       $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
         identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
       $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
       $contprincipales = count ($principales, 0);
 
+      /***************Secundarios***************/
+
+      $raws = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
+        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
+      $secundarios = Secundariosfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raws)->take(5)->get()->toArray();
+      $contsecundarios = count ($secundarios, 0);
+
+                
       $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->orderBy('id_actoperrad','asc')->take(30)->get()->toArray();
       $contactos = count ($actos, 0);
       $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
@@ -6479,6 +6574,8 @@ public function Cuenta_de_Cobro(Request $request){
       $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
+      $data['secundarios'] = $secundarios;
+      $data['contsecundarios'] = $contsecundarios;
       $data['actos'] = $actos;
       $data['contactos'] = $contactos;
       $data['derechos'] = $derechos;
@@ -6528,6 +6625,11 @@ public function Cuenta_de_Cobro(Request $request){
         $terceros[$j]['concepto'] = "Impuesto Timbre";
         $terceros[$j]['total'] = $total_impuesto_timbre;
       }
+      if($total_timbrec > 0){
+        $j = $j + 1;
+        $terceros[$j]['concepto'] = "Timbre Decreto 175";
+        $terceros[$j]['total'] = $total_timbrec;
+      }
       if($total_iva > 0){
         $j = $j + 1;
         $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
@@ -6568,7 +6670,7 @@ public function Cuenta_de_Cobro(Request $request){
         $data['totaldeducciones'] = round($totaldeducciones);
       }
 
-      $html = view('pdf.generar',$data)->render();
+      $html = view('pdf.generarcopia',$data)->render();
 
       $namefile = 'notacredito_n13_'.$num_fact.'.pdf';
 
@@ -6719,6 +6821,7 @@ public function Cuenta_de_Cobro(Request $request){
       $total_super = 0;
       $total_aporteespecial = 0;
       $total_impuesto_tiembre = 0;
+      $total_tiembrec = 0;
 
       foreach ($recaudos as $key => $rec) {
         $j = 0;
@@ -6764,6 +6867,13 @@ public function Cuenta_de_Cobro(Request $request){
           $terceros[$j]['total'] = $rec['impuestotimbre'];
           $total_impuesto_tiembre = $terceros[$j]['total'];
         }
+        if($rec['timbrec'] > 0){
+          $j = $j + 1;
+          $terceros[$j]['concepto'] = "Timbre Decreto 175 del 2025";
+          $terceros[$j]['total'] = $rec['timbrec'];
+          $total_tiembrec = $terceros[$j]['total'];
+        }
+        
       }
 
 
@@ -6772,7 +6882,8 @@ public function Cuenta_de_Cobro(Request $request){
       $data['contterceros'] = $contterceros;
 
       $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + 
-      $total_fondo + $total_super + $total_aporteespecial + $total_impuesto_tiembre;
+      $total_fondo + $total_super + $total_aporteespecial + 
+      $total_tiembrec + $total_impuesto_tiembre;
       $total_fact = $totalterceros + $subtotal1;
       $data['totalterceros'] = $totalterceros;
       $data['total_fact'] = $total_fact;

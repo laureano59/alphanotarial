@@ -61,9 +61,12 @@ function editaractoscliente(btn) {
       $.get(route, function(res) {
           $("#id_act").val(res.id_acto);
           $("#cuant").val(res.cuantia);
+          $("#catast").val(res.catastro);
           $("#tradi").val(res.tradicion);
           $("#id_actoperrad").val(res.id_actoperrad);
           $("#id_rad").val(res.id_radica);
+          $("#matripref").val(res.prefijo_matricula_inmob);
+          $("#matricu").val(res.matricula_inmob);
       });
       $('#modalactosradica').modal('toggle');
     }
@@ -71,17 +74,26 @@ function editaractoscliente(btn) {
 }
 
 $("#actualizar").click(function() {
-    var value, id_acto, cuantia, tradicion, datos, id_radica;
+    var value, id_acto, cuantia, catastro, tradicion, datos, id_radica, 
+    matripref, matricu;
+
     value = $("#id_actoperrad").val();
     id_acto = $("#id_act").val();
     cuantia = $("#cuant").val();
+    catastro = $("#catast").val();
     tradicion = $("#tradi").val();
+    matripref =  $("#matripref").val();
+    matricu = $("#matricu").val();
+
     id_radica = $("#id_rad").val();
     datos = {
         "id_acto": id_acto,
         "cuantia": cuantia,
+        "catastro": catastro,
         "tradicion": tradicion,
-        "id_radica": id_radica
+        "id_radica": id_radica,
+        "matripref": matripref,
+        "matricu": matricu
     };
 
     var route = "/actosradica/"+value;

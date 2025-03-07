@@ -50,6 +50,11 @@
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
                         </a>
                     </span>
+                     <span id="Botonexcel" class="widget-toolbar" style="display:none">
+                        <a href="#" data-action="settings" id="excelcarteraclientebonos">
+                            <i><img src="{{ asset('images/icoexcel.png') }}" width="28 px" height="28 px" title="Convertir a Excel"></i>
+                        </a>
+                    </span>
 
                      <span class="nav-search widget-toolbar">
                         <input type="text" id="identificacion_cli" placeholder="Escribir No.Identificación" class="nav-search-input" />

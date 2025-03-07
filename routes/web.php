@@ -128,6 +128,7 @@ Route::get('detalleradica', 'ActosclienteradicaController@listing');
 Route::get('principales', 'PrincipalesController@existecliente');
 Route::get('derechos', 'LiqderechoController@derechos');
 Route::get('validaractos', 'ValidaractosController@Validar');
+Route::get('validartimbrec', 'ValidaractosController@ValidarTimbreC');
 Route::get('recaudos', 'RecaudosController@Recaudos');
 Route::get('tarifas', 'TarifasController@Tarifas');
 Route::get('ciudad', 'CiudadController@ciudad');
@@ -225,6 +226,8 @@ Route::get('cuentadecobropdf', 'PdfController@Cuenta_de_Cobro');
 
 Route::get('validar_liquidacion_provisional', 'ValidacionesController@Validar_liquidacion_provisional');
 
+Route::get('validar_tarifa', 'ValidacionesController@Validar_Tarifa');
+
 Route::get('validarreportados', 'ValidacionesController@ExisteReportado');
 
 
@@ -233,6 +236,15 @@ Route::get('estadisticonotarialpdf', 'PdfController@PdfEstadisticoNotarial');
 Route::get('informe_ron', 'ReportesController@Ron');
 Route::get('generar_informe_ingresos_dian', 'ReportesController@Reporte_ingresos_Dian');
 Route::get('informe_enejenaciones_dian', 'ReportesController@Reporte_enejenaciones_Dian');
+
+
+Route::get('excelcarteraclientebonos', 'ReportesController@ExcelcarteraClienteBonos');
+Route::get('excelcarterafechabonos', 'ReportesController@ExcelCarteraFechaBonos');
+
+Route::get('excelcarteraclientebonosacti', 'ReportesController@ExcelCarteraClienteBonosActi');
+
+
+
 
 Route::get('ingresosporescrituradorpdf', 'PdfController@IngresosporEscriturador');
 Route::get('retefuentesaplicadaspdf', 'PdfController@Retefuentesaplicadaspdf');

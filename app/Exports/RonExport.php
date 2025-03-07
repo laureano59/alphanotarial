@@ -42,6 +42,7 @@ class RonExport implements FromCollection,WithHeadings
 
         ];
     }
+    
     public function collection()
     {
 

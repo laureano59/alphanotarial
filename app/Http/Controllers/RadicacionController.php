@@ -18,6 +18,7 @@ use App\Calidad1;
 use App\Calidad2;
 use App\Departamento;
 use App\Facturascajarapida;
+Use App\Actividad_economica;
 
 class RadicacionController extends Controller
 {
@@ -94,14 +95,21 @@ class RadicacionController extends Controller
       $AnioTrabajo = Notaria::find(1);
       $Protocolistas = Protocolista::all();
       $Actos = Acto::all();
+      
       $calidad1 = Calidad1::all();
       $calidad1 = $calidad1->sortBy('nombre_cal1');
+      
       $calidad2 = Calidad2::all();
       $calidad2 = $calidad2->sortBy('nombre_cal2');
+      
       $Departamentos = Departamento::all();
-       $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
+      $Departamentos = $Departamentos->sortBy('nombre_depa');
+      
+      $Actividad_economica = Actividad_economica::All();
+      $Actividad_economica = $Actividad_economica->sortBy('actividad');
+
        $TipoIdentificaciones = Tipoidentificacion::all();
-       return view('radicacion.create', compact('AnioTrabajo', 'Protocolistas', 'Actos', 'TipoIdentificaciones', 'calidad1', 'calidad2', 'Departamentos'));
+       return view('radicacion.create', compact('AnioTrabajo', 'Protocolistas', 'Actos', 'TipoIdentificaciones', 'calidad1', 'calidad2', 'Departamentos', 'Actividad_economica'));
       
   }
 

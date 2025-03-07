@@ -71,7 +71,8 @@ $("#guardarliq").click(function() {
 
                   /***********Recaudos**************/
                   var totrecsuper, totrecfondo, totiva, totrtf, totreteconsumo,
-                  totalrecaudos, totaporteespecial, total_impuesto_timbre, grantotalliq;
+                  totalrecaudos, totaporteespecial, total_impuesto_timbre, 
+                  totaltimbredecreto175, grantotalliq;
                   totrecsuper = $("#totrecsuper").val();
                   totrecfondo = $("#totrecfondo").val();
                   totiva = $("#totivacompleto").val();
@@ -81,6 +82,7 @@ $("#guardarliq").click(function() {
                   total_impuesto_timbre = $("#total_impuesto_timbre").val();
                   totalrecaudos = $("#totrecaudos").val();
                   grantotalliq = $("#grantot").val();
+                  totaltimbredecreto175 = $("#totaltimbredecreto175").val();
 
                   datos = {
                       "id_radica": id_radica,
@@ -92,7 +94,8 @@ $("#guardarliq").click(function() {
                       "totaporteespecial": totaporteespecial,
                       "total_impuesto_timbre": total_impuesto_timbre,
                       "totalrecaudos": totalrecaudos,
-                      "grantotalliq": grantotalliq
+                      "grantotalliq": grantotalliq,
+                      "totaltimbredecreto175": totaltimbredecreto175
                     };
 
                   route = "/liqrecaudos";

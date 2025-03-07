@@ -19,11 +19,7 @@
             <div class="widget-box">
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar Rango de Fecha</h4>
-                    <span class="widget-toolbar">
-                        <a target="_blank" href="/relacionporconceptospdf">
-                            <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Reporte"></i>
-                        </a>
-                    </span>
+                   
                     <span class="widget-toolbar">
                         <a href="#" data-action="settings" id="cuentasdecobro_generadas">
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>

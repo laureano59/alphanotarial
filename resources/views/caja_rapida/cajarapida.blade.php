@@ -77,6 +77,12 @@
                 <input type="text" size="10" id="identificacion_cli1" name="identificacion_cli1" placeholder="Identificación" />
                 <input type="text" readonly size="28" id="nombre_cli1" name="nombre_cli1" />
               </div>
+
+               <a href="javascript://" id="consumidorfinal" data-action="collapse" data-action="reload">
+                  <i><img src="{{ asset('images/comprobar.png') }}" width="28 px" height="28 px" title="Consumidor Final"></i>
+                </a>
+
+
             </div>
 
             <div class="form-group">

@@ -134,7 +134,48 @@
         @endfor
     </table>
 
-   <hr>
+     <hr>
+
+
+    <table width="100%">
+        <tr>
+            <td width="30%">
+                <font size="1"><b>Otorgantes secundarios:</b></font>
+            </td>
+            <td width="25%"></td>
+            <td width="20%">
+                <font size="1"><b>Comparecientes secundarios:</b></font>
+            </td>
+            <td width="25%"></td>
+        </tr>
+
+        @for ($i = 0; $i
+        < $contsecundarios; $i++) @if (array_key_exists($i, $secundarios))
+        <tr>
+            <td width="30%">
+                <font size="1">{{ $secundarios[$i]['identificacion_cli1'] }}</font>
+            </td>
+            <td width="25%">
+                <font size="1">{{ $secundarios[$i]['nombre_cli1'] }}</font>
+            </td>
+            <td width="20%" align="center">
+                <font size="1">{{ $secundarios[$i]['identificacion_cli2'] }}</font>
+            </td>
+            <td width="25%">
+                <font size="1">{{ $secundarios[$i]['nombre_cli2'] }}</font>
+            </td>
+        </tr>
+        @else
+        <tr>
+            <td width="30%">&nbsp;</td>
+            <td width="25%">&nbsp;</td>
+            <td width="20%">&nbsp;</td>
+            <td width="25%">&nbsp;</td>
+        </tr>
+        @endif
+        @endfor
+    </table>
+    <hr>
 
     <table width="100%">
         <tr>

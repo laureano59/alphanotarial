@@ -836,8 +836,8 @@ $("#imprimirretefuentes").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -856,8 +856,8 @@ $("#imprimirinformetimbre").click(function(){
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
   var datos = {
-      "fecha1": fecha1,
-      "fecha2": fecha2
+    "fecha1": fecha1,
+    "fecha2": fecha2
   };
 
   __ajax(route, token, type, datos)
@@ -1128,6 +1128,7 @@ $("#generarreportecarterabonosmes").click(function(){
 
       __ajax(route, token, type, datos)
       .done( function( info ){
+        $("#Botonexcel").fadeIn();
         var informecarterabon = info.informecarterabon;
         CargarInformeCarteraBonos(informecarterabon);
       })
@@ -1178,7 +1179,7 @@ $("#generarreportecarteracliente").click(function(){
 
 $("#generarreportecarterafacturasactivas").click(function(){
   var opcionreporte = '';
-   var datos = {
+  var datos = {
     "opcionreporte": opcionreporte
   };
   var route = "/informecartera";
@@ -1194,19 +1195,39 @@ $("#generarreportecarterafacturasactivas").click(function(){
 });
 
 $("#generarreportecarterabonosactivas").click(function(){
-  var opcionreporte = '';
-   var datos = {
-    "opcionreporte": opcionreporte
-  };
-  var route = "/informecarterabonos";
-  var token = $("#token").val();
-  var type = 'GET';
+  if (document.querySelector('input[name="seleccion"]:checked')) {
+    var opcionreporte = '';
+    var seleccion = $('input:radio[name=seleccion]:checked').val();
+    if (seleccion == 'maycero') {
+      opcionreporte = "maycero";
+    }else if (seleccion == 'completo') {
+      opcionreporte = "completo";
+    }
 
-  __ajax(route, token, type, datos)
-  .done( function( info ){
-    var informecarterabon = info.informecarterabon;
-    CargarInformeCarteraBonos(informecarterabon);
-  })
+    if( $("#identificacion_cli").val() == ''){
+      alert("Todos los campos son necesarios");
+    }else{
+
+     var identificacion_cli = $("#identificacion_cli").val();
+
+     var datos = {
+      "identificacion_cli": identificacion_cli,
+      "opcionreporte": opcionreporte
+    };
+    var route = "/informecarterabonos";
+    var token = $("#token").val();
+    var type = 'GET';
+
+    __ajax(route, token, type, datos)
+    .done( function( info ){
+      $("#Botonexcel").fadeIn();
+      var informecarterabon = info.informecarterabon;
+      CargarInformeCarteraBonosActivos(informecarterabon);
+    })
+  }
+}else{
+  alert("Seleccione tipo de informe");
+}
 
 });
 
@@ -1236,6 +1257,7 @@ $("#repcarterabonoscliente").click(function(){
 
   __ajax(route, token, type, datos)
   .done( function( info ){
+    $("#Botonexcel").fadeIn();
     var informecarterabon = info.informecarterabon;
     CargarInformeCarteraBonos(informecarterabon);
   })
@@ -1488,6 +1510,22 @@ $("#generar_ron").click(function(){
   })
 });
 
+$("#excelcarteraclientebonos").click(function(){
+  var url = "/excelcarteraclientebonos";
+  $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+});
+
+
+$("#excelcarteraxfechbonos").click(function(){
+  var url = "/excelcarterafechabonos";
+  $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+});
+
+
+$("#excelcarteraclientebonosacti").click(function(){
+  var url = "/excelcarteraclientebonosacti";
+  $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+});
 
 $("#informedepositos").click(function(){
   var opcion = 17;

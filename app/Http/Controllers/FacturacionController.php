@@ -23,6 +23,7 @@ use App\Banco;
 use App\Bono;
 use App\Factura_a_cargo_de_view;
 use App\Tipo_acta_deposito;
+Use App\Actividad_economica;
 
 
 class FacturacionController extends Controller
@@ -56,6 +57,9 @@ class FacturacionController extends Controller
 
       $TipoDeposito = Tipo_acta_deposito::all();
       $TipoDeposito = $TipoDeposito->sortBy('descripcion_tip');
+
+      $Actividad_economica = Actividad_economica::All();
+      $Actividad_economica = $Actividad_economica->sortBy('actividad');
       
       //$MediosdePago = Medios_pago::all();
       //$MediosdePago = $MediosdePago->Sort();
@@ -69,7 +73,7 @@ class FacturacionController extends Controller
             }
             $Conceptos = Concepto::all();
             $Conceptos = $Conceptos->sortBy('id_concep');
-             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito'));
+             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito', 'Actividad_economica'));
             }else{
               	//return redirect('/home');
                 return view('/home');
@@ -78,7 +82,7 @@ class FacturacionController extends Controller
               /*******TODO:Factura Otorgante Compareciente***********/
               $Conceptos = Concepto::all();
               $Conceptos = $Conceptos->sortBy('id_concep');
-              return view('facturacion.facturaotorcompa', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos'));
+              return view('facturacion.facturaotorcompa', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Actividad_economica'));
           }else if($opcion == 3){
               /*******TODO:Factura Multiple***********/
               if (Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
@@ -89,7 +93,7 @@ class FacturacionController extends Controller
                 $Conceptos = Concepto::all();
                 $Conceptos = $Conceptos->sortBy('id_concep');
                
-                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito'));
+                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito', 'Actividad_economica'));
                 }else{
                   	//return redirect('/home');
                     return view('/home');
@@ -291,6 +295,15 @@ class FacturacionController extends Controller
           $factura->total_rtf = $request->input('total_rtf');
           $factura->total_reteconsumo = $request->input('total_reteconsumo');
           $factura->total_aporteespecial = $request->input('total_aporteespecial');
+          $factura->total_impuesto_timbre = $request->total_impuesto_timbre;
+          
+          if($request->total_impuesto_timbrecatatum === '' || is_null($request->total_impuesto_timbrecatatum)){
+             $factura->total_timbrec = 0;
+          }else{
+            $factura->total_timbrec = $request->total_impuesto_timbrecatatum;
+          }          
+
+
           $factura->total_fondo = $request->input('total_fondo');
           $factura->total_super = $request->input('total_super');
           $factura->total_fact = $request->input('total_fact');
@@ -361,6 +374,8 @@ class FacturacionController extends Controller
            ]);
         }
       } else if($opcion == 3){//Factura Multiple
+
+
         $id_radica = $request->input('id_radica');
         $anio_radica = Notaria::find(1)->anio_trabajo;
         if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', false)->where('factmultiple', false)->exists()){
@@ -504,30 +519,37 @@ class FacturacionController extends Controller
           $consecutivo = $consecutivo + 1;
 
           $factura = new Factura();
-          $factura->prefijo = $prefijo_fact;
-          $factura->id_fact = $consecutivo;
-          $factura->id_radica = $id_radica;
-          $factura->anio_radica = $anio_radica;
-          $factura->fecha_fact = $fecha_factura;
-          $factura->usuario_fact = auth()->user()->name;
-          $factura->a_nombre_de = $request->input('identificacion_cli1');
-          $factura->total_derechos = $request->input('total_derechos');
-          $factura->total_conceptos = $request->input('total_conceptos');
-          $factura->total_iva = $request->input('total_iva');
-          $factura->total_rtf = $request->input('total_rtf');
-          $factura->total_reteconsumo = $request->input('total_reteconsumo');
-          $factura->total_fondo = $request->input('total_fondo');
-          $factura->total_super = $request->input('total_super');
-          $factura->total_aporteespecial = $request->input('total_aporteespecial');
-          $factura->total_impuesto_timbre = $request->input('total_impuesto_timbre');
-          $factura->total_fact = $request->input('total_fact');
-          $factura->deduccion_reteiva = $request->input('reteiva');
-          $factura->deduccion_retertf = $request->input('retertf');
-          $factura->deduccion_reteica = $request->input('reteica');
-          $factura->credito_fact = $request->input('formapago');
-          $factura->a_cargo_de = $doc_acargo_de;
-          $factura->detalle_acargo_de = $detalle_acargo_de;
-          $factura->nota_periodo = $nota_periodo;
+          $factura->prefijo               = $prefijo_fact;
+          $factura->id_fact               = $consecutivo;
+          $factura->id_radica             = $id_radica;
+          $factura->anio_radica           = $anio_radica;
+          $factura->fecha_fact            = $fecha_factura;
+          $factura->usuario_fact          = auth()->user()->name;
+          $factura->a_nombre_de           = $request->identificacion_cli1;
+          $factura->total_derechos        = $request->total_derechos;
+          $factura->total_conceptos       = $request->total_conceptos;
+          $factura->total_iva             = $request->total_iva;
+          $factura->total_rtf             = $request->total_rtf;
+          $factura->total_reteconsumo     = $request->total_reteconsumo;
+          $factura->total_fondo           = $request->total_fondo;
+          $factura->total_super           = $request->total_super;
+          $factura->total_aporteespecial  = $request->total_aporteespecial;
+          $factura->total_impuesto_timbre = $request->total_impuesto_timbre;
+         
+          if($request->total_impuesto_timbre_catatum === '' || is_null($request->total_impuesto_timbre_catatum)){
+              $factura->total_timbrec = 0;
+          }else{
+            $factura->total_timbrec = $request->total_impuesto_timbre_catatum;
+          } 
+
+          $factura->total_fact            = $request->total_fact;
+          $factura->deduccion_reteiva     = $request->reteiva;
+          $factura->deduccion_retertf     = $request->retertf;
+          $factura->deduccion_reteica     = $request->reteica;
+          $factura->credito_fact          = $request->formapago;
+          $factura->a_cargo_de            = $doc_acargo_de;
+          $factura->detalle_acargo_de     = $detalle_acargo_de;
+          $factura->nota_periodo          = $nota_periodo;
 
           if($request->input('formapago') == 'true' ){
             $factura->dias_credito = 30;

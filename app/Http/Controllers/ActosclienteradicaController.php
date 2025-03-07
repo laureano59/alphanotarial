@@ -89,8 +89,8 @@ class ActosclienteradicaController extends Controller
           if($revisar =! 0){
             $cuantia = $request->input('cuantia');
             //$cuantia = str_replace(".00", " ", $cuantia);//reemplaza el punto y los ultimos dos ceros por espacio
-            $cuantia = str_replace(",", " ", $cuantia);//TODO:Reemplaza las comas por espacios
-            $cuantia = str_replace(" ", "", $cuantia);//TODO:elimina los espacios
+            $cuantia = str_replace(",", " ", $cuantia);//Reemplaza las comas por espacios
+            $cuantia = str_replace(" ", "", $cuantia);//elimina los espacios
             $Actosclienteradica->cuantia = $cuantia;
           }else if($revisar == 0){
             $Actosclienteradica->cuantia = 0;
@@ -115,7 +115,11 @@ class ActosclienteradicaController extends Controller
           }
             
 
-          $Actosclienteradica->tradicion= $tradicion;
+          $Actosclienteradica->tradicion                  = $tradicion;
+          $Actosclienteradica->timbrec_temp               = $request->timbrec;
+          $Actosclienteradica->catastro                   = $request->catastro;
+          $Actosclienteradica->prefijo_matricula_inmob    = $request->matriprefijo;
+          $Actosclienteradica->matricula_inmob            = $request->matricula;
 
         
           if (Radicacion::where('id_radica', $Actosclienteradica->id_radica)->where('anio_radica', $Actosclienteradica->anio_radica)->exists()){
@@ -163,6 +167,7 @@ class ActosclienteradicaController extends Controller
     public function edit($id)
     {
         $actoscuantia = Actoscuantia::find($id);
+       
         return response()->json(
           $actoscuantia->toArray()
         );
@@ -182,6 +187,9 @@ class ActosclienteradicaController extends Controller
         $actosclienteradica = Actosclienteradica::find($id);
         $actosclienteradica->id_acto = $request->id_acto;
         $cuantia = $request->cuantia;
+        $catastro = $request->catastro;
+        $matripref = $request->matripref;
+        $matricu = $request->matricu;
 
        
         if($request->tradicion === 'null'){
@@ -195,6 +203,10 @@ class ActosclienteradicaController extends Controller
         $cuantia = str_replace(",", " ", $cuantia);//Reemplaza las comas por espacios
         $cuantia = str_replace(" ", "", $cuantia);//elimina los espacios
         $actosclienteradica->cuantia = $cuantia;
+        $actosclienteradica->catastro = $catastro;
+        $actosclienteradica->prefijo_matricula_inmob = $matripref;
+        $actosclienteradica->matricula_inmob = $matricu;
+
         $actosclienteradica->save();
         $id_radica = $request->id_radica;
         $anio_trabajo = Notaria::find(1)->anio_trabajo;
@@ -208,6 +220,7 @@ class ActosclienteradicaController extends Controller
         $Otorgante = Otorgante::find($id_otor);
         $Otorgante->cuantia = $cuantia;
         $Otorgante->tradicion = $tradicion;
+        $Otorgante->catastro = $catastro;
         $Otorgante->save();
 
        

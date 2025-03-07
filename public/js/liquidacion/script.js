@@ -336,8 +336,6 @@ function Llevar(doc, nombre, autoreteiva, autoretertf, autoreteica, id_ciud, por
         reteiva = Math.round(reteiva);
         console.log('Reteiva:', reteiva);
 
-
-//7777777777777777777777777777777777777
   } else if (autoreteiva == 'false') {
       reteiva = 0;
   }

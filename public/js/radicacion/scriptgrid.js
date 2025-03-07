@@ -1,12 +1,13 @@
 //NOTE: Cargar Actos Cliente
 function CargarActosCli(validar) {
+    console.table(validar);
     var htmlTags = "";
     for (item in validar) {
         htmlTags +=
             '<tr>' +
             '<td>' +
 
-            '<a href="javascript://" OnClick="ListingPrincipales(\'' + validar[item].id_actoperrad + '\',\'' + validar[item].nombre_acto + '\', \'' + validar[item].tradicion + '\',\'' + validar[item].cuantia + '\'  '  + ');">' +
+            '<a href="javascript://" OnClick="ListingPrincipales(\'' + validar[item].id_actoperrad + '\',\'' + validar[item].nombre_acto + '\', \'' + validar[item].tradicion + '\',\'' + validar[item].cuantia + '\', \'' + validar[item].catastro + '\'  '  + ');">' +
             
             validar[item].nombre_acto +
             '</a>' +

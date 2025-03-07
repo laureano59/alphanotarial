@@ -1,5 +1,7 @@
 $("#guardaractosradica").click(function() {
-    if ($("#id_acto").val() != null) {
+       setTimeout(function() {
+        console.log("Continuando con la ejecución después de 3 segundos...");
+         if ($("#id_acto").val() != null) {
         /********NOTE:Comprueba si La radicación está liquidada********/
         var id_radica = $("#radicacion").val();
         var route = "/mostrarliq";
@@ -20,6 +22,10 @@ $("#guardaractosradica").click(function() {
                     var id_radica = $("#radicacion").val();
                     var id_acto = $("#id_acto").val();
                     var cuantia = $("#cuantia").val();
+                    var catastro = $("#catastro").val();
+                    var matriprefijo = $("#matriprefijo").val();
+                    var matricula = $("#matricula").val();
+                    var timbrec = $("#timbredecreto175").val();
                     //var tradicion = $("#tradicion").val();
                     var fecha_tradicion = $("#fecha_tradicion").val();
                    
@@ -28,11 +34,20 @@ $("#guardaractosradica").click(function() {
                     if (cuantia == '') {
                         cuantia = 0;
                     }
+
+                    if(catastro == ''){
+                        catastro = 0;
+                    }
+
                     var datos = {
                         "id_radica": id_radica,
                         "id_acto": id_acto,
                         "cuantia": cuantia,
-                        "tradicion": tradicion
+                        "catastro": catastro,
+                        "tradicion": tradicion,
+                        "matriprefijo": matriprefijo,
+                        "matricula": matricula,
+                        "timbrec": timbrec
                     };
                     var route = "/actosradica";
                     var token = $("#token").val();
@@ -56,14 +71,19 @@ $("#guardaractosradica").click(function() {
     } else {
         alert("Debes de Seleccionar el Acto");
     }
+        
+    }, 3000);
+
 });
 
 function editaractoscliente(btn) {
     var route = "/actosradica/" + btn.value + "/edit";
     $.get(route, function(res) {
+
         $("#id_act").val(res.id_acto);
         $("#cuant").val(res.cuantia);
         $("#tradi").val(res.tradicion);
+        $("#catast").val(res.catastro);
         $("#id_actoperrad").val(res.id_actoperrad);
         $("#id_rad").val(res.id_radica);
     });
@@ -71,16 +91,25 @@ function editaractoscliente(btn) {
 }
 
 $("#actualizar").click(function() {
-    var value, id_acto, cuantia, tradicion, datos, id_radica, actualizar;
+    var value, id_acto, cuantia, tradicion, datos, id_radica, 
+    matripref, matricu, actualizar, catastro;
+
     value = $("#id_actoperrad").val();
     id_acto = $("#id_act").val();
     cuantia = $("#cuant").val();
     tradicion = $("#tradi").val();
+    catastro = $("#catast").val();
+    matripref = $("#matripref").val();
+    matricu = $("#matricu").val();
+
     id_radica = $("#id_rad").val();
     actualizar = 1;
     datos = {
         "id_acto": id_acto,
         "cuantia": cuantia,
+        "catastro": catastro,
+        "matripref": matripref,
+        "matricu": matricu,
         "tradicion": tradicion,
         "id_radica": id_radica,
         "actualizar": actualizar
@@ -197,7 +226,7 @@ function eliminarcompareciente(btn) {
 }
 
 $("#agregar").click(function() {
-    /********NOTE:Comprueba si La radicación está liquidada********/
+    /********Comprueba si La radicación está liquidada********/
     var id_radica = $("#radicacion").val();
     var route = "/mostrarliq";
     var token = $("#token").val();
@@ -207,13 +236,13 @@ $("#agregar").click(function() {
     };
     __ajax(route, token, type, datos)
         .done(function(info) {
-            if (info.validarliqd == '1') { //NOTE:Si la radicación ya está liquidada
+            if (info.validarliqd == '1') { // Si la radicación ya está liquidada
                 $("#msj5").html(info.mensaje);
                 $("#msj-error5").fadeIn();
                 setTimeout(function() {
                     $("#msj-error5").fadeOut();
                 }, 3000);
-            } else if (info.validarliqd == '0') { //NOTE:Si la radicación No está liquidada
+            } else if (info.validarliqd == '0') { // Si la radicación No está liquidada
                 var id_actoperrad = $("#id_actoperrad").val();
                 var identificacion_cli = $("#identificacion_cli3").val();
                 var porcentaje = $("#porcentajecli3").val();
@@ -274,8 +303,7 @@ $("#agregar").click(function() {
         })
 });
 
-function ListingPrincipales(id, nombreacto, tradicion, cuantia) {
-
+function ListingPrincipales(id, nombreacto, tradicion, cuantia, catastro) {
 
     $("#calidad1").val('');
     $("#calidad2").val('');
@@ -291,6 +319,7 @@ function ListingPrincipales(id, nombreacto, tradicion, cuantia) {
     $("#Acto_Actual").html(nombreacto);
 
     var valor_cuantia = cuantia;
+    var valor_catastro = catastro;
 
 
     $("#clientesprincipales").show();
@@ -299,7 +328,8 @@ function ListingPrincipales(id, nombreacto, tradicion, cuantia) {
     var datos = {
         "id_actoperrad": id,
         "valor_cuantia": valor_cuantia,
-        "tradicion": tradicion
+        "tradicion": tradicion,
+        "valor_catastro": valor_catastro
     };
     var route = "/verprincipales";
     //var token = $("#token").val();

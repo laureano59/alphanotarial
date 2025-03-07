@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Cliente;
 use App\Tipoidentificacion;
 use App\Departamento;
+Use App\Actividad_economica;
 
 class ClienteController extends Controller
 {
@@ -52,6 +53,7 @@ class ClienteController extends Controller
           $Clientes->autoreteiva = $request->input('autoreteiva');
           $Clientes->autoretertf = $request->input('autoretertf');
           $Clientes->autoreteica = $request->input('autoreteica');
+          $Clientes->actividadeconomica = $request->actidad_economica;
           $Clientes->save();
         }else{
           $Clientes->id_tipoident = $request->input('id_tipoident');
@@ -68,6 +70,7 @@ class ClienteController extends Controller
           $Clientes->autoreteiva = $request->input('autoreteiva');
           $Clientes->autoretertf = $request->input('autoretertf');
           $Clientes->autoreteica = $request->input('autoreteica');
+          $Clientes->actividadeconomica = $request->actidad_economica;
           $Clientes->save();
         }
         $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname");
@@ -110,7 +113,12 @@ class ClienteController extends Controller
        $Departamentos = Departamento::all();
        $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
        $TipoIdentificaciones = Tipoidentificacion::all();
-       return view('cliente.editar_cliente', compact('TipoIdentificaciones', 'Departamentos', 'id_tipoident', 'Cliente', 'Identificacion'));
+
+        $Actividad_economica = Actividad_economica::All();
+        $Actividad_economica = $Actividad_economica->sortBy('actividad');
+
+
+       return view('cliente.editar_cliente', compact('TipoIdentificaciones', 'Departamentos', 'id_tipoident', 'Cliente', 'Identificacion', 'Actividad_economica'));
     }
 
     /**
@@ -139,6 +147,7 @@ class ClienteController extends Controller
           $cliente->autoreteiva = $request->input('autoreteiva');
           $cliente->autoretertf = $request->input('autoretertf');
           $cliente->autoreteica = $request->input('autoreteica');
+          $cliente->actividadeconomica = $request->actidad_economica;
           $cliente->save();
 
           return response()->json([
@@ -156,6 +165,7 @@ class ClienteController extends Controller
           $cliente->autoreteiva = $request->input('autoreteiva');
           $cliente->autoretertf = $request->input('autoretertf');
           $cliente->autoreteica = $request->input('autoreteica');
+          $cliente->actividadeconomica = $request->actidad_economica;
           $cliente->save();
 
           return response()->json([

@@ -271,19 +271,19 @@
 									<li>
 										<a href="javascript://" id="carterabonoscliente">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Cartera Bonos X Cliente  
+											Trazabilidad X Cliente  
 										</a>
 									</li>
 									<li>
 										<a href="javascript://" id="informecarterabonomes">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Cartera Bonos X Mes  
+											Trazabilidad X Fecha 
 										</a>
 									</li>
 									<li>
 										<a href="javascript://" id="informecarterabonosactiva">
 											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Cartera Bonos Activos  
+											Informe de Cartera Bonos  
 										</a>
 									</li>
 								</ul>

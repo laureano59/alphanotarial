@@ -1,7 +1,7 @@
 $("#actualizar_cli").click(function(){
   var identificacion_cli, pmer_apellidocli, sgndo_apellidocli,
   pmer_nombrecli, sgndo_nombrecli, estadocivil, telefono_cli, direccion_cli,
-  email_cli, empresa, ciudad, opcion;
+  email_cli, empresa, ciudad, actidad_economica, opcion;
   opcion = 1;
 
   identificacion_cli = $("#identificacion_cli").val();
@@ -15,10 +15,11 @@ $("#actualizar_cli").click(function(){
   email_cli = $("#email_cli").val();
   empresa = $("#empresa").val();
   ciudad = $("#ciudad").val();
+  actidad_economica = $("#actiecon option:selected").val(); 
 
   if(pmer_apellidocli != '' && pmer_nombrecli != '' && estadocivil != ''
   && telefono_cli != '' && direccion_cli != ''
-  && email_cli != '' && ciudad != ''){
+  && email_cli != '' && ciudad != '' && actidad_economica != ''){
 
     var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
 
@@ -58,6 +59,7 @@ $("#actualizar_cli").click(function(){
           "autoretertf": autoretertf,
           "autoreteica": autoreteica,
           "ciudad": ciudad,
+          "actidad_economica": actidad_economica,
           "opcion": opcion
         };
 
@@ -90,7 +92,7 @@ $("#actualizar_cli").click(function(){
 
 $("#guardar_cli_empresa").click(function(){
   var identificacion_cli, telefono_cli, direccion_cli,
-  email_cli, empresa, ciudad, opcion;
+  email_cli, empresa, ciudad, opcion, actidad_economica;
   opcion = 2;
 
   identificacion_cli = $("#identificacion_cli").val();
@@ -99,6 +101,7 @@ $("#guardar_cli_empresa").click(function(){
   email_cli = $("#email_cli_empresa").val();
   empresa = $("#empresa").val();
   ciudad = $("#ciudad_empresa").val();
+  actidad_economica = $("#actiecon option:selected").val();
 
   if(empresa != '' && telefono_cli != '' && direccion_cli != ''
   && email_cli != '' && ciudad != ''){
@@ -136,6 +139,7 @@ $("#guardar_cli_empresa").click(function(){
           "autoretertf": autoretertf,
           "autoreteica": autoreteica,
           "ciudad": ciudad,
+          "actidad_economica": actidad_economica,
           "opcion": opcion
         };
 

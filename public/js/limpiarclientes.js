@@ -13,6 +13,7 @@ function LimpiarClientes(){
   $("#direccion_cli_empresa").val('');
   $("#email_cli_empresa").val('');
   $("#departamento").val('');
+  $("#actiecon").val('');
   $("#ciudad").val('');
   $("#departamento_empresa").val('');
   $("#ciudad_empresa").val('');

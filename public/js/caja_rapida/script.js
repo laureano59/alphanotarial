@@ -422,25 +422,6 @@ $("#imprimircopiafacturacajarapida").click(function() {
 });
 
 
-/*$("#editarfacturacajarapida").click(function() {
-  var route = "/sessionescajarapida";
-  var token = $("#token").val();
-  var type = 'GET';
-  var opcion = 2;
-  var datos = {
-    "opcion": opcion
-  };
-
-  __ajax(route, token, type, datos)
-  .done(function(info) {
-    if(info.validar == 1){
-      var url = "/cajarapida";
-      $("<a>").attr("href", url).attr("target", "")[0].click();
-    }
-
-  })
-});*/
-
 $("#validarfacturaparaeditar").click(function() {
 
   var route = "/validareditarfacturacajarapida";
@@ -488,4 +469,50 @@ $("#validarfacturaparaeditar").click(function() {
 
     }
   })
+});
+
+
+$("#consumidorfinal").click(function() {
+  $("#identificacion_cli1").val('222222222222');
+    var identificacion_cli = $("#identificacion_cli1").val();
+    var tipo_doc = $("#id_tipoident1 option:selected").val();
+    var calidad = 1;//NOTE:Para distinguir en cual input poner el nombre del cliente
+    var datos = {
+      "identificacion_cli": identificacion_cli,
+      "tipo_doc": tipo_doc
+    };
+    var route = "/principales";
+    var token = $("#token").val();
+    $.ajax({
+      url: route,
+      headers: {
+        'X-CSRF-TOKEN': token
+      },
+      type: 'GET',
+      dataType: 'json',
+      data: datos,
+
+      success: function(info) {
+        if (info.validar == '0') {
+          $("#tipo_documento").val(info.tipo_doc);
+              if(info.tipo_doc == 31){ //Si es empresa
+                $("#tipo_documento_empresa").val(info.tipo_doc);
+                $("#identificacion_empresa").val(info.identificacion_cli);
+                LimpiarClientes();
+                $("#calidad").val(calidad);//Campo oculto en modal cliente
+                $("#modalcliente-empresa").modal('toggle');
+              }else{
+                $("#identificacion").val(info.identificacion_cli);
+                LimpiarClientes();
+                $("#calidad").val(calidad);
+                $("#modalcliente").modal('toggle');
+              }
+            }else if (info.validar == '1'){
+              $("#nombre_cli1").val(info.nombre);
+            }else if (info.validar == '7'){
+              alert(info.concepto);
+            }
+          }
+        });
+  
 });

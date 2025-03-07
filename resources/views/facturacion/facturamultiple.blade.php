@@ -303,6 +303,25 @@
     <input type="hidden" id="pagoimpuestotimbreiden" value="0" />
 </td>
 </tr>
+
+<tr id="recaudoimpuestotimbrecatatum">
+  <td>Timbre Decreto 175 del 2025</td>
+  <td bgcolor="#ccffcc" align="right">
+      <span id="totalimpuestotimbrecatatum"></span>
+      <input type="hidden" id="totalimpuestotimbrecatatumiden"/>
+  </td>
+  <td bgcolor="#FFF9BB" align="right">
+      <span id="totalimpuestotimbrecatatumparticipacion"></span>
+      <input type="hidden" id="totalimpuestotimbrecatatumparticipacioniden"/>
+  </td>
+  <td width="10%">
+    <input type="text" id="porcentajeimpuestotimbrecatatum" maxlength="3" class="col-xs-10 col-sm-8" onblur="Calcular_Recaudos_FactMultiple_Individual();" onKeyPress="return soloNumeros(event)" />
+</td>
+<td width="20%" bgcolor="#ccffcc" align="right">
+    <span id="pagoimpuestotimbrecatatum"></span>
+    <input type="hidden" id="pagoimpuestotimbrecatatumiden" value="0" />
+</td>
+</tr>
 </tbody>
 </table>
 
@@ -351,6 +370,7 @@
                     <input type="hidden" id="totsuper" value="0">
                     <input type="hidden" id="totaporteespecial" value="0">
                     <input type="hidden" id="totimpuestotimbre" value="0">
+                    <input type="hidden" id="totimpuestotimbrecatatum" value="0">
                     <input type="hidden" id="reteivaide" value="0">
                     <input type="hidden" id="retertfide" value="0">
                     <input type="hidden" id="reteicaide" value="0">
@@ -388,6 +408,11 @@
                         <tr>
                             <td style="width:20%;"><span style="font-size:16px;">Impuesto_Timbre:</span></td>
                             <td style="width:50%;"><span id="impuestotimbre" style="font-size:16px;"></span></td>
+                        </tr>
+
+                        <tr>
+                            <td style="width:20%;"><span style="font-size:16px;"> Timb_Decreto_175:</span></td>
+                            <td style="width:50%;"><span id="impuestotimbrecatatum" style="font-size:16px;"></span></td>
                         </tr>
 
                         <tr>

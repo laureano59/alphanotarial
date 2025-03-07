@@ -233,6 +233,7 @@ class BonosController extends Controller
 
         $bonos = Cuenta_cobro_view::whereDate('fecha_fact', '>=', $fecha1)
         ->whereDate('fecha_fact', '<=', $fecha2)
+        ->orderBy('id_fact')
         ->get()
         ->toArray();
 

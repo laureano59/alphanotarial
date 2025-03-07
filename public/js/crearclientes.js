@@ -1,7 +1,7 @@
 $("#guardar-cli").click(function() {
     var identificacion_cli, pmer_apellidocli, sgndo_apellidocli,
     pmer_nombrecli, sgndo_nombrecli, estadocivil, telefono_cli, direccion_cli,
-    email_cli, empresa, id_tipoident, ciudad;
+    email_cli, empresa, id_tipoident, ciudad, actidad_economica;
 
     identificacion_cli = $("#identificacion").val();
     pmer_apellidocli = $("#pmer_apellidocli").val();
@@ -12,6 +12,7 @@ $("#guardar-cli").click(function() {
     telefono_cli = $("#telefono_cli").val();
     direccion_cli = $("#direccion_cli").val();
     email_cli = $("#email_cli").val();
+    actidad_economica = $("#actiecon option:selected").val();
     //id_tipoident = $("#tipo_documento").val();
     id_tipoident = $("#tipo_documento option:selected").val();
     empresa = $("#empresa").val();
@@ -20,7 +21,7 @@ $("#guardar-cli").click(function() {
     if(identificacion_cli != '' && pmer_apellidocli != ''
     && pmer_nombrecli != '' && estadocivil != ''
     && telefono_cli != '' && direccion_cli != ''
-    && email_cli != '' && id_tipoident != '' && ciudad != ''){
+    && email_cli != '' && id_tipoident != '' && ciudad != '' && actidad_economica != ''){
 
       var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
 
@@ -55,7 +56,8 @@ $("#guardar-cli").click(function() {
             "autoreteiva": autoreteiva,
             "autoretertf": autoretertf,
             "autoreteica": autoreteica,
-            "ciudad": ciudad
+            "ciudad": ciudad,
+            "actidad_economica": actidad_economica
           };
           var route = "/clientes";
           var token = $("#token").val();
@@ -84,7 +86,7 @@ $("#guardar-cli").click(function() {
 
 $("#guardar-cli-empresa").click(function() {
     var identificacion_cli, empresa, digito_verif, telefono_cli, direccion_cli,
-    email_cli, id_tipoident, ciudad;
+    email_cli, id_tipoident, ciudad, actidad_economica;
 
     identificacion_cli = $("#identificacion_empresa").val();
     id_tipoident = $("#tipo_documento_empresa option:selected").val();
@@ -94,10 +96,11 @@ $("#guardar-cli-empresa").click(function() {
     direccion_cli = $("#direccion_cli_empresa").val();
     email_cli = $("#email_cli_empresa").val();
     ciudad = $("#ciudad_empresa").val();
-
+    actidad_economica = $("#actieconempre option:selected").val();
+    
     if(identificacion_cli != '' && id_tipoident != ''
     && digito_verif != '' && empresa != '' && telefono_cli != ''
-    && direccion_cli != '' && email_cli != '' && ciudad != ''){
+    && direccion_cli != '' && email_cli != '' && ciudad != '' && actidad_economica != ''){
 
       var regex = /[\w-\.]{2,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/;
     if (regex.test($('#email_cli_empresa').val().trim())) {
@@ -131,7 +134,8 @@ $("#guardar-cli-empresa").click(function() {
           "autoreteiva": autoreteiva,
           "autoretertf": autoretertf,
           "autoreteica": autoreteica,
-          "ciudad": ciudad
+          "ciudad": ciudad,
+          "actidad_economica": actidad_economica
         };
 
       var route = "/clientes";

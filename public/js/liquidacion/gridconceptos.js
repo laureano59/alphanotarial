@@ -85,7 +85,9 @@ function CalConceptos() {
                 parseFloat($("#totrecfondo").val()) + parseFloat($("#totrtf").val()) +
                 parseFloat($("#totreteconsumo").val()) + 
                 parseFloat($("#totaporteespecial").val()) + 
-                parseFloat($("#total_impuesto_timbre").val());
+                parseFloat($("#total_impuesto_timbre").val()) +
+                parseFloat($("#totaltimbredecreto175").val());
+               
                                 
             $("#totalrecaudos").html(formatNumbderechos(Math.round(totalrecaudos)));
             $("#totrecaudos").val(totalrecaudos);
