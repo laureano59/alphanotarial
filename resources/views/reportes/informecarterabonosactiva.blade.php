@@ -2,6 +2,7 @@
 @section('title', 'Alpha-Notarial')
 @section('titulo_link', 'Panel de Control')
 @section('content')
+@include('reportes.modaldetallebonos')
 
 <div class="page-header">
 
@@ -83,7 +84,7 @@
                             <th>Saldo</th>
                         </tr>
                     </thead>
-                    <tbody id="carteradata">
+                    <tbody id="carteradatabonosactivos">
 
                     </tbody>
                 </table>

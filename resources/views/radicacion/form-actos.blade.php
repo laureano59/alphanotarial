@@ -71,7 +71,7 @@
                                               
                         
                         <div class="input-group date col-sm-4" data-provide="datepicker">
-                            <input type="text" class="form-control" id="fecha_tradicion" disabled="disabled" >
+                            <input type="text" class="form-control" id="fecha_tradi" readonly>
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>

@@ -4789,6 +4789,7 @@ public function PdfInformeCartera(Request $request){
                           SUM(total_fondo + total_super) as recaudos, 
                           SUM(total_aporteespecial) as aporteespecial,
                           SUM(total_impuesto_timbre) as impuestotimbre,
+                          SUM(total_timbrec) as timbreley175,
                           SUM(total_rtf) as rtf,
                           SUM(deduccion_reteiva) as deduccion_reteiva,
                           SUM(deduccion_reteica) as deduccion_reteica,
@@ -4804,6 +4805,7 @@ public function PdfInformeCartera(Request $request){
                           SUM(total_fondo + total_super) as recaudos, 
                           SUM(total_aporteespecial) as aporteespecial,
                           SUM(total_impuesto_timbre) as impuestotimbre,
+                          SUM(total_timbrec) as timbreley175,
                           SUM(total_rtf) as rtf,
                           SUM(deduccion_reteiva) as deduccion_reteiva,
                           SUM(deduccion_reteica) as deduccion_reteica,
@@ -4850,6 +4852,7 @@ public function PdfInformeCartera(Request $request){
           $cajadiario_otros_periodos[$i]['recaudo'] = ($value['total_fondo'] + $value['total_super']);
           $cajadiario_otros_periodos[$i]['aporteespecial'] = $value['total_aporteespecial'];
           $cajadiario_otros_periodos[$i]['impuesto_timbre'] = $value['total_impuesto_timbre'];
+          $cajadiario_otros_periodos[$i]['timbreley175'] = $value['total_timbrec'];
           $cajadiario_otros_periodos[$i]['retencion'] = $value['total_rtf'];
           $cajadiario_otros_periodos[$i]['iva'] = $value['total_iva'];
           $cajadiario_otros_periodos[$i]['total'] = $value['total_fact'];
@@ -4867,6 +4870,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_otros = 0;
       $total_aporteespecial_otros = 0;
       $impuesto_timbre_otros = 0;
+      $timbreley175_otros = 0;
       $total_retencion_otros = 0;
       $total_iva_otros = 0;
       $total_otros = 0;
@@ -4880,6 +4884,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_resta = 0;
       $total_aporteespecial_resta = 0;
       $impuesto_timbre_resta = 0;
+      $timbreley175_resta = 0;
       $total_retencion_resta = 0;
       $total_iva_resta = 0;
       $total_resta = 0;
@@ -4901,6 +4906,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_otros = 0;
       $total_aporteespecial_otros = 0;
       $impuesto_timbre_otros = 0;
+      $timbreley175_otros = 0;
       $total_retencion_otros = 0;
       $total_iva_otros = 0;
       $total_otros = 0;
@@ -4914,6 +4920,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_resta = 0;
       $total_aporteespecial_resta = 0;
       $impuesto_timbre_resta = 0;
+      $timbreley175_resta = 0;
       $total_retencion_resta = 0;
       $total_iva_resta = 0;
       $total_resta = 0;
@@ -4933,6 +4940,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_otros = 0;
       $total_aporteespecial_otros = 0;
       $impuesto_timbre_otros = 0;
+      $timbreley175_otros = 0;
       $total_retencion_otros = 0;
       $total_iva_otros = 0;
       $total_otros = 0;
@@ -4946,6 +4954,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_resta = 0;
       $total_aporteespecial_resta = 0;
       $impuesto_timbre_resta = 0;
+      $timbreley175_resta = 0;
       $total_retencion_resta = 0;
       $total_iva_resta = 0;
       $total_resta = 0;
@@ -4961,6 +4970,7 @@ public function PdfInformeCartera(Request $request){
     $total_recaudo = 0;
     $total_aporteespecial = 0;
     $impuesto_timbre = 0;
+    $timbreley175 = 0;
     $total_retencion = 0;
     $total_iva = 0;
     $total = 0;
@@ -4975,6 +4985,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo = $value['recaudo'] + $total_recaudo;
       $total_aporteespecial = $value['aporteespecial'] + $total_aporteespecial;
       $impuesto_timbre = $value['impuesto_timbre'] + $impuesto_timbre;
+      $timbreley175 = $value['timbreley175'] + $timbreley175;
       $total_retencion = $value['retencion'] + $total_retencion;
       $total_iva =$value['iva'] + $total_iva;
       $total = $value['total'] + $total;
@@ -4992,6 +5003,7 @@ public function PdfInformeCartera(Request $request){
         $total_recaudo_otros = $value['recaudo'] + $total_recaudo_otros;
         $total_aporteespecial_otros = $value['aporteespecial'] + $total_aporteespecial_otros;
         $impuesto_timbre_otros = $value['impuesto_timbre'] + $impuesto_timbre_otros;
+        $timbreley175_otros = $value['timbreley175'] + $timbreley175_otros;
         $total_retencion_otros = $value['retencion'] + $total_retencion_otros;
         $total_iva_otros =$value['iva'] + $total_iva_otros;
         $total_otros = $value['total'] + $total_otros;
@@ -5006,6 +5018,7 @@ public function PdfInformeCartera(Request $request){
       $total_recaudo_resta = $total_recaudo - $total_recaudo_otros;
       $total_aporteespecial_resta = $total_aporteespecial - $total_aporteespecial_otros;
       $impuesto_timbre_resta = $impuesto_timbre - $impuesto_timbre_otros;
+      $timbreley175_resta = $timbreley175 - $timbreley175_otros;
       $total_retencion_resta = $total_retencion - $total_retencion_otros;
       $total_iva_resta = $total_iva - $total_iva_otros;
       $total_resta = $total - $total_otros;
@@ -5122,6 +5135,7 @@ public function PdfInformeCartera(Request $request){
     $data['total_recaudo'] = $total_recaudo;
     $data['total_aporteespecial'] = $total_aporteespecial;
     $data['impuesto_timbre'] = $impuesto_timbre;
+    $data['timbreley175'] = $timbreley175;
     $data['total_retencion'] = $total_retencion;
     $data['total_iva'] = round($total_iva);
     $data['total'] = $total;
@@ -5147,8 +5161,10 @@ public function PdfInformeCartera(Request $request){
     $data['total_recaudo_otros'] = $total_recaudo_otros;
     $data['total_aporteespecial_resta'] = $total_aporteespecial_resta;
     $data['impuesto_timbre_resta'] = $impuesto_timbre_resta;
+    $data['timbreley175_resta'] = $timbreley175_resta;
     $data['total_aporteespecial_otros'] = $total_aporteespecial_otros;
     $data['impuesto_timbre_otros'] = $impuesto_timbre_otros;
+    $data['timbreley175_otros'] = $timbreley175_otros;
     $data['total_retencion_resta'] = $total_retencion_resta;
     $data['total_retencion_otros'] = $total_retencion_otros;
     $data['total_iva_resta'] = round($total_iva_resta);
@@ -5171,6 +5187,7 @@ public function PdfInformeCartera(Request $request){
     $data['recaudos_contado'] = $facturas_contado->recaudos;
     $data['aporteespecial_contado'] = $facturas_contado->aporteespecial;
     $data['impuestotimbre_contado'] = $facturas_contado->impuestotimbre;
+    $data['timbreley175contado'] = $facturas_contado->timbreley175;
     $data['rtf_contado'] = $facturas_contado->rtf;
     $data['deduccion_reteiva_contado'] = $facturas_contado->deduccion_reteiva;
     $data['deduccion_reteica_contado'] = $facturas_contado->deduccion_reteica;
@@ -5183,6 +5200,7 @@ public function PdfInformeCartera(Request $request){
     $data['recaudos_credito'] = $facturas_credito->recaudos;
     $data['aporteespecial_credito'] = $facturas_credito->aporteespecial;
     $data['impuestotimbre_credito'] = $facturas_credito->impuestotimbre;
+    $data['timbreley175credito'] = $facturas_credito->timbreley175;
     $data['rtf_credito'] = $facturas_credito->rtf;
     $data['deduccion_reteiva_credito'] = $facturas_credito->deduccion_reteiva;
     $data['deduccion_reteica_credito'] = $facturas_credito->deduccion_reteica;

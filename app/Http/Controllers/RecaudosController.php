@@ -190,7 +190,8 @@ class RecaudosController extends Controller
                if($value['cuantia'] >= $value['catastro']){
                   $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;
                 }else{
-                $retencion = (($value['catastro'] * $porcentaje)) * $porcentaje_liq;
+                //$retencion = (($value['catastro'] * $porcentaje)) * $porcentaje_liq;
+                  $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;
               }
             }else{
               $retencion = (($value['cuantia'] * $porcentaje)) * $porcentaje_liq;

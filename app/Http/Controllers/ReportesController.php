@@ -267,6 +267,7 @@ public function FechaReporte(Request $request){
       SUM(total_fondo + total_super) as recaudos, 
       SUM(total_aporteespecial) as aporteespecial,
       SUM(total_impuesto_timbre) as impuestotimbre,
+      SUM(total_timbrec) as timbreley175,
       SUM(total_rtf) as rtf,
       SUM(deduccion_reteiva) as deduccion_reteiva,
       SUM(deduccion_reteica) as deduccion_reteica,
@@ -282,6 +283,7 @@ public function FechaReporte(Request $request){
       SUM(total_fondo + total_super) as recaudos, 
       SUM(total_aporteespecial) as aporteespecial,
       SUM(total_impuesto_timbre) as impuestotimbre,
+      SUM(total_timbrec) as timbreley175,
       SUM(total_rtf) as rtf,
       SUM(deduccion_reteiva) as deduccion_reteiva,
       SUM(deduccion_reteica) as deduccion_reteica,
@@ -325,6 +327,7 @@ public function FechaReporte(Request $request){
           $cajadiario_otros_periodos[$i]['recaudo'] = ($value['total_fondo'] + $value['total_super']);
           $cajadiario_otros_periodos[$i]['aporteespecial'] = $value['total_aporteespecial'];
           $cajadiario_otros_periodos[$i]['impuesto_timbre'] = $value['total_impuesto_timbre'];
+          $cajadiario_otros_periodos[$i]['timbreley175'] = $value['total_timbrec'];
           $cajadiario_otros_periodos[$i]['retencion'] = $value['total_rtf'];
           $cajadiario_otros_periodos[$i]['iva'] = $value['total_iva'];
           $cajadiario_otros_periodos[$i]['total'] = $value['total_fact'];
@@ -417,6 +420,7 @@ public function FechaReporte(Request $request){
        "recaudos_contado"=>$facturas_contado->recaudos,
        "aporteespecial_contado"=>$facturas_contado->aporteespecial,
        "impuestotimbre_contado"=>$facturas_contado->impuestotimbre,
+       "timbreley175contado"=>$facturas_contado->timbreley175,
        "rtf_contado"=>$facturas_contado->rtf,
        "deduccion_reteiva_contado"=>$facturas_contado->deduccion_reteiva,
        "deduccion_reteica_contado"=>$facturas_contado->deduccion_reteica,
@@ -429,6 +433,7 @@ public function FechaReporte(Request $request){
        "recaudos_credito"=>$facturas_credito->recaudos,
        "aporteespecial_credito"=>$facturas_credito->aporteespecial,
        "impuestotimbre_credito"=>$facturas_credito->impuestotimbre,
+       "timbreley175credito"=>$facturas_credito->timbreley175,
        "rtf_credito"=>$facturas_credito->rtf,
        "deduccion_reteiva_credito"=>$facturas_credito->deduccion_reteiva,
        "deduccion_reteica_credito"=>$facturas_credito->deduccion_reteica,
@@ -635,6 +640,10 @@ public function FechaReporte(Request $request){
     $request->session()->put('identificacion_cli', $identificacion_cli);
     $request->session()->put('opcionreporte', $opcionreporte);
     $ordenar = $request->session()->get('ordenar');
+    $porfactura = $request->porfactura;
+    if($porfactura == 'porfactura'){
+      $id_fact = $request->num_factura;
+    }
    
     if($ordenar == 'porfecha'){ //por fecha
       if($opcionreporte == 'maycero'){
@@ -693,7 +702,16 @@ public function FechaReporte(Request $request){
       }
    }
 
-      
+   if($porfactura == 'porfactura'){
+     $informecarterabonos = Informe_cartera_bonos_view::where('id_fact', $id_fact)
+        ->where('nota_credito', false)
+        ->orderBy('id_fact')
+        ->orderBy('fecha_abono')
+        ->get()
+        ->toArray();
+   }
+
+         
    return response()->json([
      "informecarterabon"=>$informecarterabonos
    ]);

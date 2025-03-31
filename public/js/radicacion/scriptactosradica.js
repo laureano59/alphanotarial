@@ -27,7 +27,7 @@ $("#guardaractosradica").click(function() {
                     var matricula = $("#matricula").val();
                     var timbrec = $("#timbredecreto175").val();
                     //var tradicion = $("#tradicion").val();
-                    var fecha_tradicion = $("#fecha_tradicion").val();
+                    var fecha_tradicion = $("#fecha_tradi").val();
                    
                     var tradicion = fecha_tradicion;
                    
@@ -57,6 +57,7 @@ $("#guardaractosradica").click(function() {
                             if (info.validar == '1') {
                                 validar = info.actos;
                                 CargarActosCli(validar);
+                                $("#timbredecreto175").val(0);//Evita repetir timbre c en otros actos
                             } else if (info.validar == '0') {
                                 $("#msj2").html(info.mensaje);
                                 $("#msj-error2").fadeIn();

@@ -66,6 +66,7 @@
                 <th><font size="2">Recaudos</font></th>
                 <th><font size="2">Ap_Especial</font></th>
                 <th><font size="2">Imp_Timbre</font></th>
+                 <th><font size="2">Timbre_Ley175</font></th>
                 <th><font size="2">Retención</font></th>
                 <th><font size="2">ReteIva</font></th>
                 <th><font size="2">ReteIca</font></th>
@@ -117,6 +118,9 @@
                 </td>
                  <td align="right">
                   <font size="2">{{ number_format($cajadiario[$i]['impuesto_timbre'], 2) }}</font>
+                </td>
+                <td align="right">
+                  <font size="2">{{ number_format($cajadiario[$i]['timbreley175'], 2) }}</font>
                 </td>
                 <td align="right">
                   <font size="2">{{ number_format($cajadiario[$i]['retencion'], 2) }}</font>
@@ -212,6 +216,9 @@
                     </td>
                      <td align="right">
                       <font size="2"><b>{{ number_format($impuesto_timbre, 2) }}</b></font>
+                    </td>
+                     <td align="right">
+                      <font size="2"><b>{{ number_format($timbreley175, 2) }}</b></font>
                     </td>
                     <td align="right">
                       <font size="2"><b>{{ number_format($total_retencion, 2) }}</b></font>
@@ -420,6 +427,31 @@
 
                            <td align="right">
                             <font size="3">{{ number_format($impuestotimbre_credito, 2) }}</font>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td>
+                            <font size="3"><b>Total Timbre Ley 175</b></font>
+                          </td>
+                          <td align="right">
+                            <font size="3">{{ number_format($timbreley175, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($timbreley175_otros, 2) }}</font>
+                          </td>
+
+                          <td align="right">
+                            <font size="3">{{ number_format($timbreley175_resta, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($timbreley175contado, 2) }}</font>
+                          </td>
+
+                           <td align="right">
+                            <font size="3">{{ number_format($timbreley175credito, 2) }}</font>
                           </td>
                         </tr>
 

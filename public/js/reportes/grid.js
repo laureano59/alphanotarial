@@ -1,7 +1,7 @@
 function CargarCajaDiarioGeneral(data, total_egreso, caja_diario_otros,  derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
-rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
+timbreley175_contado, rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
 total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
-impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
+impuestotimbre_credito, timbreley175_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
 deduccion_retertf_credito, total_fact_credito, bonos_es) {
     var htmlTags = "";
     var total_derechos = 0;
@@ -9,6 +9,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
     var total_recaudo = 0;
     var total_aporteespecial = 0;
     var total_impuesto_timbre = 0;
+    var total_timbreley175 = 0;
     var total_retencion = 0;
     var total_iva = 0;
     var total = 0;
@@ -23,6 +24,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
         total_recaudo = parseFloat(data[item].recaudo) + total_recaudo;
         total_aporteespecial = parseFloat(data[item].aporteespecial) + total_aporteespecial;
         total_impuesto_timbre = parseFloat(data[item].impuesto_timbre) + total_impuesto_timbre;
+        total_timbreley175 = parseFloat(data[item].timbreley175) + total_timbreley175;
         total_retencion = parseFloat(data[item].retencion) + total_retencion;
         total_iva = parseFloat(data[item].iva) + total_iva;
         total = parseFloat(data[item].total) + total;
@@ -55,6 +57,8 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
              '<td align="right">' + formatNumbderechos(Math.round(data[item].aporteespecial)) +
             '</td>' +
             '<td align="right">' + formatNumbderechos(Math.round(data[item].impuesto_timbre)) +
+            '</td>' +
+            '<td align="right">' + formatNumbderechos(Math.round(data[item].timbreley175)) +
             '</td>' +
             '<td align="right">' + formatNumbderechos(Math.round(data[item].retencion)) +
             '</td>' +
@@ -101,6 +105,8 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
         '</td>' +
         '</td>' +
         '<td align="right"><b>' + formatNumbderechos(Math.round(total_impuesto_timbre)) + '</b>' +
+        '</td>' +
+         '<td align="right"><b>' + formatNumbderechos(Math.round(total_timbreley175)) + '</b>' +
         '</td>' +
         '<td align="right"><b>' + formatNumbderechos(Math.round(total_retencion)) + '</b>' +
         '</td>' +
@@ -221,6 +227,21 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
         '</td>' +
          '<td>' +
          '</tr>'+
+          '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Timbre Ley 175</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_timbreley175)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(timbreley175_contado)) +
+        '</td>' +
+         '<td>' +
+        formatNumbderechos(Math.round(timbreley175_credito)) +
+        '</td>' +
+         '<td>' +
+         '</tr>'+
         '<tr>' +
         '<td>' +
         '<font size="2"><b>Total Retención</b></font>' +
@@ -324,6 +345,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
     var total_recaudo_otros = 0;
     var total_aporteespecial_otros = 0;
     var total_impuesto_timbre_otros = 0;
+    var total_timbreley175_otros = 0;
     var total_retencion_otros = 0;
     var total_iva_otros = 0;
     var total_otros = 0;
@@ -339,6 +361,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
         total_recaudo_otros = parseFloat(caja_diario_otros[item2].recaudo) + total_recaudo_otros;
         total_aporteespecial_otros = parseFloat(caja_diario_otros[item2].aporteespecial) + total_aporteespecial_otros;
         total_impuesto_timbre_otros = parseFloat(caja_diario_otros[item2].impuesto_timbre) + total_impuesto_timbre_otros;
+        total_timbreley175_otros = parseFloat(caja_diario_otros[item2].timbreley175) + total_timbreley175_otros;
         total_retencion_otros = parseFloat(caja_diario_otros[item2].retencion) + total_retencion_otros;
         total_iva_otros = parseFloat(caja_diario_otros[item2].iva) + total_iva_otros;
         total_otros = parseFloat(caja_diario_otros[item2].total) + total_otros;
@@ -355,6 +378,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
       var total_recaudo_resta = 0;
       var total_aporteespecial_resta = 0;
       var total_impuesto_timbre_resta = 0;
+      var total_timbreley175_resta = 0;
       var total_retencion_resta = 0;
       var total_iva_resta = 0;
       var total_resta = 0;
@@ -368,6 +392,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
       total_recaudo_resta = parseInt(Math.round(total_recaudo) - Math.round(total_recaudo_otros));
       total_aporteespecial_resta = parseInt(Math.round(total_aporteespecial) - Math.round(total_aporteespecial_otros));
       total_impuesto_timbre_resta = parseInt(Math.round(total_impuesto_timbre) - Math.round(total_impuesto_timbre_otros));
+      total_timbreley175_resta = parseInt(Math.round(total_timbreley175) - Math.round(total_timbreley175_otros));
       total_retencion_resta = parseInt(Math.round(total_retencion) - Math.round(total_retencion_otros));
       total_iva_resta = parseInt(Math.round(total_iva) - Math.round(total_iva_otros));
       total_resta = parseInt(Math.round(total) - Math.round(total_otros));
@@ -460,6 +485,19 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
                
          '<td>' +
         formatNumbderechos(total_impuesto_timbre_resta) +
+        '</td>' +
+        '</tr>' +
+
+        '<tr>' +
+        '<td>' +
+        '<font size="2"><b>Total Timbre Ley 175</b></font>' +
+        '</td>' +
+        '<td>' +
+        formatNumbderechos(Math.round(total_timbreley175_otros)) +
+        '</td>' +
+               
+         '<td>' +
+        formatNumbderechos(total_timbreley175_resta) +
         '</td>' +
         '</tr>' +
 
@@ -921,9 +959,11 @@ function CargarInformeCarteraBonosActivos(data){
           '<td>' +
           data[item].codigo_bono +
           '</td>' +
-           '<td>' +
-          data[item].id_fact +
-          '</td>' +
+          '<td>' +
+            '<a href="javascript://" OnClick="VerDetalle(\'' + data[item].id_fact + '\'' + ');">' +
+            data[item].id_fact +
+            '</a>' +
+            '</td>' +
           '<td>' +
           data[item].fecha_fact +
           '</td>' +
@@ -968,7 +1008,31 @@ function CargarInformeCarteraBonosActivos(data){
           '</b></td>' +
           '</tr>';
 
-      document.getElementById('carteradata').innerHTML = htmlTags;
+      document.getElementById('carteradatabonosactivos').innerHTML = htmlTags;
+}
+
+function VerDetalle(id_fact){
+    $('#modaldetallebonos').modal('show');
+    $("#factura").html(id_fact);  
+   
+
+    var porfactura = "porfactura";
+   
+    var datos = {
+        "num_factura": id_fact,
+        "porfactura": porfactura
+    };
+    
+      var route = "/informecarterabonos";
+      var token = $("#token").val();
+      var type = 'GET';
+
+      __ajax(route, token, type, datos)
+      .done( function( info ){
+        var informecarterabon = info.informecarterabon;
+        CargarInformeCarteraBonos(informecarterabon);
+      }) 
+
 }
 
 function CargarInformeCajadiario_rapida(data, contado, credito, facturadores){

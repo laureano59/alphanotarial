@@ -982,6 +982,7 @@ $("#generarreporte").click(function(){
       var recaudos_contado = info.recaudos_contado;
       var aporteespecial_contado = info.aporteespecial_contado;
       var impuestotimbre_contado = info.impuestotimbre_contado;
+      var timbreley175_contado = info.timbreley175contado;
       var rtf_contado = info.rtf_contado;
       var deduccion_reteiva_contado = info.deduccion_reteiva_contado;
       var deduccion_reteica_contado = info.deduccion_reteica_contado;
@@ -994,6 +995,7 @@ $("#generarreporte").click(function(){
       var recaudos_credito = info.recaudos_credito;
       var aporteespecial_credito = info.aporteespecial_credito;
       var impuestotimbre_credito = info.impuestotimbre_credito;
+      var timbreley175_credito = info.timbreley175credito;
       var rtf_credito = info.rtf_credito;
       var deduccion_reteiva_credito = info.deduccion_reteiva_credito;
       var deduccion_reteica_credito = info.deduccion_reteica_credito;
@@ -1002,9 +1004,9 @@ $("#generarreporte").click(function(){
       var bonos_es = info.bonos_es;
 
       CargarCajaDiarioGeneral(cajadiario, total_egreso, cajadiario_otros_periodos, derechos_contado, conceptos_contado, ingresos_contado, iva_contado, recaudos_contado, aporteespecial_contado, impuestotimbre_contado, 
-        rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
+        timbreley175_contado, rtf_contado, deduccion_reteiva_contado, deduccion_reteica_contado, deduccion_retertf_contado,
         total_fact_contado, derechos_credito, conceptos_credito, ingresos_credito, iva_credito, recaudos_credito, aporteespecial_credito,
-        impuestotimbre_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
+        impuestotimbre_credito, timbreley175_credito, rtf_credito, deduccion_reteiva_credito, deduccion_reteica_credito,
         deduccion_retertf_credito, total_fact_credito, bonos_es);
       CargarCrucesActas(cruces);
     })

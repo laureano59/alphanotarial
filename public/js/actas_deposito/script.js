@@ -35,8 +35,13 @@ $("#identificacion_cli1").blur(function() {
 $("#GuardarActaDeposito").click(function() {
     var identificacion_cli, id_tip, proyecto, deposito_act, id_radica,
     efectivo, cheque, tarjeta_credito, tarjeta_debito, pse, num_cheque, num_tarjetacredito,
-    observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, validar_suma;
+    observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, 
+    boleta, registro, validar_suma;
+
     validar_suma = 0;
+
+    boleta   = $("#depo_bol_hid").val();
+    registro = $("#depo_reg_hid").val();
 
     identificacion_cli = $("#identificacion_cli1").val();
     id_tip = $("#id_tip option:selected").val();
@@ -72,6 +77,8 @@ $("#GuardarActaDeposito").click(function() {
                 "id_tip": id_tip,
                 "proyecto": proyecto,
                 "deposito_act": deposito_act,
+                "boleta": boleta,
+                "registro": registro,
                 "id_radica": id_radica,
                 "anio_fiscal": anio_fiscal,
                 "efectivo": efectivo,
@@ -291,6 +298,48 @@ $("#GuardarEgreso").click(function() {
     }
 }
 });
+
+document.getElementById('id_tip').addEventListener('change', function() {
+    let selectedValue = this.value; // Obtiene el valor seleccionado
+          
+    if(selectedValue == 2){
+        $('#modalbolyreg').modal('show');
+    }else{
+        $("#depo_bol_hid").val(0);
+        $("#depo_reg_hid").val(0);
+         $("#depo_bol").val('');
+        $("#depo_reg").val('');
+        $("#deposito_act").val('');
+    }
+   
+});
+
+$("#obtenerbolyreg").click(function() {
+    var boletayregistro;
+    var boleta = parseFloat($("#depo_bol").val()) || 0; 
+    var registro = parseFloat($("#depo_reg").val()) || 0;
+
+    boletayregistro = boleta + registro;
+
+    $("#deposito_act").val(boletayregistro);
+
+    $("#depo_bol_hid").val(boleta);
+    $("#depo_reg_hid").val(registro);
+    $("#depo_bol").val('');
+    $("#depo_reg").val('');
+
+    $("#modalbolyreg").modal("hide");
+
+});
+
+$("#cerrarbolyreg").click(function() {
+    $("#depo_bol_hid").val(0);
+    $("#depo_reg_hid").val(0);
+    $("#depo_bol").val('');
+    $("#depo_reg").val('');
+});
+
+
 
 function mayus(e) {
     e.value = e.value.toUpperCase();

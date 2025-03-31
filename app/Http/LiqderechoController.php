@@ -127,33 +127,21 @@ public function derechos(Request $request){
   private function Derechos_Not($derview){
       $dere = $derview;
       $op = 0;
-      $cuantia_real = 0;
 
       //print_r($dere);
       foreach ($dere as $key => $values):
         $op = $values['id_tar'];
-        //Valida entre catastro y cuantia cual es el mayor
-        if($values['catastro'] > 0){
-          if($values['cuantia'] > $values['catastro']){
-            $cuantia_real = $values['cuantia'];
-          }else if($values['cuantia'] < $values['catastro']){
-            $cuantia_real = $values['catastro'];
-          }          
-        }else{
-          $cuantia_real = $values['cuantia'];
-        }
-
         if($op == 1){//Tarifa General
-          if( $cuantia_real ==  $values['valor1']){
+          if( $values['cuantia'] ==  $values['valor1']){
             $dere[$key]['derechos']= $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
             $dere[$key]['impuestotimbre'] = 0;
-          }else if($cuantia_real <= $values['valor3']){
+          }else if($values['cuantia'] <= $values['valor3']){
             $dere[$key]['derechos']= $values['valor4'];
             $dere[$key]['valor_aporte_especial'] = 0;
             $dere[$key]['impuestotimbre'] = 0;
-          }else if($cuantia_real > $values['valor3']){
-            $res = (($cuantia_real - $values['valor3']) * $values['valor5']) + $values['valor4'];
+          }else if($values['cuantia'] > $values['valor3']){
+            $res = (($values['cuantia'] - $values['valor3']) * $values['valor5']) + $values['valor4'];
             $valor = $this->Redondear($res); //Redondea a dos decimales
             $tarifa = Tarifa::find(29);//Aporte Especial
             $aporte_especial = $tarifa['valor1'];
@@ -184,25 +172,25 @@ public function derechos(Request $request){
           $dere[$key]['derechos'] = $values['valor1'];
           $dere[$key]['valor_aporte_especial'] = 0;
         }else if($op == 3){//Tarifa Conciliación
-          if( $cuantia_real <=  $values['valor1']){
+          if( $values['cuantia'] <=  $values['valor1']){
             $dere[$key]['derechos']=  $this->Redondear($values['valor2'] * $values['valor3']);
             $dere[$key]['valor_aporte_especial'] = 0;
-          }else  if( $cuantia_real >  $values['valor1'] && $cuantia_real <=  $values['valor4']){
+          }else  if( $values['cuantia'] >  $values['valor1'] && $values['cuantia'] <=  $values['valor4']){
             $dere[$key]['derechos']= $values['valor5'] * $values['valor3'];
             $dere[$key]['valor_aporte_especial'] = 0;
-          }else if( $cuantia_real >=  $values['valor6'] && $cuantia_real <=  $values['valor7']){
+          }else if( $values['cuantia'] >=  $values['valor6'] && $values['cuantia'] <=  $values['valor7']){
             $dere[$key]['derechos']= $values['valor8'] * $values['valor3'];
             $dere[$key]['valor_aporte_especial'] = 0;
           }
         }else if($op == 13){//Tarifa Sucesión
-          if($cuantia_real == $values['valor1']){
+          if($values['cuantia'] == $values['valor1']){
             $dere[$key]['derechos'] = $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
-          }else if($cuantia_real <= $values['valor3']){
+          }else if($values['cuantia'] <= $values['valor3']){
             $dere[$key]['derechos'] = $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
-          }else if($cuantia_real > $values['valor3']){
-              $res = (($cuantia_real - $values['valor3']) *  $values['valor5']/100) + $values['valor2'];
+          }else if($values['cuantia'] > $values['valor3']){
+              $res = (($values['cuantia'] - $values['valor3']) *  $values['valor5']/100) + $values['valor2'];
               $valor = $this->Redondear($res); //Redondea a dos decimales
               $tarifa = Tarifa::find(29);//Aporte Especial
               $aporte_especial = $tarifa['valor1'];
@@ -219,14 +207,14 @@ public function derechos(Request $request){
             $dere[$key]['derechos'] = $values['valor1'];
             $dere[$key]['valor_aporte_especial'] = 0;
           }else if($op == 15){//Tarifa Liquidación Conyugal
-             if($cuantia_real == $values['valor1']){
+             if($values['cuantia'] == $values['valor1']){
                 $dere[$key]['derechos'] = $values['valor2'];
                 $dere[$key]['valor_aporte_especial'] = 0;
-             }else if($cuantia_real <= $values['valor3']){
+             }else if($values['cuantia'] <= $values['valor3']){
                 $dere[$key]['derechos'] = $values['valor2'];
                 $dere[$key]['valor_aporte_especial'] = 0;
-             }else if($cuantia_real > $values['valor3']){
-                  $res = (($cuantia_real - $values['valor3']) *  $values['valor4']) + $values['valor2'];
+             }else if($values['cuantia'] > $values['valor3']){
+                  $res = (($values['cuantia'] - $values['valor3']) *  $values['valor4']) + $values['valor2'];
                   $valor = $this->Redondear($res); //Redondea a dos decimales
                   $tarifa = Tarifa::find(29);//Aporte Especial
                   $aporte_especial = $tarifa['valor1'];
@@ -240,14 +228,14 @@ public function derechos(Request $request){
                       $dere[$key]['derechos'] = $valor;
                 }
           }else if($op == 16){//Tarifa Cancelación Vivienda Familiar
-              if( $cuantia_real ==  $values['valor1']){
+              if( $values['cuantia'] ==  $values['valor1']){
                  $dere[$key]['derechos']= $values['valor2'];
                  $dere[$key]['valor_aporte_especial'] = 0;
-              } else if($cuantia_real <= $values['valor3']){
+              } else if($values['cuantia'] <= $values['valor3']){
                   $dere[$key]['derechos'] = $values['valor4'];
                   $dere[$key]['valor_aporte_especial'] = 0;
-              }else if($cuantia_real > $values['valor3']){
-                  $res = (($cuantia_real - $values['valor3']) * $values['valor4']) + $values['valor2'];
+              }else if($values['cuantia'] > $values['valor3']){
+                  $res = (($values['cuantia'] - $values['valor3']) * $values['valor4']) + $values['valor2'];
                   $valor = $this->Redondear($res); //Redondea a dos decimales
                   $tarifa = Tarifa::find(29);//Aporte Especial
                   $aporte_especial = $tarifa['valor1'];
@@ -261,14 +249,14 @@ public function derechos(Request $request){
                     $dere[$key]['derechos'] = $valor;
               }
           }else if($op == 17){//Tarifa General Cancelaciones
-              if( $cuantia_real ==  $values['valor1']){
+              if( $values['cuantia'] ==  $values['valor1']){
                 $dere[$key]['derechos']=  $this->Redondear($values['valor2'] / 2);
                 $dere[$key]['valor_aporte_especial'] = 0;
-              }else  if( $cuantia_real <=  $values['valor3']){
+              }else  if( $values['cuantia'] <=  $values['valor3']){
                   $dere[$key]['derechos']= $values['valor4'];
                   $dere[$key]['valor_aporte_especial'] = 0;
-              }else if( $cuantia_real >  $values['valor3']){
-                  $res = (($cuantia_real - $values['valor4']) * $values['valor5']) + $values['valor6'] / 2;
+              }else if( $values['cuantia'] >  $values['valor3']){
+                  $res = (($values['cuantia'] - $values['valor4']) * $values['valor5']) + $values['valor6'] / 2;
                   $valor = $this->Redondear($res); //Redondea a dos decimales
                   $tarifa = Tarifa::find(29);//Aporte Especial
                   $aporte_especial = $tarifa['valor1'];
@@ -285,14 +273,14 @@ public function derechos(Request $request){
               $dere[$key]['derechos']= $values['valor1'];
               $dere[$key]['valor_aporte_especial'] = 0;
           }else if($op == 19 || $op == 20 || $op == 21){//TODO:Tarifa Hipoteca Vis 10%, 40%, 70%
-             if( $cuantia_real ==  $values['valor1']){
+             if( $values['cuantia'] ==  $values['valor1']){
                 $dere[$key]['derechos']= $values['valor2'];
                 $dere[$key]['valor_aporte_especial'] = 0;
-              } else if($cuantia_real <= $values['valor3']){
+              } else if($values['cuantia'] <= $values['valor3']){
                   $dere[$key]['derechos'] = $values['valor4'] * $values['valor5'];
                   $dere[$key]['valor_aporte_especial'] = 0;
-                 }else if($cuantia_real > $values['valor3']){
-                    $res = (((($cuantia_real - $values['valor3']) * $values['valor6'])) * $values['valor5']) + ($values['valor4'] * $values['valor5']);
+                 }else if($values['cuantia'] > $values['valor3']){
+                    $res = (((($values['cuantia'] - $values['valor3']) * $values['valor6'])) * $values['valor5']) + ($values['valor4'] * $values['valor5']);
                     $valor = $this->Redondear($res); //Redondea a dos decimales
                     $dere[$key]['derechos'] = $valor;
                     $dere[$key]['valor_aporte_especial'] = 0;
@@ -304,27 +292,27 @@ public function derechos(Request $request){
               $dere[$key]['derechos']= $values['valor1'];
               $dere[$key]['valor_aporte_especial'] = 0;
           }else if($op == 24){//Tarifa Venta Vis 50%
-              if( $cuantia_real ==  $values['valor1']){
+              if( $values['cuantia'] ==  $values['valor1']){
                  $dere[$key]['derechos']= $values['valor2'];
                  $dere[$key]['valor_aporte_especial'] = 0;
-              } else if($cuantia_real <= $values['valor3']){
+              } else if($values['cuantia'] <= $values['valor3']){
                   $dere[$key]['derechos'] = $values['valor4'] / 2;
                   $dere[$key]['valor_aporte_especial'] = 0;
-                }else if($cuantia_real > $values['valor3']){
-                    $res = ((((($cuantia_real - $values['valor3']) * $values['valor5'])) + $values['valor4']) / 2);
+                }else if($values['cuantia'] > $values['valor3']){
+                    $res = ((((($values['cuantia'] - $values['valor3']) * $values['valor5'])) + $values['valor4']) / 2);
                     $valor = $this->Redondear($res); //Redondea a dos decimales
                     $dere[$key]['derechos'] = $valor;
                     $dere[$key]['valor_aporte_especial'] = 0;
                   }
           }else if($op == 25){//Tarifa Venta Vis con el Estado
-              if($cuantia_real == $values['valor1']){
+              if($values['cuantia'] == $values['valor1']){
                 $dere[$key]['derechos'] = $values['valor2'] / 2;
                 $dere[$key]['valor_aporte_especial'] = 0;
-              }else if($cuantia_real <= $values['valor3']){
+              }else if($values['cuantia'] <= $values['valor3']){
                   $dere[$key]['derechos'] = $values['valor4'] / 2;
                   $dere[$key]['valor_aporte_especial'] = 0;
-                }else if($cuantia_real > $values['valor3']){
-                    $res = (($cuantia_real - $values['valor3']) * $values['valor5']) + $values['valor4'] / 2;
+                }else if($values['cuantia'] > $values['valor3']){
+                    $res = (($values['cuantia'] - $values['valor3']) * $values['valor5']) + $values['valor4'] / 2;
                     $valor = $this->Redondear($res); //Redondea a dos decimales
                     $tarifa = Tarifa::find(29);//Aporte Especial
                     $aporte_especial = $tarifa['valor1'];

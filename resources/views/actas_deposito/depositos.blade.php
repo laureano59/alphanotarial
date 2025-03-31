@@ -5,6 +5,7 @@
 @include('radicacion.modalcliente')
 @include('radicacion.modalcliente-empresa')
 @include('actas_deposito.modal_anular')
+@include('actas_deposito.modal_bolyreg')
 
 <div class="page-header">
     <h1>Depósito de Clientes
