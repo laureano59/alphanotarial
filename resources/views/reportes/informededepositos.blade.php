@@ -55,6 +55,8 @@
                             <th>Fecha</th>
                             <th>Identificación</th>
                             <th>Nombre</th>
+                            <th>Boleta</th>
+                            <th>Registro</th>
                             <th>Depósito</th>
                             <th>Saldo</th>
                             <th>Observaciones</th>

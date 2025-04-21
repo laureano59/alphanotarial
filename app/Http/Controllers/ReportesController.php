@@ -1377,7 +1377,7 @@ public function FechaReporte(Request $request){
         $sincfondo = 0;
         $sinctotal = 0;
       }
-
+     
     
       $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
       $ran6escr + $sincescr + $excescr;

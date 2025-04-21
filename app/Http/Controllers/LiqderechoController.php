@@ -128,23 +128,29 @@ public function derechos(Request $request){
       $dere = $derview;
       $op = 0;
       $cuantia_real = 0;
+      $catastro = 0;
+      $cuantia = 0;
+
+
 
       //print_r($dere);
       foreach ($dere as $key => $values):
         $op = $values['id_tar'];
+        $catastro = $values['catastro'];
+        $cuantia  = $values['cuantia'];
         //Valida entre catastro y cuantia cual es el mayor
-        if($values['catastro'] > 0){
-          if($values['cuantia'] > $values['catastro']){
-            $cuantia_real = $values['cuantia'];
-          }else if($values['cuantia'] < $values['catastro']){
-            $cuantia_real = $values['catastro'];
+        if($catastro > 0){
+          if($cuantia >= $catastro){
+            $cuantia_real = $cuantia;
+          }elseif($cuantia < $catastro){
+            $cuantia_real = $catastro;
           }          
         }else{
-          $cuantia_real = $values['cuantia'];
+          $cuantia_real = $cuantia;
         }
 
         if($op == 1){//Tarifa General
-          if( $cuantia_real ==  $values['valor1']){
+          if( $cuantia_real ==  $values['valor1'] ){
             $dere[$key]['derechos']= $values['valor2'];
             $dere[$key]['valor_aporte_especial'] = 0;
             $dere[$key]['impuestotimbre'] = 0;
@@ -156,23 +162,31 @@ public function derechos(Request $request){
             $res = (($cuantia_real - $values['valor3']) * $values['valor5']) + $values['valor4'];
             $valor = $this->Redondear($res); //Redondea a dos decimales
             $tarifa = Tarifa::find(29);//Aporte Especial
-            $aporte_especial = $tarifa['valor1'];
+
+            $con_el_estado = $values['con_el_estado'];
+            $flash_estado = 0;
+
+            if ($con_el_estado === true) {
+                $aporte_especial = $tarifa['valor2'];
+                $flash_estado = 1;
+            }else{
+              $aporte_especial = $tarifa['valor1'];
+            } 
+          
 
            /********IMPUESTO APORTE ESPECIAL************/
                     
             if($valor > $aporte_especial){
                 $valor_aporte_especial = round($valor - $aporte_especial);
                 $dere[$key]['valor_aporte_especial']=$valor_aporte_especial;
-
-                $nombre_acto = $dere[$key]['nombre_acto'];
-                if($nombre_acto == 'VENTA BIENES INMUEBLES CON EL ESTADO'){
+                
+                if($flash_estado == 1){
                    $aporte_especial = $tarifa['valor2'];
                    $valor = $aporte_especial;
                 }else{
                   $valor = $aporte_especial;
                 }
-
-                //$valor = $aporte_especial;
+                
             }else{
                 $dere[$key]['valor_aporte_especial'] = 0;
               }
@@ -345,7 +359,10 @@ public function derechos(Request $request){
              $dere[$key]['valor_aporte_especial'] = 0;
           }
       endforeach;
+
       return $dere;
+
+
   }
 
   private function Redondear($valor) {

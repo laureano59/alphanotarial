@@ -895,8 +895,10 @@ $("#imprimircertificadortf").click(function(){
   var token = $("#token").val();
   var type = 'GET';
   var identificacion = $("#identificacion").val();
+  var aniogravable = $("#aniogravable").val();
   var datos = {
-    "identificacion": identificacion
+    "identificacion": identificacion,
+    "aniogravable": aniogravable
   };
 
   __ajax(route, token, type, datos)

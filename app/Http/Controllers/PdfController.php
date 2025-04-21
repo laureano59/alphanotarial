@@ -896,7 +896,7 @@ class PdfController extends Controller
 
 
   public function PdfCertificadoRetecncionenlaFuente(Request $request){
-  //$id_cer = $request->session()->get('id_cer');
+  
     $id_radica = $request->session()->get('key');
     $notaria = Notaria::find(1);
     $anio_trabajo = $notaria->anio_trabajo;
@@ -905,26 +905,49 @@ class PdfController extends Controller
     $nit = $notaria->nit;
     $direccion_nota = $notaria->direccion_nota;
     $email = $notaria->email;
+    $id_ciud = $notaria->id_ciud;
+    $ciudad = Ciudad::find($id_ciud);
+    $nombre_ciud = $ciudad->nombre_ciud;
     $num_escritura = $request->session()->get('num_esc');
     $anio_gravable = $anio_trabajo;
     $fecha_certificado = date("Y/m/d");
+    $id_contribuyente = $request->session()->get('id_contribuyente');  
+   
+    $consecutivo = Consecutivo::find(1);
+    $consecutivo_rtf = $consecutivo->certi_retencion_fuente;
+    $id_cer = $consecutivo_rtf + 1;
+    $consecutivo->certi_retencion_fuente = $id_cer;
+    $consecutivo->save();
 
-    $certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->get();
+    $certificado_rtf = Factura::
+    where("a_nombre_de","=",$id_contribuyente)
+    ->where("anio_radica","=",$anio_gravable)
+    ->get();
+
+    
     $i = 0;
-    $html = [];
-    foreach ($certificado_rtf as $cer) {
-      $fecha_escritura = $cer->fecha_escritura;
-      $ciudad = $cer->ciudad;
-      $nombre_contribuyente = $cer->nombre_contribuyente;
-      $identificacion_contribuyente = $cer->identificacion_contribuyente;
+
+    foreach ($certificado_rtf as $cer) {     
+
+      $nombre_contribuyente = $this->Trae_Nombres($cer->a_nombre_de);
+
+      $Actos_persona_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_gravable)->get();
+      foreach ($Actos_persona_radica as $apr) {
+        if($apr->porcentajecli1 > 0){
+          $valor_venta = $apr->cuantia;
+        }
+      }
+     
+      $identificacion_contribuyente = $cer->a_nombre_de;
       $prefijo_fact = $cer->prefijo;
-      $num_factura = $cer->num_factura;
-      $fecha_factura = $cer->fecha_factura;
-      $valor_venta = $cer->valor_venta;
-      $total_retenido = $cer->total_retenido;
-
-
-      $data['id_cer'] = $cer->id_cer;
+      $num_factura = $cer->id_fact;
+      $fecha_factura = Carbon::parse($cer->fecha_fact)->format('d-m-Y');
+      $fecha_escritura = $fecha_factura;
+     
+      $total_retenido = $cer->total_rtf;
+     
+      $anio_gravable = $cer->anio_radica;
+      $data['id_cer'] = $id_cer;//$cer->id_cer;
       $data['nombre_nota'] = $nombre_nota;
       $data['nombre_notario'] = $nombre_notario;
       $data['nit'] = $nit;
@@ -933,9 +956,9 @@ class PdfController extends Controller
       $data['num_escritura'] = $num_escritura;
       $data['anio_gravable'] = $anio_gravable;
       $data['fecha_escritura'] = $fecha_escritura;
-      $data['ciudad'] = $ciudad;
+      $data['ciudad'] = $nombre_ciud;
       $data['nombre_contribuyente'] = $nombre_contribuyente;
-      $data['identificacion_contribuyente'] = $identificacion_contribuyente;
+      $data['identificacion_contribuyente'] = $id_contribuyente;
       $data['prefijo_fact'] = $prefijo_fact;
       $data['num_factura'] = $num_factura;
       $data['fecha_factura'] = $fecha_factura;
@@ -990,40 +1013,62 @@ class PdfController extends Controller
 
 
   public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
-  //$id_cer = $request->session()->get('id_cer');
-
+  
     $notaria = Notaria::find(1);
-    //$anio_trabajo = $notaria->anio_trabajo;
     $nombre_nota = $notaria->nombre_nota;
     $nombre_notario = $notaria->nombre_notario;
     $nit = $notaria->nit;
     $direccion_nota = $notaria->direccion_nota;
     $email = $notaria->email;
-    //$anio_gravable = $anio_trabajo;
+    $id_ciud = $notaria->id_ciud;
+    $ciudad = Ciudad::find($id_ciud);
+    $nombre_ciud = $ciudad->nombre_ciud;
     $fecha_certificado = date("Y/m/d");
-    //$identificacion = $request->identificacion;
     $identificacion = $request->session()->get('identificacion');
+    $anio_gravable = $request->session()->get('aniogravable');
+   
+    $consecutivo = Consecutivo::find(1);
+    $consecutivo_rtf = $consecutivo->certi_retencion_fuente;
+    $id_cer = $consecutivo_rtf + 1;
+    $consecutivo->certi_retencion_fuente = $id_cer;
+    $consecutivo->save();
 
-
-    //$certificado_rtf = Certificado_rtf::where("id_radica","=",$id_radica)->where("anio_gravable","=",$anio_gravable)->where("identificacion_contribuyente","=",$identificacion)->get();
-    $certificado_rtf = Certificado_rtf::where("identificacion_contribuyente","=",$identificacion)->get();
+    $certificado_rtf = Factura::
+    where("a_nombre_de","=",$identificacion)
+    ->where("anio_radica","=",$anio_gravable)
+    ->get();
 
     
     $i = 0;
 
     foreach ($certificado_rtf as $cer) {
-      $fecha_escritura = $cer->fecha_escritura;
-      $ciudad = $cer->ciudad;
-      $nombre_contribuyente = $cer->nombre_contribuyente;
-      $identificacion_contribuyente = $cer->identificacion_contribuyente;
+      $id_radica = $cer->id_radica;
+      
+      $Escritura = Escritura::where('id_radica', $id_radica)->where('anio_radica', $cer->anio_radica)->get();
+
+      foreach ($Escritura as $esc) {
+        $num_escritura = $esc->num_esc;
+        $fecha_escritura = Carbon::parse($esc->fecha_esc)->format('d-m-Y');
+      }
+
+      $nombre_contribuyente = $this->Trae_Nombres($cer->a_nombre_de);
+
+      $Actos_persona_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_gravable)->get();
+      foreach ($Actos_persona_radica as $apr) {
+        if($apr->porcentajecli1 > 0){
+          $valor_venta = $apr->cuantia;
+        }
+      }
+     
+      $identificacion_contribuyente = $cer->a_nombre_de;
       $prefijo_fact = $cer->prefijo;
-      $num_factura = $cer->num_factura;
-      $fecha_factura = $cer->fecha_factura;
-      $valor_venta = $cer->valor_venta;
-      $total_retenido = $cer->total_retencion;
-      $num_escritura = $cer->num_escritura;
-      $anio_gravable = $cer->anio_gravable;
-      $data['id_cer'] = $cer->id_cer;
+      $num_factura = $cer->id_fact;
+      $fecha_factura = Carbon::parse($cer->fecha_fact)->format('d-m-Y');
+     
+      $total_retenido = $cer->total_rtf;
+     
+      $anio_gravable = $cer->anio_radica;
+      $data['id_cer'] = $id_cer;//$cer->id_cer;
       $data['nombre_nota'] = $nombre_nota;
       $data['nombre_notario'] = $nombre_notario;
       $data['nit'] = $nit;
@@ -1032,7 +1077,7 @@ class PdfController extends Controller
       $data['num_escritura'] = $num_escritura;
       $data['anio_gravable'] = $anio_gravable;
       $data['fecha_escritura'] = $fecha_escritura;
-      $data['ciudad'] = $ciudad;
+      $data['ciudad'] = $nombre_ciud;
       $data['nombre_contribuyente'] = $nombre_contribuyente;
       $data['identificacion_contribuyente'] = $identificacion_contribuyente;
       $data['prefijo_fact'] = $prefijo_fact;
@@ -7188,7 +7233,19 @@ public function Cuenta_de_Cobro(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
 
-      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      //$tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+
+      if ($contdetalle <= 2){
+        $tamano_hoja = array(80, 220); // Ancho x Alto en milímetros
+      }
+
+      if ($contdetalle > 2 && $contdetalle <= 5){
+        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
+      }
+
+      if ($contdetalle > 5){
+        $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      }
       
       // Configurar márgenes (en milímetros)
       $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
@@ -7424,7 +7481,19 @@ public function Cuenta_de_Cobro(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
 
-      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      //$tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+
+      if ($contdetalle <= 2){
+        $tamano_hoja = array(80, 220); // Ancho x Alto en milímetros
+      }
+
+      if ($contdetalle > 2 && $contdetalle <= 5){
+        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
+      }
+
+      if ($contdetalle > 5){
+        $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      }
       
       // Configurar márgenes (en milímetros)
       $margenes = array('left' => 5, 'right' => 5, 'top' => 5, 'bottom' => 5);
@@ -7664,8 +7733,18 @@ public function Cuenta_de_Cobro(Request $request){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
 
+      if ($contdetalle <= 2){
+        $tamano_hoja = array(80, 220); // Ancho x Alto en milímetros
+      }
 
-      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      if ($contdetalle > 2 && $contdetalle <= 5){
+        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
+      }
+
+      if ($contdetalle > 5){
+        $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
+      }
+      
       
       // Configurar márgenes (en milímetros)
       $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
@@ -8053,10 +8132,14 @@ public function Cuenta_de_Cobro(Request $request){
 
       $totaldepositos = 0;
       $totalsaldo = 0;
+      $totaldepositoboleta = 0;
+      $totaldepositoregistro = 0;
 
       foreach ($Actas_deposito  as $key => $ad) {
         $totaldepositos += $ad['deposito_act'];
         $totalsaldo += $ad['saldo'];
+        $totaldepositoboleta += $ad['deposito_boleta'];
+        $totaldepositoregistro += $ad['deposito_registro'];
       }
 
      
@@ -8069,6 +8152,8 @@ public function Cuenta_de_Cobro(Request $request){
       $data['telefono_nota'] = $telefono_nota;
       $data['email'] = $email;
       $data['nombre_notario'] = $nombre_notario;
+      $data['totaldepositoboleta'] = $totaldepositoboleta;
+      $data['totaldepositoregistro'] = $totaldepositoregistro;
       $data['depositos'] = $Actas_deposito;
       $data['totaldepositos'] = round($totaldepositos);
       $data['totalsaldo'] = round($totalsaldo);

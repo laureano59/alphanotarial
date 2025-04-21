@@ -18,7 +18,7 @@
             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
             <div class="widget-box">
                 <div class="widget-header">
-                    <h4 class="widget-title">Ingresar documento de identificación</h4>
+                    <h4 class="widget-title">Ingresar documento de identificación y el año gravable</h4>
                     <span class="widget-toolbar">
                         <a href="#" data-action="settings" id="imprimircertificadortf">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Generar Certificado"></i>
@@ -26,7 +26,10 @@
                     </span>
                     <span class="nav-search widget-toolbar">
                         <div class="input-daterange input-group">
-                            <input type="text" id="identificacion" class="input-sm form-control" name="identificacion" placeholder="Identificación" />
+                            <input type="text" id="identificacion" class="input-sm form-control" name="identificacion" placeholder="Identificación" />                       
+
+                        
+                            <input type="text" maxlength="4" style="width: 50px;" onKeyPress="return soloNumeros(event)" id="aniogravable" class="input-sm form-control" name="aniogravable" placeholder="Año" />
                             
                         </div>
                     </span>
@@ -52,4 +55,5 @@
   <script src="{{asset('assets/js/autosize.min.js')}}"></script>
   <script src="{{asset('assets/js/jquery.inputlimiter.min.js')}}"></script>
   <script src="{{asset('assets/js/jquery.maskedinput.min.js')}}"></script>
+  <script src="{{ asset('js/solonumeros.js')}}"></script>
 @endsection

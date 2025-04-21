@@ -38,7 +38,10 @@ class SesionesController extends Controller
     public function Sessiones_Identificacion(Request $request){
       $request->session()->forget('identificacion');
       $opcion = $request->identificacion;
-      $request->session()->put('identificacion', $opcion);
+      $aniogravable = $request->aniogravable;
+      
+      $request->session()->put('identificacion', $opcion);      
+      $request->session()->put('aniogravable', $aniogravable);
 
       return response()->json([
         "validar"=>1,

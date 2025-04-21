@@ -60,6 +60,8 @@
             <th><font size="2">Fecha</font></th>
             <th><font size="2">Identificación</font></th>
             <th><font size="2">Nombre</font></th>
+            <th><font size="2">Boleta</font></th>
+            <th><font size="2">Registro</font></th>
             <th><font size="2">Depósito</font></th>
             <th><font size="2">Saldo</font></th>
             <th><font size="2">Observaciones</font></th>
@@ -92,6 +94,14 @@
                 <font size="2">{{ $item['nombre'] }}</font>
             </td>
 
+             <td align="right">
+                <font size="2">{{ number_format($item['deposito_boleta'], 2) }}</font>
+            </td>
+
+             <td align="right">
+                <font size="2">{{ number_format($item['deposito_registro'], 2) }}</font>
+            </td>
+
             <td align="right">
                 <font size="2">{{ number_format($item['deposito_act'], 2) }}</font>
             </td>
@@ -122,6 +132,12 @@
             </td>
             <td>
                 <b> Totales:</b>
+            </td>
+             <td align="right">
+                <font size="2"><b>{{ number_format($totaldepositoboleta, 2) }}</b></font>
+            </td>
+             <td align="right">
+                <font size="2"><b>{{ number_format($totaldepositoregistro, 2) }}</b></font>
             </td>
             <td align="right">
                 <font size="2"><b>{{ number_format($totaldepositos, 2) }}</b></font>

@@ -29,9 +29,9 @@ $("#guardar").click(function(){
 });
 
 function ImpuestoTimbreC() {
-  var cuantia = $("#cuantia").val();
+  var cuantia = parseFloat($("#cuantia").val());
   let id_acto = document.getElementById('id_acto').value;
-
+  
         var datos = {
         "id_acto": id_acto
       };
@@ -48,7 +48,8 @@ function ImpuestoTimbreC() {
           __ajax(route, token, type, datos)
           .done( function( info ){
 
-            var timbreuvt = info.timbrec;
+            var timbreuvt = parseFloat(info.timbrec);
+            
             if(cuantia >= timbreuvt){
               
               if (confirm("Cuantía superior a 6000UVT Decreto 175 del 2025 ¿Es Comerciante o persona jurídica?")) {

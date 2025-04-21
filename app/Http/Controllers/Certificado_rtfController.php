@@ -63,7 +63,7 @@ class Certificado_rtfController extends Controller
       $prefijo_fact = $request->session()->get('prefijo_fact');
       $num_factura = $request->session()->get('numfactura');
       $fecha_factura = $request->session()->get('fecha_fact');
-      $fecha_escritura = $request->session()->get('fecha_esc');
+      $fecha_escritura = $request->session()->get('fecha_esc');      
 
 
       $flag = 0;
@@ -128,6 +128,8 @@ class Certificado_rtfController extends Controller
             $Certificado_rtf->ciudad = $nombre_ciud;
             $Certificado_rtf->fecha_escritura = $fecha_escritura;
             $Certificado_rtf->save();
+
+            $request->session()->put('id_contribuyente', $identificacion_cli);
             //echo 1;
 
             /******Cuando hay vendedores adicionales********/

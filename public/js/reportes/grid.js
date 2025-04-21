@@ -1253,10 +1253,14 @@ function CargarInformeCajadiario_rapida_conceptos(data){
 
 function CargarInformeDepositos(data){
     var totaldepositos = 0;
+    var totaldepositosboleta = 0;
+    var totaldepositosregistro = 0;
     var totalsaldo = 0;
     var htmlTags = '';
   for (item in data) {
     totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
+    totaldepositosboleta = totaldepositosboleta + parseFloat(data[item].deposito_boleta);
+    totaldepositosregistro = totaldepositosregistro + parseFloat(data[item].deposito_registro);
     totalsaldo = totalsaldo + parseFloat(data[item].saldo);
     htmlTags +=
           '<tr>' +
@@ -1271,6 +1275,12 @@ function CargarInformeDepositos(data){
           '</td>' +
            '<td>' +
           data[item].nombre +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].deposito_boleta) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].deposito_registro) +
           '</td>' +
           '<td align="right">' +
           formatNumbderechos(data[item].deposito_act) +
@@ -1298,6 +1308,12 @@ function CargarInformeDepositos(data){
           '<td>' +
           '<b>Totales:</b>'+
           '</td>' +
+           '<td align="right"><b>' +
+          formatNumbderechos(totaldepositosboleta) +
+          '</b></td>' +
+           '<td align="right"><b>' +
+          formatNumbderechos(totaldepositosregistro) +
+          '</b></td>' +
           '<td align="right"><b>' +
           formatNumbderechos(totaldepositos) +
           '</b></td>' +
