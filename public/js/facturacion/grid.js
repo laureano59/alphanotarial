@@ -133,6 +133,9 @@ function CargarDerechos_Fact_Multiple(validar) {
 }
 
 function porcentaje_fact_multiple(derechos, i, longitud) {
+    $("#identificacion_cli1").val('');
+    $("#nombre_cli1").val('');
+    $("#btnmostrar").fadeOut();
     var porcentaje = $("#porcentaje" + i).val();
     porcentaje = (parseInt(porcentaje)) / 100;
     var derechos_fact_mul = 0;
@@ -194,6 +197,11 @@ async function SumarTotalesFactMutiple(valor, longitud) {
 }
 
 async function InsertarPorcentajes(conceptosaux){
+    
+    $("#identificacion_cli1").val('');
+    $("#nombre_cli1").val('');
+    $("#btnmostrar").fadeOut();
+
     var porcentaje, porcentajegeneral, porcendivcien, atributo, total, totalconceptoiden, porcentajecomprador, porcentajevendedor, quien;
     porcentajecomprador = parseFloat($("#porcentajecomprador").val() / 100);
     porcentajevendedor = parseFloat($("#porcentajevendedor").val() / 100);
@@ -297,6 +305,11 @@ $("#funcionporcentajes").click(function() {
 });
 
 function Calcular_Conceptos_FactMultiple(atributo, totalconcepto) {
+    
+    $("#identificacion_cli1").val('');
+    $("#nombre_cli1").val('');
+    $("#btnmostrar").fadeOut();
+
     var porcentaje, total, totalconceptoiden;
     porcentaje = parseFloat($("#porcentaje" + atributo).val() / 100);
     total = $("#" + totalconcepto + "participacioniden").val() * porcentaje;

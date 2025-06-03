@@ -92,7 +92,7 @@ class Certificado_rtfController extends Controller
                   
                 }else{
                   $flag2 = 1;
-                  $catastro = $acr->catastro;
+                  $catastro = $acr->cuantia;//$acr->catastro;
                   $identificacion_cli = $acr->identificacion_cli;
                   $nombre_cli = $this->Trae_Nombres($identificacion_cli);
                   $porcentaje_cli = ($acr->porcentajecli1) / 100;

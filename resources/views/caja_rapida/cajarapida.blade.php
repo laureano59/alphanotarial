@@ -63,6 +63,8 @@
           <form class="form-horizontal" role="form">
             @csrf
             <input type="hidden" id="numfactrapida">
+            <input type="hidden" id="idregistrohiden">
+            
             <input type="hidden" id="itemrapida" value=0>
             <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
             <div class="form-group">
@@ -109,8 +111,15 @@
 
                 <a href="javascript://" id="agregaritem" data-action="collapse" data-action="reload">
                   <i><img src="{{ asset('images/nuevo.png') }}" width="28 px" height="28 px" title="Agregar Item"></i>
-                </a>
+                </a>                
+              </div>
+            </div>
 
+             <div class="form-group" id="mostrarnumregistro" style="display:none">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"><b class="red">Id_registro</b></label>
+              <div class="col-sm-9">
+                 <input type="text" id="idregistro"  placeholder="Nro registro obligatorio" onKeyPress="return soloNumeros(event)" />
+                 
               </div>
             </div>
             

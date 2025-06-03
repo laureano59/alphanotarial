@@ -81,6 +81,11 @@
         <i class="ace-icon fa fa-print bigger-160"></i>
         Nota DT
       </a>
+
+       <a href="javascript://" id="generarxml" class="btn btn-app btn-primary btn-sm">
+        <i class="ace-icon fa fa-print bigger-160"></i>
+        XML
+      </a>
     </div>
     </div>
   </div>
@@ -96,6 +101,39 @@
           <input type="text" size="5" id="anio_fiscal" placeholder="Año fiscal" class="nav-search-input"  autocomplete="off" onKeyPress="return soloNumeros(event)" />
           <a href="#" id="imprimircopiafactura">
               <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Imprimir Copia de Factura"></i>
+          </a>
+        </span>
+    </div>
+  </form>
+
+    <div class="widget-body">
+        <div class="widget-main">
+            <div>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                      <div class="alert alert-warning" role="alert" id="msj-error1" style="display:none">
+                        <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                        <strong id="msj1"></strong>
+                      </div>
+                    </div>
+                </div>
+                <div class="space-10"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="widget-box" id="guygenerarxml" style="display:none">
+  <form>
+    @csrf
+    <input type="hidden" name="_token" value="{{csrf_token()}}" id="token">
+    <div class="widget-header">
+      <h4 class="widget-title">Escribe el No. de Factura para generar XML</h4>
+        <span class="nav-search widget-toolbar">
+          <input type="text" id="num_factxml" placeholder="Escribir No. de factura" class="nav-search-input"  autocomplete="off" />
+          <input type="text" size="5" id="anio_fiscalxml" placeholder="Año fiscal" class="nav-search-input"  autocomplete="off" onKeyPress="return soloNumeros(event)" />
+          <a href="javascript://" id="crearxml">
+              <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Generar XML"></i>
           </a>
         </span>
     </div>

@@ -291,6 +291,7 @@ public function FechaReporte(Request $request){
       SUM(total_fact) as total_fact')
     ->first();
 
+   
 
     if($tipo_informe == 'completo'){
       $cajadiario = Cajadiariogeneral_view::whereDate('fecha', '>=', $fecha1)
@@ -298,6 +299,7 @@ public function FechaReporte(Request $request){
       ->where('anio_esc', '=', $anio_trabajo)
       ->get()
       ->toArray();
+     
       $cruces = Cruces_actas_deposito_view::whereDate('fecha', '>=', $fecha1)
       ->whereDate('fecha', '<=', $fecha2)->get()->toArray();
 
@@ -919,10 +921,13 @@ public function FechaReporte(Request $request){
     }
 
 
+   
+
     /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
 
     $excenta = array_merge($excenta, $sincuantiaexcenta);
 
+ 
 
 
 
@@ -1358,7 +1363,7 @@ public function FechaReporte(Request $request){
 
       /*----------  Sin Cuantía  ----------*/
 
-
+     
       if($sincuantia){
         $sincescr = 0;
         $sincsuper = 0;
@@ -1369,6 +1374,7 @@ public function FechaReporte(Request $request){
           $sincsuper +=  $value['super'];
           $sincfondo += $value['fondo'];
           $sinctotal += $value['total'];
+
         }
 
       }else{
@@ -1377,8 +1383,9 @@ public function FechaReporte(Request $request){
         $sincfondo = 0;
         $sinctotal = 0;
       }
-     
-    
+
+      
+         
       $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
       $ran6escr + $sincescr + $excescr;
       $total_super =  $ran1super +  $ran2super +  $ran3super +  $ran4super +

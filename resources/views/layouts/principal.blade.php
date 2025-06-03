@@ -533,6 +533,14 @@
 				     	<b class="arrow"></b>
 				     </li>
 
+				      <li>
+				     	<a href="/registro">
+				     		<i class="menu-icon"><img src="{{ asset('images/registro.png') }}" width="30 px" height="30 px"></i>
+				     		<span class="menu-text"> Registro </span>
+				     	</a>
+				     	<b class="arrow"></b>
+				     </li>
+
 				     <li>
 				     	<a href="/cpanelcajarapida">
 				     		<i class="menu-icon"><img src="{{ asset('images/presupuesto.png') }}" width="30 px" height="30 px"></i>

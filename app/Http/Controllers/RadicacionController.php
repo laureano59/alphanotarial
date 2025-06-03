@@ -19,6 +19,7 @@ use App\Calidad2;
 use App\Departamento;
 use App\Facturascajarapida;
 Use App\Actividad_economica;
+Use App\Notas_credito_factura;
 
 class RadicacionController extends Controller
 {
@@ -200,6 +201,29 @@ class RadicacionController extends Controller
            "validar"=> "1",
            "mensaje"=> "La radicación ya está Facturada, No es posible liberarla"
          ]);
+        }
+          $flag = 0;
+          $Fact = Factura::
+            where('id_radica', $id_radica)
+            ->where('anio_radica', $anio_trabajo)
+            ->where('nota_credito', true)
+            ->get();
+
+            foreach ($Fact as $Factura) {
+              $num_fact = $Factura->id_fact;
+               if (Notas_credito_factura::
+                where('id_fact', $num_fact)
+                ->where('status_factelectronica', '0')            
+                ->exists()){
+                $flag = 1;               
+              }
+            } 
+
+            if($flag == 1){
+               return response()->json([
+                  "validar"=> "1",
+                  "mensaje"=> "La Nota Crédito referente a la radicación no se ha enviado a la DIAN"
+                ]);
 
         }else{
           //Eliminar liquidación

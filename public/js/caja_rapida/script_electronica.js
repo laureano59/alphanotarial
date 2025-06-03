@@ -50,7 +50,17 @@ function GenerarPdf(){
     impresora.style.display = "none";
     //botonagregar.style.display = "none";
 	var url = "/facturacajarapidapdf";
-	$("<a>").attr("href", url).attr("target", "_blank")[0].click(); 
+	//$("<a>").attr("href", url).attr("target", "_blank")[0].click(); 
+     // Abrir en nueva ventana y guardarla en una variable
+    var nuevaVentana = window.open(url, '_blank');
+
+    // Espera 10 segundos y luego cierra la ventana
+    setTimeout(function() {
+        if (nuevaVentana) {
+            nuevaVentana.close();
+        }
+    }, 10000); // 3000 milisegundos = 3 segundos
+
 }
 
 

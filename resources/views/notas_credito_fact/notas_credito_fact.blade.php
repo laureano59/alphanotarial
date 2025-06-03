@@ -2,6 +2,7 @@
 @section('title', 'Alpha-Notarial')
 @section('titulo_link', 'Panel de Control')
 @section('content')
+@include('notas_credito_fact.modalvistafactura')
 
   <div class="page-header">
 
@@ -33,7 +34,7 @@
             <input type="text" id="id_fact" placeholder="Escribir No.Factura" class="nav-search-input" onKeyPress="return soloNumeros(event)" autocomplete="off" />
             
             
-            <a href="#" id="notacredito" data-action="reload">
+            <a href="#" id="mostrarfactura" data-action="reload">
                 <i><img src="{{ asset('images/comprobar.png') }}" width="28 px" height="28 px" title="Crear nota Credito Factura"></i>
             </a>
           </span>

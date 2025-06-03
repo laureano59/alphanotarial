@@ -7,6 +7,7 @@ use App\Notaria;
 use App\Facturascajarapida;
 use App\Detalle_cajarapidafacturas;
 use App\Pagos_cajarapida;
+use App\Registro;
 
 class FacturascajarapidaController extends Controller
 {
@@ -41,7 +42,7 @@ class FacturascajarapidaController extends Controller
 
         //$request->session()->forget('numfactrapida');
         
-        $prefijo_fact = Notaria::find(1)->prefijo_facturarapida;
+        $prefijo_fact  = Notaria::find(1)->prefijo_facturarapida;
         $fecha_factura = date("Y-m-d H:i:s");//date("Y/m/d");
 
         $identificacion_cli1 = $request->identificacion_cli1;
@@ -57,6 +58,26 @@ class FacturascajarapidaController extends Controller
             ]);
         }
 
+        $id_registro = $request->id_registro;
+
+        //Validar llave de registro
+         if($id_registro === '' || is_null($id_registro)){
+            $id_registro = 0;
+         }
+
+         if (!Registro::where('id_registro', $id_registro)->exists()){
+          return response()->json([
+             "validar"=>777,
+             "mensaje"=>"El Id_registro es incorrecto o no existe"
+           ]);
+        }
+
+         if (Facturascajarapida::where('id_registro', $id_registro)->exists()){
+          return response()->json([
+             "validar"=>111,
+             "mensaje"=>"El Id_registro ya fué utilizado"
+           ]);
+        }
 
         $efectivo = $request->efectivo;
          if($efectivo === '' || is_null($efectivo)){
@@ -128,14 +149,15 @@ class FacturascajarapidaController extends Controller
 
         $Facturascajarapida = new Facturascajarapida();
 
-        $Facturascajarapida->prefijo = $prefijo_fact;
-        $Facturascajarapida->id_fact = $consecutivo;
-        $Facturascajarapida->id = Auth()->user()->id;
-        $Facturascajarapida->fecha_fact = $fecha_factura;
-        $Facturascajarapida->a_nombre_de = $identificacion_cli1;
-        $Facturascajarapida->total_iva = $total_iva;
-        $Facturascajarapida->total_fact = $total_all;
-        $Facturascajarapida->subtotal = $total;
+        $Facturascajarapida->prefijo        = $prefijo_fact;
+        $Facturascajarapida->id_fact        = $consecutivo;
+        $Facturascajarapida->id             = Auth()->user()->id;
+        $Facturascajarapida->fecha_fact     = $fecha_factura;
+        $Facturascajarapida->a_nombre_de    = $identificacion_cli1;
+        $Facturascajarapida->total_iva      = $total_iva;
+        $Facturascajarapida->total_fact     = $total_all;
+        $Facturascajarapida->subtotal       = $total;
+        $Facturascajarapida->id_registro    = $id_registro;
 
          /*----------  Forma pago  ----------*/
 

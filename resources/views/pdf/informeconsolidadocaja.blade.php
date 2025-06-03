@@ -320,6 +320,15 @@
             </td>
         </tr>
 
+        <tr style="background-color: #f2f2f2;">
+            <td>
+                <font size="2"><b>Abonos a cartera Caja Rápida:</b></font>
+            </td>
+            <td align="right">
+                <font size="2">{{number_format($abonos_cartera_fact_cajarapida, 2)}}</font>
+            </td>
+        </tr>
+
          <tr style="background-color: #ffffff;">
             <td>
                 <font size="2"><b>Abonos a cuentas de cobro:</b></font>

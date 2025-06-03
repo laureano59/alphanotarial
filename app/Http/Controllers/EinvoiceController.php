@@ -39,6 +39,8 @@ use App\Info_cliente_factura_electronica_view;
 use App\Pago;
 use App\Medios_pago;
 use App\Tarifa;
+use GuzzleHttp\Client;
+use Symfony\Component\DomCrawler\Crawler;
 //use DOMDocument;
 
 class EinvoiceController extends Controller
@@ -120,8 +122,10 @@ class EinvoiceController extends Controller
 
 
     $TotalAntesdeIva = $TotalDerechos + $TotalConceptos;
+   
 
   }else if($opcion1 == 'NC'){
+    
     $Notas_credito_factura_anulada =  Notas_credito_factura::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$numfact)->get();
 
 
@@ -766,20 +770,6 @@ class EinvoiceController extends Controller
     }
     
     
-    # ===========================================
-    # =       Almacena AttachedDocument         =
-    # ===========================================
-
-    $carpeta_destino_cliente = "cliente/";
-    if(file_exists($carpeta_destino_cliente)){
-      $fh = fopen($carpeta_destino_cliente.$numerofactura.'_'.$opcion."_AttachedDocument.xml", 'w') or die("Se produjo un error al crear el archivo");
-      $texto = preg_replace("/[\r\n|\n|\r]+/", " ", $AttachedDocument);
-      fwrite($fh, $texto) or die("No se pudo escribir en el archivo");
-      fclose($fh);
-    }else{
-      echo "No existe el directorio cliente";
-    }
-    
 
     # =========================================================
     # =           Valida Status que devuelve la API           =
@@ -803,12 +793,22 @@ class EinvoiceController extends Controller
         $factura->cufe = $cf;
         $factura->status_factelectronica = '1';
         $factura->save();
+        sleep(10);
+        # ===========================================
+        # =       Almacena AttachedDocument         =
+        # ===========================================
+        $this->Generar_XML($cf, $numerofactura, $opcion);
 
       }else if($opcion == 'NC'){
         $nota_c = Notas_credito_factura::where("prefijo_ncf","=",$Prefix)->find($numerofactura);
         $nota_c->cufe = $cf;
         $nota_c->status_factelectronica = '1';
         $nota_c->save();
+        sleep(10);
+        # ===========================================
+        # =       Almacena AttachedDocument         =
+        # ===========================================
+        $this->Generar_XML($cf, $numerofactura, $opcion);
       }
       
     }else{
@@ -866,6 +866,63 @@ class EinvoiceController extends Controller
 
     
     return $res;
+
+  }
+
+
+  private function Generar_XML($cufe, $numerofactura, $opcion){
+
+   
+    $downloadUrl = "https://notaria13cali.binario.shop/factura/get-attached/{$cufe}";
+
+    try {
+      $client = new Client([
+        'cookies' => true,
+        'verify' => public_path('cacert.pem'),
+        'headers' => [
+          'User-Agent' => 'Mozilla/5.0',
+        ]
+      ]);
+
+        // 1. Obtener CSRF token
+      $loginPage = $client->get('https://notaria13cali.binario.shop/panel/login/');
+      $html = (string) $loginPage->getBody();
+      $crawler = new Crawler($html);
+      $csrfToken = $crawler->filter('input[name="csrfmiddlewaretoken"]')->attr('value');
+
+        // 2. Login con token
+      $loginResponse = $client->post('https://notaria13cali.binario.shop/panel/login/', [
+        'form_params' => [
+          'username' => 'facturacion',
+          'password' => 'notaria13cali',
+          'csrfmiddlewaretoken' => $csrfToken,
+          'next' => '/factura/list/',
+        ],
+        'headers' => [
+          'Referer' => 'https://notaria13cali.binario.shop/panel/login/',
+        ]
+      ]);
+
+        // 3. Descargar XML autenticado
+      $xmlResponse = $client->get($downloadUrl);
+      $contenido = $xmlResponse->getBody()->getContents();
+      $AttachedDocument = $contenido;
+     
+      $carpeta_destino_cliente = public_path("cliente/");
+      if(file_exists($carpeta_destino_cliente)){
+        $fh = fopen($carpeta_destino_cliente.$numerofactura.'_'.$opcion."_AttachedDocument.xml", 'w') or die("Se produjo un error al crear el archivo");
+        $texto = preg_replace("/[\r\n|\n|\r]+/", " ", $AttachedDocument);
+        fwrite($fh, $texto) or die("No se pudo escribir en el archivo");
+        fclose($fh);
+      }else{
+        echo "No existe el directorio cliente";
+      }
+
+
+    } catch (\Exception $e) {
+      return response(null, 204);
+    }
+    
 
   }
 

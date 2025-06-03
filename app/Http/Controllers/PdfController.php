@@ -266,8 +266,20 @@ class PdfController extends Controller
       if (empty($cufe)) {
         $cufe = '0';
       } 
-      $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
-      $QRCode = $cufe;
+      //$UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
+      //$QRCode = $cufe;
+
+      $cufe = trim($cufe);
+       $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
 
@@ -617,8 +629,20 @@ class PdfController extends Controller
       if (empty($cufe)) {
         $cufe = '0';
       } 
-      $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
-      $QRCode = $cufe;
+      //$UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
+      //$QRCode = $cufe;
+      $cufe = trim($cufe);
+
+      $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
 
@@ -897,6 +921,7 @@ class PdfController extends Controller
 
   public function PdfCertificadoRetecncionenlaFuente(Request $request){
   
+   //$id_cer = $request->session()->get('id_cer');
     $id_radica = $request->session()->get('key');
     $notaria = Notaria::find(1);
     $anio_trabajo = $notaria->anio_trabajo;
@@ -905,49 +930,41 @@ class PdfController extends Controller
     $nit = $notaria->nit;
     $direccion_nota = $notaria->direccion_nota;
     $email = $notaria->email;
-    $id_ciud = $notaria->id_ciud;
-    $ciudad = Ciudad::find($id_ciud);
-    $nombre_ciud = $ciudad->nombre_ciud;
     $num_escritura = $request->session()->get('num_esc');
     $anio_gravable = $anio_trabajo;
     $fecha_certificado = date("Y/m/d");
-    $id_contribuyente = $request->session()->get('id_contribuyente');  
-   
+
     $consecutivo = Consecutivo::find(1);
     $consecutivo_rtf = $consecutivo->certi_retencion_fuente;
     $id_cer = $consecutivo_rtf + 1;
     $consecutivo->certi_retencion_fuente = $id_cer;
-    $consecutivo->save();
+    $consecutivo->save();   
 
-    $certificado_rtf = Factura::
-    where("a_nombre_de","=",$id_contribuyente)
-    ->where("anio_radica","=",$anio_gravable)
-    ->get();
+     $certificado_rtf = \DB::table('certificado_rtf')
+    ->select(\DB::raw('DISTINCT ON (num_escritura, anio_gravable, identificacion_contribuyente) *'))
+    ->where("id_radica", $id_radica)
+    ->where("anio_gravable", $anio_gravable)
+    ->orderBy('num_escritura')
+    ->orderBy('anio_gravable')
+    ->orderBy('identificacion_contribuyente')
+    ->get();   
 
-    
+
     $i = 0;
-
-    foreach ($certificado_rtf as $cer) {     
-
-      $nombre_contribuyente = $this->Trae_Nombres($cer->a_nombre_de);
-
-      $Actos_persona_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_gravable)->get();
-      foreach ($Actos_persona_radica as $apr) {
-        if($apr->porcentajecli1 > 0){
-          $valor_venta = $apr->cuantia;
-        }
-      }
-     
-      $identificacion_contribuyente = $cer->a_nombre_de;
+    $html = [];
+    foreach ($certificado_rtf as $cer) {
+      $fecha_escritura = $cer->fecha_escritura;
+      $ciudad = $cer->ciudad;
+      $nombre_contribuyente = $cer->nombre_contribuyente;
+      $identificacion_contribuyente = $cer->identificacion_contribuyente;
       $prefijo_fact = $cer->prefijo;
-      $num_factura = $cer->id_fact;
-      $fecha_factura = Carbon::parse($cer->fecha_fact)->format('d-m-Y');
-      $fecha_escritura = $fecha_factura;
-     
-      $total_retenido = $cer->total_rtf;
-     
-      $anio_gravable = $cer->anio_radica;
-      $data['id_cer'] = $id_cer;//$cer->id_cer;
+      $num_factura = $cer->num_factura;
+      $fecha_factura = $cer->fecha_factura;
+      $valor_venta = $cer->valor_venta;
+      $total_retenido = $cer->total_retenido;
+
+
+      $data['id_cer'] = $id_cer;
       $data['nombre_nota'] = $nombre_nota;
       $data['nombre_notario'] = $nombre_notario;
       $data['nit'] = $nit;
@@ -956,9 +973,9 @@ class PdfController extends Controller
       $data['num_escritura'] = $num_escritura;
       $data['anio_gravable'] = $anio_gravable;
       $data['fecha_escritura'] = $fecha_escritura;
-      $data['ciudad'] = $nombre_ciud;
+      $data['ciudad'] = $ciudad;
       $data['nombre_contribuyente'] = $nombre_contribuyente;
-      $data['identificacion_contribuyente'] = $id_contribuyente;
+      $data['identificacion_contribuyente'] = $identificacion_contribuyente;
       $data['prefijo_fact'] = $prefijo_fact;
       $data['num_factura'] = $num_factura;
       $data['fecha_factura'] = $fecha_factura;
@@ -1013,62 +1030,50 @@ class PdfController extends Controller
 
 
   public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
-  
+
     $notaria = Notaria::find(1);
     $nombre_nota = $notaria->nombre_nota;
     $nombre_notario = $notaria->nombre_notario;
     $nit = $notaria->nit;
     $direccion_nota = $notaria->direccion_nota;
     $email = $notaria->email;
-    $id_ciud = $notaria->id_ciud;
-    $ciudad = Ciudad::find($id_ciud);
-    $nombre_ciud = $ciudad->nombre_ciud;
     $fecha_certificado = date("Y/m/d");
+    
     $identificacion = $request->session()->get('identificacion');
     $anio_gravable = $request->session()->get('aniogravable');
-   
+
     $consecutivo = Consecutivo::find(1);
     $consecutivo_rtf = $consecutivo->certi_retencion_fuente;
     $id_cer = $consecutivo_rtf + 1;
     $consecutivo->certi_retencion_fuente = $id_cer;
     $consecutivo->save();
 
-    $certificado_rtf = Factura::
-    where("a_nombre_de","=",$identificacion)
-    ->where("anio_radica","=",$anio_gravable)
-    ->get();
 
+
+    $certificado_rtf = \DB::table('certificado_rtf')
+    ->select(\DB::raw('DISTINCT ON (num_escritura, anio_gravable, identificacion_contribuyente) *'))
+    ->where("identificacion_contribuyente", $identificacion)
+    ->where("anio_gravable", $anio_gravable)
+    ->orderBy('num_escritura')
+    ->orderBy('anio_gravable')
+    ->orderBy('identificacion_contribuyente')
+    ->get();   
     
     $i = 0;
 
     foreach ($certificado_rtf as $cer) {
-      $id_radica = $cer->id_radica;
-      
-      $Escritura = Escritura::where('id_radica', $id_radica)->where('anio_radica', $cer->anio_radica)->get();
-
-      foreach ($Escritura as $esc) {
-        $num_escritura = $esc->num_esc;
-        $fecha_escritura = Carbon::parse($esc->fecha_esc)->format('d-m-Y');
-      }
-
-      $nombre_contribuyente = $this->Trae_Nombres($cer->a_nombre_de);
-
-      $Actos_persona_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_gravable)->get();
-      foreach ($Actos_persona_radica as $apr) {
-        if($apr->porcentajecli1 > 0){
-          $valor_venta = $apr->cuantia;
-        }
-      }
-     
-      $identificacion_contribuyente = $cer->a_nombre_de;
+      $fecha_escritura = $cer->fecha_escritura;
+      $ciudad = $cer->ciudad;
+      $nombre_contribuyente = $cer->nombre_contribuyente;
+      $identificacion_contribuyente = $cer->identificacion_contribuyente;
       $prefijo_fact = $cer->prefijo;
-      $num_factura = $cer->id_fact;
-      $fecha_factura = Carbon::parse($cer->fecha_fact)->format('d-m-Y');
-     
-      $total_retenido = $cer->total_rtf;
-     
-      $anio_gravable = $cer->anio_radica;
-      $data['id_cer'] = $id_cer;//$cer->id_cer;
+      $num_factura = $cer->num_factura;
+      $fecha_factura = $cer->fecha_factura;
+      $valor_venta = $cer->valor_venta;
+      $total_retenido = $cer->total_retencion;
+      $num_escritura = $cer->num_escritura;
+      $anio_gravable = $cer->anio_gravable;
+      $data['id_cer'] = $id_cer;
       $data['nombre_nota'] = $nombre_nota;
       $data['nombre_notario'] = $nombre_notario;
       $data['nit'] = $nit;
@@ -1077,7 +1082,7 @@ class PdfController extends Controller
       $data['num_escritura'] = $num_escritura;
       $data['anio_gravable'] = $anio_gravable;
       $data['fecha_escritura'] = $fecha_escritura;
-      $data['ciudad'] = $nombre_ciud;
+      $data['ciudad'] = $ciudad;
       $data['nombre_contribuyente'] = $nombre_contribuyente;
       $data['identificacion_contribuyente'] = $identificacion_contribuyente;
       $data['prefijo_fact'] = $prefijo_fact;
@@ -1129,6 +1134,7 @@ class PdfController extends Controller
     }
 
     $mpdf->Output($namefile,"I");
+  
 
   }
 
@@ -6075,6 +6081,8 @@ public function Cuenta_de_Cobro(Request $request){
 
   /***************TODO:COPIA FACTURA*******************/
   public function PdfCopiaFactura(Request $request){
+    $request->user()->authorizeRoles(['administrador']);
+    
     $notaria = Notaria::find(1);
     $prefijo_fact = $notaria->prefijo_fact;
     $anio_trabajo = $request->session()->get('anio_trabajo');
@@ -6271,10 +6279,21 @@ public function Cuenta_de_Cobro(Request $request){
 
       $cufe = trim($cuf);
 
-      $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
+      //$UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
 
-      $QRCode = $cufe;
+      //$QRCode = $cufe;
+      $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
 
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact_otor}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
+
+             
       $iva = "Somos Responsables de IVA";
       $data_otor['nit'] = $nit;
       $data_otor['nombre_nota'] = $nombre_nota;
@@ -6612,9 +6631,20 @@ public function Cuenta_de_Cobro(Request $request){
 
       $cufe = trim($cuf);
 
-      $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
+      //$UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
 
-      $QRCode = $cufe;
+      //$QRCode = $cufe;
+
+      $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
 
       $iva = "Somos Responsables de IVA";
       $data['nit'] = $nit;
@@ -7163,7 +7193,23 @@ public function Cuenta_de_Cobro(Request $request){
       if(is_null($cufe)){
         $cufe = "sin facturar";
       }
-      $QRCode = $cufe;
+      //$QRCode = $cufe;
+
+       $cufe = trim($cufe);
+       $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
+
+
+
+
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
@@ -7413,7 +7459,18 @@ public function Cuenta_de_Cobro(Request $request){
       if(is_null($cufe)){
         $cufe = "sin facturar";
       }
-      $QRCode = $cufe;
+      //$QRCode = $cufe;
+       $cufe = trim($cufe);
+       $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
@@ -7530,6 +7587,7 @@ public function Cuenta_de_Cobro(Request $request){
 
 
     public function PdfCopiaFacturaCajaRapidaPOS(Request $request){
+      $request->user()->authorizeRoles(['administrador']);
 
       $notaria = Notaria::find(1);
       $prefijo_fact = $notaria->prefijo_facturarapida;
@@ -7570,6 +7628,14 @@ public function Cuenta_de_Cobro(Request $request){
 
 
       $mediodepago = '';
+      $efectivo = '';
+      $cheque = '';
+      $consignacion_bancaria = '';
+      $transferencia_bancaria = '';
+      $tarjeta_credito = '';
+      $tarjeta_debito = '';
+      $pse  = '';
+
       
       $Medpago = Mediodepagocajarapida_view::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($Medpago as $med) {
@@ -7582,7 +7648,7 @@ public function Cuenta_de_Cobro(Request $request){
         $tarjeta_debito = $med->tarjeta_debito;
       }
 
-      if($efectivo > 0){
+      if($efectivo > 0 || $efectivo === ''){
         $mediodepago = 'Efectivo';
       }
 
@@ -7664,7 +7730,19 @@ public function Cuenta_de_Cobro(Request $request){
       if(is_null($cufe)){
         $cufe = "sin facturar";
       }
-      $QRCode = $cufe;
+      //$QRCode = $cufe;
+
+       $cufe = trim($cufe);
+       $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+
+      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+
+      $QRCode = "NIT: {$nit}\n"
+              . "FACTURA: {$factura}\n"
+              . "FECHA: {$fecha_fact}\n"
+              . "VALOR: {$total_fact}\n"
+              . "CUFE: {$cufe}\n"
+              . "URL: {$urlDIAN}";
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
@@ -7773,7 +7851,7 @@ public function Cuenta_de_Cobro(Request $request){
       $mpdf->SetTopMargin(5);
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
-      $mpdf->Output($namefile,"f");
+      //$mpdf->Output($namefile,"f");
       $mpdf->Output($namefile,"i");
       //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
@@ -8851,6 +8929,7 @@ public function Cuenta_de_Cobro(Request $request){
        $facturas_cajarapida = Facturascajarapida::whereDate('fecha_fact', '>=', $fecha1)
                       ->whereDate('fecha_fact', '<=', $fecha2)
                       ->where('nota_credito', false)
+                      ->where('credito_fact', false)
                       ->get();
 
           $efectivo_es = 0;
@@ -8945,6 +9024,18 @@ public function Cuenta_de_Cobro(Request $request){
 
           foreach ($Cartera_fact as $carf) {
             $abonos_cartera_fact += $carf->abono_car;
+          }
+
+           /******************Abonos a cartera caja rapida********************/
+
+          $Cartera_fact_cajarapida = Cartera_fact_caja_rapida::whereDate('created_at', '>=', $fecha1)
+                      ->whereDate('created_at', '<=', $fecha2)
+                      ->get();
+
+          $abonos_cartera_fact_cajarapida = 0;
+
+          foreach ($Cartera_fact_cajarapida as $carfcj) {
+            $abonos_cartera_fact_cajarapida += $carfcj->abono_car;
           }
 
           /**************Abonos Bonos************/
@@ -9138,6 +9229,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data['total_cruces_escr'] = $total_cruces_escr;
       $data['bono_act'] = $bono_act;
       $data['abonos_cartera_fact'] = $abonos_cartera_fact;
+      $data['abonos_cartera_fact_cajarapida'] = $abonos_cartera_fact_cajarapida;
       $data['abonobonos'] = $abonobonos;
       $data['gastos'] = $gastos;
                 

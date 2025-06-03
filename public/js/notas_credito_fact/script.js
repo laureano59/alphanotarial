@@ -1,3 +1,34 @@
+$("#mostrarfactura").click(function(){
+  var num_factura = $("#id_fact").val();
+  var route = "/existefactura";
+  var type = 'GET';
+  var token = $("#token").val();
+  //var anio_trabajo = 2025;//$("#anio_fiscal").val(2025);
+  var datos = { 
+    "num_factura": num_factura
+    //"anio_trabajo": anio_trabajo
+};
+__ajax(route, token, type, datos)
+.done(function(info) {
+    if(info.validar == 1){
+      //var url = "/copiafactura";
+      //$("<a>").attr("href", url).attr("target", "_blank")[0].click();
+
+      var url = "/copiafactura";
+      document.getElementById('pdfIframe').src = url;
+      $('#pdfModal').modal('show');
+
+  }else if(info.validar == 0){
+      $("#msj1").html(info.mensaje);
+      $("#msj-error1").fadeIn();
+      setTimeout(function() {
+          $("#msj-error1").fadeOut();
+      }, 3000);
+  }
+})
+
+  });
+
 $("#notacredito").click(function(){
   var id_fact, detalle_ncf;
   id_fact = $("#id_fact").val();
@@ -29,7 +60,7 @@ $("#notacredito").click(function(){
         .done( function( info ){
           if(info.validar == 1){
             var id_ncf = info.id_ncf;
-            id_fact = info.id_fact;
+            id_fact = info.id_ncf;
 
             // =============================================
             // =       Enviar Factura electronica          =

@@ -836,7 +836,9 @@ $("#imprimircertificadortf").click(function() {
 
 $("#copiasfactura").click(function() {
   $("#guycopiafactura").fadeIn();
+  $("#guygenerarxml").fadeOut();
 });
+
 
 $("#imprimircopiafactura").click(function() {
   var num_factura = $("#num_factura").val();
@@ -852,6 +854,38 @@ __ajax(route, token, type, datos)
 .done(function(info) {
     if(info.validar == 1){
       var url = "/copiafactura";
+      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+
+  }else if(info.validar == 0){
+      $("#msj1").html(info.mensaje);
+      $("#msj-error1").fadeIn();
+      setTimeout(function() {
+          $("#msj-error1").fadeOut();
+      }, 3000);
+  }
+})
+});
+
+$("#generarxml").click(function() {
+  $("#guygenerarxml").fadeIn();
+  $("#guycopiafactura").fadeOut();
+});
+
+
+$("#crearxml").click(function() {
+  var num_facturaxml = $("#num_factxml").val();
+  var route = "/existefactura";
+  var type = 'GET';
+  var token = $("#token").val();
+  var anio_trabajoxml = $("#anio_fiscalxml").val();
+  var datos = { 
+    "num_factura": num_facturaxml,
+    "anio_trabajo": anio_trabajoxml
+};
+__ajax(route, token, type, datos)
+.done(function(info) {
+    if(info.validar == 1){
+      var url = "/generarxml";
       $("<a>").attr("href", url).attr("target", "_blank")[0].click();
 
   }else if(info.validar == 0){

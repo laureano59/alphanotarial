@@ -128,6 +128,8 @@ $("#nuevafactura").click(function() {
 
  $("#id_concepto").val('');
  $("#cantidad").val('');
+ $("#idregistro").val('');
+ $("#efectivo").val('');
 
  document.getElementById('numfat').innerHTML = '';
 
@@ -172,6 +174,7 @@ $("#guardar").click(function() {
   var x = document.getElementById("guardar_btn");
   var identificacion_cli1 = $("#identificacion_cli1").val();
   var formapago = $("#id_formapago").val();
+  var idreg = $("#idregistro").val();
   //var mediopago = $("#mediopago option:selected").val();
   var efectivo = $("#efectivo").val();
   var cheque = $("#cheque").val();
@@ -200,7 +203,8 @@ $("#guardar").click(function() {
     "transferencia_bancaria":transferencia_bancaria,
     "tarjeta_credito":tarjeta_credito,
     "tarjeta_debito":tarjeta_debito,
-    "id_banco":id_banco
+    "id_banco":id_banco,
+    "id_registro":idreg,
 
   };
 
@@ -218,6 +222,10 @@ $("#guardar").click(function() {
       alert("Los medios de pago deben ser igual que el total a pagar");
     }else if(info.validar == 999){
       alert("Los Item están sin cantidades o vacíos");
+    }else if(info.validar == 777){
+      alert("El Id_registro es incorrecto o no existe");
+    }else if(info.validar == 111){
+      alert("El Id_registro ya fué utilizado");
     }
    
   })
@@ -231,7 +239,10 @@ var total = 0;
 var total_all = 0;
 
 $("#agregaritem").click(function() {
+  console.log(gv_registro);
+  console.log(gv_registro);
   var longi_detalle = detalle.length;
+  var id_registro = $("#idregistro").val();
   if(longi_detalle >= 6){
     alert("Maximo 6 item");
   }else{
@@ -241,8 +252,32 @@ $("#agregaritem").click(function() {
 
     if(identificacion_cli1 != '' && formapago != null){
       if(cantidad != '' && cantidad != null){
+        if(gv_registro == 1){
+          if(id_registro == ''){
+            alert("El Id_registro es obligatorio");
+          } else{
+            Validar_agregar_items(identificacion_cli1, formapago, cantidad);
+          }
+        }
 
-        var id_concepto;
+        if(gv_registro == 0){
+          Validar_agregar_items(identificacion_cli1, formapago, cantidad);
+        }      
+   
+      }else{
+        alert("La cantidad es obligatoria");
+      }
+
+    }else{
+      alert("Debes ingresar la información del cliente y la forma de pago");
+    }
+
+  }
+
+});
+
+function Validar_agregar_items(identificacion_cli1, formapago, cantidad){
+   var id_concepto;
         id_concepto = $("#id_concepto").val();
         
         var route = "/agregaritemcajarapida";
@@ -285,18 +320,8 @@ $("#agregaritem").click(function() {
             CargarDetalleFact(detalle);
           }
         })
-   
-      }else{
-        alert("La cantidad es obligatoria");
-      }
 
-    }else{
-      alert("Debes ingresar la información del cliente y la forma de pago");
-    }
-
-  }
-
-});
+}
 
 
 function CargarDetalleFact(detalle){
@@ -409,8 +434,17 @@ $("#imprimircopiafacturacajarapida").click(function() {
   .done(function(info) {
     if(info.validar == 1){
       var url = "/copiafacturacajarapidapos";
-      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
 
+      var nuevaVentana = window.open(url, '_blank');
+
+    // Espera 10 segundos y luego cierra la ventana
+    setTimeout(function() {
+        if (nuevaVentana) {
+            nuevaVentana.close();
+        }
+    }, 10000); // 3000 milisegundos = 3 segundos
+
+     
     }else if(info.validar == 0){
       $("#msj1").html(info.mensaje);
       $("#msj-error1").fadeIn();
@@ -515,4 +549,25 @@ $("#consumidorfinal").click(function() {
           }
         });
   
+});
+
+var gv_registro = 0;
+
+
+document.getElementById('id_concepto').addEventListener('change', function() {
+    let selectedValue = this.value; // Obtiene el valor seleccionado
+          
+    if(selectedValue == 2  || selectedValue == 19){   
+     
+     $("#mostrarnumregistro").fadeIn();
+     //document.getElementById("idregistro").value = '';
+     //idregistrohiden
+     gv_registro = 1;
+
+    }else{
+      $("#mostrarnumregistro").fadeOut();
+      //document.getElementById("idregistro").value = '0';
+      gv_registro = 0;
+    }
+   
 });
