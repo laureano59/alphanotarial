@@ -383,9 +383,9 @@ $("#guardarfacturaunica").click(function() {
                             }) //Ajax escritura
 
 
-                            // =============================================
-                            // =       Enviar Factura electronica          =
-                            // =============================================
+                // =============================================
+                // =       Enviar Factura electronica          =
+                // =============================================
 
                   var opcion = "F1";
                   var num_fact = id_fact;
@@ -401,27 +401,29 @@ $("#guardarfacturaunica").click(function() {
                     if(info.status == 1){
                       var mensaje = info.mensaje;
                       var opcion2 = info.opcion2;
-                                  //Genera Factura PDF
+                      
+                      $("#informacion").html("Muy bien! Factura Enviada, ya puedes imprimirla");
+                      $("#mod_factelectronica").modal('toggle');
+                      //Genera Factura PDF
                       pdfFacturaUnica();
-                      $("#informacion").html("Muy bien! Factura Enviada y Generada");
-                      $("#mod_factelectronica").modal('toggle');
 
-                                  /*----------  Enviar email  ----------*/
+                      // =============================================
+                      // =       Enviar Correo al cliente            =
+                      // =============================================
 
-                     /* route = "/enviarcorreo";
-                      datos = {
-                        "num_fact": num_fact,
-                        "opcion": opcion,
-                        "email_cliente":info.email_cliente,
-                        "opcion2":opcion2
-                    };
+                        route = "/enviarcorreescr";
+                        token = $("#token").val();
+                        type = 'GET';
+                        datos = { };
+                        __ajax(route, token, type, datos)
+                        .done(function(info) {
+                            if(info.status == 1){
 
-                    __ajax(route, token, type, datos)
-                    .done(function(info) {
-                      $("#informacion").html("Muy bien! Factura Enviada y Generada");
-                      $("#mod_factelectronica").modal('toggle');
-                  })*/
+                            }
+                        })
+                        //fetch("/enviarcorreescr");
 
+                   
                 }else if(info.status == 0){
                                   //Genera Comprovante PDF
                   pdfFacturaUnica();
@@ -633,27 +635,28 @@ $("#guardarfacturamultiple").click(async function() {
                             __ajax(route, token, type, datos)
                             .done(function(info) {
                                 if(info.status == 1){
-                                    var opcion2 = info.opcion2;
+                                    $("#informacion").html("Muy bien! Factura Enviada, ya puedes imprimirla");
+                                    $("#mod_factelectronica").modal('toggle');
                                     //Genera Factura PDF
                                     pdfFacturaMultiple();
-                                     $("#informacion").html("Muy bien! Factura Enviada y Generada");
-                                    $("#mod_factelectronica").modal('toggle');
 
-                                            /*------  Enviar email  ------*/
+                                    // =============================================
+                                    // =       Enviar Correo al cliente            =
+                                    // =============================================
 
-                                   /* route = "/enviarcorreo";
-                                    datos = {
-                                        "num_fact": num_fact,
-                                        "opcion": opcion,
-                                        "email_cliente":info.email_cliente,
-                                        "opcion2":opcion2
-                                    };
-
+                                    route = "/enviarcorreescr";
+                                    token = $("#token").val();
+                                    type = 'GET';
+                                    datos = { };
                                     __ajax(route, token, type, datos)
                                     .done(function(info) {
-                                        $("#informacion").html("Muy bien! Factura Enviada y Generada");
-                                        $("#mod_factelectronica").modal('toggle');
-                                    })*/
+                                        if(info.status == 1){
+
+                                        }
+                                    })
+                                    //fetch("/enviarcorreescr");       
+
+                                   
                                 }else if(info.status == 0){
                                             //Genera Comprovante PDF
                                     pdfFacturaMultiple();

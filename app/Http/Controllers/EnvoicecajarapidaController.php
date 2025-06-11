@@ -18,7 +18,13 @@ use App\Notas_debito_factura;
 use App\Info_cliente_factura_electronica_view;
 use App\Tarifa;
 use App\Credenciales_api;
-use App\Jobs\EnviarCorreoSegundoPlano;
+use GuzzleHttp\Client;
+use Symfony\Component\DomCrawler\Crawler;
+use App\mail\FacturaElectronica;
+use ZipArchive;
+use File;
+use Illuminate\Support\Facades\Mail;
+use App\Services\PdfService;
 //use DOMDocument;
 
 class EnvoicecajarapidaController extends Controller
@@ -59,6 +65,12 @@ class EnvoicecajarapidaController extends Controller
     $numfact = $request->num_fact;
 
     $opcion1 = $request->opcion;
+
+    if (is_null($retransmitir) || $retransmitir === '') {
+      $retransmitir = '0';    
+    }elseif($retransmitir == '1'){
+      $retransmitir = '1';
+    }
 
 
 
@@ -546,13 +558,41 @@ class EnvoicecajarapidaController extends Controller
         $factura = Facturascajarapida::where("prefijo","=",$Prefix)->find($numerofactura);
         $factura->cufe = $cf;
         $factura->status_factelectronica = '1';
-        $factura->save();         
+        $factura->save();
+
+        if($retransmitir == '1'){
+            # ===========================================
+            # =       Almacena AttachedDocument         =
+            # ===========================================        
+            $titulo        = "FACTURA No.";
+            $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
+            $pdfService = new PdfService();
+            $pdf = $pdfService->GenerarCopiaFacturaCajarapida($numfact, $directorio);
+            $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
+            $nombre_fact =  $numfact.'_'.$opcion;
+            $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);
+            $factura->status_envio_email = '1';
+            $factura->save();
+        }         
 
        }else if($opcion == 'NC'){
         $nota_c = Notas_credito_cajarapida::where("prefijo_ncf","=",$Prefix)->find($numerofactura);
         $nota_c->cufe = $cf;
         $nota_c->status_factelectronica = '1';
         $nota_c->save();
+
+        if($retransmitir == '1'){
+            # ===========================================
+            # =       Almacena AttachedDocument         =
+            # ===========================================        
+            $titulo        = "FACTURA No.";
+            $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
+            $pdfService = new PdfService();
+            $pdf = $pdfService->GenerarCopiaNotaCreditoCajaRapida($numfact, $directorio);
+            $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
+            $nombre_fact =  $numfact.'_'.$opcion;
+            $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);            
+        }   
                      
        }
       
@@ -613,6 +653,137 @@ class EnvoicecajarapidaController extends Controller
     
     return $res;
  
-  }   
+  }
+
+   private function Generar_XML($cufe, $numerofactura, $opcion){
+          $Credenciales = Credenciales_api::find(1);
+          $url       = $Credenciales->url_cufe_escr;
+          $url_login = $Credenciales->url_cufe_login;
+          $usuario   = $Credenciales->user_cufe_escr;
+          $password  = $Credenciales->pwd_cufe_escr;
+          $url_login = rtrim($url_login, '/') . '/';
+          $url       = rtrim($url, '/') . '/';
+          $downloadUrl = $url . $cufe;
+         
+          try {
+              $client = new Client([
+                 'cookies' => true,
+                 'verify' => public_path('cacert.pem'),
+                 'headers' => [
+                    'User-Agent' => 'Mozilla/5.0',
+                    ]
+               ]);
+
+        // 1. Obtener CSRF token              
+              $loginPage = $client->get($url_login);
+              $html = (string) $loginPage->getBody();
+              $crawler = new Crawler($html);
+              $csrfToken = $crawler->filter('input[name="csrfmiddlewaretoken"]')->attr('value');
+
+        // 2. Login con token
+              $loginResponse = $client->post($url_login, [
+                 'form_params' => [
+                    'username' => $usuario,
+                    'password' => $password,
+                    'csrfmiddlewaretoken' => $csrfToken,
+                    'next' => '/factura/list/',
+                    ],
+                    'headers' => [
+                    'Referer' => $url_login,
+                    ]
+               ]);
+
+        // 3. Descargar XML autenticado
+              $xmlResponse = $client->get($downloadUrl);
+              $contenido = $xmlResponse->getBody()->getContents();
+              $AttachedDocument = $contenido;
+
+              $carpeta_destino_cliente = public_path("cliente_cajarapida/");
+              $nombre_directorio = $numerofactura . '_' . $opcion;
+
+              if(file_exists($carpeta_destino_cliente)) {
+
+                    // Crea el subdirectorio si no existe
+                    $ruta_subdirectorio = $carpeta_destino_cliente . $nombre_directorio;
+                    if (!file_exists($ruta_subdirectorio)) {
+                         mkdir($ruta_subdirectorio, 0777, true); // Crea la carpeta con permisos
+                    }
+
+                    // Guarda el archivo XML en el subdirectorio
+                    $fh = fopen($ruta_subdirectorio . '/' . $numerofactura . '_' . $opcion . "_AttachedDocument.xml", 'w') 
+                         or die("Se produjo un error al crear el archivo");
+                    $texto = preg_replace("/[\r\n|\n|\r]+/", " ", $AttachedDocument);
+                    fwrite($fh, $texto) or die("No se pudo escribir en el archivo");
+                    fclose($fh);
+
+                    // 4️⃣ Retorna la ruta del subdirectorio
+                    return $nombre_directorio;
+
+               } else {
+                         echo "No existe el directorio cliente";
+                    }
+
+          } catch (\Exception $e) {
+              
+          }
+     }
+
+      private function Comprimir_Zip($directorio, $numfact, $opcion){
+          // 1. Nombre del archivo ZIP final
+          $nombreZip = "FACTURA_{$numfact}_{$opcion}.zip";
+          //$rutaZip = $directorio . '/' . $nombreZip;
+          $rutaZip = public_path("cliente_cajarapida/{$directorio}/{$nombreZip}");
+         
+
+          // 2. Instanciar el objeto ZipArchive
+          $zip = new ZipArchive();
+
+          if ($zip->open($rutaZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true){
+
+               // 3. Buscar los archivos PDF y XML en el directorio
+               /*$archivos = glob(public_path('cliente/'.$directorio).'/*.{pdf,xml}', GLOB_BRACE); */
+
+               $archivos = glob(public_path("cliente_cajarapida/{$directorio}/*.{pdf,xml}"), GLOB_BRACE); 
+
+               foreach ($archivos as $archivo) {
+                   
+                    // Obtener el nombre del archivo sin la ruta
+                    $nombreArchivo = basename($archivo);
+
+                    // Agregar el archivo al ZIP
+                    $zip->addFile($archivo, $nombreArchivo);
+               }
+
+               // 4. Cerrar el ZIP
+               $zip->close();
+
+               // 5. Eliminar los archivos sueltos (PDF y XML)
+               foreach ($archivos as $archivo) {
+                    unlink($archivo);
+               }
+
+               // 6. Guardar el ZIP en una variable para luego enviarlo por correo
+               $rutaPublica = "cliente_cajarapida/{$directorio}/{$nombreZip}";
+               return $rutaPublica;
+
+               //echo "Archivo ZIP creado y archivos originales eliminados exitosamente: " . $archivo;
+
+          } else {
+               //echo "No se pudo crear el archivo ZIP.";
+               }
+     }
+
+      private function Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente){
+         
+          $Enviar = array();
+          $Enviar = [
+               'num_fact' => $nombre_fact,
+               'titulo' => $titulo,
+               'archivo' => $archivo
+          ];
+
+          Mail::to($email_cliente)->queue(new FacturaElectronica($Enviar));
+
+     }   
 
 }

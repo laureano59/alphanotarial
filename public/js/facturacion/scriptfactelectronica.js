@@ -82,13 +82,15 @@ function CargarND(data){
 
 function Enviar(factura){
   var opcion = "F1";
+  var retransmitir = "1";
   var num_fact = factura;
   var route = "/enviarfactura";
   var token = $("#token").val();
   var type = 'GET';
   var datos = {
         "num_fact": num_fact,
-        "opcion": opcion
+        "opcion": opcion,
+        "retransmitir": retransmitir
     };
     __ajax(route, token, type, datos)
         .done(function(info) {
@@ -99,13 +101,15 @@ function Enviar(factura){
 
 function Enviar_NC(factura){
   var opcion = "NC";
+  var retransmitir = "1";
   var num_fact = factura;
   var route = "/enviarfactura";
   var token = $("#token").val();
   var type = 'GET';
   var datos = {
         "num_fact": num_fact,
-        "opcion": opcion
+        "opcion": opcion,
+        "retransmitir": retransmitir
     };
     __ajax(route, token, type, datos)
         .done(function(info) {

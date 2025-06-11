@@ -6,13 +6,13 @@ use App\Credenciales_api;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use App\mail\FacturaElectronica;
-use App\Facturascajarapida;
+use App\Facturas;
 use ZipArchive;
 use File;
 use Illuminate\Support\Facades\Mail;
 use App\Services\PdfService;
 
-class EnviarEmailCajaRapida
+class EnviarEmailEscr
 {
     public function EnviarCorreoSegundoPlano($cf, $numerofactura, $opcion, $email_cliente)
     {
@@ -20,7 +20,8 @@ class EnviarEmailCajaRapida
     	$titulo = "FACTURA No.";  	
        
         $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
-
+        $factura = \App\Facturas::find($numerofactura);
+        $anio_trabajo = $factura->anio_radica;
        
 
         if (!$directorio) {
@@ -29,20 +30,17 @@ class EnviarEmailCajaRapida
         }
 
         $pdfService = new PdfService();
-        $pdfService = new PdfService();
         if($opcion == 'F1'){
-            $pdfService->GenerarCopiaFacturaCajarapida($numerofactura, $directorio);
+            $pdfService->generarCopiaFactura($anio_trabajo, $numerofactura, $directorio);
         }elseif($opcion == 'NC'){
-            $pdfService->GenerarCopiaNotaCreditoCajaRapida($numerofactura, $directorio);
-        }
+            $pdfService->GenerarCopiaNotaCredito($numerofactura, $directorio);
+        }        
 
-        
         $archivo = $this->Comprimir_Zip($directorio, $numerofactura, $opcion);
         $nombre_fact = $numerofactura . '_' . $opcion;
         $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);
 
         // Actualiza estado de la factura
-        $factura = \App\Facturascajarapida::find($numerofactura);
         if ($factura) {
             $factura->status_envio_email = '1';
             $factura->save();
@@ -89,7 +87,7 @@ class EnviarEmailCajaRapida
             $xmlResponse = $client->get($downloadUrl);
             $AttachedDocument = $xmlResponse->getBody()->getContents();
 
-            $carpeta_destino_cliente = public_path("cliente_cajarapida/");
+            $carpeta_destino_cliente = public_path("cliente/");
             $nombre_directorio = $numerofactura . '_' . $opcion;
             $ruta_subdirectorio = $carpeta_destino_cliente . $nombre_directorio;
 
@@ -111,12 +109,12 @@ class EnviarEmailCajaRapida
      private function Comprimir_Zip($directorio, $numfact, $opcion)
     {
         $nombreZip = "FACTURA_{$numfact}_{$opcion}.zip";
-        $rutaZip = public_path("cliente_cajarapida/{$directorio}/{$nombreZip}");
+        $rutaZip = public_path("cliente/{$directorio}/{$nombreZip}");
 
         $zip = new ZipArchive();
 
         if ($zip->open($rutaZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-            $archivos = glob(public_path("cliente_cajarapida/{$directorio}/*.{pdf,xml}"), GLOB_BRACE);
+            $archivos = glob(public_path("cliente/{$directorio}/*.{pdf,xml}"), GLOB_BRACE);
 
             foreach ($archivos as $archivo) {
                 $zip->addFile($archivo, basename($archivo));
@@ -128,7 +126,7 @@ class EnviarEmailCajaRapida
                 unlink($archivo);
             }
 
-            return "cliente_cajarapida/{$directorio}/{$nombreZip}";
+            return "cliente/{$directorio}/{$nombreZip}";
         }
 
         return null;

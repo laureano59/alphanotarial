@@ -7059,9 +7059,7 @@ public function Cuenta_de_Cobro(Request $request){
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
 
-    }
-
-    
+    }    
 
     public function FacturaCajaRapidaPost(Request $request){
 

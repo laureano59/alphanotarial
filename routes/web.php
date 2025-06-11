@@ -185,6 +185,7 @@ Route::get('exnotcredcajarap', 'ReportesController@ExcelNotasCreditoCajaRapida')
 
 // Rutas de Envío de Correos y XML
 Route::get('enviarcorreocajrap', 'EnviaremailController@EnviarCorreo');
+Route::get('enviarcorreescr', 'EnviaremailController@EnviarCorreoEscr');
 Route::get('enviarfactura', 'EinvoiceController@index');
 Route::get('enviarfacturacajarapida', 'EnvoicecajarapidaController@index');
 Route::get('enviarnotadebito', 'EinvoicenotadebitoController@index');

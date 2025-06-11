@@ -89,7 +89,13 @@ class EinvoiceController extends Controller
 
 
     $opcion1 = $request->opcion;
-    
+    $retransmitir = $request->retransmitir;
+
+    if (is_null($retransmitir) || $retransmitir === '') {
+      $retransmitir = '0';    
+    }elseif($retransmitir == '1'){
+      $retransmitir = '1';
+    }
 
     if($opcion1 == 'F1'){
 
@@ -136,6 +142,7 @@ class EinvoiceController extends Controller
 
      if ($Notas_credito_factura_anulada->isEmpty()) {
           $num_fact_anulada = $numfact;
+          $Notas_credito_factura_anulada =  Notas_credito_factura::where("prefijo_ncf","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
       } else {
             foreach ($Notas_credito_factura_anulada as $ncf) {
               $num_fact_anulada = $ncf['id_fact'];
@@ -801,37 +808,39 @@ class EinvoiceController extends Controller
         $factura->cufe = $cf;
         $factura->status_factelectronica = '1';
         $factura->save();
-        //sleep(10);
-        # ===========================================
-        # =       Almacena AttachedDocument         =
-        # ===========================================        
-        $titulo        = "FACTURA No.";
-        $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
-        $pdfService = new PdfService();
-        $pdf = $pdfService->generarCopiaFactura($anio_trabajo, $numfact, $directorio);
-        $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
-        $nombre_fact =  $numfact.'_'.$opcion;
-        $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);
-        $factura->status_envio_email = '1';
-        $factura->save();
 
-
+        if($retransmitir == '1'){
+            # ===========================================
+            # =       Almacena AttachedDocument         =
+            # ===========================================        
+            $titulo        = "FACTURA No.";
+            $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
+            $pdfService = new PdfService();
+            $pdf = $pdfService->generarCopiaFactura($anio_trabajo, $numfact, $directorio);
+            $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
+            $nombre_fact =  $numfact.'_'.$opcion;
+            $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);
+            $factura->status_envio_email = '1';
+            $factura->save();
+        }
       }else if($opcion == 'NC'){
         $nota_c = Notas_credito_factura::where("prefijo_ncf","=",$Prefix)->find($numerofactura);
         $nota_c->cufe = $cf;
         $nota_c->status_factelectronica = '1';
         $nota_c->save();
-        //sleep(10);
-        # ===========================================
-        # =       Almacena AttachedDocument         =
-        # ===========================================
-        $titulo        = "FACTURA No.";
-        $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
-        $pdfService = new PdfService();
-        $pdf = $pdfService->GenerarCopiaNotaCredito($numfact, $directorio);
-        $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
-        $nombre_fact =  $numfact.'_'.$opcion;
-        $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);        
+
+        if($retransmitir == '1'){
+            # ===========================================
+            # =       Almacena AttachedDocument         =
+            # ===========================================
+            $titulo        = "FACTURA No.";
+            $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
+            $pdfService = new PdfService();
+            $pdf = $pdfService->GenerarCopiaNotaCredito($numfact, $directorio);
+            $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
+            $nombre_fact =  $numfact.'_'.$opcion;
+            $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);               
+        }
       }
       
     }else{
@@ -843,16 +852,14 @@ class EinvoiceController extends Controller
       $request->session()->put('CUFE_SESION', $cf);
       $request->session()->put('recibo_factura', $recibo_factura);
     }
-
-
-    $opcion2 = 1; //para diferenciar al enviar correo de cajarapida y factura
+    
 
     return response()->json([
       "status"=>$estado,
       "mensaje"=>$mensaje,
       "cufe"=>$cf,
       "email_cliente"=>$email_cliente,
-      "opcion2"=>$opcion2
+      "opcion"=>$opcion
     ]);
 
   }

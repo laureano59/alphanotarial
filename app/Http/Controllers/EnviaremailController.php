@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\EnviarEmailCajaRapida;
+use App\Services\EnviarEmailEscr;
 
 class EnviaremailController extends Controller
 {
@@ -19,6 +20,20 @@ class EnviaremailController extends Controller
           $respuesta = $Enviar->EnviarCorreoSegundoPlano($cf, $numerofactura, $opcion, $email_cliente);
 
      }
+
+      public function EnviarCorreoEscr(Request $request){
+
+          $cf            = $request->session()->get('CUFE_SESION');
+          $numerofactura = $request->session()->get('numfactrapida');
+          $opcion        = $request->session()->get('opcionfactura');
+          $email_cliente = $request->session()->get('email_cliente');
+     
+
+          $Enviar = new EnviarEmailEscr();
+          $respuesta = $Enviar->EnviarCorreoSegundoPlano($cf, $numerofactura, $opcion, $email_cliente);
+
+     }
+     
 
       public function enviarfactura(Request $request){
           $opcion =  $request->opcion;
