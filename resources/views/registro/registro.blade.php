@@ -94,7 +94,7 @@
   <div class="col-xs-12 col-sm-6">
     <div class="widget-box">
       <div class="widget-header">
-        <h4 class="widget-title">Detalle de la Factura<span class="brown" id="Acto_Actual"></span></h4>
+        <h4 class="widget-title">Detalle Registro<span class="brown" id="Acto_Actual"></span></h4>
         <div class="widget-toolbar" id="impresora"  style="display:none">
           <a href="javascript://" id="imprimir" data-action="reload">
             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir"></i>

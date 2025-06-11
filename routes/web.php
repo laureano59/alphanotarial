@@ -176,8 +176,15 @@ Route::get('excelcarteraclientebonos', 'ReportesController@ExcelcarteraClienteBo
 Route::get('excelcarterafechabonos', 'ReportesController@ExcelCarteraFechaBonos');
 Route::get('excelcarteraclientebonosacti', 'ReportesController@ExcelCarteraClienteBonosActi');
 
+Route::get('excelnotascredito', 'ReportesController@ExcelNotasCredito');
+Route::get('excelretencionesaplicadas', 'ReportesController@ExcelReteaplicada');
+Route::get('exnotcredcajarap', 'ReportesController@ExcelNotasCreditoCajaRapida');
+
+
+
+
 // Rutas de Envío de Correos y XML
-Route::get('enviarcorreo', 'EnviaremailController@enviarfactura');
+Route::get('enviarcorreocajrap', 'EnviaremailController@EnviarCorreo');
 Route::get('enviarfactura', 'EinvoiceController@index');
 Route::get('enviarfacturacajarapida', 'EnvoicecajarapidaController@index');
 Route::get('enviarnotadebito', 'EinvoicenotadebitoController@index');

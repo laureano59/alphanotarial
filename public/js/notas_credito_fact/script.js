@@ -91,23 +91,10 @@ $("#notacredito").click(function(){
                     $("#msj-error").fadeOut();
                   }, 3000);
 
-                  /*----------  Enviar email  ----------*/
+                $("#informacion").html("Muy bien! Nota Credito Enviada y Generada");
+                $("#mod_factelectronica").modal('toggle');
                                   
-                  route = "/enviarcorreo";
-                  datos = {
-                     "num_fact": id_ncf,
-                     "opcion": opcion,
-                     "email_cliente":info.email_cliente,
-                     "opcion2":opcion2
-                  };
-
-                  __ajax(route, token, type, datos)
-                  .done(function(info) {
-                      $("#informacion").html("Muy bien! Nota Credito Enviada y Generada");
-                      $("#mod_factelectronica").modal('toggle');
-                  })
-
-
+                 
 
                 }else if(info.status == 0){
                   //Genera Comprovante PDF
@@ -202,22 +189,8 @@ $("#notacreditocajarapida").click(function(){
                     $("#msj-error").fadeOut();
                   }, 3000);
 
-                  /*----------  Enviar email  ----------*/
-                                  
-                  route = "/enviarcorreo";
-                  datos = {
-                     "num_fact": id_ncf,
-                     "opcion": opcion,
-                     "email_cliente":info.email_cliente,
-                     "opcion2":opcion2
-                  };
-
-                  __ajax(route, token, type, datos)
-                  .done(function(info) {
-                      $("#informacion").html("Muy bien! Nota Credito Enviada y Generada");
-                      $("#mod_factelectronica").modal('toggle');
-                  })
-
+                $("#informacion").html("Muy bien! Nota Credito Enviada y Generada");
+                $("#mod_factelectronica").modal('toggle');
 
 
                 }else if(info.status == 0){

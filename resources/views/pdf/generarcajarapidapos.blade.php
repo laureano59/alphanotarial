@@ -8,10 +8,10 @@
 
 <body>
 
-    <div style="text-align: center;">
-        <img src="{{ asset('images/logoposn13.png') }}">
-    </div>
-    <br>
+    <!--<div style="text-align: center;">
+        <img src="{{ asset('images/logoposn13.png') }}" width="40" height="auto">
+    </div>-->
+    
     <p align="center">
         <font size="1"><b>{{$nombre_nota}}</b></font><br>
         <font size="3">{{$nombre_notario}}</font><br>
@@ -88,12 +88,13 @@
         <font size="4"><b>Total neto:</b></font>
         <font size="4"><b>$&nbsp;{{ number_format($total_all, 2) }}</b></font>
     </p>
-    <hr>
-    <img width="40" height="40" src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->generate($QRCode)) !!} "><br>
     
     <font size="1">Cufe:&nbsp;{{$cufe}} &nbsp; Hora:{{$hora_cufe}}</font>
+    <div style="text-align: center;">
+    <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(200)->generate($QRCode)) !!} ">
+    </div>
 
-    
+      
 </body>
 
 </html>

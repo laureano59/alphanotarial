@@ -72,12 +72,17 @@ class FacturascajarapidaController extends Controller
            ]);
         }
 
-         if (Facturascajarapida::where('id_registro', $id_registro)->exists()){
-          return response()->json([
-             "validar"=>111,
-             "mensaje"=>"El Id_registro ya fué utilizado"
-           ]);
+        if($id_registro != 0){
+            if (Facturascajarapida::where('id_registro', $id_registro)->exists()){
+                return response()->json([
+                "validar"=>111,
+                "mensaje"=>"El Id_registro ya fué utilizado"
+                ]);
+            }
+
         }
+
+        
 
         $efectivo = $request->efectivo;
          if($efectivo === '' || is_null($efectivo)){

@@ -18,6 +18,11 @@
             <div class="widget-box">
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar Rango de Fecha</h4>
+                     <span id="Botonexcel" class="widget-toolbar" >
+                        <a href="#" data-action="settings" id="ExcNotCrCjRapid">
+                            <i><img src="{{ asset('images/icoexcel.png') }}" width="28 px" height="28 px" title="Convertir a Excel"></i>
+                        </a>
+                    </span>
                     <span class="widget-toolbar">
                         <a href="#" data-action="settings" id="relacionnotacreditocajarapida">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>

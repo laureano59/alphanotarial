@@ -403,10 +403,12 @@ $("#guardarfacturaunica").click(function() {
                       var opcion2 = info.opcion2;
                                   //Genera Factura PDF
                       pdfFacturaUnica();
+                      $("#informacion").html("Muy bien! Factura Enviada y Generada");
+                      $("#mod_factelectronica").modal('toggle');
 
                                   /*----------  Enviar email  ----------*/
 
-                      route = "/enviarcorreo";
+                     /* route = "/enviarcorreo";
                       datos = {
                         "num_fact": num_fact,
                         "opcion": opcion,
@@ -418,7 +420,7 @@ $("#guardarfacturaunica").click(function() {
                     .done(function(info) {
                       $("#informacion").html("Muy bien! Factura Enviada y Generada");
                       $("#mod_factelectronica").modal('toggle');
-                  })
+                  })*/
 
                 }else if(info.status == 0){
                                   //Genera Comprovante PDF
@@ -632,12 +634,14 @@ $("#guardarfacturamultiple").click(async function() {
                             .done(function(info) {
                                 if(info.status == 1){
                                     var opcion2 = info.opcion2;
-                                            //Genera Factura PDF
+                                    //Genera Factura PDF
                                     pdfFacturaMultiple();
+                                     $("#informacion").html("Muy bien! Factura Enviada y Generada");
+                                    $("#mod_factelectronica").modal('toggle');
 
                                             /*------  Enviar email  ------*/
 
-                                    route = "/enviarcorreo";
+                                   /* route = "/enviarcorreo";
                                     datos = {
                                         "num_fact": num_fact,
                                         "opcion": opcion,
@@ -649,7 +653,7 @@ $("#guardarfacturamultiple").click(async function() {
                                     .done(function(info) {
                                         $("#informacion").html("Muy bien! Factura Enviada y Generada");
                                         $("#mod_factelectronica").modal('toggle');
-                                    })
+                                    })*/
                                 }else if(info.status == 0){
                                             //Genera Comprovante PDF
                                     pdfFacturaMultiple();

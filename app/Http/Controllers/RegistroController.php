@@ -16,8 +16,9 @@ class RegistroController extends Controller
      */
     public function index()
     {
-        $Conceptos = Conceptos_cajarapida::all();
-        $Conceptos = $Conceptos->sortBy('id_concep');
+        $Conceptos = Conceptos_cajarapida::whereIn('id_concep', [2, 19])
+                ->orderBy('id_concep')
+                ->get();
         return view('registro.registro', compact('Conceptos')); 
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Factura;
+use App\Credenciales_api;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -42,7 +43,16 @@ class GenerarxmlController extends Controller
     }
 
     public function GenerarXml(Request $request)
-    {        
+    {
+
+          $Credenciales = Credenciales_api::find(1);
+          $url       = $Credenciales->url_cufe_escr;
+          $url_login = $Credenciales->url_cufe_login;
+          $usuario   = $Credenciales->user_cufe_escr;
+          $password  = $Credenciales->pwd_cufe_escr;
+          $url_login = rtrim($url_login, '/') . '/';
+          $url       = rtrim($url, '/') . '/';
+                 
 
     $anio_trabajo = $request->session()->get('anio_trabajo');
     $num_fact = $request->session()->get('numfact');
@@ -58,7 +68,7 @@ class GenerarxmlController extends Controller
     $cufe = $factura->cufe;
     $fechaActual = date('Y-m-d'); // Puedes usar otro formato si prefieres
     $nomarchi = $num_fact . '_' . $fechaActual;
-    $downloadUrl = "https://notaria13cali.binario.shop/factura/get-attached/{$cufe}";
+    $downloadUrl = $url . $cufe; 
 
     try {
         $client = new Client([
@@ -70,21 +80,21 @@ class GenerarxmlController extends Controller
         ]);
 
         // 1. Obtener CSRF token
-        $loginPage = $client->get('https://notaria13cali.binario.shop/panel/login/');
+        $loginPage = $client->get($url_login);
         $html = (string) $loginPage->getBody();
         $crawler = new Crawler($html);
         $csrfToken = $crawler->filter('input[name="csrfmiddlewaretoken"]')->attr('value');
 
         // 2. Login con token
-        $loginResponse = $client->post('https://notaria13cali.binario.shop/panel/login/', [
+        $loginResponse = $client->post($url_login, [
             'form_params' => [
-                'username' => 'facturacion',
-                'password' => 'notaria13cali',
+                'username' => $usuario,
+                'password' => $password,
                 'csrfmiddlewaretoken' => $csrfToken,
                 'next' => '/factura/list/',
             ],
             'headers' => [
-                'Referer' => 'https://notaria13cali.binario.shop/panel/login/',
+                'Referer' => $url_login,
             ]
         ]);
 

@@ -39,7 +39,7 @@ function CargarFacturas(data){
 
 }
 
-function CargarNC(data_nc){
+function CargarNC(data){
   var htmlTags = '';
   for (item in data) {
         htmlTags +=
@@ -55,7 +55,7 @@ function CargarNC(data_nc){
             '</tr>';
   }
 
-  document.getElementById('datos').innerHTML = htmlTags;
+  document.getElementById('datos_nc').innerHTML = htmlTags;
 
 }
 

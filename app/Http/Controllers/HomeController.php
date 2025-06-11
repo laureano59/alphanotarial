@@ -8,6 +8,8 @@ use App\Radicacion;
 use App\Factura;
 use App\Escritura;
 use App\Facturascajarapida;
+use App\Notas_credito_factura;
+use App\Notas_credito_cajarapida;
 
 class HomeController extends Controller
 {
@@ -60,22 +62,33 @@ class HomeController extends Controller
       ->where('fecha_fact', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
       ->get();
 
-      $Fact_Dian = '0';
-      
-    if ($facturas_dian->isEmpty()) {
-      $Fact_Dian = '0';//No hay facturas para enviar
-    } else {
-      $Fact_Dian = '1';//Hay facturas para enviar
-    }
+
+      $notascredito_dian = Notas_credito_factura::select(\DB::raw("prefijo_ncf, id_ncf, TO_CHAR(created_at, 'DD-MM-YYYY') AS fecha_fact"))
+      ->where('status_factelectronica', '0')
+      ->where('created_at', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
+      ->get();
+
+      $notascredito_dian_cr = Notas_credito_cajarapida::select(\DB::raw("prefijo_ncf, id_ncf, TO_CHAR(created_at, 'DD-MM-YYYY') AS fecha_fact"))
+      ->where('status_factelectronica', '0')
+      ->where('created_at', '>=', \DB::raw("NOW() - INTERVAL '5 days'"))
+      ->get();
+
+      $Fact_Dian = '0';      
+    
+      if ($facturas_dian->isEmpty() && $notascredito_dian->isEmpty()) {
+          $Fact_Dian = '0'; // No hay facturas ni notas crédito para enviar
+      } else {
+        $Fact_Dian = '1'; // Hay facturas o notas crédito para enviar
+      }
 
     $request->session()->put('Fact_Dian', $Fact_Dian);
 
     $Fact_Dian_cr = '0';
 
-    if ($facturas_dian_cr->isEmpty()) {
-      $Fact_Dian_cr = '0';//No hay facturas para enviar
+    if ($facturas_dian_cr->isEmpty() && $notascredito_dian_cr->isEmpty()) {
+        $Fact_Dian_cr = '0'; // No hay facturas ni notas crédito para enviar
     } else {
-      $Fact_Dian_cr = '1';//Hay facturas para enviar
+      $Fact_Dian_cr = '1'; // Hay facturas o notas crédito para enviar
     }
 
     $request->session()->put('Fact_Dian_cr', $Fact_Dian_cr);

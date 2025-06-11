@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\mail\FacturaElectronica;
-use ZipArchive;
-use File;
-use Illuminate\Support\Facades\Mail;
+use App\Services\EnviarEmailCajaRapida;
 
 class EnviaremailController extends Controller
 {
-     public function enviarfactura(Request $request){
-     	$opcion =  $request->opcion;
+     public function EnviarCorreo(Request $request){
+
+          $cf            = $request->session()->get('CUFE_SESION');
+          $numerofactura = $request->session()->get('numfactrapida');
+          $opcion        = $request->session()->get('opcionfactura');
+          $email_cliente = $request->session()->get('email_cliente');
+     
+
+          $Enviar = new EnviarEmailCajaRapida();
+          $respuesta = $Enviar->EnviarCorreoSegundoPlano($cf, $numerofactura, $opcion, $email_cliente);
+
+     }
+
+      public function enviarfactura(Request $request){
+          $opcion =  $request->opcion;
           $opcion2 = $request->opcion2;
           
           if($opcion2 == 1){

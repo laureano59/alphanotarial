@@ -17,6 +17,8 @@ use App\Detalle_notas_debito;
 use App\Notas_debito_factura;
 use App\Info_cliente_factura_electronica_view;
 use App\Tarifa;
+use App\Credenciales_api;
+use App\Jobs\EnviarCorreoSegundoPlano;
 //use DOMDocument;
 
 class EnvoicecajarapidaController extends Controller
@@ -55,32 +57,78 @@ class EnvoicecajarapidaController extends Controller
     # -----------  Numero de factura obtenida en una session o en un ajax  -----------
 
     $numfact = $request->num_fact;
-    
+
+    $opcion1 = $request->opcion;
+
+
+
+    if($opcion1 == 'F1'){
+       $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
+        foreach ($facturas as $factura) {
+          $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+          $fecha_fact_completa = $factura->fecha_fact;
+          $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+          $StarPeriodo =  Carbon::parse($fecha_fact)->firstOfMonth();
+          $StarPeriodo = Carbon::parse($StarPeriodo)->format('Y-m-d');
+          $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
+          $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
+          $identificacioncli = $factura->a_nombre_de;
+          $TipodePago = $factura->credito_fact;
+          $TotalFactura = $factura->total_fact;
+          $TotalDerechos = 0;
+          $TotalIva = $factura->total_iva;
+          $TotalRtf = 0;
+          $TotalReteIva = 0;
+          $TotalReteIca = 0;
+          $TotalReteRtf = 0;
+          $TotalFondo = 0;
+          $TotalSuper = 0;
+          $AporteEspecial = 0;
+          $diascredito_fact = $factura->dias_credito;
+          $nota_credito = $factura->nota_credito;
+          $TotalAntesdeIva = $factura->subtotal;
+        } 
+
+    }else if($opcion1 == 'NC'){
+      $Notas_credito_factura_anulada =  Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$numfact)->get();
+
+      if ($Notas_credito_factura_anulada->isEmpty()) {
+          $num_fact_anulada = $numfact;
+          $Notas_credito_factura_anulada =  Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
+      } else {
+            foreach ($Notas_credito_factura_anulada as $ncf) {
+              $num_fact_anulada = $ncf['id_fact'];
+            }
+        }   
+
+
+    $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact_anulada)->get();
+
    
-    $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
     foreach ($facturas as $factura) {
-      $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-      $fecha_fact_completa = $factura->fecha_fact;
-      $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
-      $StarPeriodo =  Carbon::parse($fecha_fact)->firstOfMonth();
-      $StarPeriodo = Carbon::parse($StarPeriodo)->format('Y-m-d');
-      $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
-      $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
-      $identificacioncli = $factura->a_nombre_de;
-      $TipodePago = $factura->credito_fact;
-      $TotalFactura = $factura->total_fact;
-      $TotalDerechos = 0;
-      $TotalIva = $factura->total_iva;
-      $TotalRtf = 0;
-      $TotalReteIva = 0;
-      $TotalReteIca = 0;
-      $TotalReteRtf = 0;
-      $TotalFondo = 0;
-      $TotalSuper = 0;
-      $AporteEspecial = 0;
-      $diascredito_fact = $factura->dias_credito;
-      $nota_credito = $factura->nota_credito;
-      $TotalAntesdeIva = $factura->subtotal;
+          $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
+          $fecha_fact_completa = $factura->fecha_fact;
+          $hora_fact = Carbon::parse($factura->fecha_fact)->format('h-i-s');
+          $StarPeriodo =  Carbon::parse($fecha_fact)->firstOfMonth();
+          $StarPeriodo = Carbon::parse($StarPeriodo)->format('Y-m-d');
+          $EndPeriodo =  Carbon::parse($fecha_fact)->endOfMonth();
+          $EndPeriodo = Carbon::parse($EndPeriodo)->format('Y-m-d');
+          $identificacioncli = $factura->a_nombre_de;
+          $TipodePago = $factura->credito_fact;
+          $TotalFactura = $factura->total_fact;
+          $TotalDerechos = 0;
+          $TotalIva = $factura->total_iva;
+          $TotalRtf = 0;
+          $TotalReteIva = 0;
+          $TotalReteIca = 0;
+          $TotalReteRtf = 0;
+          $TotalFondo = 0;
+          $TotalSuper = 0;
+          $AporteEspecial = 0;
+          $diascredito_fact = $factura->dias_credito;
+          $nota_credito = $factura->nota_credito;
+          $TotalAntesdeIva = $factura->subtotal;
+        } 
     }
 
     
@@ -102,8 +150,10 @@ class EnvoicecajarapidaController extends Controller
     #===============================================
     #            Información del Cliente           =
     #===============================================
+    
 
     $Info_cliente = Info_cliente_factura_electronica_view::where("identificacion_cli","=",$identificacioncli)->get();
+    
     
     foreach ($Info_cliente as $infocliente) {
       $nombre_cliente = $infocliente->nombre_cli;
@@ -275,7 +325,7 @@ class EnvoicecajarapidaController extends Controller
     # ================================================
     # =           NOTA CREDITO, NOTA DEBITO          =
     # ================================================
-   
+    
     $opcion = $request->opcion;
     $tipo_operacion = $opcion;
     if($opcion == 'F1'){
@@ -283,22 +333,30 @@ class EnvoicecajarapidaController extends Controller
       $num_fact_aplica = '';
       $fecha_fact_aplica = '';
       $prefijo_fact_aplica = '';
-    }else if($opcion == 'NC'){
-      if($nota_credito == true){
-        $Notas_credito_factura =  Notas_credito_cajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$numfact)->get();
-        foreach ($Notas_credito_factura as $nc) {
-          $num_fact_aplica = $numfact;
+    }else if($opcion == 'NC'){     
+
+      if($nota_credito == true){        
+       
+        /*$Notas_credito_factura = Notas_credito_cajarapida::where("prefijo", "=", $prefijo_fact)
+          ->where("id_fact", "=", $numfact)
+          ->get();*/
+         
+        
+        foreach ($Notas_credito_factura_anulada as $nc) {
+          
+          $num_fact_aplica = $nc->id_fact;
           $fecha_fact_aplica = $fecha_fact_completa;
           $prefijo_fact_aplica = $Prefix;
           $Prefix = 'FE';
           $numfact = $nc->id_ncf;
           $fecha_fact = Carbon::parse($nc->created_at)->format('Y-m-d');
           $fecha_fact_completa = $nc->created_at;
-          $hora_fact = Carbon::parse($nc->created_at)->format('h-i-s');
+          $hora_fact = Carbon::parse($nc->created_at)->format('h-i-s');            
           $typenote = '20';
         }
       }
     }
+
 
     # =============================================
     # =           JSON PARA ENVIAR API            =
@@ -351,8 +409,8 @@ class EnvoicecajarapidaController extends Controller
       'dev_number_date'     =>  $fecha_fact_aplica,//'fecha de la factura
       'prefix_application'  =>  $prefijo_fact_aplica,//'prefijo de la fatura a la que aplica la nota ( en caso de notas)',
     );
-  
-     
+
+        
 
     if($opcion == 'F1'){
 
@@ -367,7 +425,7 @@ class EnvoicecajarapidaController extends Controller
                     ->get();
     }
 
-
+   
     $detalle_impuesto = $detalle;
 
     $detalle_item = array();
@@ -451,6 +509,7 @@ class EnvoicecajarapidaController extends Controller
     # =           Enviar a la API           =
     # =======================================
 
+
     $res = $this->Enviar_Json($todo);
 
     # =====================================================
@@ -465,22 +524,7 @@ class EnvoicecajarapidaController extends Controller
       $AttachedDocument = $value['fexml'];
       $numerofactura =  $value['number'];
     }
-
-    
-    # ===========================================
-    # =       Almacena AttachedDocument         =
-    # ===========================================
-
-    $carpeta_destino_cliente = "cliente_cajarapida/";
-    if(file_exists($carpeta_destino_cliente)){
-      $fh = fopen($carpeta_destino_cliente.$numerofactura.'_'.$opcion."_AttachedDocument.xml", 'w') or die("Se produjo un error al crear el archivo");
-      $texto = preg_replace("/[\r\n|\n|\r]+/", " ", $AttachedDocument);
-      fwrite($fh, $texto) or die("No se pudo escribir en el archivo");
-      fclose($fh);
-    }else{
-      echo "No existe el directorio cliente";
-    }
-
+   
     # =========================================================
     # =           Valida Status que devuelve la API           =
     # =========================================================
@@ -502,13 +546,14 @@ class EnvoicecajarapidaController extends Controller
         $factura = Facturascajarapida::where("prefijo","=",$Prefix)->find($numerofactura);
         $factura->cufe = $cf;
         $factura->status_factelectronica = '1';
-        $factura->save();
+        $factura->save();         
 
        }else if($opcion == 'NC'){
         $nota_c = Notas_credito_cajarapida::where("prefijo_ncf","=",$Prefix)->find($numerofactura);
         $nota_c->cufe = $cf;
         $nota_c->status_factelectronica = '1';
         $nota_c->save();
+                     
        }
       
     }else{
@@ -521,15 +566,15 @@ class EnvoicecajarapidaController extends Controller
       $request->session()->put('recibo_factura', $recibo_factura);
     }
 
-    $opcion2 = 2; //para diferenciar al enviar correo de cajarapida y factura
-
-
+    $request->session()->put('opcionfactura', $opcion);
+    $request->session()->put('email_cliente', $email_cliente);
+        
     return response()->json([
       "status"=>$estado,
       "mensaje"=>$mensaje,
       "cufe"=>$cf,
       "email_cliente"=>$email_cliente,
-      "opcion2"=>$opcion2
+      "opcion"=>$opcion
     ]);
    
   }
@@ -538,8 +583,9 @@ class EnvoicecajarapidaController extends Controller
   private function Enviar_Json($data_todo){
 
     $datosCodificados = json_encode($data_todo);
-    //$url = 'http://notaria13.binario.shop/factura/api-sync-invoice/';
-    $url = 'http://notaria13cali.binario.shop/factura/api-sync-invoice/';
+    $Credenciales = Credenciales_api::find(1);
+    $url = $Credenciales->url_fa_electr;
+    // $url = 'http://notaria13cali.binario.shop/factura/api-sync-invoice/';
     
     $ch = curl_init($url);
     curl_setopt_array($ch, array(
@@ -561,14 +607,12 @@ class EnvoicecajarapidaController extends Controller
     # Vemos si el código es 200, es decir, HTTP_OK
     $codigoRespuesta = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $res = json_decode($resultado, true);
-
-    //var_dump($resultado);
-    //exit;
+    
     curl_close($ch);
 
     
     return $res;
  
-  }
+  }   
 
 }

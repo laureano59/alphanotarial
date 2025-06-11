@@ -1060,6 +1060,8 @@ $("#generarreporterelacionnotascredito").click(function(){
   .done( function( info ){
     var rel_notas_credito = info.rel_notas_credito;
     CargarRelNotasCredito(rel_notas_credito);
+    $("#Botonexcel").fadeIn();
+
   })
 });
 
@@ -1520,6 +1522,13 @@ $("#excelcarteraclientebonos").click(function(){
 });
 
 
+
+$("#excelnotcredi").click(function(){
+  var url = "/excelnotascredito";
+  $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+});
+
+
 $("#excelcarteraxfechbonos").click(function(){
   var url = "/excelcarterafechabonos";
   $("<a>").attr("href", url).attr("target", "_blank")[0].click();
@@ -1529,6 +1538,53 @@ $("#excelcarteraxfechbonos").click(function(){
 $("#excelcarteraclientebonosacti").click(function(){
   var url = "/excelcarteraclientebonosacti";
   $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+});
+
+
+
+$("#excelreteaplicada").click(function(){
+
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){
+        var url = "/excelretencionesaplicadas";
+        $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      }
+    })
+  
+});
+
+
+$("#ExcNotCrCjRapid").click(function(){
+
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2
+  };
+
+  __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){
+        var url = "/exnotcredcajarap";
+        $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      }
+    })
+  
 });
 
 $("#informedepositos").click(function(){

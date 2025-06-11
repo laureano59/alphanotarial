@@ -448,7 +448,7 @@ class PdfController extends Controller
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
 
 
@@ -807,7 +807,7 @@ class PdfController extends Controller
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
 
     }
   }
@@ -1438,7 +1438,7 @@ class PdfController extends Controller
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html_otor);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
 
     }else{//Nota Credito Para radicación con una sola factura
       $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
@@ -1714,7 +1714,7 @@ class PdfController extends Controller
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       
     }
   }
@@ -2027,7 +2027,7 @@ class PdfController extends Controller
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html_otor);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+     // $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
 
     }else{//Nota Credito Para radicación con una sola factura
       $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
@@ -2301,7 +2301,7 @@ class PdfController extends Controller
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+     // $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       
     }
   }
@@ -7282,11 +7282,11 @@ public function Cuenta_de_Cobro(Request $request){
       //$tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
 
       if ($contdetalle <= 2){
-        $tamano_hoja = array(80, 220); // Ancho x Alto en milímetros
+        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
       }
 
       if ($contdetalle > 2 && $contdetalle <= 5){
-        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
+        $tamano_hoja = array(80, 240); // Ancho x Alto en milímetros
       }
 
       if ($contdetalle > 5){
@@ -7294,7 +7294,7 @@ public function Cuenta_de_Cobro(Request $request){
       }
       
       // Configurar márgenes (en milímetros)
-      $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
+      $margenes = array('left' => 5, 'right' => 5, 'top' => 1, 'bottom' => 1);
 
 
       // Combinar las configuraciones
@@ -7317,11 +7317,11 @@ public function Cuenta_de_Cobro(Request $request){
           </table>');
         $carpeta_destino_cliente = public_path() . '/cliente_cajarapida/';
         $mpdf->defaultfooterfontsize=2;
-        $mpdf->SetTopMargin(5);
+        $mpdf->SetTopMargin(1);
         $mpdf->SetDisplayMode('fullpage');
         $mpdf->WriteHTML($html);
-        $mpdf->Output($namefile,"i");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'f'); //guarda a ruta
+        $mpdf->Output($namefile,"I");
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'f'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       $request->session()->forget('numfactrapida');
 
@@ -7338,7 +7338,7 @@ public function Cuenta_de_Cobro(Request $request){
       $anio_trabajo = $notaria->anio_trabajo;
       //TARIFA DEL IVA
       $porcentaje_iva = round((Tarifa::find(9)->valor1));
-      
+
 
       $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($facturas as $factura) {
@@ -7545,7 +7545,7 @@ public function Cuenta_de_Cobro(Request $request){
       }
 
       if ($contdetalle > 2 && $contdetalle <= 5){
-        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
+        $tamano_hoja = array(80, 240); // Ancho x Alto en milímetros
       }
 
       if ($contdetalle > 5){
@@ -7580,7 +7580,7 @@ public function Cuenta_de_Cobro(Request $request){
         $mpdf->SetDisplayMode('fullpage');
         $mpdf->WriteHTML($html);
         $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       $request->session()->forget('numfactrapida');
     }
@@ -7816,7 +7816,7 @@ public function Cuenta_de_Cobro(Request $request){
       }
 
       if ($contdetalle > 2 && $contdetalle <= 5){
-        $tamano_hoja = array(80, 230); // Ancho x Alto en milímetros
+        $tamano_hoja = array(80, 240); // Ancho x Alto en milímetros
       }
 
       if ($contdetalle > 5){
@@ -8058,7 +8058,7 @@ public function Cuenta_de_Cobro(Request $request){
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html);
       $mpdf->Output($namefile,"I");
-      $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
+     // $mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
       //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
       
 

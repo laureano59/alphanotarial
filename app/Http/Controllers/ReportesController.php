@@ -35,6 +35,9 @@ use App\Exports\IngresosdianescriturasExport;
 use App\Exports\EnajenacionesExport;
 use App\Exports\BonosExportFecha;
 use App\Exports\BonosExportActivos;
+use App\Exports\NotasCreditoExport;
+use App\Exports\ExcelReteaplicadaExport;
+use App\Exports\NotasCreditoCajaRapidaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Protocolista;
 use App\Cuenta_cobro_escr;
@@ -534,6 +537,7 @@ public function FechaReporte(Request $request){
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
     
+    
     $rel_notas_credito = Relacion_notas_credito_view::whereDate('fecha', '>=', $fecha1)
     ->whereDate('fecha', '<=', $fecha2)
     ->orderBy('id_ncf')->get()->toArray();
@@ -831,6 +835,8 @@ public function FechaReporte(Request $request){
     ->groupBy('escr')
     ->select($raw1)->get()->toArray();
 
+    
+
    
     $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
     $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
@@ -840,6 +846,7 @@ public function FechaReporte(Request $request){
     ->where('cuantia','<=', 300000000)
     ->groupBy('escr')
     ->select($raw2)->get()->toArray();
+
 
 
     $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
@@ -890,6 +897,7 @@ public function FechaReporte(Request $request){
     ->where('nota_periodo', '<>', 0)
     ->groupBy('escr')
     ->select($raw7)->get()->toArray();
+
    
 
     $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
@@ -1674,6 +1682,44 @@ public function FechaReporte(Request $request){
     return Excel::download(new BonosExportFecha($fecha1, $fecha2, $opcionreporte), $nombrefile);
 
   }
+
+  public function ExcelNotasCredito(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $opcionreporte = $request->session()->get('opcionreporte');
+    $nombrefile = 'RelacionNotaCredito'.'_'.$fecha1.'.'.'xls';
+
+
+    return Excel::download(new NotasCreditoExport($fecha1, $fecha2), $nombrefile);
+
+  }
+
+  
+
+  public function ExcelReteaplicada(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $nombrefile = 'ReteFuenteAplicada'.'_'.$fecha1.'.'.'xls';
+    
+    return Excel::download(new ExcelReteaplicadaExport($fecha1, $fecha2), $nombrefile);
+
+  }
+
+  
+
+  public function ExcelNotasCreditoCajaRapida(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $nombrefile = 'RelNotaCreditoCajaRapida'.'_'.$fecha1.'.'.'xls';
+    
+    return Excel::download(new NotasCreditoCajaRapidaExport($fecha1, $fecha2), $nombrefile);
+
+  }
+
+  
 
    public function ExcelCarteraClienteBonosActi(Request $request){
     

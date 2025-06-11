@@ -211,13 +211,58 @@ $("#guardar").click(function() {
   __ajax(route, token, type, datos)
   .done(function(info) {
     if(info.validar == 1){
-       x.style.display = "none";
-      $("#impresora").fadeIn();
       var prefijo, id_fact;
-      prefijo = info.prefijo;
-      id_fact = info.id_fact;
-      $("#numfactrapida").val(id_fact);
-      $("#numfat").html(prefijo + '-' + ' ' + id_fact);
+          prefijo = info.prefijo;
+          id_fact = info.id_fact;
+          $("#numfactrapida").val(id_fact);
+          $("#numfat").html(prefijo + '-' + ' ' + id_fact);
+      // =============================================
+      // =       Enviar Factura electronica          =
+      // =============================================
+  
+    var opcion = "F1";
+    var num_fact = $("#numfactrapida").val();
+    var route = "/enviarfacturacajarapida";
+    var token = $("#token").val();
+    var type = 'GET';
+    var datos = {
+      "num_fact": num_fact,
+      "opcion": opcion
+    };
+    __ajax(route, token, type, datos)
+    .done(function(info) {
+      if(info.status == 1){
+          var mensaje = info.mensaje;
+          var opcion2 = info.opcion2;
+          console.log(opcion2);
+          console.log(mensaje);
+
+          $("#informacion").html("Muy bien! Factura Enviada, ahora puedes imprimirla");
+          $("#mod_factelectronica").modal('toggle');  
+          x.style.display = "none";
+          $("#impresora").fadeIn();          
+
+          // =============================================
+          // =       Enviar Correo al cliente            =
+          // =============================================
+
+          route = "/enviarcorreocajrap";
+          token = $("#token").val();
+          type = 'GET';
+          datos = {
+      
+          };
+          __ajax(route, token, type, datos)
+            .done(function(info) {
+            if(info.status == 1){
+              
+            }
+          })
+
+            //fetch("/enviarcorreo");
+        }
+      })
+
      }else if(info.validar == 888){
       alert("Los medios de pago deben ser igual que el total a pagar");
     }else if(info.validar == 999){

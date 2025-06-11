@@ -25,6 +25,11 @@
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Reporte"></i>
                         </a>
                     </span>
+                      <span id="Botonexcel" class="widget-toolbar" style="display:none">
+                        <a href="#" data-action="settings" id="excelnotcredi">
+                            <i><img src="{{ asset('images/icoexcel.png') }}" width="28 px" height="28 px" title="Convertir a Excel"></i>
+                        </a>
+                    </span>
                     <span class="widget-toolbar">
                         <a href="#" data-action="settings" id="generarreporterelacionnotascredito">
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
@@ -76,7 +81,7 @@
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('js/reportes/script.js')}}"></script>
+ 
   <script src="{{ asset('js/calendario.js')}}"></script>
   <script src="{{ asset('js/__AJAX.js')}}"></script>
   <script src="{{asset('js/reportes/grid.js')}}"></script>
