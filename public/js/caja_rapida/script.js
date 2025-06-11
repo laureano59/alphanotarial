@@ -172,6 +172,7 @@ $("#actualizar_cambios") .click(function() {
 
 $("#guardar").click(function() {
   var x = document.getElementById("guardar_btn");
+  x.style.display = "none";
   var identificacion_cli1 = $("#identificacion_cli1").val();
   var formapago = $("#id_formapago").val();
   var idreg = $("#idregistro").val();
@@ -233,9 +234,7 @@ $("#guardar").click(function() {
     .done(function(info) {
       if(info.status == 1){
           var mensaje = info.mensaje;
-          var opcion2 = info.opcion2;
-          console.log(opcion2);
-          console.log(mensaje);
+          var opcion2 = info.opcion2;         
 
           $("#informacion").html("Muy bien! Factura Enviada, ahora puedes imprimirla");
           $("#mod_factelectronica").modal('toggle');  

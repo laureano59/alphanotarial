@@ -7361,6 +7361,7 @@ public function Cuenta_de_Cobro(Request $request){
         $cufe_almacenado = $factura->cufe;
       }
 
+
       if($forma_pago == true){
         $formadepago = "Credito";
 

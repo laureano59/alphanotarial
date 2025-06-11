@@ -16,12 +16,7 @@ function GenerarPdf(){
         if (nuevaVentana) {
             nuevaVentana.close();
         }
-    }, 10000); // 3000 milisegundos = 3 segundos
-
-
-    
-     var url = "/facturacajarapidapdf";
-    $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+    }, 10000); // 3000 milisegundos = 3 segundos   
 
 }
 
