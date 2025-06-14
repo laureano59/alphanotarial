@@ -63,8 +63,8 @@ class EnvoicecajarapidaController extends Controller
     # -----------  Numero de factura obtenida en una session o en un ajax  -----------
 
     $numfact = $request->num_fact;
-
     $opcion1 = $request->opcion;
+    $retransmitir = $request->retransmitir;
 
     if (is_null($retransmitir) || $retransmitir === '') {
       $retransmitir = '0';    

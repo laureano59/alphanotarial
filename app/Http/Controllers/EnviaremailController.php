@@ -24,7 +24,7 @@ class EnviaremailController extends Controller
       public function EnviarCorreoEscr(Request $request){
 
           $cf            = $request->session()->get('CUFE_SESION');
-          $numerofactura = $request->session()->get('numfactrapida');
+          $numerofactura = $request->session()->get('numfactura');
           $opcion        = $request->session()->get('opcionfactura');
           $email_cliente = $request->session()->get('email_cliente');
      

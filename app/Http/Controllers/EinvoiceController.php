@@ -86,8 +86,6 @@ class EinvoiceController extends Controller
 
     
     $numfact = $request->num_fact;
-
-
     $opcion1 = $request->opcion;
     $retransmitir = $request->retransmitir;
 
@@ -852,6 +850,9 @@ class EinvoiceController extends Controller
       $request->session()->put('CUFE_SESION', $cf);
       $request->session()->put('recibo_factura', $recibo_factura);
     }
+
+    $request->session()->put('opcionfactura', $opcion);
+    $request->session()->put('email_cliente', $email_cliente);
     
 
     return response()->json([

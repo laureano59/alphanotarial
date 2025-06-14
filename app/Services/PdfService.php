@@ -1018,26 +1018,37 @@ $ID = $prefijo_fact.$num_fact;
 }
 
 public function GenerarCopiaNotaCredito($num_fact, $directorio){
-     $notaria = Notaria::find(1);
+    $notaria = Notaria::find(1);
     $prefijo_fact = $notaria->prefijo_fact;
         
     //TARIFA DEL IVA
     $porcentaje_iva = round((Tarifa::find(9)->valor1));
 
     $Notacredito = Notas_credito_factura::where("id_fact","=",$num_fact)->where("prefijo","=",$prefijo_fact)->get();
-    foreach ($Notacredito as $nc) {
-      $id_ncf = $nc->id_ncf;
-      $cuf = $nc->cufe;
+    if ($Notacredito->isEmpty()) {
+        $Notacredito = Notas_credito_factura::where("id_ncf","=",$num_fact)->where("prefijo","=",$prefijo_fact)->get(); 
+        foreach ($Notacredito as $ncf) {
+            $detalle_ncf = $ncf->detalle_ncf;
+            $fecha_ncf = Carbon::parse($ncf->created_at)->format('Y-m-d');
+            $fecha_ncf_completa = $ncf->created_at;
+            $hora_ncf = Carbon::parse($ncf->created_at)->format('h:i:s');
+            $id_ncf = $ncf->id_ncf;
+            $cuf = $ncf->cufe;
+        }      
+    }else{
+        foreach ($Notacredito as $ncf) {
+            $detalle_ncf = $ncf->detalle_ncf;
+            $fecha_ncf = Carbon::parse($ncf->created_at)->format('Y-m-d');
+            $fecha_ncf_completa = $ncf->created_at;
+            $hora_ncf = Carbon::parse($ncf->created_at)->format('h:i:s');
+            $id_ncf = $ncf->id_ncf;
+            $cuf = $ncf->cufe;
+        }
     }
+    
 
     
-    $notacreditofact = Notas_credito_factura::where("id_ncf","=",$id_ncf)->where("prefijo_ncf","=",$prefijo_fact)->get();
-    foreach ($notacreditofact as $ncf) {
-      $detalle_ncf = $ncf->detalle_ncf;
-      $fecha_ncf = Carbon::parse($ncf->created_at)->format('Y-m-d');
-      $fecha_ncf_completa = $ncf->created_at;
-      $hora_ncf = Carbon::parse($ncf->created_at)->format('h:i:s');
-    }
+   
 
     /********Valida Si la factura es doble o unica*********/
     if (Detalle_factura::where('id_fact', $num_fact)->where('prefijo', $prefijo_fact)->exists()){
@@ -1603,13 +1614,30 @@ public function GenerarCopiaNotaCredito($num_fact, $directorio){
 
 public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
      
-     $notaria = Notaria::find(1);
-     $prefijo_fact = $notaria->prefijo_facturarapida;
-     
-     
+      $notaria = Notaria::find(1);
+      $prefijo_fact = $notaria->prefijo_facturarapida;
+      $anio_trabajo = $notaria->anio_trabajo;
+
       //TARIFA DEL IVA
-      $porcentaje_iva = round((Tarifa::find(9)->valor1));
-      
+      $porcentaje_iva = round((Tarifa::find(9)->valor1));     
+
+       $nota_credito = Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_ncf","=",$num_fact)->get();
+       if ($nota_credito->isEmpty()) {
+            $nota_credito = Notas_credito_cajarapida::where("prefijo_ncf","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
+            foreach ($nota_credito as $notacre) {
+                $detalle_ncf = $notacre->detalle_ncf;
+                $fecha_ncf = $notacre->created_at;
+            }
+
+        }else{
+            foreach ($nota_credito as $notacre) {
+                $detalle_ncf = $notacre->detalle_ncf;
+                $fecha_ncf = $notacre->created_at;
+                $num_fact  = $notacre->id_fact;
+            }
+        }   
+
+
       $facturas = Facturascajarapida::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
       foreach ($facturas as $factura) {
         $total_iva = $factura->total_iva;
@@ -1628,69 +1656,7 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
         $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
-        $cufe = $factura->cufe;
       }
-
-      if($forma_pago == true){
-        $formadepago = "Credito";
-
-      }else if($forma_pago == false){
-        $formadepago = "Contado";
-      }
-
-      /*Medios de Pago*/
-
-
-      $mediodepago = '';
-      $efectivo = '';
-      $cheque = '';
-      $consignacion_bancaria = '';
-      $transferencia_bancaria = '';
-      $tarjeta_credito = '';
-      $tarjeta_debito = '';
-      $pse  = '';
-
-      
-      $Medpago = Mediodepagocajarapida_view::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
-      foreach ($Medpago as $med) {
-        $efectivo = $med->efectivo;
-        $cheque = $med->cheque;
-        $consignacion_bancaria = $med->consignacion_bancaria;
-        $pse = $med->pse;
-        $transferencia_bancaria = $med->transferencia_bancaria;
-        $tarjeta_credito = $med->tarjeta_credito;
-        $tarjeta_debito = $med->tarjeta_debito;
-      }
-
-      if($efectivo > 0 || $efectivo === ''){
-        $mediodepago = 'Efectivo';
-      }
-
-      if($cheque > 0){
-        $mediodepago = $mediodepago.', '.'Cheque';
-      }
-
-       if($consignacion_bancaria > 0){
-          $mediodepago = $mediodepago.', '.'Consig_banc';
-      }
-
-     
-      if($pse > 0){
-        $mediodepago = $mediodepago.', '.'Pse';
-      }
-
-      if($transferencia_bancaria > 0){
-        $mediodepago = $mediodepago.', '.'Transfe_banca';
-      }
-
-      if($tarjeta_credito > 0){
-        $mediodepago = $mediodepago.', '.'Tarj_cred';
-      }
-
-      if($tarjeta_debito > 0){
-        $mediodepago = $mediodepago.', '.'Tarj_deb';
-      }
-
 
       if($forma_pago == true){
         $formadepago = "Credito";
@@ -1706,7 +1672,6 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
         $nombrecli1 = $cli['fullname'];
         $direccioncli1 = $cli['direccion_cli'];
       }
-
       
       
       $detalle = Detalle_cajarapidafacturas::where('prefijo', $prefijo_fact)
@@ -1725,7 +1690,6 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
         $total_iva += $value['iva'];
         $total_all += $value['total'];
       }
-
       
 
       $nit = $notaria->nit;
@@ -1741,24 +1705,25 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
       # =====================================
       # =           CUFE y QRCODE           =
       # =====================================
-      if(is_null($cufe)){
-        $cufe = "sin facturar";
-      }
-      //$QRCode = $cufe;
 
-       $cufe = trim($cufe);
-       $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
+      $ID = $prefijo_fact.$id_ncf;
+      $codImp1 = '01'; //IVA
+      $valImp1 = $total_iva;
+      $codImp2 = '04'; //Impuesto al consumo bolsa no se genera para nuestro caso
+      $valImp2 = 0.00;
+      $codImp3 = '03'; //ICA
+      $valImp3 = $reteica;
+      $valTot  = $total_fact;
+      $NitOfe  = $nit;//Nit Notaría
+      $NumAdq  = $identificacioncli1;
+      //$ClTec   = '266669c6-4b51-429d-aedb-da51c8270516'; //Clave tecnica, se encuentra en el portal de la pactura electronica que nos provve la dian
+      $TipoAmbiente = '1'; //1=AmbienteProduccion , 2: AmbientePruebas
 
-      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
+      $cufe = $request->session()->get('CUFE_SESION');
+      $UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
+      $QRCode = $cufe;
 
-      $QRCode = "NIT: {$nit}\n"
-              . "FACTURA: {$factura}\n"
-              . "FECHA: {$fecha_fact}\n"
-              . "VALOR: {$total_fact}\n"
-              . "CUFE: {$cufe}\n"
-              . "URL: {$urlDIAN}";
-
-      $FactComprobante = 'Nota Credito';
+      $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
       $iva = "Somos Responsables de IVA";
       $data['nit'] = $nit;
@@ -1787,12 +1752,15 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
       $data['total_iva'] = $total_iva;
       $data['total_all'] = $total_all;
       $data['QRCode'] = $QRCode;
-      $data['cufe'] = $cufe;
+      $data['cufe'] = $UUID;
       $data['titulo'] = $FactComprobante;
       $data['formadepago'] = $formadepago;
-      $data['mediodepago'] = $mediodepago;
+      $data['id_ncf'] = $id_ncf;
+      $data['detalle_ncf'] = $detalle_ncf;
+      $data['fecha_ncf'] = $fecha_ncf;
       $data['porcentaje_iva'] = $porcentaje_iva;
-
+          
+     
       $j = 0;
       $terceros = [];
       if($total_iva > 0){
@@ -1808,15 +1776,10 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
       $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super;
       $data['totalterceros'] = round($totalterceros);
 
-      if($cufe == "sin facturar"){
-        $html = view('pdf.recibofactcajarapida',$data)->render();
-      }else{
-        $html = view('pdf.generarcajarapidapos',$data)->render();
-      }
-      
-      //$html = view('pdf.generarcajarapida',$data)->render();
 
-      $namefile = $num_fact.'_F1'.'.pdf';
+      $html = view('pdf.generarnotacreditocajarapidapos',$data)->render();
+
+      $namefile = $id_ncf.'_NC'.'.pdf';
       //$namefile = 'facturan13'.$num_fact.'.pdf';
 
       $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
@@ -1825,18 +1788,7 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
       $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
       $fontData = $defaultFontConfig['fontdata'];
 
-      if ($contdetalle <= 2){
-        $tamano_hoja = array(80, 220); // Ancho x Alto en milímetros
-      }
-
-      if ($contdetalle > 2 && $contdetalle <= 5){
-        $tamano_hoja = array(80, 240); // Ancho x Alto en milímetros
-      }
-
-      if ($contdetalle > 5){
-        $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
-      }
-      
+      $tamano_hoja = array(80, 250); // Ancho x Alto en milímetros
       
       // Configurar márgenes (en milímetros)
       $margenes = array('left' => 5, 'right' => 5, 'top' => 2, 'bottom' => 2);
@@ -1853,14 +1805,12 @@ public function GenerarCopiaNotaCreditoCajaRapida($num_fact, $directorio){
 
       $mpdf = new \Mpdf\Mpdf($configuracion);
 
-
       $mpdf->SetHTMLFooter('
         <table width="100%">
         <tr>
         <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
         </tr>
-        </table>');
-      
+        </table>');    
       $mpdf->defaultfooterfontsize=2;
       $mpdf->SetTopMargin(5);
       $mpdf->SetDisplayMode('fullpage');

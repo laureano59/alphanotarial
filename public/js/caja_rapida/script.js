@@ -228,7 +228,8 @@ $("#guardar").click(function() {
     var type = 'GET';
     var datos = {
       "num_fact": num_fact,
-      "opcion": opcion
+      "opcion": opcion,
+      "retransmitir":'0'
     };
     __ajax(route, token, type, datos)
     .done(function(info) {

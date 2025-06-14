@@ -93,7 +93,21 @@ $("#notacredito").click(function(){
 
                 $("#informacion").html("Muy bien! Nota Credito Enviada y Generada");
                 $("#mod_factelectronica").modal('toggle');
-                                  
+
+                  // =============================================
+                  // =       Enviar Correo al cliente            =
+                  // =============================================
+
+                  route = "/enviarcorreescr";
+                  token = $("#token").val();
+                  type = 'GET';
+                  datos = {    };
+                  __ajax(route, token, type, datos)
+                  .done(function(info) {
+                    if(info.status == 1){
+              
+                    }
+                  })                                  
                  
 
                 }else if(info.status == 0){
@@ -192,6 +206,20 @@ $("#notacreditocajarapida").click(function(){
                 $("#informacion").html("Muy bien! Nota Credito Enviada y Generada");
                 $("#mod_factelectronica").modal('toggle');
 
+                  // =============================================
+                  // =       Enviar Correo al cliente            =
+                  // =============================================
+
+                  route = "/enviarcorreocajrap";
+                  token = $("#token").val();
+                  type = 'GET';
+                  datos = {    };
+                  __ajax(route, token, type, datos)
+                  .done(function(info) {
+                    if(info.status == 1){
+              
+                    }
+                  })
 
                 }else if(info.status == 0){
                   //Genera Comprovante PDF

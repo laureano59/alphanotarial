@@ -6,7 +6,7 @@ use App\Credenciales_api;
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use App\mail\FacturaElectronica;
-use App\Facturas;
+use App\Factura;
 use ZipArchive;
 use File;
 use Illuminate\Support\Facades\Mail;
@@ -20,9 +20,9 @@ class EnviarEmailEscr
     	$titulo = "FACTURA No.";  	
        
         $directorio = $this->Generar_XML($cf, $numerofactura, $opcion);
-        $factura = \App\Facturas::find($numerofactura);
+        $factura = Factura::find($numerofactura);
         $anio_trabajo = $factura->anio_radica;
-       
+          
 
         if (!$directorio) {
             // Falla en generar XML
