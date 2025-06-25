@@ -24,7 +24,7 @@ class ActasdepositoController extends Controller
      */
     public function index(Request $request)
     {
-      $request->user()->authorizeRoles(['facturacion','administrador']);
+      $request->user()->authorizeRoles(['actas','administrador']);
       $anio_trabajo = Notaria::find(1)->anio_trabajo;
       $id_radica = $request->session()->get('key');
       $TipoIdentificaciones = Tipoidentificacion::all();
@@ -234,7 +234,7 @@ class ActasdepositoController extends Controller
     }
 
     public function BuscarActa(Request $request)
-    {
+    {            
       $opcion = $request->input('opcion');
       if($opcion == 1){//Buscar Acta por identificación
         $Identificacion_cli = $request->input('identificacion_cli');

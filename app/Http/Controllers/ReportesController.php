@@ -56,108 +56,143 @@ class ReportesController extends Controller
   public function index(Request $request)
   {
     $opcion = $request->session()->get('opcionreporte');
+    //var_dump($opcion);
+    //exit;
 
     if($opcion == 1){
+      $request->user()->authorizeRoles(['relfactmensualescr','administrador']);
       $nombre_reporte = $request->session()->get('nombre_reporte');
       return view('reportes.cajadiario', compact('nombre_reporte'));
     }else if($opcion == 2){
+      $request->user()->authorizeRoles(['actosjurinotar','administrador']);
       $reporte_view = $request->session()->get('ordenar');
       $nombre_reporte = $request->session()->get('nombre_reporte');
 
-      if($reporte_view == 'pornombre'){
+      if($reporte_view == 'pornombre'){       
+      $request->user()->authorizeRoles(['libroindiceescr','administrador']);       
        return view('reportes.libroindice', compact('nombre_reporte'));
      }else if($reporte_view == 'porescritura'){
+      $request->user()->authorizeRoles(['librorelaescr','administrador']);
       return view('reportes.librorelacion', compact('nombre_reporte'));
     }else if($reporte_view == 'pornumescritura'){
+      $request->user()->authorizeRoles(['librorelaescr','administrador']);
       return view('reportes.librorelacion', compact('nombre_reporte'));
     }
   }else if($opcion == 3){
+    $request->user()->authorizeRoles(['conceptosescr','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.ingresosporconcepto', compact('nombre_reporte'));
   }else if($opcion == 4){
+    $request->user()->authorizeRoles(['estadistico','administrador']);
     return view('reportes.estadisticonotarial');
   }else if($opcion == 5){
     return view('reportes.auxiliarcaja');
   }else if($opcion == 6){
     return view('reportes.registrocivil');
   }else if($opcion == 7){
+    $request->user()->authorizeRoles(['enlaces','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.enlaces', compact('nombre_reporte'));
   }else  if($opcion == 8){
+    $request->user()->authorizeRoles(['rnotacredescr','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.notascredito', compact('nombre_reporte'));
   }else  if($opcion == 9){
+    $request->user()->authorizeRoles(['relcarterames','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informecarterames', compact('nombre_reporte'));
   }else  if($opcion == 10){
+    $request->user()->authorizeRoles(['relcarteraclient','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informecarteracliente', compact('nombre_reporte'));
   }else  if($opcion == 11){
+    $request->user()->authorizeRoles(['recaudosescr','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informederecaudos', compact('nombre_reporte'));
   }else if($opcion == 12){
+    $request->user()->authorizeRoles(['reporteron','administrador']);
     return view('reportes.ron');
   }else if($opcion == 13){
+    $request->user()->authorizeRoles(['certiretefuente','administrador']);
     return view('reportes.certificadortf');
   }else if($opcion == 14){
+    $request->user()->authorizeRoles(['rdiariocaja','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informediariocajarapida', compact('nombre_reporte'));
   }else if($opcion == 15){
+    $request->user()->authorizeRoles(['rgrupos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informeporconceptoscajarapida', compact('nombre_reporte'));
   }else if($opcion == 16){
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.statusfactelectronicacajarapida', compact('nombre_reporte'));
   }else if($opcion == 17){
+    $request->user()->authorizeRoles(['infodepositos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informededepositos', compact('nombre_reporte'));
   }else if($opcion == 18){
+    $request->user()->authorizeRoles(['Infoegresos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informedeegresos', compact('nombre_reporte'));
   }else if($opcion == 19){
+    $request->user()->authorizeRoles(['ingresosclientedian','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informeingresosdian', compact('nombre_reporte'));
   }else if($opcion == 20){
+    $request->user()->authorizeRoles(['infoenajenacionesdian','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.enajenacionesdian', compact('nombre_reporte'));
   }else if($opcion == 21){
+    $request->user()->authorizeRoles(['ingrescriturador','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     $Protocolistas = Protocolista::all();
     return view('reportes.ingresosporescrituradores', compact('nombre_reporte', 'Protocolistas'));
   }else if($opcion == 22){
+    $request->user()->authorizeRoles(['inforetefuentesapli','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.retefuentesaplicadas', compact('nombre_reporte'));
   }else if($opcion == 23){
+    $request->user()->authorizeRoles(['inforetefuentes','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informeretefuentes', compact('nombre_reporte'));
   }else if($opcion == 24){
+    $request->user()->authorizeRoles(['consolidadocaja','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.consolidadocaja', compact('nombre_reporte'));
   }else if($opcion == 25){
+    $request->user()->authorizeRoles(['infogastos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informedegastos', compact('nombre_reporte'));
   }else if($opcion == 26){
+    $request->user()->authorizeRoles(['rnotacred','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.relacionnotacreditocajarapida', compact('nombre_reporte'));
   }else if($opcion == 27){
+    $request->user()->authorizeRoles(['relcarterafactactivas','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informecarterafacturasactivas', compact('nombre_reporte'));
   }else if($opcion == 28){
+    $request->user()->authorizeRoles(['escripendientescr','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informeescriturassinfactura', compact('nombre_reporte'));
   }else if($opcion == 29){
+    $request->user()->authorizeRoles(['infotimbre','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informedetimbre', compact('nombre_reporte'));
   }else if($opcion == 30){
+    $request->user()->authorizeRoles(['cuentascobrogenbonos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.cuentasdecobrogeneradas', compact('nombre_reporte'));
   }else if($opcion == 31){
+    $request->user()->authorizeRoles(['trazabilbonosclient','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.carterabonoscliente', compact('nombre_reporte'));
   }else if($opcion == 32){
+    $request->user()->authorizeRoles(['trazabilbonosfech','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.carterabonosmes', compact('nombre_reporte'));
   }else if($opcion == 33){
+    $request->user()->authorizeRoles(['carterabonosactivos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informecarterabonosactiva', compact('nombre_reporte'));
   }
@@ -726,6 +761,8 @@ public function FechaReporte(Request $request){
 
  public function Informe_cajadiario_rapida(Request $request)
  {
+
+  $request->user()->authorizeRoles(['rdiariocaja','administrador']);
   $notaria = Notaria::find(1);
   $fecha1 = $request->fecha1;
   $fecha2 = $request->fecha2;

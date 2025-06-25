@@ -17,7 +17,7 @@ class CarteracajarapidaController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['caja_rapida','administrador']);
+        $request->user()->authorizeRoles(['carteracj','administrador']);
         return view('caja_rapida.cartera');
     }
 

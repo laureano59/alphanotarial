@@ -22,7 +22,7 @@ class BonosController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['facturacion','administrador']);
+        $request->user()->authorizeRoles(['cuentasxcobrar','administrador']);
         return view('bonos.bonos');
     }
 

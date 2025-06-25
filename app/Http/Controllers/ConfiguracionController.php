@@ -13,7 +13,7 @@ class ConfiguracionController extends Controller
    */
   public function index(Request $request)
   {
-        $request->user()->authorizeRoles(['facturacion','administrador']);
+        $request->user()->authorizeRoles(['configuracion','administrador']);
         return view('configuracion.panelconfiguracion');
   }
 }

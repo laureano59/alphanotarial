@@ -94,7 +94,8 @@ class RadicacionController extends Controller
       /*RADICACIÓN*/
       $request->user()->authorizeRoles(['radicacion','administrador']);
       $AnioTrabajo = Notaria::find(1);
-      $Protocolistas = Protocolista::all();
+      //$Protocolistas = Protocolista::all();
+      $Protocolistas = Protocolista::where('estado', true)->get();
       $Actos = Acto::all();
       
       $calidad1 = Calidad1::all();

@@ -16,6 +16,7 @@ class SeguimientoController extends Controller
    */
   public function index(Request $request)
   {
+      $request->user()->authorizeRoles(['trazabilidadescr','administrador']);
 
        return view('seguimiento_escrituras.seguimiento');
      

@@ -21,6 +21,8 @@ Route::resource('liquidacion', 'LiqderechoController');
 Route::resource('liqderechos', 'LiqderechoController');
 Route::resource('liqconceptos', 'LiqconceptosController');
 Route::resource('liqrecaudos', 'LiqrecaudosController');
+Route::resource('panelroles', 'RollesController');
+
 
 // Gestión de Facturación
 Route::resource('facturacion', 'FacturacionController');
@@ -118,6 +120,7 @@ Route::get('editar_acargo_de_factura', 'FacturacionController@A_cargo_De');
 Route::get('editar_acargo_de', 'FacturacionController@Update_a_cargo_de_Editar');
 Route::get('anularacta', 'ActasdepositoController@Anular');
 Route::get('anombrede', 'FacturacionController@AnombreDe');
+Route::get('cargarroles', 'RollesController@CargarRoles');
 
 // Rutas de Carga de Datos
 Route::get('factderechos', 'FacturacionController@DerechosLiquidados');

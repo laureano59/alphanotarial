@@ -17,7 +17,7 @@ class CarteraController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['facturacion','administrador']);
+        $request->user()->authorizeRoles(['cartera','administrador']);
         return view('cartera.cartera');
     }
 

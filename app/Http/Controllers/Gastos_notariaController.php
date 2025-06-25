@@ -14,7 +14,7 @@ class Gastos_notariaController extends Controller
      */
     public function index(Request $request)
     {
-        $request->user()->authorizeRoles(['facturacion','administrador']);
+        $request->user()->authorizeRoles(['gastos','administrador']);
         return view('gastos.gastos_notaria');
     }
 

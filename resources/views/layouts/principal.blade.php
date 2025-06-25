@@ -405,6 +405,13 @@
 								</a>
 							</li>
 
+							<li>
+								<a href="/panelroles">
+									<i class="ace-icon fa fa-user"></i>
+									Administrar Roles
+								</a>
+							</li>
+
 							<li class="divider"></li>
 
 							<li>

@@ -17,6 +17,7 @@ class ConsultasController extends Controller
   public function index(Request $request)
   {
 
+       $request->user()->authorizeRoles(['consultar','administrador']);
        return view('consultas.seguimiento_radicacion');
        //return view('consultas.panel_consultas');
   }

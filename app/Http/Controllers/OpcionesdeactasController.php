@@ -21,7 +21,7 @@ class OpcionesdeactasController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request){
-      $request->user()->authorizeRoles(['facturacion','administrador']);
+      $request->user()->authorizeRoles(['actas','administrador']);
       return view('actas_deposito.actasdeposito');
     }
 

@@ -6081,7 +6081,7 @@ public function Cuenta_de_Cobro(Request $request){
 
   /***************TODO:COPIA FACTURA*******************/
   public function PdfCopiaFactura(Request $request){
-    $request->user()->authorizeRoles(['administrador']);
+    $request->user()->authorizeRoles(['copiafescr','administrador']);
     
     $notaria = Notaria::find(1);
     $prefijo_fact = $notaria->prefijo_fact;
@@ -7586,7 +7586,7 @@ public function Cuenta_de_Cobro(Request $request){
 
 
     public function PdfCopiaFacturaCajaRapidaPOS(Request $request){
-      $request->user()->authorizeRoles(['administrador']);
+      $request->user()->authorizeRoles(['copiafcj','administrador']);
 
       $notaria = Notaria::find(1);
       $prefijo_fact = $notaria->prefijo_facturarapida;

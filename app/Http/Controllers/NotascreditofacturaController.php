@@ -16,7 +16,7 @@ class NotascreditofacturaController extends Controller
      */
     public function index(Request $request)
     {
-      $request->user()->authorizeRoles(['administrador']);
+      $request->user()->authorizeRoles(['anulfactescr','administrador']);
       return view('notas_credito_fact.notas_credito_fact');
     }
 
