@@ -137,4 +137,17 @@ class Gastos_notariaController extends Controller
 
          }
     }
+
+    public function Anular_gasto(Request $request){
+
+        $id = $request->id_gas;
+        $Gastos = Gastos_notaria::find($id);
+        $Gastos->anulada = true;
+        $Gastos->save();
+       
+        return response()->json([
+           "validar"=>1
+        ]);
+
+    }
 }

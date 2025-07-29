@@ -113,6 +113,7 @@ Route::get('consultar_gasto', 'Gastos_notariaController@validar_existencia');
 Route::get('validar_liquidacion_provisional', 'ValidacionesController@Validar_liquidacion_provisional');
 Route::get('validar_tarifa', 'ValidacionesController@Validar_Tarifa');
 Route::get('validarreportados', 'ValidacionesController@ExisteReportado');
+Route::get('anular_gasto', 'Gastos_notariaController@Anular_gasto');
 
 
 // Rutas de Edición y Actualización

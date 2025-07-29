@@ -359,6 +359,28 @@ $("#certificadortf").click(function(){
 
 });
 
+$("#certificadostf").click(function(){
+  var opcion = 13;
+  var reporte = "Certificado de Retención en la Fuente";
+  var ordenar = "nuevos";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte,
+    "ordenar": ordenar
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+
+});
+
+
 
 $("#diariocaja").click(function(){
   var opcion = 1;
@@ -891,6 +913,8 @@ $("#imprimirenlaces").click(function(){
 });
 
 $("#imprimircertificadortf").click(function(){
+  var ordenar = $(this).data('ordenar');
+  console.log(ordenar);
   var route = "/cargaridentificacion";
   var token = $("#token").val();
   var type = 'GET';
@@ -904,8 +928,14 @@ $("#imprimircertificadortf").click(function(){
   __ajax(route, token, type, datos)
   .done( function( info ){
     if(info.validar == 1){
-      var url = "/copiacertificadortf";
-      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      if(ordenar == 'nuevos'){
+        var url = "/certificadortf";
+      }else{
+        var url = "/copiacertificadortf";       
+      }
+
+       $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      
     }
   })
 

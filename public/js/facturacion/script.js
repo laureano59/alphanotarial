@@ -357,6 +357,7 @@ $("#guardarfacturaunica").click(function() {
                     var prefijo_fact = info.prefijo_fact;
                     var id_fact = info.num_fact;
                     var fecha_fact = info.fecha_fact;
+                    var total_rtf = info.total_rtf;
                     $("#num_factura").html(prefijo_fact+'-'+id_fact);
                     $("#fecha_fact").html(fecha_fact);
                         /******* Se envía datos para escrituras*********/
@@ -371,7 +372,9 @@ $("#guardarfacturaunica").click(function() {
                       if(info.validar == 1){
                         var num_escritura = info.num_esc;
                         $("#num_escritura").html(num_escritura);
+                        Guardar_Certificado_Rtf(total_rtf);
                     }else if(info.validar == 0){
+                        Guardar_Certificado_Rtf(total_rtf);
                         var num_escritura = info.num_esc;
                         $("#num_escritura").html(num_escritura);
                         $("#msj2").html(info.mensaje);
@@ -503,6 +506,7 @@ $("#guardarfacturamultiple").click(async function() {
                   var total_conceptos = $("#totconceptos").val();
                   var total_iva = $("#totiva").val();
                   var total_rtf = $("#totrtf").val();
+                  var porcentajertf = $("#porcentajertf").val();
                   var total_reteconsumo = $("#totreteconsumo").val();
                   var total_fondo = $("#totfondo").val();
                   var total_super = $("#totsuper").val();
@@ -551,6 +555,7 @@ $("#guardarfacturamultiple").click(async function() {
                         "total_conceptos": total_conceptos,
                         "total_iva": total_iva,
                         "total_rtf": total_rtf,
+                        "porcentajertf":porcentajertf,
                         "total_reteconsumo": total_reteconsumo,
                         "total_fondo": total_fondo,
                         "total_super": total_super,
@@ -593,6 +598,7 @@ $("#guardarfacturamultiple").click(async function() {
                             var prefijo_fact = info.prefijo_fact;
                             var id_fact = info.num_fact;
                             var fecha_fact = info.fecha_fact;
+                            var total_rtf = info.total_rtf;
                             $("#num_factura").html(prefijo_fact+'-'+id_fact);
                             $("#fecha_fact").html(fecha_fact);
                                     /*******Se envía datos para escrituras*********/
@@ -607,8 +613,9 @@ $("#guardarfacturamultiple").click(async function() {
                                 if(info.validar == 1){
                                     var num_escritura = info.num_esc;
                                     $("#num_escritura").html(num_escritura);
+                                    Guardar_Certificado_Rtf(total_rtf);
                                 }else if(info.validar == 0){
-
+                                    Guardar_Certificado_Rtf(total_rtf);
                                     var num_escritura = info.num_esc;
                                     $("#num_escritura").html(num_escritura);
                                     $("#msj2").html(info.mensaje);
@@ -739,59 +746,16 @@ function RecalcularTotalesOtorCompa(){
 }
 
 
-$("#imprimirfactura").click(function() {
-  var datos = { "algo": 0 };
-  var token = $("#token").val();
-  var route = "/validarrtfmaycero";
-  var type = 'GET';
-  __ajax(route, token, type, datos)
-  .done(function(info) {
-    if(info.validar == true){
-      alert("Imprimir Ceritificado de Retención en la Fuente");
-      var route = "/guardarcertificadortf";
-      var type = 'POST';
-      __ajax(route, token, type, datos)
-      .done(function(info) {
-        if(info.valida == 1){
-          var url1 = "/certificadortf";
-          $("<a>").attr("href", url1).attr("target", "_blank")[0].click();
-      }
-  })
-      var url2 = "/factunicapdf";
-      $("<a>").attr("href", url2).attr("target", "_blank")[0].click();
-  }else if(info.validar == false){
-      var url = "/factunicapdf";
-      $("<a>").attr("href", url).attr("target", "_blank")[0].click();
-  }
-})
+$("#imprimirfactura").click(function() {  
+    
+    var url2 = "/factunicapdf";
+    $("<a>").attr("href", url2).attr("target", "_blank")[0].click();
+  
 });
 
 function pdfFacturaUnica(){
-
-    var datos = { "algo": 0 };
-    var token = $("#token").val();
-    var route = "/validarrtfmaycero";
-    var type = 'GET';
-    __ajax(route, token, type, datos)
-    .done(function(info) {
-        if(info.validar == true){
-          alert("Imprimir Ceritificado de Retención en la Fuente");
-          var route = "/guardarcertificadortf";
-          var type = 'POST';
-          __ajax(route, token, type, datos)
-          .done(function(info) {
-            if(info.valida == 1){
-              var url1 = "/certificadortf";
-              $("<a>").attr("href", url1).attr("target", "_blank")[0].click();
-          }
-      })
-          var url2 = "/factunicapdf";
-          $("<a>").attr("href", url2).attr("target", "_blank")[0].click();
-      }else if(info.validar == false){
-          var url = "/factunicapdf";
-          $("<a>").attr("href", url).attr("target", "_blank")[0].click();
-      }
-  })
+    var url = "/factunicapdf";
+    $("<a>").attr("href", url).attr("target", "_blank")[0].click();
 }
 
 $("#imprimirfacturamultiple").click(function() {
@@ -813,33 +777,31 @@ function pdfFacturaMultiple(){
       var url = "/factunicapdf";
       $("<a>").attr("href", url).attr("target", "_blank")[0].click();
   } else if (quien == 'vendedor') {
-      alert("Recuerde Imprimir Certificado de Retención en la Fuente");
+      //alert("Recuerde Imprimir Certificado de Retención en la Fuente");
       var url2 = "/factunicapdf";
       $("<a>").attr("href", url2).attr("target", "_blank")[0].click();
   }
 }
 
-$("#imprimircertificadortf").click(function() {
-  var datos = { "algo": 0 };
-  var token = $("#token").val();
-  var route = "/validarrtfmaycero";
-  var type = 'GET';
-  __ajax(route, token, type, datos)
-  .done(function(info) {
-    if(info.validar == true){
-      var route = "/guardarcertificadortf";
-      var type = 'POST';
-      __ajax(route, token, type, datos)
-      .done(function(info) {
-        if(info.valida == 1){
-          var url1 = "/certificadortf";
-          $("<a>").attr("href", url1).attr("target", "_blank")[0].click();
-      }
-  })
-  }else if(info.validar == false){
-  }
-})
-});
+function Guardar_Certificado_Rtf(total_rtf){   
+    
+    if(total_rtf > 0){
+        var datos = { "algo": 0 };
+        var token = $("#token").val();
+        var route = "/guardarcertificadortf";
+        var type = 'POST';
+        __ajax(route, token, type, datos)
+        .done(function(info) {
+            if(info.valida == 1){
+                var url1 = "/certificadortf";
+                $("<a>").attr("href", url1).attr("target", "_blank")[0].click();
+            }
+        })
+    }    
+
+}
+
+
 
 $("#copiasfactura").click(function() {
   $("#guycopiafactura").fadeIn();

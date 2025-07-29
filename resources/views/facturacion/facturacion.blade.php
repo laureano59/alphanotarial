@@ -45,11 +45,11 @@
     <div class="col-xs-12">
 
       <br><br><br>
-    <div class="center">
-      <a href="javascript://" id="factunica" class="btn btn-app btn-primary">
+    <div class="center" >
+      <!--<a href="javascript://" id="factunica" class="btn btn-app btn-primary">
         <i class="ace-icon glyphicon glyphicon-file bigger-230"></i>
         Única
-      </a>
+      </a>-->
 
       <!--<a href="javascript://" id="factdoble" class="btn btn-app btn-success">
         <i class="ace-icon fa  fa-exchange bigger-230"></i>
@@ -58,12 +58,12 @@
 
       <a href="javascript://" id="factmultiple" class="btn btn-app btn-warning">
         <i class="ace-icon glyphicon glyphicon-list-alt bigger-230"></i>
-        Múltiple
+        Factura
       </a>
 
       <a href="/facturaelectronica"  class="btn btn-app btn-success">
         <i class="ace-icon glyphicon glyphicon-qrcode bigger-230"></i>
-        Electrónica
+        Status
       </a>
 
       <a href="javascript://" id="copiasfactura" class="btn btn-app btn-light">

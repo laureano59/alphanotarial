@@ -307,26 +307,34 @@ document.getElementById('id_tip').addEventListener('change', function() {
     }else{
         $("#depo_bol_hid").val(0);
         $("#depo_reg_hid").val(0);
-         $("#depo_bol").val('');
+        $("#depoesc_hid").val(0);
+        $("#depo_bol").val('');
         $("#depo_reg").val('');
         $("#deposito_act").val('');
+        $("#depoesc").val('');
     }
    
 });
 
 $("#obtenerbolyreg").click(function() {
     var boletayregistro;
-    var boleta = parseFloat($("#depo_bol").val()) || 0; 
-    var registro = parseFloat($("#depo_reg").val()) || 0;
+    var boleta      = parseFloat($("#depo_bol").val()) || 0; 
+    var registro    = parseFloat($("#depo_reg").val()) || 0;
+    var escrituras  = parseFloat($("#depoesc").val()) || 0;
 
-    boletayregistro = boleta + registro;
+    console.log(escrituras);
+
+    boletayregistro = boleta + registro + escrituras;
 
     $("#deposito_act").val(boletayregistro);
 
     $("#depo_bol_hid").val(boleta);
     $("#depo_reg_hid").val(registro);
+    $("#depoesc_hid").val(escrituras);
+    
     $("#depo_bol").val('');
     $("#depo_reg").val('');
+    $("#depoesc").val('');
 
     $("#modalbolyreg").modal("hide");
 
@@ -335,8 +343,10 @@ $("#obtenerbolyreg").click(function() {
 $("#cerrarbolyreg").click(function() {
     $("#depo_bol_hid").val(0);
     $("#depo_reg_hid").val(0);
+    $("#depoesc_hid").val(0);
     $("#depo_bol").val('');
     $("#depo_reg").val('');
+    $("#depoesc").val('');
 });
 
 

@@ -20,7 +20,7 @@
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar documento de identificación y el año gravable</h4>
                     <span class="widget-toolbar">
-                        <a href="#" data-action="settings" id="imprimircertificadortf">
+                        <a href="#" data-action="settings" data-ordenar="{{ $ordenar }}"  id="imprimircertificadortf">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Generar Certificado"></i>
                         </a>
                     </span>

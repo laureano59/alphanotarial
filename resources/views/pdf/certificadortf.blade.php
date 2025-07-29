@@ -95,22 +95,7 @@
         <font size="3">{{$identificacion_contribuyente}}</font>
       </td>
     </tr>
-
-    <tr>
-      <td>
-        <font size="3">FACTURA DE VENTA No.</font>
-      </td>
-      <td>
-        <font size="3">{{$prefijo_fact}}&nbsp;-&nbsp;{{$num_factura}}</font>
-      </td>
-      <td></td>
-      <td>
-        <font size="3">FECHA:</font>
-      </td>
-      <td>
-        <font size="3">{{$fecha_factura}}</font>
-      </td>
-    </tr>
+    
   </table>
   <table width="100%">
     <tr>

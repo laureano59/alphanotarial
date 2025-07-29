@@ -284,8 +284,7 @@ var total = 0;
 var total_all = 0;
 
 $("#agregaritem").click(function() {
-  console.log(gv_registro);
-  console.log(gv_registro);
+ 
   var longi_detalle = detalle.length;
   var id_registro = $("#idregistro").val();
   if(longi_detalle >= 6){

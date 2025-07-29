@@ -22,6 +22,13 @@
 
             <input type="hidden" id="depo_reg_hid">
           </div>
+
+           <div class="form-group">
+            <label><b class="text-primary">Depósito por Escrituras</b></label>
+            <input type="text" id="depoesc" class="form-control rounded-lg shadow-sm" onKeyPress="return soloNumeros(event)">
+
+            <input type="hidden" id="depoesc_hid">
+          </div>
         </form>
       </div>
 

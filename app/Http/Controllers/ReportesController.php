@@ -114,7 +114,8 @@ class ReportesController extends Controller
     return view('reportes.ron');
   }else if($opcion == 13){
     $request->user()->authorizeRoles(['certiretefuente','administrador']);
-    return view('reportes.certificadortf');
+    $ordenar = $request->session()->get('ordenar');
+    return view('reportes.certificadortf' , compact('ordenar'));
   }else if($opcion == 14){
     $request->user()->authorizeRoles(['rdiariocaja','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');

@@ -87,9 +87,7 @@
                     <a href="javascript://" id="imprimirfacturamultiple">
                         <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Factura"></i>
                     </a>
-                    <a href="javascript://" id="imprimircertificadortf">
-                        <i><img src="{{ asset('images/imprimir.png') }}" width="28 px" height="28 px" title="Imprimir Certificado de Retención en la Fuente"></i>
-                    </a>
+                   
                 </td>
             </tr>
             <tr>

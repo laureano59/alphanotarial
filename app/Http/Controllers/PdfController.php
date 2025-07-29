@@ -73,6 +73,8 @@ use App\Cuenta_cobro_escr;
 use App\Abono_bonos;
 use App\Informe_cartera_bonos_view;
 use App\Protocolistas_view_2;
+use App\Certificadosrtf_view;
+use App\Certiretencionfuente_view;
 
 
 class PdfController extends Controller
@@ -285,7 +287,7 @@ class PdfController extends Controller
 
       $fecha_impresion = date("d/m/Y");
       
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -648,7 +650,7 @@ class PdfController extends Controller
 
       $fecha_impresion = date("d/m/Y");
 
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -930,38 +932,67 @@ class PdfController extends Controller
     $nit = $notaria->nit;
     $direccion_nota = $notaria->direccion_nota;
     $email = $notaria->email;
-    $num_escritura = $request->session()->get('num_esc');
-    $anio_gravable = $anio_trabajo;
+
+    $ordenar = $request->session()->get('ordenar');
+
+    if($ordenar == 'nuevos'){
+      $identificacion = $request->session()->get('identificacion');
+      $anio_gravable = $request->session()->get('aniogravable');
+    }else{
+      $num_escritura = $request->session()->get('num_esc');
+      $anio_gravable = $anio_trabajo;
+    }
+
+   
+   
     $fecha_certificado = date("Y/m/d");
 
-    $consecutivo = Consecutivo::find(1);
+    
+    
+    /*$consecutivo = Consecutivo::find(1);
     $consecutivo_rtf = $consecutivo->certi_retencion_fuente;
     $id_cer = $consecutivo_rtf + 1;
     $consecutivo->certi_retencion_fuente = $id_cer;
-    $consecutivo->save();   
+    $consecutivo->save();*/   
 
-     $certificado_rtf = \DB::table('certificado_rtf')
+    /* $certificado_rtf = \DB::table('certificado_rtf')
     ->select(\DB::raw('DISTINCT ON (num_escritura, anio_gravable, identificacion_contribuyente) *'))
     ->where("id_radica", $id_radica)
     ->where("anio_gravable", $anio_gravable)
     ->orderBy('num_escritura')
     ->orderBy('anio_gravable')
     ->orderBy('identificacion_contribuyente')
-    ->get();   
+    ->get();  */  
+
+    if($ordenar == 'nuevos'){
+
+      $certificado_rtf = Certiretencionfuente_view::query()
+      ->where("anio_gravable", $anio_gravable)
+      ->where("identificacion_contribuyente", $identificacion)
+      ->orderBy('id_cer')
+      ->get(); 
+
+    } else{
+
+      $certificado_rtf = Certiretencionfuente_view::query()
+      ->where("anio_gravable", $anio_gravable)
+      ->where("num_escritura", $num_escritura)
+      ->orderBy('id_cer')
+      ->get(); 
+      }
 
 
     $i = 0;
     $html = [];
     foreach ($certificado_rtf as $cer) {
+      $id_cer = $cer->id_cer;
       $fecha_escritura = $cer->fecha_escritura;
       $ciudad = $cer->ciudad;
       $nombre_contribuyente = $cer->nombre_contribuyente;
-      $identificacion_contribuyente = $cer->identificacion_contribuyente;
-      $prefijo_fact = $cer->prefijo;
-      $num_factura = $cer->num_factura;
-      $fecha_factura = $cer->fecha_factura;
+      $identificacion_contribuyente = $cer->identificacion_contribuyente;      
       $valor_venta = $cer->valor_venta;
       $total_retenido = $cer->total_retenido;
+      $num_escritura = $cer->num_escritura;
 
 
       $data['id_cer'] = $id_cer;
@@ -975,10 +1006,7 @@ class PdfController extends Controller
       $data['fecha_escritura'] = $fecha_escritura;
       $data['ciudad'] = $ciudad;
       $data['nombre_contribuyente'] = $nombre_contribuyente;
-      $data['identificacion_contribuyente'] = $identificacion_contribuyente;
-      $data['prefijo_fact'] = $prefijo_fact;
-      $data['num_factura'] = $num_factura;
-      $data['fecha_factura'] = $fecha_factura;
+      $data['identificacion_contribuyente'] = $identificacion_contribuyente;      
       $data['valor_venta'] = $valor_venta;
       $data['total_retenido'] = $total_retenido;
       $data['fecha_certificado'] = $fecha_certificado;
@@ -1028,9 +1056,10 @@ class PdfController extends Controller
 
   }
 
-
+  
   public function PdfCopiaCertificadoRetecncionenlaFuente(Request $request){
 
+    
     $notaria = Notaria::find(1);
     $nombre_nota = $notaria->nombre_nota;
     $nombre_notario = $notaria->nombre_notario;
@@ -1042,26 +1071,36 @@ class PdfController extends Controller
     $identificacion = $request->session()->get('identificacion');
     $anio_gravable = $request->session()->get('aniogravable');
 
-    $consecutivo = Consecutivo::find(1);
+    /*$consecutivo = Consecutivo::find(1);
     $consecutivo_rtf = $consecutivo->certi_retencion_fuente;
     $id_cer = $consecutivo_rtf + 1;
     $consecutivo->certi_retencion_fuente = $id_cer;
-    $consecutivo->save();
+    $consecutivo->save();*/
 
 
 
-    $certificado_rtf = \DB::table('certificado_rtf')
+   /* $certificado_rtf = \DB::table('certificado_rtf')
     ->select(\DB::raw('DISTINCT ON (num_escritura, anio_gravable, identificacion_contribuyente) *'))
     ->where("identificacion_contribuyente", $identificacion)
     ->where("anio_gravable", $anio_gravable)
     ->orderBy('num_escritura')
     ->orderBy('anio_gravable')
     ->orderBy('identificacion_contribuyente')
-    ->get();   
+    ->get();*/
+
+    $certificado_rtf = Certificadosrtf_view::query()
+    ->where("identificacion_contribuyente", $identificacion)
+    ->where("anio_gravable", $anio_gravable)
+    ->orderBy('num_escritura')
+    ->orderBy('anio_gravable')
+    ->orderBy('identificacion_contribuyente')
+    ->distinct()
+    ->get();
     
     $i = 0;
 
     foreach ($certificado_rtf as $cer) {
+      $id_cer = $cer->id_cer;
       $fecha_escritura = $cer->fecha_escritura;
       $ciudad = $cer->ciudad;
       $nombre_contribuyente = $cer->nombre_contribuyente;
@@ -1282,7 +1321,7 @@ class PdfController extends Controller
 
       $QRCode = $cufe;
 
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data_otor['id_ncf'] = $id_ncf;
       $data_otor['detalle_ncf'] = $detalle_ncf;
       $data_otor['nit'] = $nit;
@@ -1560,7 +1599,7 @@ class PdfController extends Controller
 
       $QRCode = $cufe;
 
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['id_ncf'] = $id_ncf;
       $data['detalle_ncf'] = $detalle_ncf;
       $data['nit'] = $nit;
@@ -1872,7 +1911,7 @@ class PdfController extends Controller
 
       $QRCode = $cufe;
 
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data_otor['id_ncf'] = $id_ncf;
       $data_otor['detalle_ncf'] = $detalle_ncf;
       $data_otor['nit'] = $nit;
@@ -2147,7 +2186,7 @@ class PdfController extends Controller
 
       $QRCode = $cufe;
 
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['id_ncf'] = $id_ncf;
       $data['detalle_ncf'] = $detalle_ncf;
       $data['nit'] = $nit;
@@ -4742,8 +4781,8 @@ public function PdfInformeCartera(Request $request){
       $fecha_reporte =  $fecha1." A ". $fecha2;
       $fecha_impresion = date("d/m/Y");
 
-      $cajadiario = Relacion_nota_credito_caja_rapida_view::whereDate('fecha_fact', '>=', $fecha1)
-      ->whereDate('fecha_fact', '<=', $fecha2)
+      $cajadiario = Relacion_nota_credito_caja_rapida_view::whereDate('fecha_nc', '>=', $fecha1)
+      ->whereDate('fecha_nc', '<=', $fecha2)
       ->where('nota_credito', '=', true)
       ->orderBy('id_ncf')
       ->get()
@@ -6294,7 +6333,7 @@ public function Cuenta_de_Cobro(Request $request){
               . "URL: {$urlDIAN}";
 
              
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data_otor['nit'] = $nit;
       $data_otor['nombre_nota'] = $nombre_nota;
       $data_otor['direccion_nota'] = $direccion_nota;
@@ -6646,7 +6685,7 @@ public function Cuenta_de_Cobro(Request $request){
               . "CUFE: {$cufe}\n"
               . "URL: {$urlDIAN}";
 
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -7211,7 +7250,7 @@ public function Cuenta_de_Cobro(Request $request){
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -7473,7 +7512,7 @@ public function Cuenta_de_Cobro(Request $request){
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -7745,7 +7784,7 @@ public function Cuenta_de_Cobro(Request $request){
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -7965,7 +8004,7 @@ public function Cuenta_de_Cobro(Request $request){
 
       $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
       
-      $iva = "Somos Responsables de IVA";
+      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;

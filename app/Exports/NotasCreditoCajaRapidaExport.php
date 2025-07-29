@@ -46,8 +46,8 @@ class NotasCreditoCajaRapidaExport implements FromCollection,WithHeadings
             'id_ncf', 'id_fact', 'prefijo', 'fecha_fact', 'a_nombre_de', 'cliente',
             'subtotal', 'total_iva', 'total_fact', 'name'
         ])
-        ->whereDate('fecha_fact', '>=', $fecha1)
-        ->whereDate('fecha_fact', '<=', $fecha2)
+        ->whereDate('fecha_nc', '>=', $fecha1)
+        ->whereDate('fecha_nc', '<=', $fecha2)
         ->where('nota_credito', '=', true)
         ->orderBy('id_ncf')
         ->get()

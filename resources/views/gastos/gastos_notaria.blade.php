@@ -23,7 +23,7 @@
           
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            <div class="widget-box">
+              <div class="widget-box">
                 <div class="widget-header">
                   <div class="widget-toolbar" id="btnimprimir" style="display:none">
                       <a href="/recibogastospdf" target="_blank">
@@ -93,6 +93,10 @@
         </div><!-- /.span -->
 
         <div class="col-xs-12 col-sm-6">
+          <div class="alert alert-success" role="alert" id="msj-error1" style="display:none">
+            <strong id="msj1"></strong>
+          </div>
+
           <div class="widget-box">
               <div class="widget-header">
                 <span class="nav-search widget-toolbar">

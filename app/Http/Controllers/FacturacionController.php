@@ -281,6 +281,13 @@ class FacturacionController extends Controller
           $consecutivo = Factura::where('prefijo', $prefijo_fact)->max('id_fact');
           $consecutivo = $consecutivo + 1;
 
+          
+          if($request->total_rtf > 0){
+            $porcentajertf = 100;
+          }else{
+            $porcentajertf = 0;
+          }
+
           $factura = new Factura();
           $factura->prefijo = $prefijo_fact;
           $factura->id_fact = $consecutivo;
@@ -288,13 +295,14 @@ class FacturacionController extends Controller
           $factura->anio_radica = $anio_radica;
           $factura->fecha_fact = $fecha_factura;
           $factura->usuario_fact = auth()->user()->name;
-          $factura->a_nombre_de = $request->input('identificacion_cli1');
-          $factura->total_derechos = $request->input('total_derechos');
-          $factura->total_conceptos = $request->input('total_conceptos');
-          $factura->total_iva = $request->input('total_iva');
-          $factura->total_rtf = $request->input('total_rtf');
-          $factura->total_reteconsumo = $request->input('total_reteconsumo');
-          $factura->total_aporteespecial = $request->input('total_aporteespecial');
+          $factura->a_nombre_de = $request->identificacion_cli1;
+          $factura->total_derechos = $request->total_derechos;
+          $factura->total_conceptos = $request->total_conceptos;
+          $factura->total_iva = $request->total_iva;
+          $factura->total_rtf = $request->total_rtf;
+          $factura->porcentajertf = $porcentajertf;
+          $factura->total_reteconsumo = $request->total_reteconsumo;
+          $factura->total_aporteespecial = $request->total_aporteespecial;
           $factura->total_impuesto_timbre = $request->total_impuesto_timbre;
           
           if($request->total_impuesto_timbrecatatum === '' || is_null($request->total_impuesto_timbrecatatum)){
@@ -327,6 +335,7 @@ class FacturacionController extends Controller
 
           $prefijo = $factura->prefijo;
           $num_fact = $factura->id_fact;
+          $total_rtf = $factura->total_rtf;
           $fecha_fact = $factura->fecha_fact;
           $request->session()->put('numfactura', $num_fact);//Session para factura
           $request->session()->put('fecha_fact', $fecha_fact);//Session para fecha factura
@@ -370,7 +379,8 @@ class FacturacionController extends Controller
             "validar"=>1,
             "prefijo_fact"=>$prefijo,
             "num_fact"=>$num_fact,
-            "fecha_fact"=>$fecha_fact
+            "fecha_fact"=>$fecha_fact,
+            "total_rtf"=>$total_rtf
            ]);
         }
       } else if($opcion == 3){//Factura Multiple
@@ -530,6 +540,7 @@ class FacturacionController extends Controller
           $factura->total_conceptos       = $request->total_conceptos;
           $factura->total_iva             = $request->total_iva;
           $factura->total_rtf             = $request->total_rtf;
+          $factura->porcentajertf         = $request->porcentajertf;
           $factura->total_reteconsumo     = $request->total_reteconsumo;
           $factura->total_fondo           = $request->total_fondo;
           $factura->total_super           = $request->total_super;
@@ -563,6 +574,7 @@ class FacturacionController extends Controller
 
           $prefijo = $factura->prefijo;
           $num_fact = $factura->id_fact;
+          $total_rtf = $factura->total_rtf;
           $fecha_fact = $factura->fecha_fact;
           $request->session()->put('numfactura', $num_fact);//TODO:Session para factura
           $request->session()->put('fecha_fact', $fecha_fact);//TODO:Session para fecha factura
@@ -620,7 +632,8 @@ class FacturacionController extends Controller
             "validar"=>1,
             "prefijo_fact"=>$prefijo,
             "num_fact"=>$num_fact,
-            "fecha_fact"=>$fecha_fact
+            "fecha_fact"=>$fecha_fact,
+            "total_rtf"=>$total_rtf
            ]);
         }
       }

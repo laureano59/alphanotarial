@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Certificado_rtf;
 use App\Notaria;
 use App\Ciudad;
 use App\Actosclienteradica;
@@ -12,6 +11,9 @@ use App\Cliente;
 use App\Liq_recaudo;
 use App\Tarifa;
 use App\Escritura;
+use App\Factura;
+use App\Consecutivo_rtf;
+use App\Consecutivo;
 
 
 class Certificado_rtfController extends Controller
@@ -44,134 +46,89 @@ class Certificado_rtfController extends Controller
      */
     public function store(Request $request)
     {
-      $notaria = Notaria::find(1);
-      //$prefijo_fact = Notaria::find(1)->prefijo_fact;
-      $anio_trabajo = $notaria->anio_trabajo;
-      $id_ciud = $notaria->id_ciud;
-      $ciudad = Ciudad::find($id_ciud);
-      $nombre_ciud = $ciudad->nombre_ciud;
-      $porcentaje_rtf = (Tarifa::find(11)->valor1)/100;
 
-      $id_radica = $request->session()->get('key');//Obtiene el número de radicación por session
+      $notaria = Notaria::find(1);
+      $anio_trabajo = $notaria->anio_trabajo;
+      $consecutivo = Consecutivo::find(1);
+      $id_radica = $request->session()->get('key');
+
+      $ordenar = '0';
+      $request->session()->put('ordenar', $ordenar);
+      
       $Escritura = Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
       foreach ($Escritura as $esc) {
         $num_escritura = $esc->num_esc;
       }
-      //$num_escritura = $request->session()->get('num_esc');
+
       $request->session()->put('num_esc', $num_escritura);
+      $rtf = Liq_recaudo::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->first(['retefuente']);      
 
-      $prefijo_fact = $request->session()->get('prefijo_fact');
-      $num_factura = $request->session()->get('numfactura');
-      $fecha_factura = $request->session()->get('fecha_fact');
-      $fecha_escritura = $request->session()->get('fecha_esc');      
+       if($rtf->retefuente > 0){
+          \DB::beginTransaction();
+          try {
+            
+            $consecutivo_certificado_rtf = $consecutivo->certi_retencion_fuente;
+            $id_con = $consecutivo_certificado_rtf + 1;
+            $consecutivo->certi_retencion_fuente  = $id_con;
+            $consecutivo->save();
 
-
-      $flag = 0;
-      $flag2 = 0;
-      $rtf = Liq_recaudo::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->first(['retefuente']);
-
-      if($rtf->retefuente > 0){
-        $totalretencion = $rtf->retefuente;
-        $actoscliente_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
-
-        foreach ($actoscliente_radica as $acr) {
-          if($acr->porcentajecli1 > 0){
-            $id_actoperrad = $acr->id_actoperrad;
-
-            if($acr->catastro > 0){
-              $flag = 1;
-            }
-
-             if($flag == 1){
-               if($acr->cuantia >= $acr->catastro){
-                $cuantia = $acr->cuantia;
+            $totalretencion = $rtf->retefuente;
+            $actoscliente_radica = Actosclienteradica::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
+             foreach ($actoscliente_radica as $acr) {
+              if($acr->porcentajecli1 > 0){
+                $id_actoperrad      = $acr->id_actoperrad;
+                $cuantia            = $acr->cuantia;
                 $identificacion_cli = $acr->identificacion_cli;
-                $nombre_cli = $this->Trae_Nombres($identificacion_cli);
-                $porcentaje_cli = ($acr->porcentajecli1) / 100;
-                $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_cli));
-                  
-                }else{
-                  $flag2 = 1;
-                  $catastro = $acr->cuantia;//$acr->catastro;
-                  $identificacion_cli = $acr->identificacion_cli;
-                  $nombre_cli = $this->Trae_Nombres($identificacion_cli);
-                  $porcentaje_cli = ($acr->porcentajecli1) / 100;
-                  $total_retenido_cli = round((($catastro * $porcentaje_rtf) * $porcentaje_cli));
-                
+                $porcentaje_cli     = $acr->porcentajecli1;
+                $Consecutivo_rtf = new Consecutivo_rtf();
+                $Consecutivo_rtf->num_esc            = $num_escritura;
+                $Consecutivo_rtf->anio_esc           = $anio_trabajo;
+                $Consecutivo_rtf->id_con             = $id_con;
+                $Consecutivo_rtf->identificacion_cli = $identificacion_cli;
+                $Consecutivo_rtf->porcentaje_rtf     = $porcentaje_cli;
+                $Consecutivo_rtf->id_radica          = $id_radica;
+                $Consecutivo_rtf->save();
+
+                /************Vendores Adicionales**************/
+                if($acr->porcentajecli1 < 100 ){
+                  $vendedores = Otorgante::where('id_actoperrad', $id_actoperrad)->get();
+
+                  foreach ($vendedores as $ven) {
+                    $consecutivo_certificado_rtf = $consecutivo->certi_retencion_fuente;
+                    $id_con = $consecutivo_certificado_rtf + 1;
+                    $consecutivo->certi_retencion_fuente  = $id_con;
+                    $consecutivo->save();
+
+                    $Consecutivo_rtf = new Consecutivo_rtf();
+                    $Consecutivo_rtf->num_esc            = $num_escritura;
+                    $Consecutivo_rtf->anio_esc           = $anio_trabajo;
+                    $Consecutivo_rtf->id_con             = $id_con;
+                    $Consecutivo_rtf->identificacion_cli = $ven->identificacion_cli;;
+                    $Consecutivo_rtf->porcentaje_rtf     = $ven->porcentaje_otor;
+                    $Consecutivo_rtf->id_radica          = $id_radica;
+                    $Consecutivo_rtf->save();
+                  }
+
+                }
               }
-            }else{
-              $cuantia = $acr->cuantia;
-              $identificacion_cli = $acr->identificacion_cli;
-              $nombre_cli = $this->Trae_Nombres($identificacion_cli);
-              $porcentaje_cli = ($acr->porcentajecli1) / 100;
-              $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_cli));              
-            }             
+             }
 
-            $Certificado_rtf = new Certificado_rtf();
-            $Certificado_rtf->num_escritura = $num_escritura;
-            $Certificado_rtf->id_radica = $id_radica;
-            $Certificado_rtf->anio_gravable = $anio_trabajo;
-            $Certificado_rtf->identificacion_contribuyente = $identificacion_cli;
-            $Certificado_rtf->nombre_contribuyente = $nombre_cli;
-            $Certificado_rtf->prefijo = $prefijo_fact;
-            $Certificado_rtf->num_factura = $num_factura;
-            $Certificado_rtf->fecha_factura = $fecha_factura;
-            
-            if ($flag2 == 0){
-              $Certificado_rtf->valor_venta = $cuantia;
-            }else{
-              $Certificado_rtf->valor_venta = $catastro;
-            }            
-            
-            $Certificado_rtf->total_retenido = $total_retenido_cli;
-            $Certificado_rtf->total_retencion = $total_retenido_cli;
-            $Certificado_rtf->ciudad = $nombre_ciud;
-            $Certificado_rtf->fecha_escritura = $fecha_escritura;
-            $Certificado_rtf->save();
+            \DB::commit();
 
-            $request->session()->put('id_contribuyente', $identificacion_cli);
-            //echo 1;
+            return response()->json([
+              "valida"=>1             
+            ]);
 
-            /******Cuando hay vendedores adicionales********/
-            if($acr->porcentajecli1 < 100 ){
-              $vendedores = Otorgante::where('id_actoperrad', $id_actoperrad)->get();
-              foreach ($vendedores as $ven) {
-                $Certificado_rtf = new Certificado_rtf();
-                $Certificado_rtf->num_escritura = $num_escritura;
-                $Certificado_rtf->id_radica = $id_radica;
-                $Certificado_rtf->anio_gravable = $anio_trabajo;
-                $Certificado_rtf->identificacion_contribuyente = $ven->identificacion_cli;
-                $Certificado_rtf->nombre_contribuyente = $this->Trae_Nombres($ven->identificacion_cli);
-                $Certificado_rtf->prefijo = $prefijo_fact;
-                $Certificado_rtf->num_factura = $num_factura;
-                $Certificado_rtf->fecha_factura = $fecha_factura;
 
-                 if ($flag2 == 0){
-                    $Certificado_rtf->valor_venta = $cuantia;
-                  }else{
-                    $Certificado_rtf->valor_venta = $catastro;
-                  }   
-
-                $porcentaje_ven = ($ven->porcentaje_otor) / 100;
-                $total_retenido_cli = round((($cuantia * $porcentaje_rtf) * $porcentaje_ven));
-                $Certificado_rtf->total_retenido = $total_retenido_cli;
-                $Certificado_rtf->total_retencion = $total_retenido_cli;
-                $Certificado_rtf->ciudad = $nombre_ciud;
-                $Certificado_rtf->fecha_escritura = $fecha_escritura;
-                $Certificado_rtf->save();
-              }
-            }
+          } catch (\Exception $e) {
+            \DB::rollback();
+            return response()->json([
+                "validar"=> 1,
+                'mensaje' => 'Error al guardar consecutivos rtf.', 'error' => $e->getMessage()], 500);
           }
 
-        }
-      }//rtf > 0
-
-      $certificado = Certificado_rtf::where('id_radica', $id_radica)->where('anio_gravable', $anio_trabajo)->get()->toArray();
-
-      return response()->json([
-        "valida"=>1,
-        "certificado_rtf"=>$certificado
-       ]);
+        }    
+      
 
     }
 
