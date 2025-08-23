@@ -380,6 +380,21 @@
 								</ul>
 							</li>
 
+							<li style="position: relative;">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
+									Interfaz contable
+								</a>
+								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
+									<li>
+										<a href="javascript://" id="interfazdatax">
+											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
+											Data X 
+										</a>
+									</li>
+								</ul>
+							</li>
+
 
 						</ul>
 					</li>

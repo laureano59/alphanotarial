@@ -58,6 +58,8 @@ Route::resource('cuentadecobro', 'BonosController'); // Parece ser un recurso de
 Route::resource('seguimientoescrituras', 'SeguimientoController');
 Route::resource('consulta_cajarapida', 'ConsultacajarapidaController');
 
+Route::get('datax', 'ReportesController@datax');
+
 // Gestión de Caja Rápida
 Route::resource('cajarapida', 'CajarapidaController');
 Route::resource('cpanelcajarapida', 'Panel_cajarapidaController');
@@ -83,7 +85,6 @@ Route::resource('abono_bonos', 'Abono_bonosController');
 Route::resource('gastos_notaria', 'Gastos_notariaController');
 Route::resource('reportados', 'ReportadosController');
 Route::resource('ayuda', 'ayudaController');
-
 
 // Rutas Get
 
@@ -180,9 +181,12 @@ Route::get('excelcarteraclientebonos', 'ReportesController@ExcelcarteraClienteBo
 Route::get('excelcarterafechabonos', 'ReportesController@ExcelCarteraFechaBonos');
 Route::get('excelcarteraclientebonosacti', 'ReportesController@ExcelCarteraClienteBonosActi');
 
+Route::get('exceldatax', 'ReportesController@ExcelDataX');
+
 Route::get('excelnotascredito', 'ReportesController@ExcelNotasCredito');
 Route::get('excelretencionesaplicadas', 'ReportesController@ExcelReteaplicada');
 Route::get('exnotcredcajarap', 'ReportesController@ExcelNotasCreditoCajaRapida');
+
 
 
 

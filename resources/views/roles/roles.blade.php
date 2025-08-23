@@ -10,7 +10,7 @@
 <div class="row mb-4">
     <div class="col-md-6">
         <label for="userSelect" class="font-weight-bold">Seleccionar Usuario:</label>
-        <select class="form-control" id="id_usuario" name="id_proto" style="width: 250px;">
+        <select class="form-control" id="id_usuario" name="id_usuario" style="width: 250px;">
             <option value="" disabled selected>Elija Usuario</option>
             @foreach ($Usuarios as $User)
                 <option value="{{$User->id}}">{{$User->name}}</option>
@@ -203,7 +203,14 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="43" name="reportes[]" value="43">
                                             <label class="form-check-label text-info" for="recaudos2">Informe de Enajenaciones</label>
-                                        </div>                                      
+                                        </div> 
+
+
+                                        <h4 class="card-header bg-info text-white">Infaz contable</h4> 
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="60" name="reportes[]" value="60">
+                                            <label class="form-check-label text-info" for="conceptos2">Interfaz DataX</label>
+                                        </div>                                     
                                        
                                     </div>
                                 </div>

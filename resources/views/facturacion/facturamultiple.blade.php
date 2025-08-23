@@ -512,12 +512,14 @@
                     </div>
                     <div>
                     </br>
-                    <a href="javascript://" id="recalcularfactmultiple" class="btn btn-success btn-lg">
-                        Recal
-                    </a>
-                    <a href="#" id="guardarfacturamultiple" class="btn btn-primary btn-lg">
-                        Guardar Pago
-                    </a>
+                    <div id="botones_guardar">
+                        <a href="javascript://" id="recalcularfactmultiple" class="btn btn-success btn-lg">
+                            Recal
+                        </a>
+                        <a href="#" id="guardarfacturamultiple" class="btn btn-primary btn-lg">
+                            Guardar Pago
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

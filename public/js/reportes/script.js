@@ -39,6 +39,9 @@ $("#ingresporescrituradores").click(function(){
 
 });
 
+
+
+
 $("#imprimiringresosporescrituradores").click(function(){
   if (document.querySelector('input[name="seleccion"]:checked')) {
     var tipoinforme = '';
@@ -672,6 +675,53 @@ $("#informecarterabonosactiva").click(function(){
       location.href="/reportes";
     }
   })
+});
+
+$("#interfazdatax").click(function(){
+
+  var opcion = 34;
+  var reporte = "Interfaz contable Data X";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+
+});
+
+$("#generararchivodatax").click(function(){
+
+  const checkbox = document.querySelector('input[name="encabezado"]:checked');
+  const valorSeleccionado = checkbox ? checkbox.value : null;
+
+
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2,
+    "opcionreporte": valorSeleccionado
+  };
+
+  __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){
+        var url = "/exceldatax";
+        $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      }
+    })
+  
 });
 
 

@@ -89,8 +89,8 @@
             <td width="20%">
                 <font size="1">Fecha:</font>&nbsp;
             </td>
-            <td width="25%">
-                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font>
+             <td width="25%">
+                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} - {{ Carbon\Carbon::parse($fecha_esc)->format('d/m/Y') }} </font>
             </td>
         </tr>
     </table>

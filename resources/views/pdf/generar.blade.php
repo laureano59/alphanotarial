@@ -85,10 +85,10 @@
             </td>
             <td width="25%"></td>
             <td width="20%">
-                <font size="1">Fecha:</font>&nbsp;
+                <font size="1">Fecha Factura:</font>&nbsp;
             </td>
             <td width="25%">
-                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} &nbsp; {{$hora_fact}}</font>
+                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} - {{ Carbon\Carbon::parse($fecha_esc)->format('d/m/Y') }} </font>
             </td>
         </tr>
     </table>

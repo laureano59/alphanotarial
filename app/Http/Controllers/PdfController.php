@@ -94,6 +94,8 @@ class PdfController extends Controller
     $Escri = Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
     foreach ($Escri as $value) {
       $num_esc = $value['num_esc'];
+      $fecha_esc = $value['fecha_esc'];
+
     }
 
     $protocolista = Protocolistas_view::where('num_esc', $num_esc)
@@ -307,6 +309,7 @@ class PdfController extends Controller
       $data['fecha_fact'] = $fecha_fact;
       $data['fecha_impresion'] = $fecha_impresion;
       $data['hora_fact'] = $hora_fact;
+      $data['fecha_esc'] = $fecha_esc;
       $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
@@ -669,6 +672,7 @@ class PdfController extends Controller
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
       $data['hora_fact'] = $hora_fact;
+      $data['fecha_esc'] = $fecha_esc;
       $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
@@ -981,6 +985,7 @@ class PdfController extends Controller
       ->get(); 
       }
 
+     
 
     $i = 0;
     $html = [];
@@ -1096,7 +1101,8 @@ class PdfController extends Controller
     ->orderBy('identificacion_contribuyente')
     ->distinct()
     ->get();
-    
+
+       
     $i = 0;
 
     foreach ($certificado_rtf as $cer) {
@@ -1228,7 +1234,9 @@ class PdfController extends Controller
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
+        $num_esc   = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
+
       }
 
        /********************PROTOCOLISTA***********************/
@@ -1342,6 +1350,7 @@ class PdfController extends Controller
       $data_otor['fecha_fact'] = $fecha_fact;
       $data_otor['fecha_ncf'] = $fecha_ncf;
       $data_otor['hora_fact'] = $hora_fact;
+      $data_otor['fecha_esc'] = $fecha_esc;
       $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
       $data_otor['contprincipales'] = $contprincipales;
@@ -1510,7 +1519,9 @@ class PdfController extends Controller
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
+        $num_esc   = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
+
       }
 
       /********************PROTOCOLISTA***********************/
@@ -1619,6 +1630,7 @@ class PdfController extends Controller
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
       $data['hora_fact'] = $hora_fact;
+      $data['fecha_esc'] = $fecha_esc;
       $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
@@ -1814,7 +1826,9 @@ class PdfController extends Controller
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
+        $num_esc   = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
+
       }
 
       /********************PROTOCOLISTA***********************/
@@ -1931,6 +1945,7 @@ class PdfController extends Controller
       $data_otor['direccioncli1'] = $direccioncli1_otor;
       $data_otor['fecha_fact'] = $fecha_fact;
       $data_otor['hora_fact'] = $hora_fact;
+      $data_otor['fecha_esc'] = $fecha_esc;
       $data_otor['hora_cufe'] = $hora_cufe;
       $data_otor['principales'] = $principales;
       $data_otor['contprincipales'] = $contprincipales;
@@ -2099,7 +2114,9 @@ class PdfController extends Controller
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
+        $num_esc  = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
+
       }
 
        /********************PROTOCOLISTA***********************/
@@ -2206,6 +2223,7 @@ class PdfController extends Controller
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
       $data['hora_fact'] = $hora_fact;
+      $data['fecha_esc'] = $fecha_esc;
       $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;
       $data['contprincipales'] = $contprincipales;
@@ -6217,6 +6235,7 @@ public function Cuenta_de_Cobro(Request $request){
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
         $num_esc = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
       }
 
 
@@ -6350,6 +6369,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
       $data_otor['fecha_fact'] = $fecha_fact;
+      $data_otor['fecha_esc'] = $fecha_esc;
       $data_otor['fecha_impresion'] = $fecha_impresion;
 
       $data_otor['hora_fact'] = $hora_fact;
@@ -6575,6 +6595,7 @@ public function Cuenta_de_Cobro(Request $request){
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
         $num_esc = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
       }
 
       
@@ -6702,6 +6723,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
       $data['fecha_fact'] = $fecha_fact;
+      $data['fecha_esc'] = $fecha_esc;
       $data['hora_fact'] = $hora_fact;
       $data['hora_cufe'] = $hora_cufe;
       $data['principales'] = $principales;

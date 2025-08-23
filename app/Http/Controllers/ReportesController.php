@@ -38,6 +38,7 @@ use App\Exports\BonosExportActivos;
 use App\Exports\NotasCreditoExport;
 use App\Exports\ExcelReteaplicadaExport;
 use App\Exports\NotasCreditoCajaRapidaExport;
+use App\Exports\ExcelDataXExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Protocolista;
 use App\Cuenta_cobro_escr;
@@ -196,14 +197,17 @@ class ReportesController extends Controller
     $request->user()->authorizeRoles(['carterabonosactivos','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
     return view('reportes.informecarterabonosactiva', compact('nombre_reporte'));
-  }
+  }else if($opcion == 34){
+    $request->user()->authorizeRoles(['interfazdatax','administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+  }  return view('reportes.interfazdatax', compact('nombre_reporte'));
 }
 
 
 public function CargarTipoReporte(Request $request){
   $opcion = $request->opcionreporte;
   $nombre_reporte = $request->reporte;
-  $ordenar = $request->ordenar;
+  $ordenar = $request->ordenar;  
 
   $request->session()->put('opcionreporte', $opcion);
   $request->session()->put('nombre_reporte', $nombre_reporte);
@@ -219,6 +223,7 @@ public function FechaReporte(Request $request){
   $fecha2 = $request->fecha2;
   $ingreso = $request->ingreso;
   $opcionreporte = $request->opcionreporte;
+
   $id_proto = $request->id_proto;
   $request->session()->put('id_proto', $id_proto);
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
@@ -1744,6 +1749,21 @@ public function FechaReporte(Request $request){
     return Excel::download(new ExcelReteaplicadaExport($fecha1, $fecha2), $nombrefile);
 
   }
+
+  public function ExcelDataX(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fechaActual = date('d-m-Y'); 
+    //$conEncabezado = $request->session()->get('opcionreporte');
+    $conEncabezado = ($request->session()->get('opcionreporte') === 'on');
+
+    $nombrefile = 'CargaDataX'.'_'.$fechaActual.'.'.'xls';
+    
+    return Excel::download(new ExcelDataXExport($fecha1, $fecha2, $conEncabezado), $nombrefile);
+  }
+
+
 
   
 

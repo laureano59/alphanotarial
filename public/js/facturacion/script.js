@@ -134,6 +134,7 @@ $("#mostrarparticipantes").click(function() {
 $("#habilitarparticipantes").click(function() {
 
     $("#btnmostrar").fadeIn();
+    $("#botones_guardar").show();
     Total_Menos_Deducciones();
     
 });
@@ -469,7 +470,8 @@ $("#guardarfacturaunica").click(function() {
 });
 
 
-$("#guardarfacturamultiple").click(async function() {
+$("#guardarfacturamultiple").click(async function() {    
+      $("#botones_guardar").hide();
     /*******Valida totales de la factura y la liquidación*********/
     $("#btnmostrar").fadeOut();//ocultar boton mostrar participantes
      setTimeout(function() {
@@ -646,6 +648,9 @@ $("#guardarfacturamultiple").click(async function() {
                                     $("#mod_factelectronica").modal('toggle');
                                     //Genera Factura PDF
                                     pdfFacturaMultiple();
+
+                                    //Oculto botones de guardado:
+                                     $("#botones_guardar").hide();
 
                                     // =============================================
                                     // =       Enviar Correo al cliente            =

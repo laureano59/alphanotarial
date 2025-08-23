@@ -1,10 +1,7 @@
 $("#guardarcambios").click(function(){
 	const checkboxes = document.querySelectorAll('input[name="reportes[]"]:checked');
     const valoresSeleccionados = Array.from(checkboxes).map(cb => cb.value);
-    const id_user = $("#id_usuario").val();
-
-    console.log("Valores seleccionados:", valoresSeleccionados);
-    console.log("id usuario:", id_user);
+    const id_user = $("#id_usuario").val();    
 
     var route = "/panelroles/" + id_user;
     var token = $("#token").val();
@@ -52,7 +49,7 @@ document.getElementById('id_usuario').addEventListener('change', function() {
 
 function CargarRoles(data){
 
-    for (let i = 1; i <= 59; i++) {
+    for (let i = 1; i <= 60; i++) {
         let checkbox = document.getElementById(i);
         if (checkbox) {
             checkbox.checked = false;
