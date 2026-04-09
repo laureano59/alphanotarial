@@ -11,6 +11,7 @@ use App\Factura_esc_interfaz_view;
 use App\Concepto;
 use App\Conceptos_cajarapida;
 use App\Cuentas_adicionales;
+use Carbon\Carbon;
 
 class ExcelDataXExport implements FromCollection,WithHeadings
 {
@@ -51,7 +52,7 @@ class ExcelDataXExport implements FromCollection,WithHeadings
             'CENTRO DE COSTOS',
             'DOCUMENTO BANCO',
             'DOCUMENTO CRUCE',
-            'NUMERO DOC CRUCE',
+            'NUMERO DOC CRUCE', 
             'NUM CUOTA',
             'FECHA VENCIMIENTO',
             'NIT TERCERO',
@@ -123,6 +124,8 @@ class ExcelDataXExport implements FromCollection,WithHeadings
             'bono',
             'identificacion_cli',
             'nombre_cli',
+            'identificacion_cli2',
+            'nombre_cli2',
             'telefono_cli',
             'direccion_cli',
             'email_cli',   
@@ -132,14 +135,38 @@ class ExcelDataXExport implements FromCollection,WithHeadings
         	])->whereDate('fecha_fact', '>=', $fecha1)
         		->whereDate('fecha_fact', '<=', $fecha2)        
         		->get();
+           
 
         $atributos = Concepto::all();
         $atributos = $atributos->sortBy('id_concep');
         $data[] = [];
 
-        $i = 1;
+        $i = 1;       
+
+        $cuenta_cont_derechos = Cuentas_adicionales::
+             where('concepto', 'Derechos notariales')->value('cuenta_contab');
+
+
+        $CodigoEmpresa = Cuentas_adicionales::
+             where('id_cue', 18)->value('cuenta_contab');
+
+        $CU = Cuentas_adicionales::
+             where('id_cue', 19)->value('cuenta_contab');
+
+        $TIPOFOLDER = Cuentas_adicionales::
+             where('id_cue', 20)->value('cuenta_contab');
+
+        $NUMFOLDER_ESCR = Cuentas_adicionales::
+             where('id_cue', 21)->value('cuenta_contab');
+
+        $TIPODOCUMENTOESCR = Cuentas_adicionales::
+             where('id_cue', 26)->value('cuenta_contab');
+
 
         foreach ($FacturasEscr as $Fesc) {
+
+
+             $cod_ciud = "169";
             
             $detalle_Fesc = Detalle_factura::
             where('id_fact', $Fesc->id_fact)
@@ -148,9 +175,30 @@ class ExcelDataXExport implements FromCollection,WithHeadings
             
             $j = 1;
 
+             $cod_ciud = $cod_ciud . $Fesc->id_ciud;            
+
+             $Fecha_credito = Carbon::parse($Fesc->fecha_fact)
+                      ->addDays(30)                
+                      ->format('Y-m-d H:i:s');
+                     
+            if ($Fesc->total_derechos > 0){
+                if ($Fesc->credito_fact == true){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_derechos, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_derechos), '', '', '', '', '',  '', '', $Fecha_credito, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+                }elseif ($Fesc->credito_fact == false){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_derechos, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_derechos), '', '', '', '', '',  '', '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+                }
+            }
+            
+
+
+
             /***************************************************/
             /*                   ITEM FACTURA                  */
             /***************************************************/
+
+            $j = $j + 1;//Para Item de conceptos
 
             foreach ($detalle_Fesc as $key => $detfes) {
                 foreach ($atributos as $key => $atri) {
@@ -166,7 +214,15 @@ class ExcelDataXExport implements FromCollection,WithHeadings
                         $dataconcept[$j]['total'] = $detfes[$totalatributo];
                         $j = $j + 1;
 
-                        $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_cont, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $detfes[$totalatributo], '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);                        
+                        if ($Fesc->credito_fact == true){
+
+                        $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', $detfes[$totalatributo], '', '', '', '', '',  '', '', $Fecha_credito,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+                         }elseif ($Fesc->credito_fact == false){
+
+                             $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', $detfes[$totalatributo], '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+                         }                        
                        
                     } //if
                 }//for atributos              
@@ -201,26 +257,90 @@ class ExcelDataXExport implements FromCollection,WithHeadings
              $cuenta_deduc_ica = Cuentas_adicionales::
              where('concepto', 'Deduci de ICA-Impuesto de Industr y Comerc Ret')->value('cuenta_contab');
 
-              $cuenta_deduc_rtf = Cuentas_adicionales::
+             $cuenta_deduc_rtf = Cuentas_adicionales::
              where('concepto', 'Deducion de Rtf-Honorarios 11%')->value('cuenta_contab');
 
+              $cuenta_rtf = Cuentas_adicionales::
+             where('concepto', 'Enajenacion de act.fij.de personas n RTE-FTE')->value('cuenta_contab');
 
-             $j = $j + 1;//para Recaudo Fondo
+             $cuenta_timbre1 = Cuentas_adicionales::where('concepto', 'Timbre 1')->value('cuenta_contab');
+             $cuenta_timbre2 = Cuentas_adicionales::where('concepto', 'Timbre 2 Catatumbo')->value('cuenta_contab');
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_cont_recau_fond, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->total_fondo, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
 
-             $j = $j + 1;//para Recaudo Super
+             if ($Fesc->total_fondo > 0){
+                 $j = $j + 1;//para Recaudo Fondo
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_cont_recau_sup, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->total_super, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+                if ($Fesc->credito_fact == true){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_recau_fond, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', $Fesc->total_fondo, '', '', '', '', '',  '', '', $Fecha_credito,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
 
-             $j = $j + 1;//para IVA
+                }elseif ($Fesc->credito_fact == false){
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_cont_iva_escr, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->total_iva, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_recau_fond, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', $Fesc->total_fondo, '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+                }
+
+             }
+
+            
+             if ($Fesc->total_super > 0){
+                $j = $j + 1;//para Recaudo Super            
+
+                if ($Fesc->credito_fact == true){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_recau_sup, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', $Fesc->total_super, '', '', '', '', '',  '', '', $Fecha_credito, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+                }elseif ($Fesc->credito_fact == false){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_recau_sup, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', $Fesc->total_super, '', '', '', '', '',  '', '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+                }
+             }
+
+             
+             if($Fesc->total_iva > 0){
+                 $j = $j + 1;//para IVA            
+
+                if ($Fesc->credito_fact == true){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_iva_escr, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_iva), '', '', '', '', '',  '', '', $Fecha_credito, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+                }elseif ($Fesc->credito_fact == false){
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_cont_iva_escr, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_iva), '', '', '', '', '',  '', '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+                }
+             }
+
+            
+
+             
         
         if($Fesc->total_rtf > 0){
             $j = $j + 1;//para Retefuente
+             if ($Fesc->credito_fact == true){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_rtf, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_rtf), '', '', '', '', '',  '', '', $Fecha_credito,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_cont_recau_fond, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->total_rtf, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+            }elseif ($Fesc->credito_fact == false){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_rtf, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_rtf), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+            }
+        }
+
+        if($Fesc->total_impuesto_timbre > 0){
+            $j = $j + 1;//para Impuesto timbre
+             if ($Fesc->credito_fact == true){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_timbre1, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_impuesto_timbre), '', '', '', '', '',  '', '', $Fecha_credito,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+            }elseif ($Fesc->credito_fact == false){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_timbre1, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_impuesto_timbre), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+            }
+        }
+
+
+        if($Fesc->total_timbrec > 0){
+            $j = $j + 1;//para Impuesto timbre
+             if ($Fesc->credito_fact == true){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_timbre2, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_timbrec), '', '', '', '', '',  '', '', $Fecha_credito,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+            }elseif ($Fesc->credito_fact == false){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_timbre2, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'C', round($Fesc->total_timbrec), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+            }
         }
 
         
@@ -229,86 +349,107 @@ class ExcelDataXExport implements FromCollection,WithHeadings
             /***************************************************/
 
         if($Fesc->deduccion_reteiva > 0){
-            $j = $j + 1;//para IVA
+            $j = $j + 1;//para IVA            
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_deduc_iva, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'D', $Fesc->deduccion_reteiva, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+            if ($Fesc->credito_fact == true){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_deduc_iva, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->deduccion_reteiva), '', '', '', '', '',  '', '', $Fecha_credito, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+            }elseif ($Fesc->credito_fact == false){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_deduc_iva, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->deduccion_reteiva), '', '', '', '', '',  '', '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+            }
+
+
         }        
 
       
         if($Fesc->deduccion_reteica > 0){
-             $j = $j + 1;//para IVA
+             $j = $j + 1;//para IVA            
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_deduc_ica, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'D', $Fesc->deduccion_reteica, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+            if ($Fesc->credito_fact == true){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_deduc_ica, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->deduccion_reteica), '', '', '', '', '',  '', '', $Fecha_credito, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+            }elseif ($Fesc->credito_fact == false){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_deduc_ica, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->deduccion_reteica), '', '', '', '', '',  '', '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+            }
 
         }
         if($Fesc->deduccion_retertf > 0){
-             $j = $j + 1;//para IVA
+             $j = $j + 1;//para IVA            
 
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_deduc_rtf, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'D', $Fesc->deduccion_retertf, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+            if ($Fesc->credito_fact == true){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_deduc_rtf, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->deduccion_retertf), '', '', '', '', '',  '', '', $Fecha_credito, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
+
+            }elseif ($Fesc->credito_fact == false){
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_deduc_rtf, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->deduccion_retertf), '', '', '', '', '',  '', '', $Fesc->fecha_fact, $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+            }
 
         }
 
 
-        
-            /***************************************************/
-            /*             ITEM FACTURA TOTALES                */
-            /***************************************************/
-
+        /*************************************************************/
+        /***********************TOTALES*******************************/       
+          
         if ($Fesc->credito_fact == true){ //Si es a credito
             $j = $j + 1;
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_a_credito, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->total_fact, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
+            $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_a_credito, $Fesc->a_cargo_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->total_fact), '', '', '', '', $TIPODOCUMENTOESCR,  $Fesc->id_fact, '', $Fecha_credito,  $Fesc->a_cargo_de, $Fesc->nombre_cli2, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '30', '', '', '01', $i, $j);
 
-        }else if ($Fesc->credito_fact == false){ // Si es contado OJO validar si es efectivo y/o Banco
 
-            $j = $j + 1; //Para el total completo
+        }else if ($Fesc->credito_fact == false){ 
+
+            $total_medios_pago = $Fesc->consignacion_bancaria +
+            $Fesc->pse +
+            $Fesc->transferencia_bancaria +
+            $Fesc->tarjeta_credito +
+            $Fesc->tarjeta_debito;          
+
+
+            if($total_medios_pago > 0){
+                if( $Fesc->efectivo > 0){                    
+                    $j = $j + 1; //Para efectivo
             
-            $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_contado, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->total_fact, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            //se debe poner el valor y la cuenta la suma de cada medio depago debe dar igual al total
-            if($Fesc->efectivo > 0){
-                $j = $j + 1;
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_contado, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->efectivo), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
 
-                 $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_contado, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->efectivo, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            }
-            if($Fesc->consignacion_bancaria > 0){
-                $j = $j + 1;
-                $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->consignacion_bancaria, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            }
-            if($Fesc->pse > 0){
-                $j = $j + 1;
-                $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->pse, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            }
-            if($Fesc->transferencia_bancaria > 0){
-                $j = $j + 1;
-                $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->transferencia_bancaria, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            }
-            if($Fesc->tarjeta_credito > 0){
-                $j = $j + 1;
-                $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->tarjeta_credito, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            }
-            if($Fesc->tarjeta_debito > 0){
-                $j = $j + 1;
-                 $this->cargar_informe($data, 'NT', '01', '03', '01', $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, 'FV', $Fesc->id_fact, 'C', $Fesc->tarjeta_debito, '', '', '', '', 'FV',  $Fesc->id_fact, '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $Fesc->id_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '', '', '', '1', $i, $j);
-            }
+                     $j = $j + 1; //Para la suma de otros medios depago
 
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($total_medios_pago), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+                }else{
+
+                     $j = $j + 1; //Para la suma de otros medios depago                       
+
+
+                    $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_banco, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($total_medios_pago), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+                }
+
+            }else{
+
+                $j = $j + 1; //Para solo efectivo
+            
+                $this->cargar_informe($data, $CodigoEmpresa, $CU, $TIPOFOLDER, $NUMFOLDER_ESCR, $Fesc->fecha_fact, $cuenta_contado, $Fesc->a_nombre_de, $TIPODOCUMENTOESCR, $Fesc->id_fact, 'D', round($Fesc->total_fact), '', '', '', '', '',  '', '', $Fesc->fecha_fact,  $Fesc->a_nombre_de, $Fesc->nombre_cli, $Fesc->id_tipoident, $Fesc->direccion_cli, $Fesc->telefono_cli, '', '', $cod_ciud, '', '', 'N', 'N', 'S', 'N', 'N', 'N', 'N', 'N', '01', '', '', '01', $i, $j);
+
+            }
         }
 
             $i = $i + 1;                  
-        }//for FacturasEscr
+        }//for FacturasEscr       
 
-        //var_dump($data);
-        //exit;
-        // Formatear la fecha antes de convertir en colección para Excel
-        $Informe = collect($data)->map(function ($item) {
-        
+
+        $Informe = collect($data)->map(function ($item) { 
             return collect($item)->map(function ($subItem) {
                 if (!empty($subItem['FECHA_FACTURA'])) {
-                    $subItem['FECHA_FACTURA'] = \Carbon\Carbon::parse($subItem['FECHA_FACTURA'])->format('Y-m-d');
+                    $subItem['FECHA_FACTURA'] = \Carbon\Carbon::parse($subItem['FECHA_FACTURA'])->format('Ymd');
+                }
+                if (!empty($subItem['FECHA_VENCIMIENTO'])) {
+                    $subItem['FECHA_VENCIMIENTO'] = \Carbon\Carbon::parse($subItem['FECHA_VENCIMIENTO'])->format('Ymd');
                 }
                 return $subItem;
             })->toArray();
         });
 
         return $Informe;
+       
 
     }
 
@@ -342,7 +483,7 @@ class ExcelDataXExport implements FromCollection,WithHeadings
             $data[$i][$j]['DOCUMENTO CRUCE']            =   $documento_cruce;
             $data[$i][$j]['NUMERO DOC CRUCE']           =   $numero_doc_cruce;
             $data[$i][$j]['NUM CUOTA']                  =   $num_cuota;
-            $data[$i][$j]['FECHA VENCIMIENTO']          =   $fecha_vencimiento; 
+            $data[$i][$j]['FECHA_VENCIMIENTO']          =   $fecha_vencimiento; 
             $data[$i][$j]['NIT TERCERO']                =   $nit_tercero;   
             $data[$i][$j]['NOMRE/RAZON SOCI.']          =   $nomre_razon_soci;
             $data[$i][$j]['TIPO IDENT.']                =   $tipo_ident;   

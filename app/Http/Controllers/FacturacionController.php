@@ -24,7 +24,23 @@ use App\Bono;
 use App\Factura_a_cargo_de_view;
 use App\Tipo_acta_deposito;
 Use App\Actividad_economica;
-
+Use App\Detalle_derechos_factura;
+use Illuminate\Support\Facades\DB;
+use App\Tarifa;
+use App\Acto;
+use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
+use App\Factura_consecutivo;
+use App\Consecutivo_rtf;
+use App\Otorgante;
+use App\Cliente;
+use App\Actosclienteradica;
+use App\Actas_deposito_egreso_view;
+use App\Egreso_acta_deposito;
+use App\Actas_deposito;
+use App\Jobs\EnviarFacturaDianJob;
+use App\Redondeos;
+use App\Http\Controllers\EinvoiceController;
 
 class FacturacionController extends Controller
 {
@@ -44,8 +60,7 @@ class FacturacionController extends Controller
      */
     public function index(Request $request)
     {
-       $request->user()->authorizeRoles(['facturacion','administrador']);
-     
+      $request->user()->authorizeRoles(['facturacion','administrador']);
       $opcion = $request->session()->get('opcion');//TODO:Session para tipo de factura
       $anio_trabajo = Notaria::find(1)->anio_trabajo;
       $id_radica = $request->session()->get('key');
@@ -55,35 +70,20 @@ class FacturacionController extends Controller
       $Banco = Banco::all();
       $Banco = $Banco->Sort();
 
-      $TipoDeposito = Tipo_acta_deposito::all();
-      $TipoDeposito = $TipoDeposito->sortBy('descripcion_tip');
+      //$TipoDeposito = Tipo_acta_deposito::all();
+      //$TipoDeposito = $TipoDeposito->sortBy('descripcion_tip');
+
+     $TipoDeposito = Tipo_acta_deposito::whereIn('id_tip', [5])
+                        ->orderBy('descripcion_tip')
+                        ->get();
 
       $Actividad_economica = Actividad_economica::All();
       $Actividad_economica = $Actividad_economica->sortBy('actividad');
       
       //$MediosdePago = Medios_pago::all();
-      //$MediosdePago = $MediosdePago->Sort();
-
-        if($opcion == 1){
-          /*******Unica Factura***********/
-          if (Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
-            $liq_dere = Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
-            foreach ($liq_dere as $key => $value) {
-              $id_liqd = $value['id_liqd'];
-            }
-            $Conceptos = Concepto::all();
-            $Conceptos = $Conceptos->sortBy('id_concep');
-             return view('facturacion.facturacionunica', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito', 'Actividad_economica'));
-            }else{
-              	//return redirect('/home');
-                return view('/home');
-            }
-          }else if($opcion == 2){
-              /*******TODO:Factura Otorgante Compareciente***********/
-              $Conceptos = Concepto::all();
-              $Conceptos = $Conceptos->sortBy('id_concep');
-              return view('facturacion.facturaotorcompa', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Actividad_economica'));
-          }else if($opcion == 3){
+      //$MediosdePago = $MediosdePago->Sort();        
+             
+          if($opcion == 3){
               /*******TODO:Factura Multiple***********/
               if (Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
                 $liq_dere = Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
@@ -92,8 +92,8 @@ class FacturacionController extends Controller
                 }
                 $Conceptos = Concepto::all();
                 $Conceptos = $Conceptos->sortBy('id_concep');
-               
-                 return view('facturacion.facturamultiple', compact('TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito', 'Actividad_economica'));
+               //facturamultiple
+                 return view('facturacion.facturar', compact('id_radica', 'TipoIdentificaciones', 'Departamentos', 'Conceptos', 'Banco', 'TipoDeposito', 'Actividad_economica'));
                 }else{
                   	//return redirect('/home');
                     return view('/home');
@@ -121,523 +121,612 @@ class FacturacionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request){
-      $opcion = $request->session()->get('opcion');//TODO:Session para tipo de factura
-      $prefijo_fact = Notaria::find(1)->prefijo_fact;
+   
+   public function store(Request $request)
+{
+    $notaria      = Notaria::find(1);
+    $anio_radica  = $notaria->anio_trabajo;      
+    $prefijo_fact = preg_replace('/\s+/', '', $notaria->prefijo_fact);
+    $id_radica    = $request->session()->get('key');
+    $identificacion_cli = $request->cli_doc;
+    $opcion       = 'F1';
 
-      if($request->doc_acargo_de == ''){
-        $doc_acargo_de = $request->identificacion_cli1;
-      }else{
-        $doc_acargo_de = $request->doc_acargo_de;
-      }
+    if ($request->ajax()) {
 
-      if($request->detalle_acargo_de == ''){
-        $detalle_acargo_de = "Sin datos";
-      }else{
-        $detalle_acargo_de = $request->detalle_acargo_de;
-      }
-      
-      $fecha_manual = Notaria::find(1)->fecha_fact;
-      $fecha_automatica = Notaria::find(1)->fecha_fact_automatica;
-      if($fecha_automatica == true){
-        $fecha_factura = date("Y-m-d H:i:s");//date("Y/m/d");
-      }else if($fecha_automatica == false){
-        $fecha_factura = $fecha_manual;
-      }
+        // 🔹 Obtener intento
+        $intento_id = $request->session()->get('intento_id');
 
-      if($opcion == 1){//Factura Unica
-        $id_radica = $request->input('id_radica');
-        $anio_radica = Notaria::find(1)->anio_trabajo;
-        if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', false)->exists()){
-          return response()->json([
-             "validar"=>0,
-             "mensaje"=>"La radicación ya está facturada"
-           ]);
-        }else{
+        if (!$intento_id) {
+            return response()->json([
+                "validar" => 0,
+                "mensaje" => "No se encontró el intento de factura."
+            ]);
+        }
 
-          if (Factura::where('id_radica', $id_radica)
-              ->where('anio_radica', $anio_radica)
-              ->where('nota_credito', true)
-              ->exists()){
+        // 🔒 Clave única del intento
+        $key = 'factura_' . $id_radica . '_' . $intento_id;
 
-            $fact = Factura::where('id_radica', $id_radica)
+        // 🔍 Revisar estado en cache
+        $estado = cache()->get($key);
+
+        if ($estado) {
+
+            if ($estado['status'] === 'terminado') {
+                return response()->json($estado['response']);
+            }
+
+            if ($estado['status'] === 'procesando') {
+                return response()->json([
+                    "validar" => 0,
+                    "mensaje" => "La factura ya se está procesando, espera un momento..."
+                ]);
+            }
+        }
+
+        // 🔒 Marcar como procesando
+        cache()->put($key, [
+            'status' => 'procesando'
+        ], 30);
+
+        \DB::beginTransaction();
+
+    
+        try {
+
+            // 🔹 Guardar factura
+            $factura    = $this->save_facturas($request);
+            $id_fact    = $factura['id_fact'];
+            $fecha_fact = Carbon::parse($factura['fecha_fact'])->format('d/m/Y');
+            $rtf        = $factura['rtf'];
+
+            // 🔹 Detalles
+            $this->save_detalle_derechos_factura($request->detalle_derechos, $prefijo_fact, $id_fact);
+            $this->save_detalle_factura($request->detalle_conceptos, $prefijo_fact, $id_fact);
+
+            // 🔹 Medios de pago
+            $this->save_medios_pago(
+                $request->efectivo,
+                $request->transferencia,
+                $request->pse,
+                $request->tarjetaCredito,
+                $request->tarjetaDebito,
+                $request->consignacion_bancaria,
+                $request->mediopactadeposito,
+                $request->valorBono,
+                $prefijo_fact,
+                $id_fact
+            );
+
+            // 🔹 Bonos
+            if ($request->totalBono > 0) {
+                $this->save_bonos(
+                    $request->valorBono,
+                    $request->totalBono,
+                    $request->tipoBono,
+                    $request->codigo_bono,
+                    $prefijo_fact,
+                    $id_fact,
+                    $id_radica,
+                    $anio_radica
+                );
+            }
+
+            // 🔹 Acta depósito
+            if ($request->mediopactadeposito > 0) {
+                $this->saveEgresoActaDeposito($request->abonosporactasdeposito, $id_fact, $id_radica);
+            }
+
+            // 🔹 Escritura
+            if (!Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->exists()) {
+                $num_escr = $this->save_escritura($id_radica, $anio_radica);
+            } else {
+                $num_escr = Escritura::where('id_radica', $id_radica)
                     ->where('anio_radica', $anio_radica)
-                    ->where('nota_credito', true)
-                    ->get()
-                    ->toArray();
-
-            foreach ($fact as $key => $f) {
-              $fecha_fact = $f['fecha_fact'];
-              //$id_fact_otroperiodo = $f['id_fact_otroperiodo'];
+                    ->value('num_esc');
             }
 
-            $fecha_actual = date("Y-m-d");
-        
-            $periodo_actual = date("Y-m", strtotime($fecha_actual));
-            $periodo_factura = date("Y-m", strtotime($fecha_fact));
-
-            $anio_actual = date("Y", strtotime($fecha_actual));
-            $anio_fact = date("Y", strtotime($fecha_fact));
-
-            if($anio_actual == $anio_fact){//mismo año
-              if($periodo_actual == $periodo_factura){//mismo periodo
-                $nota_periodo = 7;
-              }else if($periodo_actual != $periodo_factura){//diferente periodo
-                $nota_periodo = 0;
-                //$id_fact_otroperiodo = 
-              }
-            }else{//diferente año
-              $nota_periodo = 8;
+            // 🔹 RTF
+            if ($rtf > 0) {
+                $this->save_certificado_rete($id_radica, $num_escr, $anio_radica, $identificacion_cli);
             }
-          }else{
-            $nota_periodo = 7;
-          }
 
-          $efectivo = $request->efectivo;
-          if($efectivo === '' || is_null($efectivo)){
-            $efectivo = 0;
-          }
-          $efectivo = str_replace(",", " ", $efectivo);//comas por espacios
-          $efectivo = str_replace(" ", "", $efectivo);//elimina espacios
+            // 🔹 Número factura
+            $num_fact = $prefijo_fact . ' - ' . $id_fact;
 
-          $cheque = $request->cheque;
-           if($cheque === '' || is_null($cheque)){
-            $cheque = 0;
-          }
-          $cheque = str_replace(",", " ", $cheque);
-          $cheque = str_replace(" ", "", $cheque);
+            // 🔹 Sesión
+            $request->session()->put('numfactura', $id_fact);
+            $request->session()->put('fecha_fact', $fecha_fact);
+            $request->session()->put('prefijo_fact', $prefijo_fact);
 
-          $consignacion_bancaria = $request->consignacion_bancaria;
-          if($consignacion_bancaria === '' || is_null($consignacion_bancaria)){
-            $consignacion_bancaria = 0;
-          }
-          $consignacion_bancaria = str_replace(",", " ", $consignacion_bancaria);
-          $consignacion_bancaria = str_replace(" ", "", $consignacion_bancaria);
+            \DB::commit();
 
-          $pse = $request->pse;
-          if($pse === '' || is_null($pse)){
-            $pse = 0;
-          }
-          $pse = str_replace(",", " ", $pse);
-          $pse = str_replace(" ", "", $pse);
+            // 🔹 DIAN
+            $requestDian = request();
+            $requestDian->merge([
+                'num_fact' => $id_fact,
+                'opcion'   => $opcion
+            ]);
 
-          $transferencia_bancaria = $request->transferencia_bancaria;
-          if($transferencia_bancaria === '' || is_null($transferencia_bancaria)){
-            $transferencia_bancaria = 0;
-          }
-          $transferencia_bancaria = str_replace(",", " ", $transferencia_bancaria);
-          $transferencia_bancaria = str_replace(" ", "", $transferencia_bancaria);
+            $controladorDian   = new EinvoiceController();
+            $respuestaDian     = $controladorDian->index($requestDian);
+            $datosDian         = $respuestaDian->getData(true);
 
-          $tarjeta_credito = $request->tarjeta_credito;
-           if($tarjeta_credito === '' || is_null($tarjeta_credito)){
-            $tarjeta_credito = 0;
-          }
-          $tarjeta_credito = str_replace(",", " ", $tarjeta_credito);
-          $tarjeta_credito = str_replace(" ", "", $tarjeta_credito);
+            // 🔹 Respuesta final
+            $response = [
+                "validar"      => 7,
+                "id_fact"      => $num_fact,
+                "num_escr"     => $num_escr,
+                "fecha_fact"   => $fecha_fact,
+                "total_rtf"    => $rtf,
+                "mensaje"      => "Se ha generado la factura No. " . $num_fact,
+                "dian_status"  => $datosDian['status'] ?? null,
+                "dian_mensaje" => $datosDian['mensaje'] ?? null
+            ];
 
-          $tarjeta_debito = $request->tarjeta_debito;
-          if($tarjeta_debito === '' || is_null($tarjeta_debito)){
-            $tarjeta_debito = 0;
-          }
-          $tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
-          $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
+            // 🔒 Guardar resultado
+            cache()->put($key, [
+                'status'   => 'terminado',
+                'response' => $response
+            ], 60);
 
-          $bono = $request->bono;
+            return response()->json($response);
 
-          if($bono === '' || is_null($bono)){
-            $bono = 0;
-          }
-          $bono = str_replace(",", " ", $bono);
-          $bono = str_replace(" ", "", $bono);
+        } catch (Exception $e) {
 
-          if($request->tipo_bono == 2 || $request->tipo_bono == 4){
-            $bono = 0;
-            $bono_boleta = $request->bono;
-            $bono_boleta = str_replace(",", " ", $bono_boleta);
-            $bono_boleta = str_replace(" ", "", $bono_boleta);
-          }
+            \DB::rollback();
 
-          $totalbono = $request->totalbono;
-          if($totalbono === '' || is_null($totalbono)){
-            $totalbono = 0;
-          }
-
-          $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
-          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
-
-          if($total_mediosdepago == $request->total_fact){
-
-          }else{
+            // 🔓 Liberar candado
+            cache()->forget($key);
 
             return response()->json([
-            "validar"=>888
-           ]);
-
-          }
-
-
-          /*Autonumerico*/
-         
-          $consecutivo = Factura::where('prefijo', $prefijo_fact)->max('id_fact');
-          $consecutivo = $consecutivo + 1;
-
-          
-          if($request->total_rtf > 0){
-            $porcentajertf = 100;
-          }else{
-            $porcentajertf = 0;
-          }
-
-          $factura = new Factura();
-          $factura->prefijo = $prefijo_fact;
-          $factura->id_fact = $consecutivo;
-          $factura->id_radica = $id_radica;
-          $factura->anio_radica = $anio_radica;
-          $factura->fecha_fact = $fecha_factura;
-          $factura->usuario_fact = auth()->user()->name;
-          $factura->a_nombre_de = $request->identificacion_cli1;
-          $factura->total_derechos = $request->total_derechos;
-          $factura->total_conceptos = $request->total_conceptos;
-          $factura->total_iva = $request->total_iva;
-          $factura->total_rtf = $request->total_rtf;
-          $factura->porcentajertf = $porcentajertf;
-          $factura->total_reteconsumo = $request->total_reteconsumo;
-          $factura->total_aporteespecial = $request->total_aporteespecial;
-          $factura->total_impuesto_timbre = $request->total_impuesto_timbre;
-          
-          if($request->total_impuesto_timbrecatatum === '' || is_null($request->total_impuesto_timbrecatatum)){
-             $factura->total_timbrec = 0;
-          }else{
-            $factura->total_timbrec = $request->total_impuesto_timbrecatatum;
-          }          
-
-
-          $factura->total_fondo = $request->input('total_fondo');
-          $factura->total_super = $request->input('total_super');
-          $factura->total_fact = $request->input('total_fact');
-          $factura->deduccion_reteiva = $request->input('reteiva');
-          $factura->deduccion_retertf = $request->input('retertf');
-          $factura->deduccion_reteica = $request->input('reteica');
-          $factura->credito_fact = $request->input('formapago');
-          $factura->a_cargo_de = $doc_acargo_de;
-          $factura->detalle_acargo_de = $detalle_acargo_de;
-          $factura->nota_periodo = $nota_periodo;
-                    
-          if($request->input('formapago') == 'true' ){
-            $factura->dias_credito = 30;
-            $factura->saldo_fact = $request->input('total_fact');
-          }else if($request->input('formapago') == 'false' ){
-            $factura->dias_credito = 0;
-            $factura->saldo_fact = 0;
-          }
-          
-          $factura->save();
-
-          $prefijo = $factura->prefijo;
-          $num_fact = $factura->id_fact;
-          $total_rtf = $factura->total_rtf;
-          $fecha_fact = $factura->fecha_fact;
-          $request->session()->put('numfactura', $num_fact);//Session para factura
-          $request->session()->put('fecha_fact', $fecha_fact);//Session para fecha factura
-          $request->session()->put('prefijo_fact', $prefijo);
-
-          $pago = new Pago();
-          $pago->codigo_ban = $request->input('id_banco');
-          $pago->id_fact = $num_fact;
-          $pago->prefijo = $prefijo;
-          $pago->efectivo = $efectivo;
-          $pago->cheque = $cheque;
-          $pago->consignacion_bancaria = $consignacion_bancaria;
-          $pago->pse = $pse;
-          $pago->transferencia_bancaria = $transferencia_bancaria;
-          $pago->tarjeta_credito = $tarjeta_credito;
-          $pago->tarjeta_debito = $tarjeta_debito;
-          $pago->bono = $bono;
-          $pago->numcheque = $request->numcheque;
-          $pago->save();
-
-          //if($request->tipo_bono == 2 || $request->tipo_bono == 4){
-            //$totalbono = $bono_boleta;
-          //}
-
-          if($totalbono > 0){
-            $bonos = new Bono();
-            $bonos->codigo_bono =  $request->codigo_bono;
-            $bonos->id_fact = $num_fact;
-            $bonos->prefijo = $prefijo;
-            $bonos->id_radica = $id_radica;
-            $bonos->anio_radica = $anio_radica;
-            $bonos->valor_bon = $totalbono;
-            $bonos->saldo_bon = $totalbono;
-            $bonos->id_tip = $request->tipo_bono;
-            $bonos->usuario = auth()->user()->name;
-            $bonos->save();
-          }
-          
-
-          return response()->json([
-            "validar"=>1,
-            "prefijo_fact"=>$prefijo,
-            "num_fact"=>$num_fact,
-            "fecha_fact"=>$fecha_fact,
-            "total_rtf"=>$total_rtf
-           ]);
+                'codigo' => $e->getCode() ?: 500,
+                'mensaje' => $e->getMessage(),
+                'http_status' => 500
+            ], 500);
         }
-      } else if($opcion == 3){//Factura Multiple
-
-
-        $id_radica = $request->input('id_radica');
-        $anio_radica = Notaria::find(1)->anio_trabajo;
-        if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', false)->where('factmultiple', false)->exists()){
-          return response()->json([
-             "validar"=>0,
-             "mensaje"=>"La radicación ya está facturada"
-           ]);
-        }else{
-
-          if (Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->exists()){
-
-            $fact = Factura::where('id_radica', $id_radica)->where('anio_radica', $anio_radica)->where('nota_credito', true)->get()->toArray();
-
-            foreach ($fact as $key => $f) {
-              $fecha_fact = $f['fecha_fact'];
-            }
-
-            $fecha_actual = date("Y-m-d");
-        
-            $periodo_actual = date("Y-m", strtotime($fecha_actual));
-            $periodo_factura = date("Y-m", strtotime($fecha_fact));
-
-            $anio_actual = date("Y", strtotime($fecha_actual));
-            $anio_fact = date("Y", strtotime($fecha_fact));
-
-            if($anio_actual == $anio_fact){//mismo año
-              if($periodo_actual == $periodo_factura){//mismo periodo
-                $nota_periodo = 7;
-              }else if($periodo_actual != $periodo_factura){//diferente periodo
-                $nota_periodo = 0;
-              }
-            }else{//diferente año
-              $nota_periodo = 8;
-            }
-          }else{
-             $nota_periodo = 7;
-          }
-
-          $efectivo = $request->efectivo;
-          if($efectivo === '' || is_null($efectivo)){
-            $efectivo = 0;
-          }
-          $efectivo = str_replace(",", " ", $efectivo);//comas por espacios
-          $efectivo = str_replace(" ", "", $efectivo);//elimina espacios
-
-          $cheque = $request->cheque;
-           if($cheque === '' || is_null($cheque)){
-            $cheque = 0;
-          }
-          $cheque = str_replace(",", " ", $cheque);
-          $cheque = str_replace(" ", "", $cheque);
-
-          $consignacion_bancaria = $request->consignacion_bancaria;
-          if($consignacion_bancaria === '' || is_null($consignacion_bancaria)){
-            $consignacion_bancaria = 0;
-          }
-          $consignacion_bancaria = str_replace(",", " ", $consignacion_bancaria);
-          $consignacion_bancaria = str_replace(" ", "", $consignacion_bancaria);
-
-          $pse = $request->pse;
-          if($pse === '' || is_null($pse)){
-            $pse = 0;
-          }
-          $pse = str_replace(",", " ", $pse);
-          $pse = str_replace(" ", "", $pse);
-
-          $transferencia_bancaria = $request->transferencia_bancaria;
-          if($transferencia_bancaria === '' || is_null($transferencia_bancaria)){
-            $transferencia_bancaria = 0;
-          }
-          $transferencia_bancaria = str_replace(",", " ", $transferencia_bancaria);
-          $transferencia_bancaria = str_replace(" ", "", $transferencia_bancaria);
-
-          $tarjeta_credito = $request->tarjeta_credito;
-           if($tarjeta_credito === '' || is_null($tarjeta_credito)){
-            $tarjeta_credito = 0;
-          }
-          $tarjeta_credito = str_replace(",", " ", $tarjeta_credito);
-          $tarjeta_credito = str_replace(" ", "", $tarjeta_credito);
-
-          $tarjeta_debito = $request->tarjeta_debito;
-          if($tarjeta_debito === '' || is_null($tarjeta_debito)){
-            $tarjeta_debito = 0;
-          }
-          $tarjeta_debito = str_replace(",", " ", $tarjeta_debito);
-          $tarjeta_debito = str_replace(" ", "", $tarjeta_debito);
-
-          $bono = $request->bono;
-          if($bono === '' || is_null($bono)){
-            $bono = 0;
-          }
-          $bono = str_replace(",", " ", $bono);
-          $bono = str_replace(" ", "", $bono);
-
-          if($request->tipo_bono == 2 || $request->tipo_bono == 4){
-            $bono = 0;
-            $bono_boleta = $request->bono;
-            $bono_boleta = str_replace(",", " ", $bono_boleta);
-            $bono_boleta = str_replace(" ", "", $bono_boleta);
-          }
-
-
-          $totalbono = $request->totalbono;
-          if($totalbono === '' || is_null($totalbono)){
-            $totalbono = 0;
-          }
-
-
-          $total_mediosdepago = $efectivo + $cheque + $consignacion_bancaria +
-          $pse + $transferencia_bancaria + $tarjeta_credito + $tarjeta_debito + $bono;
-
-
-          if($total_mediosdepago == $request->total_fact){
-
-          }else{
-
-            return response()->json([
-            "validar"=>888
-           ]);
-
-          }
-
-
-          /*if ($request->total_fondo < 1 || $request->total_fondo === '' || is_null($request->total_fondo)){
-             return response()->json([
-            "validar"=>999
-           ]);
-
-          }*/
-
-          /*if ($request->total_super < 1 || $request->total_super === '' || is_null($request->total_super)){
-             return response()->json([
-            "validar"=>999
-           ]);
-          }*/
-
-        
-           /*Autonumerico*/
-         
-          $consecutivo = Factura::where('prefijo', $prefijo_fact)->max('id_fact');
-          $consecutivo = $consecutivo + 1;
-
-          $factura = new Factura();
-          $factura->prefijo               = $prefijo_fact;
-          $factura->id_fact               = $consecutivo;
-          $factura->id_radica             = $id_radica;
-          $factura->anio_radica           = $anio_radica;
-          $factura->fecha_fact            = $fecha_factura;
-          $factura->usuario_fact          = auth()->user()->name;
-          $factura->a_nombre_de           = $request->identificacion_cli1;
-          $factura->total_derechos        = $request->total_derechos;
-          $factura->total_conceptos       = $request->total_conceptos;
-          $factura->total_iva             = $request->total_iva;
-          $factura->total_rtf             = $request->total_rtf;
-          $factura->porcentajertf         = $request->porcentajertf;
-          $factura->total_reteconsumo     = $request->total_reteconsumo;
-          $factura->total_fondo           = $request->total_fondo;
-          $factura->total_super           = $request->total_super;
-          $factura->total_aporteespecial  = $request->total_aporteespecial;
-          $factura->total_impuesto_timbre = $request->total_impuesto_timbre;
-         
-          if($request->total_impuesto_timbre_catatum === '' || is_null($request->total_impuesto_timbre_catatum)){
-              $factura->total_timbrec = 0;
-          }else{
-            $factura->total_timbrec = $request->total_impuesto_timbre_catatum;
-          } 
-
-          $factura->total_fact            = $request->total_fact;
-          $factura->deduccion_reteiva     = $request->reteiva;
-          $factura->deduccion_retertf     = $request->retertf;
-          $factura->deduccion_reteica     = $request->reteica;
-          $factura->credito_fact          = $request->formapago;
-          $factura->a_cargo_de            = $doc_acargo_de;
-          $factura->detalle_acargo_de     = $detalle_acargo_de;
-          $factura->nota_periodo          = $nota_periodo;
-
-          if($request->input('formapago') == 'true' ){
-            $factura->dias_credito = 30;
-            $factura->saldo_fact = $request->input('total_fact');
-          }else if($request->input('formapago') == 'false' ){
-            $factura->dias_credito = 0;
-            $factura->saldo_fact = 0;
-          }
-
-          $factura->save();
-
-          $prefijo = $factura->prefijo;
-          $num_fact = $factura->id_fact;
-          $total_rtf = $factura->total_rtf;
-          $fecha_fact = $factura->fecha_fact;
-          $request->session()->put('numfactura', $num_fact);//TODO:Session para factura
-          $request->session()->put('fecha_fact', $fecha_fact);//TODO:Session para fecha factura
-          $request->session()->put('prefijo_fact', $prefijo);
-          //-------------------------
-          $Conceptos = Concepto::all();
-          $Conceptos = $Conceptos->sortBy('id_concep');
-          $detalle_fact = new Detalle_factura();
-          $detalle_fact->prefijo = $prefijo;
-          $detalle_fact->id_fact = $num_fact;
-
-          foreach ($Conceptos as $clave => $valor) {
-            $total = 'total'.$valor['atributo'].'iden';
-            $totalatributo = 'total'.$valor['atributo'];
-            $detalle_fact->$totalatributo = $request->input($total);
-          }
-          $detalle_fact->save();
-          //-------------------------
-
-          $pago = new Pago();
-          $pago->codigo_ban = $request->input('id_banco');
-          $pago->id_fact = $num_fact;
-          $pago->prefijo = $prefijo;
-          $pago->efectivo = $efectivo;
-          $pago->cheque = $cheque;
-          $pago->consignacion_bancaria = $consignacion_bancaria;
-          $pago->pse = $pse;
-          $pago->transferencia_bancaria = $transferencia_bancaria;
-          $pago->tarjeta_credito = $tarjeta_credito;
-          $pago->tarjeta_debito = $tarjeta_debito;
-          $pago->bono = $bono;
-          $pago->numcheque = $request->numcheque;
-          $pago->save();
-
-           /*if($request->tipo_bono == 2 || $request->tipo_bono == 4){
-               $bono = $bono_boleta;
-            }*/
-
-
-          if($totalbono > 0){
-            $bonos = new Bono();
-            $bonos->codigo_bono =  $request->codigo_bono;
-            $bonos->id_fact = $num_fact;
-            $bonos->prefijo = $prefijo;
-            $bonos->id_radica = $id_radica;
-            $bonos->anio_radica = $anio_radica;
-            $bonos->valor_bon = $totalbono;
-            $bonos->saldo_bon = $totalbono;
-            $bonos->id_tip = $request->tipo_bono;
-            $bonos->usuario = auth()->user()->name;
-            $bonos->save();
-          }
-
-          return response()->json([
-            "validar"=>1,
-            "prefijo_fact"=>$prefijo,
-            "num_fact"=>$num_fact,
-            "fecha_fact"=>$fecha_fact,
-            "total_rtf"=>$total_rtf
-           ]);
-        }
-      }
     }
+}
+
+
+
+  private function save_detalle_derechos_factura($detalle_derechos, $prefijo_fact, $id_fact)
+  {    
+
+    //foreach ($detalle_derechos as $item) {
+    foreach (($detalle_derechos ?? []) as $item) {
+
+      $detalle = new Detalle_derechos_factura();
+
+      $detalle->valor_derechos = (float) $item['valor'];
+      $detalle->saldo_derechos = (float) $item['valor']; // o tu cálculo
+      $detalle->prefijo        = $prefijo_fact;
+      $detalle->id_fact        = $id_fact;
+      $detalle->id_detalleliqd = (int) $item['id_detalleliqd'];
+      $detalle->save();
+
+    }    
+  }
+
+
+
+  private function save_detalle_factura($detalle_conceptos, $prefijo_fact, $id_fact)
+  {
+
+    $detalle = new Detalle_factura();
+    $detalle->prefijo = $prefijo_fact;
+    $detalle->id_fact = $id_fact;
+
+
+    //foreach ($detalle_conceptos as $item) {
+      foreach (($detalle_conceptos ?? []) as $item) {
+        $campo = 'total' . $item['nombre_acto'];
+
+        // Redondear y convertir a número
+        $detalle->$campo = round((float) $item['valor'], 0);
+
+      }
+
+    $detalle->save();
+
+  }
+
+
+
+  private function save_facturas($request)
+  {
+
+    $notaria          = Notaria::find(1);
+    $anio_radica      = $notaria->anio_trabajo;
+    //$prefijo_fact     = trim($notaria->prefijo_fact);
+    $prefijo_fact     = preg_replace('/\s+/', '', $notaria->prefijo_fact);
+    $id_radica        = $request->session()->get('key');
+    $opcion           = $request->session()->get('opcion');//Session para tipo de factura
+    $fecha_manual     = $notaria->fecha_fact;
+    $fecha_automatica = $notaria->fecha_fact_automatica;   
+
+    $cli_doc              = $request->cli_doc;
+    $doc_acargo_de        = $request->doc_acargo_de;
+    $detalle_acargo_de    = $request->detalle_acargo_de; 
+    $cli_nombre           = $request->cli_nombre;
+    $detalle_derechos     = $request->detalle_derechos  ?? [];
+    $detalle_conceptos    = $request->detalle_conceptos  ?? [];
+    $detalle_recaudos     = $request->detalle_recaudos  ?? [];
+    $detalle_deducciones  = $request->detalle_deducciones  ?? [];
+    $total_deducciones    = $request->total_deducciones;   
+    $subtotal             = (int) round((float) $request->subtotal);//$request->subtotal;
+    $total_iva            = (int) round((float) $request->total_iva);//$request->total_iva;
+    $total_recaudos       = $request->total_recaudos;
+    $total_all            = $request->total_all;
+
+
+    //$total_iva  = (int) round((float) $total_iva);
+    $total_fact = (int) $total_all;//(int) round((float) $total_all);
+
+    // 1️⃣ Convertir SIEMPRE a boolean real
+    $creditoFact = (bool) $request->forma_pago;
+    // 2️⃣ Si viene algo raro o vacío, lo manejas (opcional pero recomendado)
+    $creditoFact = $creditoFact ?? false;
+
+     /*Forma de pago, validación para cartera*/
+    if($creditoFact === true ){
+      $dias_credito = 30;
+      $saldo_fact   = $total_fact; 
+      $creditoFact  = 'true';       
+    }else if($creditoFact === false ){
+        $dias_credito = 0;
+        $saldo_fact   = 0;
+        $creditoFact  = 'false'; 
+    } 
+   
+    
+    if (blank($doc_acargo_de)) {
+      $doc_acargo_de = $cli_doc;
+    }
+
+            
+    if($fecha_automatica == true){
+         $fecha_factura = date("Y-m-d H:i:s");//date("Y/m/d");
+    }else if($fecha_automatica == false){
+            $fecha_factura = $fecha_manual;
+    }
+
+    /***********************Valida el periodo de la factura****************************/
+
+    $hoy = Carbon::today();
+    $escritura = Escritura::where('id_radica', $id_radica)
+    ->where('anio_radica', $anio_radica)
+    ->first();
+
+    // Caso 1: No existe escritura (primera vez)
+    if (!$escritura) {
+      $nota_periodo = 7;
+    } else {
+      $fecha_esc = Carbon::parse($escritura->fecha_esc);
+      // Caso 2: Existe escritura
+      if ($fecha_esc->year != $hoy->year) {
+          // Año diferente
+          $nota_periodo = 8;
+      } elseif ($fecha_esc->format('Y-m') === $hoy->format('Y-m')) {
+          // Mismo año y mismo periodo
+          $nota_periodo = 7;
+      } else {
+        // Mismo año pero distinto periodo
+        $nota_periodo = 0;
+      }
+    }   
+
+        
+    /*Autonumerico*/   
+    $consecutivo = $this->getConsecutivoFactura('Factura', $prefijo_fact);
+
+    
+   
+   
+    /*Derechos notariales*/
+    $derechos = 0;
+    foreach ($detalle_derechos as $item) {
+      $derechos += (float) $item['valor'];
+    }
+    $derechos = (int) $derechos;//round($derechos);
+
+    
+    /*Conceptos*/
+    $conceptos = 0;
+    foreach ($detalle_conceptos as $item) {
+      $conceptos += (float) $item['valor'];
+    }
+    $conceptos = (int) $conceptos;//round($conceptos);
+
+   
+    /*Recaudos*/
+    $recaudos = [];
+    foreach ($detalle_recaudos as $reca) {
+      // Validar que exista el campo destino
+      if (empty($reca['nombre_campo_fact'])) {
+          continue;
+      }
+
+    $campo_reca = $reca['nombre_campo_fact'];
+    // Valor numérico redondeado
+    $recaudos[$campo_reca] = (float) $reca['valor']; //round((float) $reca['valor']);
+    }
+
+    $camposRecaudos = [
+      'total_rtf',
+      'total_fondo',
+      'total_super',
+      'total_aporteespecial',
+      'total_impuesto_timbre',
+      'total_timbrec',
+    ];
+   
+
+    /*Deducciones*/
+   $deducciones = [];
+  foreach ($detalle_deducciones as $dedu) {
+    if (empty($dedu['campo_fact'])) {
+        continue;
+    }   
+
+    $campo_dedu = $dedu['campo_fact'];
+   
+    // Valor numérico redondeado
+    $deducciones[$campo_dedu] = (int) $dedu['valor'];//round((float) $dedu['valor']);    
+  }
+
+  $camposDeducciones = [
+    'deduccion_reteiva',
+    'deduccion_reteica',
+    'deduccion_retertf',
+  ];
+
+  
+
+    $factura = new Factura();
+    $factura->prefijo               = $prefijo_fact;
+    $factura->id_fact               = $consecutivo;
+    $factura->id_radica             = $id_radica;
+    $factura->anio_radica           = $anio_radica;
+    $factura->fecha_fact            = $fecha_factura;
+    $factura->usuario_fact          = auth()->user()->name;
+    $factura->a_nombre_de           = $cli_doc;   
+    $factura->total_derechos        = $derechos;
+    $factura->total_conceptos       = $conceptos;
+    $factura->total_iva             = $total_iva;
+    $factura->total_fact            = $total_fact;
+    $factura->nota_credito          = false;
+    $factura->credito_fact          = $creditoFact;
+    $factura->dias_credito          = $dias_credito;
+    $factura->saldo_fact            = $saldo_fact;
+    
+    foreach ($camposRecaudos as $campre) {
+      $factura->$campre = $recaudos[$campre] ?? 0;      
+    }    
+
+    foreach ($camposDeducciones as $campde) {
+      $factura->$campde = $deducciones[$campde] ?? 0;       
+    }  
+   
+    $factura->a_cargo_de            = $doc_acargo_de;
+    $factura->detalle_acargo_de     = $detalle_acargo_de;
+    $factura->nota_periodo          = $nota_periodo;   
+
+    $factura->save();
+
+    
+    return [
+        'id_fact'      => $factura->id_fact,
+        'fecha_fact'   => $factura->fecha_fact,
+        'rtf'          => $factura->total_rtf,
+    ];
+
+  }
+
+  private function save_medios_pago($efectivo, $transferencia, $pse, $tarjetaCredito, $tarjetaDebito,
+                                    $consignacion_bancaria, $mediopactadeposito, $valorBono, $prefijo_fact,  $id_fact)
+  {
+
+    $pago = new Pago();
+    $pago->prefijo = $prefijo_fact;
+    $pago->id_fact = $id_fact;
+
+    $pago->efectivo               = round((float) $efectivo, 0);
+    $pago->pse                    = round((float) $pse, 0);
+    $pago->transferencia_bancaria = round((float) $transferencia, 0);
+    $pago->tarjeta_credito        = round((float) $tarjetaCredito, 0);
+    $pago->tarjeta_debito         = round((float) $tarjetaDebito, 0);
+    $pago->consignacion_bancaria  = round((float) $consignacion_bancaria, 0);
+    $pago->acta_deposito          = round((float) $mediopactadeposito, 0);
+    $pago->bono                   = round((float) $valorBono, 0);
+
+    $pago->save();
+
+
+  }
+
+  private function save_bonos($valorBono, $totalBono, $tipoBono, $codigo_bono, $prefijo_fact, $id_fact,  
+                              $id_radica, $anio_radica)
+  {
+
+    $bono = new Bono();
+    $bono->codigo_bono  = $codigo_bono; // Asumo que este es el código
+    $bono->id_fact      = $id_fact;
+    $bono->prefijo      = $prefijo_fact;
+    $bono->id_radica    = $id_radica;
+    $bono->anio_radica  = $anio_radica;
+    $bono->valor_bon    = round((float) $valorBono, 0);
+    $bono->saldo_bon    = round((float) $totalBono, 0);
+    $bono->id_tip       = $tipoBono;
+    $bono->usuario      = auth()->user()->name;
+    $bono->save();
+
+  }
+  
+
+  private function save_escritura($id_radica, $anio_radica): int
+  {
+
+     $notaria = Notaria::find(1);
+     $fecha_manual     = $notaria->fecha_fact;
+     $fecha_automatica = $notaria->fecha_fact_automatica;
+
+      if($fecha_automatica == true){
+          $fecha_escritura = date("Y-m-d H:i:s");//date("Y/m/d");
+      }else if($fecha_automatica == false){
+                $fecha_escritura = $fecha_manual;
+      }    
+
+        /*Autonumerico*/   
+      $consecutivo = $this->getConsecutivoFactura('Escritura', '0');
+       
+      $escritura = new Escritura();
+      $escritura->num_esc     = $consecutivo;
+      $escritura->anio_esc    = $anio_radica;
+      $escritura->id_radica   = $id_radica;
+      $escritura->anio_radica = $anio_radica;
+      $escritura->fecha_esc   = $fecha_escritura;
+      $escritura->save();
+      $num_esc = $escritura->num_esc;
+      $fecha_esc = $escritura->fecha_esc;          
+
+      return $num_esc;
+
+  }
+
+  private function saveEgresoActaDeposito($abonosporactasdeposito, $id_fact, $id_radica)
+  {  
+
+     $notaria = Notaria::find(1);
+     $fecha_manual     = $notaria->fecha_fact;
+     $fecha_automatica = $notaria->fecha_fact_automatica;
+     $anio_trabajo     = $notaria->anio_trabajo;
+     $prefijo_fact     = preg_replace('/\s+/', '', $notaria->prefijo_fact);
+     
+      if($fecha_automatica == true){
+          $fecha_egreso = date("Y/m/d");
+      }else if($fecha_automatica == false){
+                $fecha_egreso = $fecha_manual;
+      }  
+     
+      $concepto_egreso = 1;
+
+     foreach (($abonosporactasdeposito ?? []) as $item) {
+        
+        $id_acta    = $item['id_acta'];
+        $descuento  = round((float) $item['descuento'], 0);
+        $nuevosaldo = round((float) $item['saldo'], 0);       
+       
+        $concepto_egreso = 1;
+       
+        $Egreso = new Egreso_acta_deposito();
+        $Egreso->fecha_egreso = $fecha_egreso;
+        $Egreso->id_con       = $concepto_egreso;
+        $Egreso->id_radica    = $id_radica;
+        $Egreso->anio_radica  = $anio_trabajo;
+        $Egreso->id_act       = $id_acta;
+        $Egreso->egreso_egr   = $descuento;
+        $Egreso->saldo        = $nuevosaldo;
+        $Egreso->usuario      = auth()->user()->name;
+        $Egreso->prefijo      = $prefijo_fact;
+        $Egreso->id_fact      = $id_fact;
+        $Egreso->save();
+
+
+        $actas_deposito = Actas_deposito::find($id_acta);
+        $actas_deposito->saldo = $nuevosaldo;
+        $actas_deposito->save();        
+
+      }
+
+
+         
+
+
+  }
+  
+
+  private function save_certificado_rete($id_radica, $num_escr, $anio_radica, $identificacion_cli)
+  {
+    $existe = Consecutivo_rtf::where('num_esc', $num_escr)
+        ->where('anio_esc', $anio_radica)
+        ->where('identificacion_cli', $identificacion_cli)
+        ->exists();
+
+    if (!$existe) {
+
+        $actoscliente_radica = Actosclienteradica::where('id_radica', $id_radica)
+            ->where('anio_radica', $anio_radica)
+            ->get();
+
+        foreach ($actoscliente_radica as $acr) {
+
+            if ($acr->porcentajecli1 > 0) {
+
+                $id_actoperrad      = $acr->id_actoperrad;
+                $identificacion_cli = $acr->identificacion_cli;
+                $porcentaje_cli     = $acr->porcentajecli1;
+
+                try {
+
+                    /*Autonumerico*/
+                    $consecutivo = $this->getConsecutivoFactura('Consecutivo_rtf', '0');
+
+                    $Consecutivo_rtf = new Consecutivo_rtf();
+                    $Consecutivo_rtf->num_esc            = $num_escr;
+                    $Consecutivo_rtf->anio_esc           = $anio_radica;
+                    $Consecutivo_rtf->id_con             = $consecutivo;
+                    $Consecutivo_rtf->identificacion_cli = $identificacion_cli;
+                    $Consecutivo_rtf->porcentaje_rtf     = $porcentaje_cli;
+                    $Consecutivo_rtf->id_radica          = $id_radica;
+                    $Consecutivo_rtf->save();
+
+                } catch (\Illuminate\Database\QueryException $e) {
+
+                    // 🔥 Si es duplicado (PK), lo ignoramos
+                    if ($e->getCode() == 23505) {
+                        continue;
+                    }
+
+                    // ❌ Otro error sí debe escalar
+                    throw $e;
+                }
+
+                /************ VENDEDORES ADICIONALES **************/
+                if ($acr->porcentajecli1 < 100) {
+
+                    $vendedores = Otorgante::where('id_actoperrad', $id_actoperrad)->get();
+
+                    foreach ($vendedores as $ven) {
+
+                        try {
+
+                            /*Autonumerico*/
+                            $consecutivo = $this->getConsecutivoFactura('Consecutivo_rtf', '0');
+
+                            $Consecutivo_rtf = new Consecutivo_rtf();
+                            $Consecutivo_rtf->num_esc            = $num_escr;
+                            $Consecutivo_rtf->anio_esc           = $anio_radica;
+                            $Consecutivo_rtf->id_con             = $consecutivo;
+                            $Consecutivo_rtf->identificacion_cli = $ven->identificacion_cli;
+                            $Consecutivo_rtf->porcentaje_rtf     = $ven->porcentaje_otor;
+                            $Consecutivo_rtf->id_radica          = $id_radica;
+                            $Consecutivo_rtf->save();
+
+                        } catch (\Illuminate\Database\QueryException $e) {
+
+                            if ($e->getCode() == 23505) {
+                                continue;
+                            }
+
+                            throw $e;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
     /**
      * Display the specified resource.
@@ -752,6 +841,7 @@ class FacturacionController extends Controller
           $actos = Detalle_liqderecho::where('id_liqd', $id_liqd)->get()->toArray();
           $liq_conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
           $liq_recaudos = Liq_recaudo::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
+        
 
           return response()->json([
             "validarliqd"=> "1",
@@ -868,6 +958,479 @@ class FacturacionController extends Controller
 
     }
 
+
+
+
+ public function SumaSaldosDerechos(Request $request){
+
+    $id_liq = $request->id_liq;
+
+    $saldo = Detalle_derechos_factura::where('id_detalleliqd', $id_liq)
+    ->where('status_nc', false)
+    ->sum('valor_derechos');
+
+    return response()->json([
+             "saldo"=> $saldo            
+            ]); 
+
+ }
+
+ public function SumaSaldosConceptos(Request $request)
+{
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $prefijo_fact = $notaria->prefijo_fact;
+
+    $conceptos_liq = $request->input('conceptos', []);
+    $id_radica = $request->session()->get('key');
+
+    // Blindaje 1: si no hay conceptos
+    if (!is_array($conceptos_liq) || empty($conceptos_liq)) {
+        return response()->json([
+            'saldos' => []
+        ]);
+    }
+
+    $resultados = []; //Blindaje 2: inicializar
+
+    foreach ($conceptos_liq as $value) {
+
+        // Blindaje 3: estructura válida
+        if (
+            !isset($value['atributo'], $value['total']) ||
+            $value['atributo'] === ''
+        ) {
+            continue;
+        }
+
+        $concepto_factu  = 'total' . $value['atributo'];
+        $conceptos_saldo = 'saldo' . $value['atributo'];
+        $valor_liq = (float) $value['total'];
+
+        try {
+            $valor = DB::table('facturas as f')
+                ->join('detalle_facturas as d', function ($join) {
+                    $join->on('f.prefijo', '=', 'd.prefijo')
+                         ->on('f.id_fact', '=', 'd.id_fact');
+                })
+                ->where('f.id_radica', $id_radica)
+                ->where('f.anio_radica', $anio_trabajo)
+                ->where('f.prefijo', $prefijo_fact)
+                ->where('f.nota_credito', false)
+                ->sum(DB::raw("COALESCE(d.$concepto_factu, 0)"));
+
+            $resultados[$conceptos_saldo] = $valor_liq - (float)$valor;
+
+        } catch (\Throwable $e) {
+            // Blindaje 4: si una columna no existe, no tumba todo
+            $resultados[$conceptos_saldo] = $valor_liq;
+        }
+    }
+
+    return response()->json([
+        "saldos" => $resultados
+    ]);
+}
+
+
+
+ 
+
+ public function SumaSaldosRecaudos(Request $request){
+
+  $notaria = Notaria::find(1);
+  $anio_trabajo = $notaria->anio_trabajo;
+  $prefijo_fact = $notaria->prefijo_fact;
+  $recaudos_liq = $request->recaudos_liq;  
+
+  $num_fact = $request->session()->get('numfactura');
+  $id_radica = $request->session()->get('key');
+
+  // Consulta correcta (prefijo bien usado)
+  $totales = Factura::where('prefijo', $prefijo_fact)    
+    ->where('id_radica', $id_radica)
+    ->where('anio_radica', $anio_trabajo)
+    ->where('nota_credito', false)
+    ->selectRaw('
+        COALESCE(SUM(total_rtf), 0)                AS total_rtf,
+        COALESCE(SUM(total_fondo), 0)              AS total_fondo,
+        COALESCE(SUM(total_super), 0)              AS total_super,
+        COALESCE(SUM(total_aporteespecial), 0)     AS total_aporteespecial,
+        COALESCE(SUM(total_impuesto_timbre), 0)    AS total_impuesto_timbre,
+        COALESCE(SUM(total_timbrec), 0)            AS total_timbrec
+    ')
+    ->first();
+
+  
+  // Inicializar resultado
+  $resultado = [];
+
+  $liq = $recaudos_liq[0];
+
+  $resultado['saldoretefuente'] =
+    (float)($liq['retefuente'] ?? 0)
+    - (float)($totales->total_rtf ?? 0);
+
+  $resultado['saldorecasuper'] =
+    (float)($liq['recsuper'] ?? 0)
+    - (float)($totales->total_super ?? 0);
+
+  $resultado['saldorecafondo'] =
+    (float)($liq['recfondo'] ?? 0)
+    - (float)($totales->total_fondo ?? 0);
+
+  $resultado['saldoaportespecial'] =
+    (float)($liq['aporteespecial'] ?? 0)
+    - (float)($totales->total_aporteespecial ?? 0);
+
+  $resultado['saldoimpuestotimbr'] =
+    (float)($liq['impuestotimbre'] ?? 0)
+    - (float)($totales->total_impuesto_timbre ?? 0);
+
+  $resultado['saldotimbreca'] =
+    (float)($liq['timbrec'] ?? 0)
+    - (float)($totales->total_timbrec ?? 0);
+  
+
+  return response()->json([
+             "saldos"=> $resultado           
+           ]);
+
+ }
+
+ 
+
+ public function CalcularIva_Derechos(Request $request){    
+
+    $porcentaje = (Tarifa::find(9)->valor1)/100;
+    $iva = 0;
+
+     $id_acto       = $request->id_acto;
+     $valor         = $request->valor;
+     $conporcentaje = $request->conporcentaje;
+     $idDetalle     = $request->idDetalle;
+
+    
+    if($conporcentaje == 1){
+      $derechos = Detalle_liqderecho::where('id_detalleliqd', $idDetalle)    
+      ->value('derechos');
+
+      $valor = $valor / 100;
+      $derechos = $derechos * $valor;
+      $valor = $derechos;
+
+    }       
+
+     $Acto = Acto::find($id_acto);
+
+     $flash_iva = $Acto->iva;
+
+     if($flash_iva == true){
+       $iva = $valor * $porcentaje;
+       $iva = $iva;
+
+
+     }elseif($flash_iva == false){
+       $iva = 0;
+     }     
+
+
+     return response()->json([
+             "iva"=> $iva,
+             "valor" =>$valor        
+           ]);
+    
+ }
+ 
+
+ public function CalcularIvaConceptos(Request $request){
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;  
+
+    $porcentaje = (Tarifa::find(9)->valor1)/100;
+    $iva = 0;
+
+     $valor         = $request->valor;
+     $conporcentaje = $request->conporcentaje;
+     $concepto      = $request->concepto;
+     $atributo      = 'total'.$concepto;
+     $id_radica     = $request->session()->get('key');     
+
+    
+    if($conporcentaje == 1){
+      $concepto_liq = Liq_concepto::
+      where('id_radica', $id_radica) 
+      ->where('anio_radica', $anio_trabajo)   
+      ->value($atributo);
+
+      $valor = $valor / 100;
+      $valor_concepto = $concepto_liq * $valor;
+      $valor = $valor_concepto;
+    }  
+
+     
+       $iva = $valor * $porcentaje;
+       $iva = $iva;     
+
+
+     return response()->json([
+             "iva"=> $iva,
+             "valor" =>$valor        
+           ]);
+
+ }
+
+
+  public function Validaciones(Request $request){
+    $notaria = Notaria::find(1);
+    $anio_trabajo = $notaria->anio_trabajo;
+    $id_radica = $request->session()->get('key');
+
+    $derechos  = $request->detalle_derechos ?? [];
+    $conceptos = $request->detalle_conceptos ?? [];
+    $recaudos  = $request->detalle_recaudos ?? [];
+
+
+    $request->session()->put('intento_id', generarIntentoId());//Genera sesion para evitar doble facturación  
+    
+   
+    $alertas = [];
+
+
+    foreach ($recaudos as $item) {
+
+      $campoFactura = $item['nombre_campo_fact']; // ej: total_rtf
+      $campoLiq     = $item['nombre_campo_liq'];  // ej: retefuente
+      $valorArray   = (float) $item['valor'];
+
+      // 1️⃣ SUMA en Factura
+      $sumaFactura = 
+          Factura::where('id_radica', $id_radica)
+              ->where('anio_radica', $anio_trabajo)
+              ->where('nota_credito', false)
+              ->sum($campoFactura);
+          
+
+      // 2️⃣ SUMA + valor del array
+      $totalComparar = $sumaFactura + $valorArray;
+
+      // 3️⃣ CONSULTA Liq_recaudo (registro único)
+      $valorLiqRecaudo = 
+          Liq_recaudo::where('id_radica', $id_radica)
+              ->where('anio_radica', $anio_trabajo)
+              ->value($campoLiq); 
+
+      // 4️⃣ COMPARACIÓN FINAL
+      
+      $rango = $totalComparar - $valorLiqRecaudo;
+
+
+      $round_reca = Redondeos::find(3)->valor;
+      $round_reca = (float) $round_reca / 100;
+
+      //if ($totalComparar > $valorLiqRecaudo) {
+        if ($rango >= $round_reca) {
+
+          $alertas[] = [
+              'nombre_acto' => $item['nombre_acto'],
+              'mensaje' => 'El valor acumulado del recaudo supera el total permitido según la liquidación registrada.'
+          ];
+      }
+  }  
+
+
+    foreach ($conceptos as $con) {
+
+      $nombreActo = $con['nombre_acto'];
+      $campoTotal = 'total' . $nombreActo;
+      $valorArray = round((float) $con['valor'], 0);
+
+
+      // 1️⃣ SUMA desde Factura + Detalle_factura
+      $sumaFacturas = round(
+          Factura::join('detalle_facturas', function ($join) {
+                  $join->on('facturas.prefijo', '=', 'detalle_facturas.prefijo')
+                       ->on('facturas.id_fact', '=', 'detalle_facturas.id_fact');
+              })
+              ->where('facturas.id_radica', $id_radica)
+              ->where('facturas.anio_radica', $anio_trabajo)
+              ->where('facturas.nota_credito', false)
+              ->sum("detalle_facturas.$campoTotal"),
+          0
+      );
+
+
+
+      // 2️⃣ SUMA + valor del array
+      $totalComparar = $sumaFacturas + $valorArray;
+
+      // 3️⃣ CONSULTA Liq_concepto
+      $valorLiqConcepto = round(
+          Liq_concepto::where('id_radica', $id_radica)
+              ->where('anio_radica', $anio_trabajo)
+              ->value($campoTotal),
+          0
+      );
+   
+
+      // 4️⃣ COMPARACIÓN FINAL
+       $rango = $totalComparar - $valorLiqConcepto;
+
+      $round_conc = Redondeos::find(2)->valor;
+      $round_conc = (float) $round_conc / 100;
+
+      //if ($totalComparar > $valorLiqConcepto) {
+        if ($rango >= $round_conc) {
+
+          $alertas[] = [
+              'nombre_acto' => ucfirst($nombreActo),
+              'mensaje' => 'El valor acumulado del concepto supera el total permitido según la liquidación registrada.'
+          ];
+      }
+  }
+
+
+
+    foreach ($derechos as $der) {
+
+        $idDetalle  = $der['id_detalleliqd'];
+        $valorArray = (float) $der['valor'];
+
+        // Suma Detalle_derechos_factura
+        $sumaDerechosFactura = Detalle_derechos_factura::
+        where('id_detalleliqd', $idDetalle)
+        ->where('status_nc', false)
+        ->sum('valor_derechos');
+
+        $totalDerechos = $sumaDerechosFactura + $valorArray;
+
+        // Suma Detalle_liqderechos
+        $sumaLiqDerechos = Detalle_liqderecho::where('id_detalleliqd', $idDetalle)
+                ->sum('derechos');
+
+
+        // Validación
+         $rango = $totalDerechos - $sumaLiqDerechos;
+
+
+        $round_dere = Redondeos::find(1)->valor;
+        $round_dere = (float) $round_dere / 100;
+
+
+        //if ($totalDerechos > $sumaLiqDerechos) {
+         if ($rango >= $round_dere) {
+
+          $alertas[] = [
+            'nombre_acto' => $der['nombre_acto'],
+            'mensaje' => 'La suma de los derechos asociados a este acto excede el valor total liquidado para el mismo.'
+          ];
+        }
+    }
+
+    if (count($alertas) > 0) {
+      // Hay errores → se devuelven las alertas
+      return response()->json([
+        'status' => 'warning',
+        'alertas' => $alertas
+      ], 200);
+
+    } else {
+
+
+      /*******************Si los derechos, los conceptos y los recaudos están en orden*******************/
+      /************entonces validamos si hay actas de deposito y luego continiua con lo demás***********/
+
+      $identificacion_cli = $request->identificacion;
+       
+
+      $actas_deposito = Actas_deposito_egreso_view::where('identificacion_cli', $identificacion_cli)
+                          ->where('anulada', '<>', true)
+                          ->where('id_tip', 2)
+                          ->where('deposito_escrituras', '>', 0)
+                          ->select(
+                          'id_act',
+                          \DB::raw("to_char(fecha_acta, 'DD/MM/YYYY') as fecha_acta"),
+                          'proyecto',
+                          'descripcion_tip as tipo_deposito',
+                          'identificacion_cli',
+                          'id_egr',
+                          'deposito_escrituras',
+                          'deposito_boleta',
+                          'deposito_registro',
+                          'deposito_act',
+                          'saldo',
+                          // 🔥 AQUÍ AGREGAMOS LA SUMA AGRUPADA
+                          \DB::raw("
+                          SUM(egreso_egr) OVER (
+                          PARTITION BY id_act, identificacion_cli
+                          ) as total_egresos_por_acta
+                          ")
+                          )
+                          ->orderBy('id_act')
+                          ->get();
+
+          //var_dump($actas_deposito);
+          if(count($actas_deposito) >= 1){           
+               $actas = '1';                           
+          }else{
+            $actas = '0';
+          }
+
+
+
+      // TODO correcto en TODOS los ítems
+      return response()->json([
+        'status'          => 'ok',
+        'actas'           => $actas,
+        'actas_deposito'  =>  $actas_deposito,
+        'mensaje'         => 'Todos los actos fueron validados correctamente. No se encontraron inconsistencias en los valores de derechos.'
+      ], 200);
+    }
+   
+    
+  }
+
+
+  private function getConsecutivoFactura(string $modelo, string $prefijo): int
+  {
+
+    $modelo  = trim($modelo);
+    $prefijo = trim($prefijo);
+
+    // blindaje extra
+    $prefijo = preg_replace('/\s+/', '', $prefijo);
+
+    return \DB::transaction(function () use ($modelo, $prefijo) {       
+
+        $row = Factura_consecutivo::where('modelo', $modelo)
+            ->where('prefijo', $prefijo)           
+            ->lockForUpdate()
+            ->first();
+      
+
+        if (!$row) {
+            $row = new Factura_consecutivo();
+            $row->modelo      = $modelo;
+            $row->prefijo     = $prefijo;           
+            $row->consecutivo = 1;
+            $row->save();
+            return 1;
+        }
+
+         
+
+      $row->consecutivo++;
+      $row->consecutivo = (int) $row->consecutivo;
+      $row->save();
+       
+
+        return $row->consecutivo;
+    });
+  }
+
+
+
+
     
 
 /********TODO:Elimina duplicados de un array********/
@@ -885,4 +1448,17 @@ class FacturacionController extends Controller
       }
       return $temp_array;
     }
+}
+
+
+/**********Intendo para evitar doble factura***********/
+function generarIntentoId()
+{
+    // Fecha y hora: YYYYMMDDHHMMSS
+    $fecha = date('YmdHis');
+
+    // Número aleatorio (0 - 9999)
+    $random = mt_rand(0, 9999);
+
+    return $fecha . '_' . $random;
 }

@@ -46,8 +46,16 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> <b class="blue">Cuantia</b> </label>
 
+                        <!--
+
                         <div class="col-sm-9">
                             <input type="text" id="cuantia" name="cuantia" class="col-xs-10 col-sm-5"  onblur="ImpuestoTimbreC({{$Acto->id_acto}})"  onKeyPress="return soloNumeros(event)" />
+                        </div> 
+
+                        -->
+
+                         <div class="col-sm-9">
+                            <input type="text" id="cuantia" name="cuantia" class="col-xs-10 col-sm-5"  onKeyPress="return soloNumeros(event)" />
                         </div>
 
                          <input type="hidden" id="timbredecreto175"/>

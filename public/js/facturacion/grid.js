@@ -1094,46 +1094,6 @@ function Total_Menos_Deducciones() {
 
 }
 
-/*function Total_Menos_Deducciones_Otor() {
-    
-    var grantotal = parseFloat($("#grantotalotorderechosiden").val()) +
-    parseFloat($("#grantotalotorconceptosiden").val()) +
-    parseFloat($("#totalivaotoriden").val()) +
-    parseFloat($("#rtfotoriden").val()) +
-    parseFloat($("#impconsumootoriden").val()) +
-    parseFloat($("#totalfondootoriden").val()) +
-    parseFloat($("#totalsuperotoriden").val());
-
-    var deducciones = parseFloat($("#reteivaotoriden").val()) +
-    parseFloat($("#retertfotoriden").val()) +
-    parseFloat($("#reteicaotoriden").val());
-
-    grantotal = Math.round(grantotal - deducciones);
-    $("#grantotalotorganteiden").val(grantotal);
-    $("#grantotalotorgante").html(formatNumbderechos(grantotal));
-
-}*/
-
-/*function Total_Menos_Deducciones_Compa() {
-   
-    var grantotal = parseFloat($("#grantotalcompaderechosiden").val()) +
-    parseFloat($("#grantotalcompaconceptosiden").val()) +
-    parseFloat($("#totalivacompaiden").val()) +
-    parseFloat($("#rtfcompaiden").val()) +
-    parseFloat($("#impconsumocompaiden").val()) +
-    parseFloat($("#totalfondocompaiden").val()) +
-    parseFloat($("#totalsupercompaiden").val());
-
-    var deducciones = parseFloat($("#reteivacompiden").val()) +
-    parseFloat($("#retertfcompiden").val()) +
-    parseFloat($("#reteicacompiden").val());
-
-    grantotal = Math.round(grantotal - deducciones);
-    $("#grantotalcomparecienteiden").val(grantotal);
-    $("#grantotalcompareciente").html(formatNumbderechos(grantotal));
-
-}*/
-
 function Cargar_Actas_Cliente(data) {
     var htmlTags = "";
     var i = 1;

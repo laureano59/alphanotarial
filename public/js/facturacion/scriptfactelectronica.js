@@ -85,6 +85,8 @@ function Enviar(factura){
   var retransmitir = "1";
   var num_fact = factura;
   var route = "/enviarfactura";
+  //var route = "/enviarfacturaxml";
+  
   var token = $("#token").val();
   var type = 'GET';
   var datos = {

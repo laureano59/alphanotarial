@@ -62,10 +62,10 @@
                 <font size="1"><b>Cliente:&nbsp;</b>{{$identificacioncli1}}</font>
             </td>
             <td width="25%"></td>
-            <td width="20%">
+            <td width="25%">
                 <font size="1"><b>{{$titulo}}</b></font>
             </td>
-            <td width="25%"><b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$num_fact}}</b></td>
+            <td width="30%"><b>{{$prefijo_fact}}&nbsp;-&nbsp;{{$num_fact}}</b> <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} - {{ $hora_fact }}</font></td>
         </tr>
         <tr>
             <td width="30%">
@@ -76,7 +76,7 @@
                 <font size="1"><b>Escritura No. </b></font>
             </td>
             <td width="25%">
-                <font size="1"><b>{{$num_esc}}</b></font>
+                <font size="4"><b>{{$num_esc}}</b></font> <font size="1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ Carbon\Carbon::parse($fecha_esc)->format('d/m/Y') }} - {{ Carbon\Carbon::parse($fecha_esc)->format('h:m:s') }}</font>
             </td>
         </tr>
         <tr>
@@ -85,10 +85,10 @@
             </td>
             <td width="25%"></td>
             <td width="20%">
-                <font size="1">Fecha Factura / Escri :</font>&nbsp;
+               
             </td>
             <td width="25%">
-                <font size="1">{{ Carbon\Carbon::parse($fecha_fact)->format('d/m/Y') }} - {{ Carbon\Carbon::parse($fecha_esc)->format('d/m/Y') }} </font>
+                
             </td>
         </tr>
     </table>

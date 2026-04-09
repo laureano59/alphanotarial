@@ -1,4 +1,4 @@
-$("#guardar-cli").click(function() {
+$("#guardar_cli").click(function() {
     var identificacion_cli, pmer_apellidocli, sgndo_apellidocli,
     pmer_nombrecli, sgndo_nombrecli, estadocivil, telefono_cli, direccion_cli,
     email_cli, empresa, id_tipoident, ciudad, actidad_economica;
@@ -16,7 +16,8 @@ $("#guardar-cli").click(function() {
     //id_tipoident = $("#tipo_documento").val();
     id_tipoident = $("#tipo_documento option:selected").val();
     empresa = $("#empresa").val();
-    ciudad = $("#ciudad").val();
+    //ciudad = $("#ciudad").val();
+    ciudad = document.getElementById("ciudad").value;
 
     if(identificacion_cli != '' && pmer_apellidocli != ''
     && pmer_nombrecli != '' && estadocivil != ''
@@ -94,8 +95,8 @@ $("#guardar-cli-empresa").click(function() {
     empresa = $("#empresa").val();
     telefono_cli = $("#telefono_cli_empresa").val();
     direccion_cli = $("#direccion_cli_empresa").val();
-    email_cli = $("#email_cli_empresa").val();
-    ciudad = $("#ciudad_empresa").val();
+    email_cli = $("#email_cli_empresa").val();    
+    ciudad = document.getElementById("ciudad_empresa").value;
     actidad_economica = $("#actieconempre option:selected").val();
     
     if(identificacion_cli != '' && id_tipoident != ''

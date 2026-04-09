@@ -20,17 +20,13 @@ use App\Cruces_actas_deposito_view;
 use App\Libroindice_view;
 use App\Actos_notariales_escritura_view;
 use App\Relacion_notas_credito_view;
-use\App\Informe_cartera_view;
-use App\Recaudos_view;
-use\App\Recaudos_sincuantia_view;
-use\App\Recaudos_excenta_view;
 use App\Tarifa;
-use\App\Recaudos_sincuantia_excenta_view;
-use\App\Recaudos_concuantia_view;
-use\App\Actas_deposito_view;
-use\App\Actas_deposito_egreso_view;
+use App\Recaudos_sincuantia_excenta_view;
+use App\Recaudos_concuantia_view;
+use App\Actas_deposito_view;
 use App\Exports\RonExport;
 use App\Exports\BonosExportCli;
+use App\Exports\CajaDiarioEspecial;
 use App\Exports\IngresosdianescriturasExport;
 use App\Exports\EnajenacionesExport;
 use App\Exports\BonosExportFecha;
@@ -39,6 +35,14 @@ use App\Exports\NotasCreditoExport;
 use App\Exports\ExcelReteaplicadaExport;
 use App\Exports\NotasCreditoCajaRapidaExport;
 use App\Exports\ExcelDataXExport;
+use App\Exports\ExcelDataXExportNC;
+use App\Exports\ExcelDataXActasDepo;
+use App\Exports\ExcelDataXExportCJ;
+use App\Exports\ExcelDataXExportCJNC;
+use App\Exports\ExcelIngresosExcedentes;
+use App\Exports\ExcelEgresosDiarios;
+use App\Exports\ExcelTrazabilidadEgreso;
+use App\Exports\ExcelEscriturasPorActo;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Protocolista;
 use App\Cuenta_cobro_escr;
@@ -200,7 +204,32 @@ class ReportesController extends Controller
   }else if($opcion == 34){
     $request->user()->authorizeRoles(['interfazdatax','administrador']);
     $nombre_reporte = $request->session()->get('nombre_reporte');
-  }  return view('reportes.interfazdatax', compact('nombre_reporte'));
+     return view('reportes.interfazdatax', compact('nombre_reporte'));
+  }else if($opcion == 35){   
+    $request->user()->authorizeRoles(['interfazdatax','administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+     return view('reportes.interfazdataxcajarapida', compact('nombre_reporte'));
+  }else if($opcion == 36){   
+    $request->user()->authorizeRoles(['interfazdatax','administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+     return view('reportes.interfazdataxactasdepo', compact('nombre_reporte'));
+  }else if($opcion == 37){   
+    $request->user()->authorizeRoles(['administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.informeactasporidentificacion', compact('nombre_reporte'));
+  }else if($opcion == 38){   
+    $request->user()->authorizeRoles(['administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.informeactasporidentificacion', compact('nombre_reporte'));
+  }else if($opcion == 40){
+    $request->user()->authorizeRoles(['relfactmensualescr', 'Infoegresos', 'consultar', 'administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.informeingresosexcedentes', compact('nombre_reporte'));
+  }else if($opcion == 41){
+    $request->user()->authorizeRoles(['relfactmensualescr', 'Infoegresos', 'consultar', 'administrador']);
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+    return view('reportes.trazabilidadegreso', compact('nombre_reporte'));
+  }      
 }
 
 
@@ -290,9 +319,17 @@ public function FechaReporte(Request $request){
   public function Caja_Diario(Request $request)
   {
     $notaria = Notaria::find(1);
-    //$anio_trabajo = $notaria->anio_trabajo;
-    $fecha1 = $request->fecha1;
-    $fecha2 = $request->fecha2;
+    //$anio_trabajo = $notaria->anio_trabajo;    
+
+    if (!$request->user()->roles->pluck('name')->intersect(['administrador', 'avanzado'])->count()) {
+      $fecha1 = date('d/m/Y');
+      $fecha2 = date('d/m/Y');    
+    } else {
+      $fecha1 = $request->fecha1;
+      $fecha2 = $request->fecha2;
+    }
+   
+   
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
@@ -626,6 +663,7 @@ public function FechaReporte(Request $request){
     $request->session()->put('opcionreporte', $opcionreporte);
     $ordenar = $request->session()->get('ordenar');
 
+
     if($ordenar == 'porfecha'){ //por fecha
       if($opcionreporte == 'maycero'){
         $informecartera = Informe_cartera_view::whereDate('fecha_abono', '>=', $fecha1)
@@ -658,11 +696,24 @@ public function FechaReporte(Request $request){
       }
     }elseif($ordenar == 'facturasactivas'){
 
-     $informecartera = Informe_cartera_view::
-     where('nota_credito', false)
-     ->where('saldo_fact', '>=', 1)
-     ->orderBy('id_fact')->get()
-     ->toArray();
+      //$identificacion_cli
+
+      if ($identificacion_cli === null || $identificacion_cli === ''){
+         $informecartera = Informe_cartera_view::
+          where('nota_credito', false)
+          ->where('saldo_fact', '>=', 1)
+          ->orderBy('id_fact')->get()
+          ->toArray();
+      }else{
+          $informecartera = Informe_cartera_view::
+          where('nota_credito', false)
+          ->where('saldo_fact', '>=', 1)
+          ->where('identificacion_cli', $identificacion_cli)
+          ->orderBy('id_fact')->get()
+          ->toArray();
+      }
+
+    
    }
    
    return response()->json([
@@ -769,9 +820,20 @@ public function FechaReporte(Request $request){
  {
 
   $request->user()->authorizeRoles(['rdiariocaja','administrador']);
-  $notaria = Notaria::find(1);
-  $fecha1 = $request->fecha1;
-  $fecha2 = $request->fecha2;
+  $notaria = Notaria::find(1);  
+
+  
+
+    if (!$request->user()->roles->pluck('name')->intersect(['administrador', 'avanzado'])->count()) {
+        $fecha1 = date('m/d/Y');
+        $fecha2 = date('m/d/Y');        
+      } else {
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+      }   
+
+   
+
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
@@ -817,9 +879,21 @@ public function FechaReporte(Request $request){
 
   public function Informe_cajadiario_rapida_conceptos(Request $request)
   {
-    $notaria = Notaria::find(1);
-    $fecha1 = $request->fecha1;
-    $fecha2 = $request->fecha2;
+    
+    $notaria = Notaria::find(1);   
+
+
+    if (!$request->user()->roles->pluck('name')->intersect(['administrador', 'avanzado'])->count()) {
+        $fecha1 = date('m/d/Y');
+        $fecha2 = date('m/d/Y');        
+      } else {
+        $fecha1 = $request->fecha1;
+        $fecha2 = $request->fecha2;
+      }   
+
+
+
+
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
     $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
@@ -859,652 +933,39 @@ public function FechaReporte(Request $request){
 
   public function Informe_Recaudos(Request $request)
   {
+
     $notaria = Notaria::find(1);
     $anio_trabajo = $notaria->anio_trabajo;
     $fecha1 = $request->fecha1;
     $fecha2 = $request->fecha2;
     $fecha1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
-    $fecha2 = date("Y-m-d", strtotime($fecha2."+ 1 days"));
+    $fecha2 = date("Y-m-d", strtotime($fecha2));
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
 
-    
-    $raw1 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango1 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 0)
-    ->where('cuantia','<=', 100000000)
-    ->groupBy('escr')
-    ->select($raw1)->get()->toArray();
+    $anio = date("Y", strtotime($fecha1));
+
+    $notaCredito = false;
+
+    $recaudos = \DB::select("
+    SELECT *
+    FROM public.fn_informe_recaudos(?, ?, ?, ?)
+        ", [
+            $fecha1,
+            $fecha2,
+            $anio,
+            $notaCredito
+          ]);
 
     
-
-   
-    $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 100000001)
-    ->where('cuantia','<=', 300000000)
-    ->groupBy('escr')
-    ->select($raw2)->get()->toArray();
-
-
-
-    $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango3 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 300000001)
-    ->where('cuantia','<=', 500000000)
-    ->groupBy('escr')
-    ->select($raw3)->get()->toArray();
-
-
-
-
-    $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 500000001)
-    ->where('cuantia','<=', 1000000000)
-    ->groupBy('escr')
-    ->select($raw4)->get()->toArray();
- 
-
-    $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 1000000001)
-    ->where('cuantia','<=', 1500000000)
-    ->groupBy('escr')
-    ->select($raw5)->get()->toArray();
-
-
-    $raw6 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango6 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>', 1500000000)
-    ->groupBy('escr')
-    ->select($raw6)->get()->toArray();
-
-
-
-    $raw7 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-    $sincuantia = Recaudos_sincuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->groupBy('escr')
-    ->select($raw7)->get()->toArray();
-
-   
-
-    $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-    $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->groupBy('escr')
-    ->select($raw8)->get()->toArray();
-
-
-    $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-    $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->groupBy('escr')
-    ->select($raw9)->get()->toArray();
-
-
-   
-
-    /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
-
-    foreach ($sincuantia as $i => $sinc) {
-      foreach ($excenta as $j => $exc) {
-        if($sinc['escr'] == $exc['escr']){
-          unset($sincuantia[$i]);
-        }
-      }
-    }
-
-
-   
-
-    /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
-
-    $excenta = array_merge($excenta, $sincuantiaexcenta);
-
- 
-
-
-
-      # ====================================================================
-      # =           Identifica excentas que van para con cuantia           =
-      # ====================================================================
-
-      $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
-      $valor2 = $tarifa['valor2'] / 2;
-      $valor3 = $tarifa['valor3'] / 2;
-      $valor4 = $tarifa['valor4'] / 2;
-      $valor5 = $tarifa['valor5'] / 2;
-      $valor6 = $tarifa['valor6'] / 2;
-      $valor7 = $tarifa['valor7'] / 2;
-
-      $array_rango1 = array();
-      $array_rango2 = array();
-      $array_rango3 = array();
-      $array_rango4 = array();
-      $array_rango5 = array();
-      $array_rango6 = array();
-      $array_rango7 = array();
-      foreach ($excenta as $key => $value) {
-        if($value['super'] == $valor2){
-          $array_rango1[$key]['escr'] = $value['escr'];
-          $array_rango1[$key]['super'] = $value['super'];
-          $array_rango1[$key]['fondo'] = $value['fondo'];
-          $array_rango1[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor3){
-          $array_rango2[$key]['escr'] = $value['escr'];
-          $array_rango2[$key]['super'] = $value['super'];
-          $array_rango2[$key]['fondo'] = $value['fondo'];
-          $array_rango2[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor4){
-          $array_rango3[$key]['escr'] = $value['escr'];
-          $array_rango3[$key]['super'] = $value['super'];
-          $array_rango3[$key]['fondo'] = $value['fondo'];
-          $array_rango3[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor5){
-          $array_rango4[$key]['escr'] = $value['escr'];
-          $array_rango4[$key]['super'] = $value['super'];
-          $array_rango4[$key]['fondo'] = $value['fondo'];
-          $array_rango4[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor6){
-          $array_rango5[$key]['escr'] = $value['escr'];
-          $array_rango5[$key]['super'] = $value['super'];
-          $array_rango5[$key]['fondo'] = $value['fondo'];
-          $array_rango5[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor7){
-          $array_rango6[$key]['escr'] = $value['escr'];
-          $array_rango6[$key]['super'] = $value['super'];
-          $array_rango6[$key]['fondo'] = $value['fondo'];
-          $array_rango6[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-      }
-
-      $rango1 = array_merge($rango1, $array_rango1);
-      $rango2 = array_merge($rango2, $array_rango2);
-      $rango3 = array_merge($rango3, $array_rango3);
-      $rango4 = array_merge($rango4, $array_rango4);
-      $rango5 = array_merge($rango5, $array_rango5);
-      $rango6 = array_merge($rango6, $array_rango6);
-
-      $rango1 = $this->unique_multidim_array($rango1,'escr');
-      $rango2 = $this->unique_multidim_array($rango2,'escr');
-      $rango3 = $this->unique_multidim_array($rango3,'escr');
-      $rango4 = $this->unique_multidim_array($rango4,'escr');
-      $rango5 = $this->unique_multidim_array($rango5,'escr');
-      $rango6 = $this->unique_multidim_array($rango6,'escr');
-
-      
-      # ==============================================================================
-      # =           Elimna repetidas en rangos entre excentas y sincuantia           =
-      # ==============================================================================
-      
-      /*----------  Rango1  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango1 as $j => $rn1) {
-          if($exc['escr'] == $rn1['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango1 as $j => $rn1) {
-          if($sinc['escr'] == $rn1['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-
-      unset($array_rango1);
-      unset($array_rango2);
-      unset($array_rango3);
-      unset($array_rango4);
-      unset($array_rango5);
-      unset($array_rango6);
-
-      $array_rango1 = [];
-      $array_rango2 = [];
-      $array_rango3 = [];
-      $array_rango4 = [];
-      $array_rango5 = [];
-      $array_rango6 = [];
-
-
-      foreach ($sincuantia as $key => $value) {
-        if($value['super'] == $valor2){
-          $array_rango1[$key]['escr'] = $value['escr'];
-          $array_rango1[$key]['super'] = $value['super'];
-          $array_rango1[$key]['fondo'] = $value['fondo'];
-          $array_rango1[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor3){
-          $array_rango2[$key]['escr'] = $value['escr'];
-          $array_rango2[$key]['super'] = $value['super'];
-          $array_rango2[$key]['fondo'] = $value['fondo'];
-          $array_rango2[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor4){
-          $array_rango3[$key]['escr'] = $value['escr'];
-          $array_rango3[$key]['super'] = $value['super'];
-          $array_rango3[$key]['fondo'] = $value['fondo'];
-          $array_rango3[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor5){
-          $array_rango4[$key]['escr'] = $value['escr'];
-          $array_rango4[$key]['super'] = $value['super'];
-          $array_rango4[$key]['fondo'] = $value['fondo'];
-          $array_rango4[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor6){
-          $array_rango5[$key]['escr'] = $value['escr'];
-          $array_rango5[$key]['super'] = $value['super'];
-          $array_rango5[$key]['fondo'] = $value['fondo'];
-          $array_rango5[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor7){
-          $array_rango6[$key]['escr'] = $value['escr'];
-          $array_rango6[$key]['super'] = $value['super'];
-          $array_rango6[$key]['fondo'] = $value['fondo'];
-          $array_rango6[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-      }
-
-      /*----------  Elimina repetidas entre rango1 y array_rango1  ----------*/
-
-
-      foreach ($rango1 as $i => $ran) {
-        foreach ($array_rango1 as $j => $arran) {
-          if($ran['escr'] == $arran['escr']){
-            unset($rango1[$i]);
-          }
-        }
-      }
-
-    
-
-      $rango1 = array_merge($rango1, $array_rango1);
-      $rango2 = array_merge($rango2, $array_rango2);
-      $rango3 = array_merge($rango3, $array_rango3);
-      $rango4 = array_merge($rango4, $array_rango4);
-      $rango5 = array_merge($rango5, $array_rango5);
-      $rango6 = array_merge($rango6, $array_rango6);
-
-      $rango1 = $this->unique_multidim_array($rango1,'escr');
-      $rango2 = $this->unique_multidim_array($rango2,'escr');
-      $rango3 = $this->unique_multidim_array($rango3,'escr');
-      $rango4 = $this->unique_multidim_array($rango4,'escr');
-      $rango5 = $this->unique_multidim_array($rango5,'escr');
-      $rango6 = $this->unique_multidim_array($rango6,'escr');
-
-
-      if($rango1){
-        $ran1escr = 0;
-        $ran1super =  0;
-        $ran1fondo = 0;
-        $ran1total = 0;
-      
-        foreach ($rango1 as $key => $rn1) {
-          $ran1escr += 1;
-          $ran1super +=  $rn1['super'];
-          $ran1fondo += $rn1['fondo'];
-          $ran1total += $rn1['total'];
-        }
-      }else{
-        $ran1escr = 0;
-        $ran1super =  0;
-        $ran1fondo = 0;
-        $ran1total = 0;
-      }
-
-
-      /*----------  Rango2  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango2 as $j => $rn2) {
-          if($exc['escr'] == $rn2['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango2 as $j => $rn2) {
-          if($sinc['escr'] == $rn2['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      if($rango2){
-        $ran2escr = 0;
-        $ran2super = 0;
-        $ran2fondo = 0;
-        $ran2total = 0;
-        foreach ($rango2 as $key => $rn2) {
-          $ran2escr += 1;
-          $ran2super +=  $rn2['super'];
-          $ran2fondo += $rn2['fondo'];
-          $ran2total += $rn2['total'];
-        }
-      }else{
-        $ran2escr = 0;
-        $ran2super =  0;
-        $ran2fondo = 0;
-        $ran2total = 0;
-      }
-
-
-      /*----------  Rango3  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango3 as $j => $rn3) {
-          if($exc['escr'] == $rn3['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango3 as $j => $rn3) {
-          if($sinc['escr'] == $rn3['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      if($rango3){
-        $ran3escr = 0;
-        $ran3super = 0;
-        $ran3fondo = 0;
-        $ran3total = 0;
-        foreach ($rango3 as $key => $rn3) {
-          $ran3escr += 1;
-          $ran3super +=  $rn3['super'];
-          $ran3fondo += $rn3['fondo'];
-          $ran3total += $rn3['total'];
-        }
-      }else{
-        $ran3escr = 0;
-        $ran3super =  0;
-        $ran3fondo = 0;
-        $ran3total = 0;
-      }
-
-
-      /*----------  Rango4  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango4 as $j => $rn4) {
-          if($exc['escr'] == $rn4['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango4 as $j => $rn4) {
-          if($sinc['escr'] == $rn4['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-
-      if($rango4){
-        $ran4escr = 0;
-        $ran4super = 0;
-        $ran4fondo = 0;
-        $ran4total = 0;
-        foreach ($rango4 as $key => $rn4) {
-          $ran4escr += 1;
-          $ran4super += $rn4['super'];
-          $ran4fondo += $rn4['fondo'];
-          $ran4total += $rn4['total'];
-        }
-      }else{
-        $ran4escr = 0;
-        $ran4super =  0;
-        $ran4fondo = 0;
-        $ran4total = 0;
-      }
-
-
-      /*----------  Rango5  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango5 as $j => $rn5) {
-          if($exc['escr'] == $rn5['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango5 as $j => $rn5) {
-          if($sinc['escr'] == $rn5['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-      
-
-      if($rango5){
-        $ran5escr = 0;
-        $ran5super = 0;
-        $ran5fondo = 0;
-        $ran5total = 0;
-        foreach ($rango5 as $key => $rn5) {
-          $ran5escr += 1;
-          $ran5super += $rn5['super'];
-          $ran5fondo += $rn5['fondo'];
-          $ran5total += $rn5['total'];
-        }
-      }else{
-        $ran5escr = 0;
-        $ran5super =  0;
-        $ran5fondo = 0;
-        $ran5total = 0;
-      }
-
-
-      /*----------  Rango6  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango6 as $j => $rn6) {
-          if($exc['escr'] == $rn6['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango6 as $j => $rn6) {
-          if($sinc['escr'] == $rn6['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      if($rango6){
-        $ran6escr = 0;
-        $ran6super = 0;
-        $ran6fondo = 0;
-        $ran6total = 0;
-        foreach ($rango6 as $key => $rn6) {
-          $ran6escr += 1;
-          $ran6super += $rn6['super'];
-          $ran6fondo += $rn6['fondo'];
-          $ran6total += $rn6['total'];
-        }
-
-      }else{
-        $ran6escr = 0;
-        $ran6super =  0;
-        $ran6fondo = 0;
-        $ran6total = 0;
-      }
-
-      /*----------  Excentas  ----------*/
-
-
-      if($excenta){
-        $excescr = 0;
-        $excsuper =  0;
-        $excfondo = 0;
-        $exctotal = 0;
-        foreach ($excenta as $key => $value) {
-          $excescr += 1;
-          $excsuper +=  $value['super'];
-          $excfondo += $value['fondo'];
-          $exctotal += $value['total'];
-        }
-      }else{
-        $excescr = 0;
-        $excsuper =  0;
-        $excfondo = 0;
-        $exctotal = 0;
-      }
-
-
-      /*----------  Sin Cuantía  ----------*/
-
-     
-      if($sincuantia){
-        $sincescr = 0;
-        $sincsuper = 0;
-        $sincfondo = 0;
-        $sinctotal = 0;
-        foreach ($sincuantia as $key => $value) {
-          $sincescr += 1;
-          $sincsuper +=  $value['super'];
-          $sincfondo += $value['fondo'];
-          $sinctotal += $value['total'];
-
-        }
-
-      }else{
-        $sincescr = 0;
-        $sincsuper =  0;
-        $sincfondo = 0;
-        $sinctotal = 0;
-      }
-
-      
-         
-      $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
-      $ran6escr + $sincescr + $excescr;
-      $total_super =  $ran1super +  $ran2super +  $ran3super +  $ran4super +
-      $ran5super +  $ran6super + $sincsuper + $excsuper;
-      $total_fondo = $ran1fondo +  $ran2fondo +  $ran3fondo +  $ran4fondo +
-      $ran5fondo +  $ran6fondo + $sincfondo + $excfondo;
-
-      $total_recaudos = $ran1total + $ran2total + $ran3total + $ran4total +
-      $ran5total + $ran6total + $sinctotal + $exctotal;
-
-
-
-      $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
-      $valor1 = $tarifa['valor1'];
-      $valor2 = $tarifa['valor2'];
-      $valor3 = $tarifa['valor3'];
-      $valor4 = $tarifa['valor4'];
-      $valor5 = $tarifa['valor5'];
-      $valor6 = $tarifa['valor6'];
-      $valor7 = $tarifa['valor7'];
-
 
       return response()->json([
-       "ran1escr"=>$ran1escr, 
-       "ran2escr"=>$ran2escr,
-       "ran3escr"=>$ran3escr,
-       "ran4escr"=>$ran4escr,
-       "ran5escr"=>$ran5escr,
-       "ran6escr"=>$ran6escr,
-       "sincescr"=>$sincescr,
-       "excescr"=>$excescr,
-       "ran1super"=>$ran1super,
-       "ran2super"=>$ran2super,
-       "ran3super"=>$ran3super,
-       "ran4super"=>$ran4super,
-       "ran5super"=>$ran5super,
-       "ran6super"=>$ran6super,
-       "sincsuper"=>$sincsuper,
-       "excsuper"=>$excsuper,
-       "ran1fondo"=>$ran1fondo,
-       "ran2fondo"=>$ran2fondo,
-       "ran3fondo"=>$ran3fondo,
-       "ran4fondo"=>$ran4fondo,
-       "ran5fondo"=>$ran5fondo,
-       "ran6fondo"=>$ran6fondo,
-       "sincfondo"=>$sincfondo,
-       "excfondo"=>$excfondo,
-       "ran1total"=>$ran1total,
-       "ran2total"=>$ran2total,
-       "ran3total"=>$ran3total,
-       "ran4total"=>$ran4total,
-       "ran5total"=>$ran5total,
-       "ran6total"=>$ran6total,
-       "sinctotal"=>$sinctotal,
-       "exctotal"=>$exctotal,
-       "total_escrituras"=>$total_escrituras,
-       "total_super"=>$total_super,
-       "total_fondo"=> $total_fondo,
-       "total_recaudos"=>$total_recaudos,
-       "valor1"=>$valor1,
-       "valor2"=>$valor2,
-       "valor3"=>$valor3,
-       "valor4"=>$valor4,
-       "valor5"=>$valor5,
-       "valor6"=>$valor6,
-       "valor7"=>$valor7
-     ]);
-    }
+
+        "recaudos"=>$recaudos
+
+         ]);
+   
+  }
 
     public function Ingreso_Conceptos(Request $request)
     {
@@ -1653,33 +1114,337 @@ public function FechaReporte(Request $request){
     $notaria = Notaria::find(1);
     $fecha1 = $request->fecha1;
     $fecha2 = $request->fecha2;
+    $identificacion = trim((string) $request->get('identificacion'));
 
-    $fecha1 = date("d-m-Y", strtotime($fecha1)); //Convierte Fecha a dd-mm-YYYY
-    $fecha2 = date("d-m-Y", strtotime($fecha2));
+    $f1_arr = explode('/', (string) $fecha1);
+    $f2_arr = explode('/', (string) $fecha2);
+    if (count($f1_arr) == 3 && count($f2_arr) == 3) {
+      $fecha1 = $f1_arr[2].'-'.$f1_arr[0].'-'.$f1_arr[1];
+      $fecha2 = $f2_arr[2].'-'.$f2_arr[0].'-'.$f2_arr[1];
+    } else {
+      $fecha1 = date("Y-m-d", strtotime($fecha1));
+      $fecha2 = date("Y-m-d", strtotime($fecha2));
+    }
     
     $request->session()->put('fecha1', $fecha1);
     $request->session()->put('fecha2', $fecha2);
+    $request->session()->put('identificacion_cli', $identificacion);
 
-    $opcionreporte = $request->opcionreporte;
+    $opcionreporte = $request->opcionreporte ?: 'completo';
 
     $request->session()->put('opcionreporte', $opcionreporte);
-    
-    if($opcionreporte == 'completo'){
-      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
-      ->whereDate('fecha_egreso', '<=', $fecha2)
-      ->orderBy('id_act')
-      ->get()->toArray();
-    }else if($opcionreporte == 'maycero'){
-      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
-      ->whereDate('fecha_egreso', '<=', $fecha2)
-      ->where('nuevo_saldo', '>', 0)
-      ->orderBy('id_act')
-      ->get()->toArray();
+
+    $Actas_egreso = $this->obtenerDatosInformeEgresosDiarios($fecha1, $fecha2, $opcionreporte, $identificacion);
+
+    return response()->json([
+      'egresos' => $Actas_egreso,
+    ]);
+  }
+
+  public function ExcelEgresosDiarios(Request $request)
+  {
+    $fecha1 = $request->get('fecha1') ?: $request->session()->get('fecha1');
+    $fecha2 = $request->get('fecha2') ?: $request->session()->get('fecha2');
+    $opcionreporte = $request->get('opcionreporte') ?: $request->session()->get('opcionreporte');
+    $identificacion = trim((string) ($request->get('identificacion') ?: $request->session()->get('identificacion_cli')));
+
+    if (empty($fecha1) || empty($fecha2)) {
+      return "Filtros de fecha requeridos";
+    }
+
+    $f1_arr = explode('/', (string) $fecha1);
+    $f2_arr = explode('/', (string) $fecha2);
+    if (count($f1_arr) == 3 && count($f2_arr) == 3) {
+      $fecha1 = $f1_arr[2].'-'.$f1_arr[0].'-'.$f1_arr[1];
+      $fecha2 = $f2_arr[2].'-'.$f2_arr[0].'-'.$f2_arr[1];
+    } else {
+      $fecha1 = date("Y-m-d", strtotime($fecha1));
+      $fecha2 = date("Y-m-d", strtotime($fecha2));
+    }
+
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+    $request->session()->put('opcionreporte', $opcionreporte);
+    $request->session()->put('identificacion_cli', $identificacion);
+
+    $nombrefile = 'EgresosDiarios_'.$fecha1.'_'.$fecha2.'.xls';
+    return Excel::download(new ExcelEgresosDiarios($fecha1, $fecha2, $opcionreporte, $identificacion), $nombrefile);
+  }
+
+  public function buildTrazabilidadEgresoQuery($fecha1, $fecha2, $identificacion = '', $tipoActa = 'todas')
+  {
+    $tipoActa = strtolower(trim((string) $tipoActa));
+    if ($tipoActa === 'creedo' || $tipoActa === 'credit') {
+      $tipoActa = 'credito';
+    }
+
+    $facturasSub = \DB::table('facturas')
+      ->select('id_radica', 'anio_radica', \DB::raw('MIN(id_fact) as id_fact'))
+      ->where('nota_credito', '=', false)
+      ->groupBy('id_radica', 'anio_radica');
+
+    // Cambiamos a actas_deposito_view como base para incluir actas sin egresos
+    $query = \DB::table('actas_deposito_view as act')
+      ->leftJoin('egreso_acta_deposito as egr', 'act.id_act', '=', 'egr.id_act')
+      ->leftJoin('concepto_egreso as ce', 'ce.id_con', '=', 'egr.id_con')
+      ->leftJoin(\DB::raw('('.$facturasSub->toSql().') as f'), function($join) {
+        $join->on('f.id_radica', '=', 'act.id_radica')
+             ->on('f.anio_radica', '=', 'act.anio_radica');
+      })
+      ->mergeBindings($facturasSub)
+      ->where(function($q) use ($fecha1, $fecha2) {
+          $q->whereBetween('act.fecha', [$fecha1, $fecha2])
+            ->orWhereBetween('egr.fecha_egreso', [$fecha1, $fecha2]);
+      })
+      ->select(
+        'egr.id_egr',
+        'egr.id_con',
+        'act.id_act',
+        'egr.fecha_egreso',
+        'act.id_radica',
+        'act.fecha as fecha_acta',
+        'egr.prefijo',
+        'egr.id_fact as id_fact_egreso',
+        'act.identificacion_cli',
+        'act.nombre',
+        'act.deposito_act',
+        'act.deposito_boleta',
+        'act.deposito_registro',
+        'act.deposito_escrituras',
+        'act.credito_act',
+        'act.saldo as saldo_acta',
+        'egr.egreso_egr',
+        'egr.saldo as nuevo_saldo',
+        'egr.observaciones_egr',
+        'f.id_fact',
+        'ce.concepto as concepto_egreso'
+      )
+      ->orderBy('act.id_act')
+      ->orderBy('egr.fecha_egreso')
+      ->orderBy('egr.id_egr');
+
+    if (!empty($identificacion)) {
+      $query->where('act.identificacion_cli', $identificacion);
+    }
+
+    if ($tipoActa === 'credito') {
+      $query->where(function($q) {
+        $q->where('act.credito_act', '=', true)
+          ->orWhere('act.credito_act', '=', '1')
+          ->orWhere('act.credito_act', '=', 1)
+          ->orWhere('act.credito_act', '=', 't')
+          ->orWhere('act.credito_act', '=', 'true');
+      });
+    } else if ($tipoActa === 'normal') {
+      $query->where(function($q) {
+        $q->whereNull('act.credito_act')
+          ->orWhere('act.credito_act', '=', false)
+          ->orWhere('act.credito_act', '=', 0)
+          ->orWhere('act.credito_act', '=', '0')
+          ->orWhere('act.credito_act', '=', 'f')
+          ->orWhere('act.credito_act', '=', 'false');
+      });
+    }
+
+    return $query;
+  }
+
+  public function calcularDescuentosTrazabilidad($rows)
+  {
+    $data = array();
+    foreach ($rows as $row) {
+      $baseActa = (float) (isset($row->deposito_act) ? $row->deposito_act : 0);
+      $baseBol = (float) (isset($row->deposito_boleta) ? $row->deposito_boleta : 0);
+      $baseReg = (float) (isset($row->deposito_registro) ? $row->deposito_registro : 0);
+      $baseEsc = (float) (isset($row->deposito_escrituras) ? $row->deposito_escrituras : 0);
+      $egreso = (float) (isset($row->egreso_egr) ? $row->egreso_egr : 0);
+      $totalComponentes = $baseBol + $baseReg + $baseEsc;
+
+      if ($totalComponentes > 0) {
+        $descBol = round($egreso * ($baseBol / $totalComponentes), 2);
+        $descReg = round($egreso * ($baseReg / $totalComponentes), 2);
+        $descEsc = round($egreso * ($baseEsc / $totalComponentes), 2);
+      } else {
+        $descBol = 0;
+        $descReg = 0;
+        $descEsc = 0;
+      }
+      $descActa = $egreso;
+      $saldoFinal = (float) (isset($row->nuevo_saldo) ? $row->nuevo_saldo : 0);
+      
+      // Si no hay egreso, el saldo final es el saldo de la propia acta
+      if ($row->id_egr === null) {
+          $saldoFinal = (float) $row->saldo_acta;
+      }
+
+      $data[] = (object) [
+        'id_egr' => $row->id_egr,
+        'id_con' => $row->id_con,
+        'id_act' => $row->id_act,
+        'fecha_acta' => isset($row->fecha_acta) ? $row->fecha_acta : '',
+        'fecha_egreso' => $row->fecha_egreso,
+        'id_radica' => $row->id_radica,
+        'id_fact' => $row->id_fact,
+        'factura' => !empty($row->id_fact_egreso) ? trim(($row->prefijo ? $row->prefijo.'-' : '').$row->id_fact_egreso) : $row->id_fact,
+        'concepto_egreso' => $row->concepto_egreso,
+        'identificacion_cli' => $row->identificacion_cli,
+        'nombre' => $row->nombre,
+        'deposito_act' => $baseActa,
+        'deposito_boleta' => $baseBol,
+        'deposito_registro' => $baseReg,
+        'deposito_escrituras' => $baseEsc,
+        'descuento_acta' => $descActa,
+        'descuento_boleta' => $descBol,
+        'descuento_registro' => $descReg,
+        'descuento_escritura' => $descEsc,
+        'egreso_egr' => $egreso,
+        'saldo_final' => $saldoFinal,
+        'observaciones_egr' => $row->observaciones_egr,
+        'credito_act' => isset($row->credito_act) ? $row->credito_act : false
+      ];
+    }
+
+    return $data;
+  }
+
+  /**
+   * Relación de egresos (pantalla, Excel, PDF): mismos datos que Trazabilidad por acta,
+   * con filtros completo | saldo>0 | solo actas a crédito.
+   *
+   * @param  string  $opcionreporte  completo|maycero|credito
+   * @return array<int, array<string, mixed>>
+   */
+  public function obtenerDatosInformeEgresosDiarios($fecha1, $fecha2, $opcionreporte, $identificacion = '')
+  {
+    $opcionreporte = $opcionreporte ?: 'completo';
+    if (! in_array($opcionreporte, ['completo', 'maycero', 'credito'], true)) {
+      $opcionreporte = 'completo';
+    }
+
+    $tipoActa = ($opcionreporte === 'credito') ? 'credito' : 'todas';
+
+    $rows = $this->buildTrazabilidadEgresoQuery($fecha1, $fecha2, $identificacion, $tipoActa)->get();
+    $data = $this->calcularDescuentosTrazabilidad($rows);
+
+    // Filtro saldo > 1 según solicitud (o > 0 para maycero)
+    if ($opcionreporte === 'maycero') {
+      $data = array_values(array_filter($data, function ($row) {
+        return (float) $row->saldo_final > 1;
+      }));
+    }
+
+    return $data;
+  }
+
+  public function ReporteTrazabilidadEgreso(Request $request)
+  {
+    $fecha1 = $request->get('fecha1');
+    $fecha2 = $request->get('fecha2');
+    $identificacion = trim((string) $request->get('identificacion'));
+    $tipoActa = trim((string) $request->get('tipo_acta'));
+    if ($tipoActa === '') {
+      $tipoActa = 'todas';
+    }
+
+    $f1_arr = explode('/', (string) $fecha1);
+    $f2_arr = explode('/', (string) $fecha2);
+    if (count($f1_arr) == 3 && count($f2_arr) == 3) {
+      $fecha1 = $f1_arr[2].'-'.$f1_arr[0].'-'.$f1_arr[1];
+      $fecha2 = $f2_arr[2].'-'.$f2_arr[0].'-'.$f2_arr[1];
+    } else {
+      $fecha1 = date("Y-m-d", strtotime($fecha1));
+      $fecha2 = date("Y-m-d", strtotime($fecha2));
+    }
+
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+    $request->session()->put('identificacion_cli', $identificacion);
+    $request->session()->put('tipo_acta_egreso', $tipoActa);
+
+    $rows = $this->buildTrazabilidadEgresoQuery($fecha1, $fecha2, $identificacion, $tipoActa)->get();
+    $data = $this->calcularDescuentosTrazabilidad($rows);
+    $agrupado = array();
+
+    foreach ($data as $row) {
+      $idAct = $row->id_act;
+      if (!isset($agrupado[$idAct])) {
+        $conceptoBase = 'Acta';
+        if ((float) $row->deposito_escrituras > 0) {
+          $conceptoBase = 'Escritura';
+        } else if ((float) $row->deposito_registro > 0) {
+          $conceptoBase = 'Registro';
+        } else if ((float) $row->deposito_boleta > 0) {
+          $conceptoBase = 'Boleta';
+        }
+
+        $agrupado[$idAct] = [
+          'id_act' => $row->id_act,
+          'fecha_acta' => $row->fecha_acta,
+          'id_radica' => $row->id_radica,
+          'identificacion_cli' => $row->identificacion_cli,
+          'nombre' => $row->nombre,
+          'deposito_act' => $row->deposito_act,
+          'deposito_boleta' => $row->deposito_boleta,
+          'deposito_registro' => $row->deposito_registro,
+          'deposito_escrituras' => $row->deposito_escrituras,
+          'credito_estado' => ($row->credito_act == true || $row->credito_act == 1 || $row->credito_act === '1' || $row->credito_act === 't' || $row->credito_act === 'true') ? 'CREDITO' : 'NORMAL',
+          'concepto_base' => $conceptoBase,
+          'egresos' => []
+        ];
+      }
+
+      $agrupado[$idAct]['egresos'][] = [
+        'id_egr' => $row->id_egr,
+        'fecha_egreso' => $row->fecha_egreso,
+        'factura' => $row->factura,
+        'id_con' => $row->id_con,
+        'concepto_egreso' => $row->concepto_egreso,
+        'descuento_acta' => $row->descuento_acta,
+        'descuento_boleta' => $row->descuento_boleta,
+        'descuento_registro' => $row->descuento_registro,
+        'descuento_escritura' => $row->descuento_escritura,
+        'egreso_egr' => $row->egreso_egr,
+        'saldo_final' => $row->saldo_final,
+        'observaciones_egr' => $row->observaciones_egr
+      ];
     }
 
     return response()->json([
-      "egresos"=>$Actas_egreso
+      'trazabilidad' => array_values($agrupado)
     ]);
+  }
+
+  public function ExcelTrazabilidadEgreso(Request $request)
+  {
+    $fecha1 = $request->get('fecha1') ?: $request->session()->get('fecha1');
+    $fecha2 = $request->get('fecha2') ?: $request->session()->get('fecha2');
+    $identificacion = trim((string) ($request->get('identificacion') ?: $request->session()->get('identificacion_cli')));
+    $tipoActa = trim((string) ($request->get('tipo_acta') ?: $request->session()->get('tipo_acta_egreso')));
+    if ($tipoActa === '') {
+      $tipoActa = 'todas';
+    }
+
+    if (empty($fecha1) || empty($fecha2)) {
+      return "Filtros de fecha requeridos";
+    }
+
+    $f1_arr = explode('/', (string) $fecha1);
+    $f2_arr = explode('/', (string) $fecha2);
+    if (count($f1_arr) == 3 && count($f2_arr) == 3) {
+      $fecha1 = $f1_arr[2].'-'.$f1_arr[0].'-'.$f1_arr[1];
+      $fecha2 = $f2_arr[2].'-'.$f2_arr[0].'-'.$f2_arr[1];
+    } else {
+      $fecha1 = date("Y-m-d", strtotime($fecha1));
+      $fecha2 = date("Y-m-d", strtotime($fecha2));
+    }
+
+    $request->session()->put('fecha1', $fecha1);
+    $request->session()->put('fecha2', $fecha2);
+    $request->session()->put('identificacion_cli', $identificacion);
+    $request->session()->put('tipo_acta_egreso', $tipoActa);
+
+    $nombrefile = 'TrazabilidadEgreso_'.$fecha1.'_'.$fecha2.'.xls';
+    return (new ExcelTrazabilidadEgreso($fecha1, $fecha2, $identificacion, $tipoActa))->export();
   }
   
 
@@ -1712,6 +1477,20 @@ public function FechaReporte(Request $request){
     return Excel::download(new BonosExportCli($identificacion_cli, $opcionreporte), $nombrefile);
 
   }
+
+  public function CajadiarioEspecial(Request $request){
+
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $tipo_informe = $request->session()->get('tipoinforme');    
+    $nombrefile = 'CajaEspecial'.'_'.$fecha1.'.'.'xls';
+    
+    return Excel::download(new CajaDiarioEspecial($fecha1, $fecha2, $tipo_informe), $nombrefile);
+
+  }
+
+  
   
 
   public function ExcelCarteraFechaBonos(Request $request){
@@ -1763,8 +1542,57 @@ public function FechaReporte(Request $request){
     return Excel::download(new ExcelDataXExport($fecha1, $fecha2, $conEncabezado), $nombrefile);
   }
 
+  public function ExcelDataXNC(Request $request){   
 
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fechaActual = date('d-m-Y'); 
+    //$conEncabezado = $request->session()->get('opcionreporte');
+    $conEncabezado = ($request->session()->get('opcionreporte') === 'on');
 
+    $nombrefile = 'CargaDataXNC'.'_'.$fechaActual.'.'.'xls';
+    
+    return Excel::download(new ExcelDataXExportNC($fecha1, $fecha2, $conEncabezado), $nombrefile);
+  }
+
+  public function ExcelDataXCajaRapida(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fechaActual = date('d-m-Y'); 
+    //$conEncabezado = $request->session()->get('opcionreporte');
+    $conEncabezado = ($request->session()->get('opcionreporte') === 'on');
+
+    $nombrefile = 'CargaDataXCajarapida'.'_'.$fechaActual.'.'.'xls';
+    
+    return Excel::download(new ExcelDataXExportCJ($fecha1, $fecha2, $conEncabezado), $nombrefile);
+  }
+
+  public function ExcelDataXActasDepo(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fechaActual = date('d-m-Y'); 
+    //$conEncabezado = $request->session()->get('opcionreporte');
+    $conEncabezado = ($request->session()->get('opcionreporte') === 'on');
+
+    $nombrefile = 'CargaDataXActasDepo'.'_'.$fechaActual.'.'.'xls';
+    
+    return Excel::download(new ExcelDataXActasDepo($fecha1, $fecha2, $conEncabezado), $nombrefile);
+  }
+
+  public function ExceldataxCajarapidaNC(Request $request){   
+
+    $fecha1 = $request->session()->get('fecha1');
+    $fecha2 = $request->session()->get('fecha2');
+    $fechaActual = date('d-m-Y'); 
+    //$conEncabezado = $request->session()->get('opcionreporte');
+    $conEncabezado = ($request->session()->get('opcionreporte') === 'on');
+
+    $nombrefile = 'CargaDataXCajarapidaNC'.'_'.$fechaActual.'.'.'xls';
+    
+    return Excel::download(new ExcelDataXExportCJNC($fecha1, $fecha2, $conEncabezado), $nombrefile);
+  }
   
 
   public function ExcelNotasCreditoCajaRapida(Request $request){   
@@ -1816,5 +1644,322 @@ public function FechaReporte(Request $request){
     return Excel::download(new EnajenacionesExport($fecha1, $fecha2, $opcionreporte), $nombrefile);     
     
   }
-  
+
+  public function IngresosExcedentesOtrosPeriodos(Request $request)
+  {
+      $fecha1 = $request->get('fecha1');
+      $fecha2 = $request->get('fecha2');
+      if (empty($fecha1) || empty($fecha2)) {
+          return response()->json(['reporte' => []]);
+      }
+
+      $f1_arr = explode('/', (string)$fecha1);
+      $f2_arr = explode('/', (string)$fecha2);
+      if (count($f1_arr) == 3 && count($f2_arr) == 3) {
+          $f1 = $f1_arr[2].'-'.str_pad($f1_arr[1], 2, "0", STR_PAD_LEFT).'-'.str_pad($f1_arr[0], 2, "0", STR_PAD_LEFT);
+          $f2 = $f2_arr[2].'-'.str_pad($f2_arr[1], 2, "0", STR_PAD_LEFT).'-'.str_pad($f2_arr[0], 2, "0", STR_PAD_LEFT);
+      } else {
+          $f1 = date("Y-m-d", strtotime($fecha1));
+          $f2 = date("Y-m-d", strtotime($fecha2));
+      }
+
+      $request->session()->put('fecha1', $f1);
+      $request->session()->put('fecha2', $f2);
+
+      $reporte = \DB::table('facturas as f')
+          ->leftJoin('escrituras as e', function ($join) {
+              $join->on('e.id_radica', '=', 'f.id_radica')
+                   ->on('e.anio_radica', '=', 'f.anio_radica');
+          })
+          ->select(
+              'f.id_fact',
+              'f.id_radica',
+              'f.anio_radica',
+              'f.fecha_fact',
+              'e.num_esc',
+              'e.fecha_esc',
+              'f.total_derechos',
+              'f.total_conceptos',
+              'f.total_iva',
+              'f.total_rtf',
+              'f.total_fondo',
+              'f.total_super',
+              'f.total_fact as total_fac'
+          )
+          ->whereDate('f.fecha_fact', '>=', $f1)
+          ->whereDate('f.fecha_fact', '<=', $f2)
+          ->where('f.nota_credito', '=', false)
+          ->where('f.nota_periodo', '=', 0)
+          ->orderBy('f.fecha_fact')
+          ->get();
+
+      return response()->json(['reporte' => $reporte]);
+  }
+
+  public function ExcelIngresosExcedentes(Request $request)
+  {
+      $fecha1 = $request->get('fecha1') ?: $request->session()->get('fecha1');
+      $fecha2 = $request->get('fecha2') ?: $request->session()->get('fecha2');
+      if (empty($fecha1) || empty($fecha2)) {
+          return 'Filtros de fecha requeridos';
+      }
+      $f1_arr = explode('/', (string)$fecha1);
+      $f2_arr = explode('/', (string)$fecha2);
+      if (count($f1_arr) == 3 && count($f2_arr) == 3) {
+          $f1 = $f1_arr[2].'-'.str_pad($f1_arr[1], 2, "0", STR_PAD_LEFT).'-'.str_pad($f1_arr[0], 2, "0", STR_PAD_LEFT);
+          $f2 = $f2_arr[2].'-'.str_pad($f2_arr[1], 2, "0", STR_PAD_LEFT).'-'.str_pad($f2_arr[0], 2, "0", STR_PAD_LEFT);
+      } else {
+          $f1 = date("Y-m-d", strtotime($fecha1));
+          $f2 = date("Y-m-d", strtotime($fecha2));
+      }
+      $request->session()->put('fecha1', $f1);
+      $request->session()->put('fecha2', $f2);
+
+      return Excel::download(new ExcelIngresosExcedentes($f1, $f2), 'IngresosExcedentes.xlsx');
+  }
+
+  public function RelacionActasIdentificacion(Request $request)
+  {
+      $fecha1 = $request->get('fecha1');
+      $fecha2 = $request->get('fecha2');
+      $identificacion = $request->get('identificacion');
+      $estado_acta = $request->get('estado_acta');
+      $estadoNorm = is_string($estado_acta) ? strtolower(trim($estado_acta)) : '';
+
+      // La fecha viene de JS en formato MM/DD/YYYY
+      $f1_arr = explode('/', $fecha1);
+      $f2_arr = explode('/', $fecha2);
+      if(count($f1_arr) == 3 && count($f2_arr) == 3){
+          $f1 = $f1_arr[2].'-'.$f1_arr[0].'-'.$f1_arr[1];
+          $f2 = $f2_arr[2].'-'.$f2_arr[0].'-'.$f2_arr[1];
+      } else {
+          $f1 = date("Y-m-d", strtotime($fecha1));
+          $f2 = date("Y-m-d", strtotime($fecha2));
+      }
+
+      
+      $request->session()->put('fecha1', $f1);
+      $request->session()->put('fecha2', $f2);
+      $request->session()->put('identificacion_cli', $identificacion);
+      $request->session()->put('estado_acta', $estado_acta);
+
+      $query = \DB::table('actas_deposito_view')
+          ->leftJoin('escrituras', function($join) {
+                $join->on('actas_deposito_view.id_radica', '=', 'escrituras.id_radica')
+                     ->on('actas_deposito_view.anio_radica', '=', 'escrituras.anio_radica');
+          })
+          ->leftJoin('facturas as f', function($join) {
+              $join->on('f.id_radica', '=', 'actas_deposito_view.id_radica')
+                   ->on('f.anio_radica', '=', 'actas_deposito_view.anio_radica')
+                   ->where('f.nota_credito', '=', false);
+          })
+          ->select(
+              'actas_deposito_view.*',
+              'escrituras.num_esc',
+              'f.id_fact'
+          );
+
+      $query->whereDate('actas_deposito_view.fecha', '>=', $f1)
+            ->whereDate('actas_deposito_view.fecha', '<=', $f2);
+
+      if (!empty($identificacion)) {
+          $query->where('actas_deposito_view.identificacion_cli', '=', $identificacion);
+      }
+
+      if ($estadoNorm !== '') {
+          if ($estadoNorm === 'con_saldo') {
+              $query->where('actas_deposito_view.saldo', '>', 1);
+          } elseif ($estadoNorm === 'anuladas') {
+              $query->where(function ($q) {
+                  $q->where('actas_deposito_view.anulada', '=', true)
+                    ->orWhere('actas_deposito_view.anulada', '=', '1')
+                    ->orWhere('actas_deposito_view.anulada', '=', 1)
+                    ->orWhere('actas_deposito_view.anulada', '=', 't')
+                    ->orWhere('actas_deposito_view.anulada', '=', 'true');
+              });
+          } elseif ($estadoNorm === 'credito') {
+              $query->where(function ($q) {
+                  $q->where('actas_deposito_view.credito_act', '=', true)
+                    ->orWhere('actas_deposito_view.credito_act', '=', '1')
+                    ->orWhere('actas_deposito_view.credito_act', '=', 1)
+                    ->orWhere('actas_deposito_view.credito_act', '=', 't')
+                    ->orWhere('actas_deposito_view.credito_act', '=', 'true');
+              });
+          }
+      }
+
+      $Actas_deposito = $query->orderBy('actas_deposito_view.id_act')->get()->toArray();
+      \Log::info("Actas Found: " . count($Actas_deposito));
+      if(count($Actas_deposito) > 0) \Log::info("Sample Record: ", (array)$Actas_deposito[0]);
+
+      return response()->json([
+          "depositos"=>$Actas_deposito
+      ]);
+  }
+
+  public function RelacionActasCredito(Request $request)
+  {
+      return $this->RelacionActasIdentificacion($request);
+  }
+
+  public function ExcelActasIdentificacion(Request $request)
+  {
+      $fecha1 = $request->get('fecha1') ?: $request->session()->get('fecha1');
+      $fecha2 = $request->get('fecha2') ?: $request->session()->get('fecha2');
+      $identificacion = $request->get('identificacion') ?: $request->session()->get('identificacion_cli');
+      $estado_acta = $request->get('estado_acta') ?: $request->session()->get('estado_acta');
+
+      if (empty($fecha1) || empty($fecha2)) {
+          return "Filtros de fecha requeridos";
+      }
+
+      // Mismo criterio que RelacionActasIdentificacion / PDF (MM/DD/YYYY desde el datepicker)
+      $f1_arr = explode('/', $fecha1);
+      $f2_arr = explode('/', $fecha2);
+      if (count($f1_arr) === 3 && count($f2_arr) === 3) {
+          $f1 = $f1_arr[2] . '-' . $f1_arr[0] . '-' . $f1_arr[1];
+          $f2 = $f2_arr[2] . '-' . $f2_arr[0] . '-' . $f2_arr[1];
+      } else {
+          $f1 = date('Y-m-d', strtotime($fecha1));
+          $f2 = date('Y-m-d', strtotime($fecha2));
+      }
+
+      $request->session()->put('fecha1', $f1);
+      $request->session()->put('fecha2', $f2);
+      $request->session()->put('identificacion_cli', $identificacion);
+      $request->session()->put('estado_acta', $estado_acta);
+
+      $nombrefile = 'ActasIdentificacion_' . $f1 . '_' . $f2 . '.xls';
+      return (new \App\Exports\ExcelActasIdentificacion($f1, $f2, $identificacion, $estado_acta))->export();
+  }
+
+  public function ExcelActasCredito(Request $request)
+  {
+      return $this->ExcelActasIdentificacion($request);
+  }
+
+  private function parseDateForQuery($dateRaw)
+  {
+      $dateRaw = trim((string)$dateRaw);
+      if ($dateRaw === '') {
+          return null;
+      }
+
+      // Iso formato Y-m-d
+      $dt = \DateTime::createFromFormat('Y-m-d', $dateRaw);
+      if ($dt && $dt->format('Y-m-d') === $dateRaw) {
+          return $dateRaw;
+      }
+
+      // Slash dd/mm/yyyy o mm/dd/yyyy
+      if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $dateRaw, $parts)) {
+          list(, $p1, $p2, $p3) = $parts;
+          $d = (int)$p1;
+          $m = (int)$p2;
+          $y = (int)$p3;
+
+          if (checkdate($m, $d, $y)) {
+              return sprintf('%04d-%02d-%02d', $y, $m, $d);
+          }
+          if (checkdate($d, $m, $y)) {
+              return sprintf('%04d-%02d-%02d', $y, $d, $m);
+          }
+      }
+
+      // Guión dd-mm-yyyy o mm-dd-yyyy
+      if (preg_match('/^(\d{1,2})-(\d{1,2})-(\d{4})$/', $dateRaw, $parts)) {
+          list(, $p1, $p2, $p3) = $parts;
+          $d = (int)$p1;
+          $m = (int)$p2;
+          $y = (int)$p3;
+
+          if (checkdate($m, $d, $y)) {
+              return sprintf('%04d-%02d-%02d', $y, $m, $d);
+          }
+          if (checkdate($d, $m, $y)) {
+              return sprintf('%04d-%02d-%02d', $y, $d, $m);
+          }
+      }
+
+      $ts = strtotime(str_replace('/', '-', $dateRaw));
+      if ($ts !== false) {
+          return date('Y-m-d', $ts);
+      }
+
+      throw new \InvalidArgumentException('Formato de fecha inválido: ' . $dateRaw);
+  }
+
+  public function getEscriturasPorActo(Request $request)
+  {
+      $request->user()->authorizeRoles(['administrador','consultar','escripendientescr','actosjurinotar','relfactmensualescr']);
+      $actos = \DB::table('actos')->orderBy('nombre_acto')->get();
+      return view('reportes.informeescrituraporacto', compact('actos'));
+  }
+
+  public function getEscriturasPorActoData(Request $request)
+  {
+      $fecha1_raw = $request->get('fecha1');
+      $fecha2_raw = $request->get('fecha2');
+      $actos = $request->get('actos');
+
+      // Normaliza las fechas a Y-m-d garantizando que se entienda dd/mm/yyyy y mm/dd/yyyy
+      try {
+          $fecha1 = $this->parseDateForQuery($fecha1_raw);
+          $fecha2 = $this->parseDateForQuery($fecha2_raw);
+      } catch (\InvalidArgumentException $e) {
+          return response()->json(['error' => 'Fecha inválida: ' . $e->getMessage()], 422);
+      }
+
+      if (empty($actos) || (is_array($actos) && in_array('TODOS', $actos)) || $actos == 'TODOS') {
+          $actos_list = \DB::table('actos')->pluck('id_acto')->toArray();
+      } else {
+          $actos_list = is_array($actos) ? $actos : explode(',', (string)$actos);
+      }
+
+      // Filtrar solo numéricos y asegurar que no esté vacío
+      $actos_list = array_filter($actos_list, 'is_numeric');
+      if (empty($actos_list)) $actos_list = array(-1);
+
+      $sql = "
+          SELECT DISTINCT ON (apr.id_radica, apr.anio_radica, a.id_acto)
+              e.num_esc AS escritura,
+              apr.id_radica,
+              apr.anio_radica,
+              a.id_acto,
+              a.nombre_acto,
+              e.fecha_esc::text AS fecha_esc,
+              f.id_fact,
+              f.total_fact,
+              TRIM(COALESCE(cli1.pmer_nombrecli,'') || ' ' || COALESCE(cli1.sgndo_nombrecli,'') || ' ' || COALESCE(cli1.pmer_apellidocli,'') || ' ' || COALESCE(cli1.sgndo_apellidocli,'')) AS otorgante,
+              TRIM(COALESCE(cli2.pmer_nombrecli,'') || ' ' || COALESCE(cli2.sgndo_nombrecli,'') || ' ' || COALESCE(cli2.pmer_apellidocli,'') || ' ' || COALESCE(cli2.sgndo_apellidocli,'')) AS compareciente
+          FROM actos_persona_radica apr
+          INNER JOIN actos a ON apr.id_acto = a.id_acto
+          LEFT JOIN escrituras e ON e.id_radica::text = apr.id_radica::text AND e.anio_radica = apr.anio_radica
+          LEFT JOIN facturas f ON f.id_radica::text = apr.id_radica::text AND f.anio_radica = apr.anio_radica AND f.nota_credito = false
+          LEFT JOIN clientes cli1 ON cli1.identificacion_cli = apr.identificacion_cli
+          LEFT JOIN clientes cli2 ON cli2.identificacion_cli = apr.identificacion_cli2
+          WHERE
+              apr.id_acto IN (".implode(',', array_filter($actos_list, 'is_numeric')).")
+              AND e.num_esc IS NOT NULL
+              AND e.fecha_esc::date BETWEEN ? AND ?
+          ORDER BY apr.id_radica, apr.anio_radica, a.id_acto, e.num_esc ASC NULLS LAST;
+      ";
+
+      $reporte = \DB::select($sql, array($fecha1, $fecha2));
+
+      return response()->json(['reporte' => $reporte]);
+  }
+
+  public function ExcelEscriturasPorActo(Request $request)
+  {
+      $fecha1 = $request->get('fecha1') ?: $request->session()->get('fecha1');
+      $fecha2 = $request->get('fecha2') ?: $request->session()->get('fecha2');
+      $actos = $request->get('actos');
+
+      if (empty($fecha1) || empty($fecha2)) {
+          return response('Seleccione un rango de fechas para exportar.', 422);
+      }
+
+      return (new ExcelEscriturasPorActo($fecha1, $fecha2, $actos))->export();
+  }
 }

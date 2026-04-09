@@ -399,6 +399,10 @@
                                             <label class="form-check-label text-info" for="escrituradores2">Deshabilitar</label>
                                         </div>
                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="61" name="reportes[]" value="61">
+                                            <label class="form-check-label text-info" for="escrituradores2">Avanzado</label>
+                                        </div>
+                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="4" name="reportes[]" value="4">
                                             <label class="form-check-label text-info" for="escrituradores2">Administrador</label>
                                         </div>

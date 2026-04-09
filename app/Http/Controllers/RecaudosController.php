@@ -318,7 +318,7 @@ private function ImpuestoTimbre($actos){
                 }
             }else{
                $flagCat = 2;
-               $mayor = $value['catastro'];
+               $mayor = $value['cuantia'];
                 if($mayor > $mayor_acum){
                   $mayor_acum = $mayor;
                   $id_array = $key;//tomo el id del acto con mayor cuantia
@@ -344,7 +344,7 @@ private function ImpuestoTimbre($actos){
         if($flagCat == 0 || $flagCat == 1){
           $cuantia_en_uvt = ($act['cuantia']) / $uvt;
         }else if($flagCat == 2){
-          $cuantia_en_uvt = ($act['catastro']) / $uvt;
+          $cuantia_en_uvt = ($act['cuantia']) / $uvt;
         }        
         
           if($cuantia_en_uvt <= $rango1){

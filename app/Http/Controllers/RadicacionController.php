@@ -20,6 +20,7 @@ use App\Departamento;
 use App\Facturascajarapida;
 Use App\Actividad_economica;
 Use App\Notas_credito_factura;
+Use App\Detalle_derechos_factura;
 
 class RadicacionController extends Controller
 {
@@ -193,7 +194,9 @@ class RadicacionController extends Controller
     }
 
     public function Liberar_Radicacion(Request $request){
+      $notaria          = Notaria::find(1);
       $anio_trabajo = Notaria::find(1)->anio_trabajo;
+      $prefijo_fact     = preg_replace('/\s+/', '', $notaria->prefijo_fact);
       $id_radica = $request->input('id_radica');
 
       if (Radicacion::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->exists()){
@@ -227,6 +230,19 @@ class RadicacionController extends Controller
                 ]);
 
         }else{
+
+          //Elimna facturas de la tabla detalle_derechos_factura
+
+            foreach ($Fact as $Factu) {
+              $id_fact = $Factu->id_fact;             
+              $detalle_derechos_fact = Detalle_derechos_factura::
+                  where("id_fact","=",$id_fact)
+                ->where("prefijo","=",$prefijo_fact);
+              $detalle_derechos_fact->delete();               
+            } 
+
+
+
           //Eliminar liquidación
           $raw = \DB::raw("id_liqd");
           $liqd = Liq_derecho::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw)->get();

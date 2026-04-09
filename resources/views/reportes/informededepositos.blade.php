@@ -54,9 +54,11 @@
                             <th>Acta #</th>
                             <th>Fecha</th>
                             <th>Identificación</th>
+                            <th>Tipo</th>
                             <th>Nombre</th>
                             <th>Boleta</th>
                             <th>Registro</th>
+                            <th>Escritura</th>
                             <th>Depósito</th>
                             <th>Saldo</th>
                             <th>Observaciones</th>

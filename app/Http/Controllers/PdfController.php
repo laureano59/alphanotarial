@@ -94,7 +94,8 @@ class PdfController extends Controller
     $Escri = Escritura::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get();
     foreach ($Escri as $value) {
       $num_esc = $value['num_esc'];
-      $fecha_esc = $value['fecha_esc'];
+      $fecha_esc = $value['created_at'];
+       //$fecha_esc = Carbon::parse($value['created_at'])->format('Y-m-d');
 
     }
 
@@ -103,365 +104,10 @@ class PdfController extends Controller
     ->get();
     foreach ($protocolista as $value) {
       $nameprotocolista = $value['nombre_proto'];
-    }
+    }  
+   
 
-    
-    if($opcion == 1){//TODO:Factura Unica
-      $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
-      foreach ($facturas as $factura) {
-        $total_iva = $factura->total_iva;
-        $total_rtf = $factura->total_rtf;
-        $total_reteconsumo = $factura->total_reteconsumo;
-        $total_aporteespecial = $factura->total_aporteespecial;
-        $total_impuesto_timbre = $factura->total_impuesto_timbre;
-        $total_timbrec = $factura->total_timbrec;
-        $total_fondo = $factura->total_fondo;
-        $total_super = $factura->total_super;
-        $total_fact = $factura->total_fact;
-        $reteiva = $factura->deduccion_reteiva;
-        $retertf = $factura->deduccion_retertf;
-        $reteica = $factura->deduccion_reteica;
-        $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
-        $ingresos = $factura->total_derechos + $factura->total_conceptos;
-        $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
-        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
-        $derechos = round($factura->total_derechos);
-        $identificacioncli1 = $factura->a_nombre_de;
-        $forma_pago = $factura->credito_fact;
-        $a_cargo_de = $factura->a_cargo_de;
-        $detalle_acargo_de = $factura->detalle_acargo_de;
-      }
-
-      if($forma_pago == true){
-        $formadepago = "Credito";
-
-      }else if($forma_pago == false){
-        $formadepago = "Efectivo";
-      }
-
-       /*Medios de Pago*/
-
-
-      $mediodepago = '';
-      
-      $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
-      foreach ($Medpago as $med) {
-        $efectivo = $med->efectivo;
-        $cheque = $med->cheque;
-        $consignacion_bancaria = $med->consignacion_bancaria;
-        $pse = $med->pse;
-        $transferencia_bancaria = $med->transferencia_bancaria;
-        $tarjeta_credito = $med->tarjeta_credito;
-        $tarjeta_debito = $med->tarjeta_debito;
-      }
-
-      if($efectivo > 0){
-        $mediodepago = 'Efectivo';
-      }
-
-      if($cheque > 0){
-        $mediodepago = $mediodepago.', '.'Cheque';
-      }
-
-       if($consignacion_bancaria > 0){
-          $mediodepago = $mediodepago.', '.'Consig_banc';
-      }
-
-     
-      if($pse > 0){
-        $mediodepago = $mediodepago.', '.'Pse';
-      }
-
-      if($transferencia_bancaria > 0){
-        $mediodepago = $mediodepago.', '.'Transfe_banca';
-      }
-
-      if($tarjeta_credito > 0){
-        $mediodepago = $mediodepago.', '.'Tarj_cred';
-      }
-
-      if($tarjeta_debito > 0){
-        $mediodepago = $mediodepago.', '.'Tarj_deb';
-      }
-
-
-      if($forma_pago == true){
-        $formadepago = "Credito";
-
-      }else if($forma_pago == false){
-        $formadepago = "Contado";
-      }
-
-
-      $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-        direccion_cli");
-      $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
-      foreach ($cliente as $key => $cli) {
-        $nombrecli1 = $cli['fullname'];
-        $direccioncli1 = $cli['direccion_cli'];
-      }
-
-      $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
-      $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
-      $contprincipales = count ($principales, 0);
-
-
-      $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-        direccion_cli");
-      $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
-      foreach ($a_cargo as $key => $acar) {
-        $nombrecli_acargo_de = $acar['fullname'];
-      }
-
-
-      $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->orderBy('id_actoperrad','asc')->take(30)->get()->toArray();
-      $contactos = count ($actos, 0);
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
-
-      $atributos = Concepto::all();
-      $atributos = $atributos->sortBy('id_concep');
-      $i = 1;
-
-      foreach ($conceptos as $key => $conc) {
-        foreach ($atributos as $key => $atri) {
-          $atributo = $atri['nombre_concep'];
-          $totalatributo = 'total'.$atri['atributo'];
-          $hojasatributo = 'hojas'.$atri['atributo'];
-          if($conc[$totalatributo] > 0){
-            $dataconcept[$i]['concepto'] = $atributo;
-            $dataconcept[$i]['cantidad'] = $conc[$hojasatributo];
-            $dataconcept[$i]['total'] = $conc[$totalatributo];
-            $i = $i + 1;
-          }
-
-        }
-      }
-      $contdataconcept = count ($dataconcept, 0);
-
-      $nit = $notaria->nit;
-      $nombre_nota = strtoupper($notaria->nombre_nota);
-      $direccion_nota = $notaria->direccion_nota;
-      $telefono_nota = $notaria->telefono_nota;
-      $email = $notaria->email;
-      $nombre_notario = $notaria->nombre_notario;
-      $resolucion = $notaria->resolucion;
-      $piepagina_fact = $notaria->piepagina_fact;
-
-
-      # =====================================
-      # =           CUFE y QRCODE           =
-      # =====================================
-
-      $ID = $prefijo_fact.$num_fact;
-      $codImp1 = '01'; //IVA
-      $valImp1 = $total_iva;
-      $codImp2 = '04'; //Impuesto al consumo bolsa no se genera para nuestro caso
-      $valImp2 = 0.00;
-      $codImp3 = '03'; //ICA
-      $valImp3 = $reteica;
-      $valTot  = $total_fact;
-      $NitOfe  = $nit;//Nit Notaría
-      $NumAdq  = $identificacioncli1;
-      $TipoAmbiente = '1'; //1=AmbienteProduccion , 2: AmbientePruebas
-
-      $cufe = $request->session()->get('CUFE_SESION');
-      if (empty($cufe)) {
-        $cufe = '0';
-      } 
-      //$UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
-      //$QRCode = $cufe;
-
-      $cufe = trim($cufe);
-       $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
-
-      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
-
-      $QRCode = "NIT: {$nit}\n"
-              . "FACTURA: {$factura}\n"
-              . "FECHA: {$fecha_fact}\n"
-              . "VALOR: {$total_fact}\n"
-              . "CUFE: {$cufe}\n"
-              . "URL: {$urlDIAN}";
-
-      $FactComprobante = $request->session()->get('recibo_factura'); //Si es factura o comprobante
-
-      $fecha_impresion = date("d/m/Y");
-      
-      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
-      $data['nit'] = $nit;
-      $data['nombre_nota'] = $nombre_nota;
-      $data['direccion_nota'] = $direccion_nota;
-      $data['telefono_nota'] = $telefono_nota;
-      $data['email'] = $email;
-      $data['nombre_notario'] = $nombre_notario;
-      $data['resolucion'] = $resolucion;
-      $data['piepagina_fact'] = $piepagina_fact;
-      $data['IVA'] = $iva;
-      $data['prefijo_fact'] = $prefijo_fact;
-      $data['num_fact'] = $num_fact;
-      $data['num_esc'] = $num_esc;
-      $data['id_radica'] = $id_radica;
-      $data['identificacioncli1'] = $identificacioncli1;
-      $data['nombrecli1'] = $nombrecli1;
-      $data['direccioncli1'] = $direccioncli1;
-      $data['fecha_fact'] = $fecha_fact;
-      $data['fecha_impresion'] = $fecha_impresion;
-      $data['hora_fact'] = $hora_fact;
-      $data['fecha_esc'] = $fecha_esc;
-      $data['hora_cufe'] = $hora_cufe;
-      $data['principales'] = $principales;
-      $data['contprincipales'] = $contprincipales;
-      $data['actos'] = $actos;
-      $data['contactos'] = $contactos;
-      $data['derechos'] = $derechos;
-      $data['dataconcept'] = $dataconcept;
-      $data['contdataconcept'] = $contdataconcept;
-      $data['subtotal1'] = $subtotal1;
-      $data['total_fact'] = $total_fact;
-      $data['QRCode'] = $QRCode;
-      $data['cufe'] = $cufe;
-      $data['titulo'] = $FactComprobante;
-      $data['protocolista'] = $nameprotocolista;
-      $data['formadepago'] = $formadepago;
-      $data['a_cargo_de'] = $a_cargo_de;
-      $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
-      $data['detalle_acargo_de'] = $detalle_acargo_de;
-      $data['porcentaje_iva'] = $porcentaje_iva;
-      $data['mediodepago'] = $mediodepago;
-
-
-      $j = 0;
-      if($total_super > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Superintendencia de Notariado";
-        $terceros[$j]['total'] = $total_super;
-      }
-      if($total_fondo > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Fondo Nacional de Notariado";
-        $terceros[$j]['total'] = $total_fondo;
-      }
-      if($total_rtf > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Retención en la Fuente";
-        $terceros[$j]['total'] = $total_rtf;
-      }
-      if($total_reteconsumo > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Impuesto al Consumo";
-        $terceros[$j]['total'] = $total_reteconsumo;
-      }
-      if($total_aporteespecial > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Aporte Especial";
-        $terceros[$j]['total'] = $total_aporteespecial;
-      }
-      if($total_impuesto_timbre > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Impuesto al timbre";
-        $terceros[$j]['total'] = $total_impuesto_timbre;
-      }
-      if($total_timbrec > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Timbre Decreto 175";
-        $terceros[$j]['total'] = $total_timbrec;
-      }
-      if($total_iva > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
-        $terceros[$j]['total'] = round($total_iva);
-      }
-
-      $contterceros = count ($terceros, 0);
-      $data['terceros'] = $terceros;
-      $data['contterceros'] = $contterceros;
-
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre + $total_timbrec;
-      $data['totalterceros'] = round($totalterceros);
-
-
-      $k = 0;
-      if($reteiva > 0){
-        $k = $k + 1;
-        $deducciones[$k]['concepto'] = "ReteIva 15%";
-        $deducciones[$k]['total'] = $reteiva;
-      }
-      if($retertf > 0){
-        $k = $k + 1;
-        $deducciones[$k]['concepto'] = "ReteFuente 11%";
-        $deducciones[$k]['total'] = $retertf;
-      }
-      if($reteica > 0){
-        $k = $k + 1;
-        $deducciones[$k]['concepto'] = "ReteIca 6.6/1000";
-        $deducciones[$k]['total'] = $reteica;
-      }
-
-      if (isset($deducciones)){ //Si está definida la variable
-        $contdeducciones = count ($deducciones, 0);
-        $data['deducciones'] = $deducciones;
-        $data['contdeducciones'] = $contdeducciones;
-
-        $totaldeducciones = $reteiva + $retertf + $reteica;
-        $data['totaldeducciones'] = round($totaldeducciones);
-      }
-
-
-      if ($cufe == '0'){
-        $piepagina_fact = '';
-        $html = view('pdf.generar_recibo',$data)->render();
-      }else{
-        $html = view('pdf.generar',$data)->render();
-      }
-      
-
-      $namefile = $num_fact.'_F1'.'.pdf';
-      //$namefile = 'facturan13'.$num_fact.'.pdf';
-
-      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-      $fontDirs = $defaultConfig['fontDir'];
-
-      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-      $fontData = $defaultFontConfig['fontdata'];
-      $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          // "format" => "Letter en mm",
-        "format" => 'Letter',
-        'margin_bottom' => 10,
-      ]);
-
-      $mpdf->SetHTMLFooter('
-        <table width="100%">
-        <tr>
-        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-        </tr>
-        </table>');
-      $carpeta_destino_cliente = public_path() . '/cliente/';
-      $mpdf->defaultfooterfontsize=2;
-      $mpdf->SetTopMargin(5);
-      $mpdf->SetDisplayMode('fullpage');
-      $mpdf->WriteHTML($html);
-      $mpdf->Output($namefile,"I");
-      //$mpdf->Output($carpeta_destino_cliente.$namefile, 'F'); //guarda a ruta
-      //$mpdf->Output($namefile, \Mpdf\Output\Destination::FILE);
-
-
-
-    }else if($opcion == 2){//TODO:FacturaDoble
-      //Ya no se usa
-
-    }else if($opcion == 3){//TODO:Factura Multiple
+    if($opcion == 3){//TODO:Factura Multiple
             
       $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
 
@@ -481,8 +127,8 @@ class PdfController extends Controller
         $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
         $ingresos = $factura->total_derechos + $factura->total_conceptos;
         $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
-        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
+        $hora_fact = Carbon::parse($factura->fecha_fact)->format('H:i:s');
+        $hora_cufe = Carbon::parse($factura->updated_at)->format('H:i:s');
         $derechos = round($factura->total_derechos);
         $identificacioncli1 = $factura->a_nombre_de;
         $forma_pago = $factura->credito_fact;
@@ -2659,8 +2305,17 @@ class PdfController extends Controller
     $nombre_notario = $notaria->nombre_notario;
     $identificacion_not = $notaria->identificacion_not;
     //$anio_trabajo = $notaria->anio_trabajo;
-    $fecha1 = $request->session()->get('fecha1');
-    $fecha2 = $request->session()->get('fecha2');
+   
+
+    if (!$request->user()->roles->pluck('name')->intersect(['administrador', 'avanzado'])->count()) {
+        $fecha1 = date('Y-m-d');
+        $fecha2 = date('Y-m-d');       
+      } else {
+        $fecha1 = $request->session()->get('fecha1');
+        $fecha2 = $request->session()->get('fecha2');
+      }   
+  
+
     $anio_trabajo = date("Y", strtotime($fecha1));
     $fecha_impresion = date("d/m/Y");
 
@@ -3088,9 +2743,17 @@ class PdfController extends Controller
 
   }
 
+
+
   public function PdfLibroIndiceNotarial(Request $request){
+
+    set_time_limit(0);
+
+    ini_set('memory_limit', '1024M');
+    ini_set('pcre.backtrack_limit', 50000000);
+
     $notaria = Notaria::find(1);
-    //$anio_trabajo = $notaria->anio_trabajo;
+
     $nit = $notaria->nit;
     $nombre_nota = strtoupper($notaria->nombre_nota);
     $direccion_nota = $notaria->direccion_nota;
@@ -3098,148 +2761,171 @@ class PdfController extends Controller
     $email = $notaria->email;
     $nombre_notario = $notaria->nombre_notario;
     $identificacion_not = $notaria->identificacion_not;
-   
+
     $fecha1 = $request->session()->get('fecha1');
     $fecha2 = $request->session()->get('fecha2');
-    $fecha_impresion = date("d/m/Y");
-    $anio_trabajo = date("Y", strtotime($fecha1));
 
-    $fecha = $fecha1.' A '.$fecha2;
-     $parapdf = '';
+    $fecha_impresion = date("Y-m-d");
+
+    $anio_trabajo = date("Y", strtotime($fecha1));
+    $fecha = $fecha1 . ' A ' . $fecha2;
+
+    $parapdf = '';
     $resultadoFinal = [];
 
     $ordenar = $request->session()->get('ordenar');
-    if($ordenar == 'porescritura'){ //Ordena por escritura
-       $parapdf = '1';
-      $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
-      $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)
-      ->groupBy('num_esc')
-      ->orderBy('num_esc')
-      ->select($raw1)
-      ->get()
-      ->toArray();
 
-      $resultadoFinal = $libroindice;
+    if($ordenar == 'porescritura'){
 
+        $parapdf = '1';
 
-    }elseif($ordenar == 'pornombre'){//Ordena por nombre
+        $raw1 = \DB::raw("MIN(id_radica) AS id_radica, MIN(id_actperrad) AS id_actperrad, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(identificacion_otor) AS identificacion_otor, MIN(otorgante) AS otorgante, MIN(identificacion_comp) AS identificacion_comp, MIN(compareciente) AS compareciente, MIN(acto) AS acto");
 
-          $alfabeto = range('A', 'Z');
-          $parapdf = '2';
+        $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
+        ->whereDate('fecha', '<=', $fecha2)
+        ->groupBy('num_esc','prioridad')
+        ->orderBy('num_esc')
+        ->orderBy('prioridad')
+        ->select($raw1)
+        ->get()
+        ->toArray();
 
-          foreach ($alfabeto as $letra) {
-            $libroindice = Libroindice_view::
-            whereDate('fecha', '>=', $fecha1)
+        $resultadoFinal = $libroindice;
+
+    } elseif($ordenar == 'pornombre'){
+
+        $alfabeto = range('A', 'Z');
+        $parapdf = '2';
+
+        foreach ($alfabeto as $letra) {
+
+            $libroindice = Libroindice_view::whereDate('fecha', '>=', $fecha1)
             ->whereDate('fecha', '<=', $fecha2)
             ->where('otorgante', 'like', $letra . '%')
-            ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente,  SUBSTRING(MIN(acto), 1, 30) AS acto')
-            ->groupBy('num_esc')
+            ->selectRaw('MIN(otorgante) AS otorgante, MIN(fecha) AS fecha, MIN(num_esc) AS num_esc, MIN(compareciente) AS compareciente, SUBSTRING(MIN(acto),1,30) AS acto')
+            ->groupBy('num_esc','prioridad')
             ->orderBy('num_esc')
-            //->orderBy('otorgante')
+            ->orderBy('prioridad')
             ->orderBy('fecha')
-            ->get()->toArray();
+            ->get()
+            ->toArray();
+
             $resultadoFinal[$letra] = $libroindice;
-          }
+        }
 
-          $resultadoFinal = array_merge(...array_values($resultadoFinal));
-    }else if($ordenar == 'pornumescritura'){ //Ordena por escritura
-      $parapdf = '3';
-      $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
-      $libroindice = Actos_notariales_escritura_view::
-      whereDate('fecha', '>=', $fecha1)
-      ->whereDate('fecha', '<=', $fecha2)
-      ->orderBy('num_esc')
-      ->select($raw1)
-      ->get()
-      ->toArray();
-      $resultadoFinal = $libroindice;
-      }
-  
-   $nombre_reporte = $request->session()->get('nombre_reporte');
+        $resultadoFinal = array_merge(...array_values($resultadoFinal));
 
-   $data['nit'] = $nit;
-   $data['nombre_nota'] = $nombre_nota;
-   $data['direccion_nota'] = $direccion_nota;
-   $data['telefono_nota'] = $telefono_nota;
-   $data['email'] = $email;
-   $data['nombre_notario'] = $nombre_notario;
-   $data['fecha_reporte'] = $fecha;
-   $data['fecha_impresion'] = $fecha_impresion;
-   $data['libroindice'] = $resultadoFinal;
-   $data['nombre_reporte'] = $nombre_reporte;
+    } else if($ordenar == 'pornumescritura'){
 
-  
-  if($parapdf == '2'){
-    ini_set('pcre.backtrack_limit', 10000000);
-    $html = view('pdf.libroindice',$data)->render();
-    $namefile = 'libroindice_'.$fecha_impresion.'.pdf';
-  }else if($parapdf == '1'){
-    ini_set('pcre.backtrack_limit', 10000000);
-     $html = view('pdf.librorelacion',$data)->render();
-    $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';
-  }else if($parapdf == '3'){
-    ini_set('pcre.backtrack_limit', 10000000);
-     $html = view('pdf.librorelacion',$data)->render();
-    $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';     
-   }
+        $parapdf = '3';
 
-   $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-   $fontDirs = $defaultConfig['fontDir'];
+        $raw1 = \DB::raw("(id_radica) AS id_radica, (id_actperrad) AS id_actperrad, (fecha) AS fecha, (num_esc) AS num_esc, (identificacion_otor) AS identificacion_otor, (otorgante) AS otorgante, (identificacion_comp) AS identificacion_comp, (compareciente) AS compareciente, (acto) AS acto");
 
-   $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-   $fontData = $defaultFontConfig['fontdata'];
-   $mpdf = new Mpdf([
-    'fontDir' => array_merge($fontDirs, [
-      public_path() . '/fonts',
-    ]),
-    'fontdata' => $fontData + [
-      'arial' => [
-        'R' => 'arial.ttf',
-        'B' => 'arialbd.ttf',
-      ],
-    ],
-    'default_font' => 'arial',
-        //"format" => [216, 140],//TODO: Media Carta
-    "format" => 'Letter-L',
-    'margin_bottom' => 10,//espacio inferior en mm
-  ]);
+        $libroindice = Actos_notariales_escritura_view::whereDate('fecha', '>=', $fecha1)
+        ->whereDate('fecha', '<=', $fecha2)
+        ->orderBy('num_esc')
+        ->orderBy('prioridad')
+        ->select($raw1)
+        ->get()
+        ->toArray();
 
+        $resultadoFinal = $libroindice;
+    }
 
+    $nombre_reporte = $request->session()->get('nombre_reporte');
 
-    // Configurar estilos y alineación del encabezado
-        $header ='
-            <table width="100%">
+    $data['nit'] = $nit;
+    $data['nombre_nota'] = $nombre_nota;
+    $data['direccion_nota'] = $direccion_nota;
+    $data['telefono_nota'] = $telefono_nota;
+    $data['email'] = $email;
+    $data['nombre_notario'] = $nombre_notario;
+    $data['fecha_reporte'] = $fecha;
+    $data['fecha_impresion'] = $fecha_impresion;
+    $data['libroindice'] = $resultadoFinal;
+    $data['nombre_reporte'] = $nombre_reporte;
+
+    $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+
+    $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+
+    $mpdf = new Mpdf([
+        'tempDir' => storage_path('app/mpdf'),
+        'fontDir' => array_merge($fontDirs, [
+            public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+            'arial' => [
+                'R' => 'arial.ttf',
+                'B' => 'arialbd.ttf',
+            ],
+        ],
+        'default_font' => 'arial',
+        'format' => 'Letter-L',
+        'margin_bottom' => 10,
+    ]);
+
+    $header = '
+        <table width="100%">
             <tr>
-            <td align="center" colspan="2" style="padding: 0;">
-            <p><h2>'.$nombre_nota.'</h2>
-            
-            <b>'.$nombre_reporte.' -  '.$anio_trabajo.'</b></p>
-            </td>
-            <td colspan="2" style="padding: 0;">
-            <table width="100%">
-            <tr>
-            <td align="right" colspan="2" style="padding: 0;">
-            <img src="' . asset('images/logon13.png') . '" alt="Logo" style="float: right; margin-right: 10px;">
-            </td>
+                <td align="center" colspan="2" style="padding:0;">
+                    <h2>'.$nombre_nota.'</h2>
+                    <b>'.$nombre_reporte.' - '.$anio_trabajo.'</b>
+                </td>
+                <td colspan="2">
+                    <table width="100%">
+                        <tr>
+                            <td align="right">
+                                <img src="'.asset('images/logon13.png').'" style="float:right;margin-right:10px;">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
-            </table>
-            </td>
-            </tr>
-            </table>
-            <hr>
-            ';
+        </table>
+        <hr>
+    ';
 
+    $mpdf->SetHTMLHeader($header);
+    $mpdf->SetTopMargin(42);
+    $mpdf->SetDisplayMode('fullpage');
 
-        // Configurar encabezado en el PDF
-        $mpdf->SetHTMLHeader($header);
-       
-        $mpdf->SetTopMargin(42);
-        $mpdf->SetDisplayMode('fullpage');
+    $mpdf->simpleTables = true;
+    $mpdf->packTableData = true;
+
+    $chunks = array_chunk($resultadoFinal, 500);
+
+    foreach ($chunks as $chunk) {
+
+        $dataChunk = $data;
+        $dataChunk['libroindice'] = $chunk;
+
+        if($parapdf == '2'){
+            $html = view('pdf.libroindice', $dataChunk)->render();
+            $namefile = 'libroindice_'.$fecha_impresion.'.pdf';
+        } elseif($parapdf == '1'){
+            $html = view('pdf.librorelacion', $dataChunk)->render();
+            $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';
+        } elseif($parapdf == '3'){
+            $html = view('pdf.librorelacion', $dataChunk)->render();
+            $namefile = 'librorelacion_'.$fecha_impresion.'.pdf';
+        }
+
         $mpdf->WriteHTML($html);
-        $mpdf->Output($namefile,"I");
+    }
 
- }
+    //$mpdf->Output($namefile, "I");
+
+    $path = storage_path('app/mpdf/'.$namefile);
+
+    $mpdf->Output($path, \Mpdf\Output\Destination::FILE);
+
+    return response()->download($path)->deleteFileAfterSend(true);
+}
+
+  
 
  public function PdfRelacionNotaCredito(Request $request){
       $notaria = Notaria::find(1);
@@ -3425,11 +3111,23 @@ public function PdfInformeCartera(Request $request){
       }
       
     }else if($ordenar == 'facturasactivas'){
-       $informecartera = Informe_cartera_view::
-      where('nota_credito', false)
-      ->where('saldo_fact', '>=', 1)
-      ->orderBy('id_fact')->get()
-      ->toArray();
+
+      if ($identificacion_cli === null || $identificacion_cli === ''){
+         $informecartera = Informe_cartera_view::
+          where('nota_credito', false)
+          ->where('saldo_fact', '>=', 1)
+          ->orderBy('id_fact')->get()
+          ->toArray();
+      }else{
+         $informecartera = Informe_cartera_view::
+          where('nota_credito', false)
+          ->where('saldo_fact', '>=', 1)
+          ->where('identificacion_cli', $identificacion_cli)
+          ->orderBy('id_fact')->get()
+          ->toArray();
+      }
+
+      
     }
 
     $total_pago = 0;
@@ -3887,592 +3585,27 @@ public function PdfInformeCartera(Request $request){
    
     $fecha1 = $request->session()->get('fecha1');
     $fecha2 = $request->session()->get('fecha2');
+    $anio = date("Y", strtotime($fecha1));
+    $notaCredito = false;
 
     $fecha_reporte =  $fecha1." A ". $fecha2;
     $fecha_impresion = date("d/m/Y");
 
     $fecha = $fecha1.' A '.$fecha2;
-
-    $raw1 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango1 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 0)
-    ->where('cuantia','<=', 100000000)
-    ->groupBy('escr')
-    ->select($raw1)->get()->toArray();
-
-    
-    $raw2 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango2 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 100000001)
-    ->where('cuantia','<=', 300000000)
-    ->groupBy('escr')
-    ->select($raw2)->get()->toArray();
-
-
-
-    $raw3 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango3 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 300000001)
-    ->where('cuantia','<=', 500000000)
-    ->groupBy('escr')
-    ->select($raw3)->get()->toArray();
-
-
-    
-    $raw4 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango4 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 500000001)
-    ->where('cuantia','<=', 1000000000)
-    ->groupBy('escr')
-    ->select($raw4)->get()->toArray();
-
-    
-
-    $raw5 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango5 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>=', 1000000001)
-    ->where('cuantia','<=', 1500000000)
-    ->groupBy('escr')
-    ->select($raw5)->get()->toArray();
-    
-
-    $raw6 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(Total) AS total");
-    $rango6 = Recaudos_concuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->where('cuantia','>', 1500000000)
-    ->groupBy('escr')
-    ->select($raw6)->get()->toArray();
-
-    
-
-    $raw7 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-    $sincuantia = Recaudos_sincuantia_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->groupBy('escr')
-    ->select($raw7)->get()->toArray();
-
-    
-    $raw8 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-    $excenta = Recaudos_excenta_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->groupBy('escr')
-    ->select($raw8)->get()->toArray();
-
-    $raw9 = \DB::raw("MIN(escr) AS escr, SUM(super) AS super, SUM(fondo) AS fondo, SUM(super + fondo) AS total");
-    $sincuantiaexcenta = Recaudos_sincuantia_excenta_view::whereDate('fecha', '>=', $fecha1)
-    ->whereDate('fecha', '<', $fecha2)
-    ->where('nota_periodo', '<>', 0)
-    ->groupBy('escr')
-    ->select($raw9)->get()->toArray();
-
-    /*----------  Elimina repetidas entre sincuantia y excentas  ----------*/
-    
-    foreach ($sincuantia as $i => $sinc) {
-      foreach ($excenta as $j => $exc) {
-        if($sinc['escr'] == $exc['escr']){
-          unset($sincuantia[$i]);
-        }
-      }
-    }
-    
-    /*----------  Concatena excenta con sncuantiaexcenta  ----------*/
-    
-    $excenta = array_merge($excenta, $sincuantiaexcenta);
-
-    foreach ($excenta as $key => $value) {
-      if($value['escr'] == 0){
-        unset($excenta[$key]);
-      }
-    }
-
-       # ====================================================================
-      # =           Identifica excentas que van para con cuantia           =
-      # ====================================================================
-    
-
-      $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
-      $valor2 = $tarifa['valor2'] / 2;
-      $valor3 = $tarifa['valor3'] / 2;
-      $valor4 = $tarifa['valor4'] / 2;
-      $valor5 = $tarifa['valor5'] / 2;
-      $valor6 = $tarifa['valor6'] / 2;
-      $valor7 = $tarifa['valor7'] / 2;
-
-
-      $array_rango1 = array();
-      $array_rango2 = array();
-      $array_rango3 = array();
-      $array_rango4 = array();
-      $array_rango5 = array();
-      $array_rango6 = array();
-      $array_rango7 = array();
-      foreach ($excenta as $key => $value) {
-        if($value['super'] == $valor2){
-          $array_rango1[$key]['escr'] = $value['escr'];
-          $array_rango1[$key]['super'] = $value['super'];
-          $array_rango1[$key]['fondo'] = $value['fondo'];
-          $array_rango1[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor3){
-          $array_rango2[$key]['escr'] = $value['escr'];
-          $array_rango2[$key]['super'] = $value['super'];
-          $array_rango2[$key]['fondo'] = $value['fondo'];
-          $array_rango2[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor4){
-          $array_rango3[$key]['escr'] = $value['escr'];
-          $array_rango3[$key]['super'] = $value['super'];
-          $array_rango3[$key]['fondo'] = $value['fondo'];
-          $array_rango3[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor5){
-          $array_rango4[$key]['escr'] = $value['escr'];
-          $array_rango4[$key]['super'] = $value['super'];
-          $array_rango4[$key]['fondo'] = $value['fondo'];
-          $array_rango4[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor6){
-          $array_rango5[$key]['escr'] = $value['escr'];
-          $array_rango5[$key]['super'] = $value['super'];
-          $array_rango5[$key]['fondo'] = $value['fondo'];
-          $array_rango5[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-
-        if($value['super'] == $valor7){
-          $array_rango6[$key]['escr'] = $value['escr'];
-          $array_rango6[$key]['super'] = $value['super'];
-          $array_rango6[$key]['fondo'] = $value['fondo'];
-          $array_rango6[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($excenta[$key]);
-        }
-      }
-
-      
-
-      $rango1 = array_merge($rango1, $array_rango1);
-      $rango2 = array_merge($rango2, $array_rango2);
-      $rango3 = array_merge($rango3, $array_rango3);
-      $rango4 = array_merge($rango4, $array_rango4);
-      $rango5 = array_merge($rango5, $array_rango5);
-      $rango6 = array_merge($rango6, $array_rango6);
-
-      $rango1 = $this->unique_multidim_array($rango1,'escr');
-      $rango2 = $this->unique_multidim_array($rango2,'escr');
-      $rango3 = $this->unique_multidim_array($rango3,'escr');
-      $rango4 = $this->unique_multidim_array($rango4,'escr');
-      $rango5 = $this->unique_multidim_array($rango5,'escr');
-      $rango6 = $this->unique_multidim_array($rango6,'escr');
-
-      
-      # ==============================================================================
-      # =           Elimna repetidas en rangos entre excentas y sincuantia           =
-      # ==============================================================================
-      
-      /*----------  Rango1  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango1 as $j => $rn1) {
-          if($exc['escr'] == $rn1['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango1 as $j => $rn1) {
-          if($sinc['escr'] == $rn1['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      unset($array_rango1);
-      unset($array_rango2);
-      unset($array_rango3);
-      unset($array_rango4);
-      unset($array_rango5);
-      unset($array_rango6);
-
-      $array_rango1 = [];
-      $array_rango2 = [];
-      $array_rango3 = [];
-      $array_rango4 = [];
-      $array_rango5 = [];
-      $array_rango6 = [];
-      
-      foreach ($sincuantia as $key => $value) {
-        if($value['super'] == $valor2){
-          $array_rango1[$key]['escr'] = $value['escr'];
-          $array_rango1[$key]['super'] = $value['super'];
-          $array_rango1[$key]['fondo'] = $value['fondo'];
-          $array_rango1[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor3){
-          $array_rango2[$key]['escr'] = $value['escr'];
-          $array_rango2[$key]['super'] = $value['super'];
-          $array_rango2[$key]['fondo'] = $value['fondo'];
-          $array_rango2[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor4){
-          $array_rango3[$key]['escr'] = $value['escr'];
-          $array_rango3[$key]['super'] = $value['super'];
-          $array_rango3[$key]['fondo'] = $value['fondo'];
-          $array_rango3[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor5){
-          $array_rango4[$key]['escr'] = $value['escr'];
-          $array_rango4[$key]['super'] = $value['super'];
-          $array_rango4[$key]['fondo'] = $value['fondo'];
-          $array_rango4[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor6){
-          $array_rango5[$key]['escr'] = $value['escr'];
-          $array_rango5[$key]['super'] = $value['super'];
-          $array_rango5[$key]['fondo'] = $value['fondo'];
-          $array_rango5[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-
-        if($value['super'] == $valor7){
-          $array_rango6[$key]['escr'] = $value['escr'];
-          $array_rango6[$key]['super'] = $value['super'];
-          $array_rango6[$key]['fondo'] = $value['fondo'];
-          $array_rango6[$key]['total'] = $value['super'] + $value['fondo'];
-          unset($sincuantia[$key]);
-        }
-      }
-
-
-
-      /*----------  Elimina repetidas entre rango1 y array_rango1  ----------*/
-
-
-      foreach ($rango1 as $i => $ran) {
-        foreach ($array_rango1 as $j => $arran) {
-          if($ran['escr'] == $arran['escr']){
-            unset($rango1[$i]);
-          }
-        }
-      }
-
-      $rango1 = array_merge($rango1, $array_rango1);
-      $rango2 = array_merge($rango2, $array_rango2);
-      $rango3 = array_merge($rango3, $array_rango3);
-      $rango4 = array_merge($rango4, $array_rango4);
-      $rango5 = array_merge($rango5, $array_rango5);
-      $rango6 = array_merge($rango6, $array_rango6);
-
-      $rango1 = $this->unique_multidim_array($rango1,'escr');
-      $rango2 = $this->unique_multidim_array($rango2,'escr');
-      $rango3 = $this->unique_multidim_array($rango3,'escr');
-      $rango4 = $this->unique_multidim_array($rango4,'escr');
-      $rango5 = $this->unique_multidim_array($rango5,'escr');
-      $rango6 = $this->unique_multidim_array($rango6,'escr');
-
-
-      if($rango1){
-        $ran1escr = 0;
-        $ran1super =  0;
-        $ran1fondo = 0;
-        $ran1total = 0;
-        foreach ($rango1 as $key => $rn1) {
-          $ran1escr += 1;
-          $ran1super +=  $rn1['super'];
-          $ran1fondo += $rn1['fondo'];
-          $ran1total += $rn1['total'];
-        }
-      }else{
-        $ran1escr = 0;
-        $ran1super =  0;
-        $ran1fondo = 0;
-        $ran1total = 0;
-      }
-      
-      /*----------  Rango2  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango2 as $j => $rn2) {
-          if($exc['escr'] == $rn2['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango2 as $j => $rn2) {
-          if($sinc['escr'] == $rn2['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      if($rango2){
-        $ran2escr = 0;
-        $ran2super = 0;
-        $ran2fondo = 0;
-        $ran2total = 0;
-        foreach ($rango2 as $key => $rn2) {
-          $ran2escr += 1;
-          $ran2super +=  $rn2['super'];
-          $ran2fondo += $rn2['fondo'];
-          $ran2total += $rn2['total'];
-        }
-      }else{
-        $ran2escr = 0;
-        $ran2super =  0;
-        $ran2fondo = 0;
-        $ran2total = 0;
-      }
-
-
-      /*----------  Rango3  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango3 as $j => $rn3) {
-          if($exc['escr'] == $rn3['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango3 as $j => $rn3) {
-          if($sinc['escr'] == $rn3['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      if($rango3){
-        $ran3escr = 0;
-        $ran3super = 0;
-        $ran3fondo = 0;
-        $ran3total = 0;
-        foreach ($rango3 as $key => $rn3) {
-          $ran3escr += 1;
-          $ran3super +=  $rn3['super'];
-          $ran3fondo += $rn3['fondo'];
-          $ran3total += $rn3['total'];
-        }
-      }else{
-        $ran3escr = 0;
-        $ran3super =  0;
-        $ran3fondo = 0;
-        $ran3total = 0;
-      }
-
-
-      /*----------  Rango4  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango4 as $j => $rn4) {
-          if($exc['escr'] == $rn4['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango4 as $j => $rn4) {
-          if($sinc['escr'] == $rn4['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-
-      if($rango4){
-        $ran4escr = 0;
-        $ran4super = 0;
-        $ran4fondo = 0;
-        $ran4total = 0;
-        foreach ($rango4 as $key => $rn4) {
-          $ran4escr += 1;
-          $ran4super += $rn4['super'];
-          $ran4fondo += $rn4['fondo'];
-          $ran4total += $rn4['total'];
-        }
-      }else{
-        $ran4escr = 0;
-        $ran4super =  0;
-        $ran4fondo = 0;
-        $ran4total = 0;
-      }
-
-
-      /*----------  Rango5  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango5 as $j => $rn5) {
-          if($exc['escr'] == $rn5['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango5 as $j => $rn5) {
-          if($sinc['escr'] == $rn5['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-      
-
-      if($rango5){
-        $ran5escr = 0;
-        $ran5super = 0;
-        $ran5fondo = 0;
-        $ran5total = 0;
-        foreach ($rango5 as $key => $rn5) {
-          $ran5escr += 1;
-          $ran5super += $rn5['super'];
-          $ran5fondo += $rn5['fondo'];
-          $ran5total += $rn5['total'];
-        }
-      }else{
-        $ran5escr = 0;
-        $ran5super =  0;
-        $ran5fondo = 0;
-        $ran5total = 0;
-      }
-
-
-      /*----------  Rango6  ----------*/
-
-      foreach ($excenta as $i => $exc) {
-        foreach ($rango6 as $j => $rn6) {
-          if($exc['escr'] == $rn6['escr']){
-            unset($excenta[$i]);
-          }
-        }
-      }
-
-      foreach ($sincuantia as $i => $sinc) {
-        foreach ($rango6 as $j => $rn6) {
-          if($sinc['escr'] == $rn6['escr']){
-            unset($sincuantia[$i]);
-          }
-        }
-      }
-
-      if($rango6){
-        $ran6escr = 0;
-        $ran6super = 0;
-        $ran6fondo = 0;
-        $ran6total = 0;
-        foreach ($rango6 as $key => $rn6) {
-          $ran6escr += 1;
-          $ran6super += $rn6['super'];
-          $ran6fondo += $rn6['fondo'];
-          $ran6total += $rn6['total'];
-        }
-
-      }else{
-        $ran6escr = 0;
-        $ran6super =  0;
-        $ran6fondo = 0;
-        $ran6total = 0;
-      }
-
-      /*----------  Excentas  ----------*/
-
-
-      if($excenta){
-        $excescr = 0;
-        $excsuper =  0;
-        $excfondo = 0;
-        $exctotal = 0;
-        foreach ($excenta as $key => $value) {
-          $excescr += 1;
-          $excsuper +=  $value['super'];
-          $excfondo += $value['fondo'];
-          $exctotal += $value['total'];
-        }
-      }else{
-        $excescr = 0;
-        $excsuper =  0;
-        $excfondo = 0;
-        $exctotal = 0;
-      }
-
-
-      /*----------  Sin Cuantía  ----------*/
-
-
-      if($sincuantia){
-        $sincescr = 0;
-        $sincsuper = 0;
-        $sincfondo = 0;
-        $sinctotal = 0;
-        foreach ($sincuantia as $key => $value) {
-          $sincescr += 1;
-          $sincsuper +=  $value['super'];
-          $sincfondo += $value['fondo'];
-          $sinctotal += $value['total'];
-        }
-
-      }else{
-        $sincescr = 0;
-        $sincsuper =  0;
-        $sincfondo = 0;
-        $sinctotal = 0;
-      }
-
-
-      $total_escrituras = $ran1escr + $ran2escr + $ran3escr + $ran4escr + $ran5escr + 
-      $ran6escr + $sincescr + $excescr;
-      $total_super =  $ran1super +  $ran2super +  $ran3super +  $ran4super +
-      $ran5super +  $ran6super + $sincsuper + $excsuper;
-      $total_fondo = $ran1fondo +  $ran2fondo +  $ran3fondo +  $ran4fondo +
-      $ran5fondo +  $ran6fondo + $sincfondo + $excfondo;
-
-      $total_recaudos = $ran1total + $ran2total + $ran3total + $ran4total +
-      $ran5total + $ran6total + $sinctotal + $exctotal;
-      
-
-      $tarifa = Tarifa::find(8);//:Tarifa de Recaudo Super y Fondo
-      $valor1 = $tarifa['valor1'];
-      $valor2 = $tarifa['valor2'];
-      $valor3 = $tarifa['valor3'];
-      $valor4 = $tarifa['valor4'];
-      $valor5 = $tarifa['valor5'];
-      $valor6 = $tarifa['valor6'];
-      $valor7 = $tarifa['valor7'];
-      
-      
-      $nombre_reporte = $request->session()->get('nombre_reporte');
-
+    $nombre_reporte = $request->session()->get('nombre_reporte');
+
+
+     $recaudos = \DB::select("
+    SELECT *
+    FROM public.fn_informe_recaudos(?, ?, ?, ?)
+        ", [
+            $fecha1,
+            $fecha2,
+            $anio,
+            $notaCredito
+          ]);
+
+   
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
       $data['direccion_nota'] = $direccion_nota;
@@ -4482,52 +3615,7 @@ public function PdfInformeCartera(Request $request){
       $data['nombre_reporte'] = $nombre_reporte;
       $data['fecha_reporte'] = $fecha;
       $data['fecha_impresion'] = $fecha_impresion;
-
-
-      $data['ran1escr'] = $ran1escr;
-      $data['ran2escr'] = $ran2escr;
-      $data['ran3escr'] = $ran3escr;
-      $data['ran4escr'] = $ran4escr;
-      $data['ran5escr'] = $ran5escr;
-      $data['ran6escr'] = $ran6escr;
-
-      $data['sincescr'] = $sincescr;
-      $data['excescr'] = $excescr;
-      $data['ran1super'] = $ran1super;
-      $data['ran2super'] = $ran2super;
-      $data['ran3super'] = $ran3super;
-      $data['ran4super'] = $ran4super;
-      $data['ran5super'] = $ran5super;
-      $data['ran6super'] = $ran6super;
-      $data['sincsuper'] = $sincsuper;
-      $data['excsuper'] = $excsuper;
-      $data['ran1fondo'] = $ran1fondo;
-      $data['ran2fondo'] = $ran2fondo;
-      $data['ran3fondo'] = $ran3fondo;
-      $data['ran4fondo'] = $ran4fondo;
-      $data['ran5fondo'] = $ran5fondo;
-      $data['ran6fondo'] = $ran6fondo;
-      $data['sincfondo'] = $sincfondo;
-      $data['excfondo'] = $excfondo;
-      $data['ran1total'] = $ran1total;
-      $data['ran2total'] = $ran2total;
-      $data['ran3total'] = $ran3total;
-      $data['ran4total'] = $ran4total;
-      $data['ran5total'] = $ran5total;
-      $data['ran6total'] = $ran6total;
-      $data['sinctotal'] = $sinctotal;
-      $data['exctotal'] = $exctotal;
-      $data['total_escrituras'] = $total_escrituras;
-      $data['total_super'] = $total_super;
-      $data['total_fondo'] =  $total_fondo;
-      $data['total_recaudos'] = $total_recaudos;
-      $data['valor1'] = $valor1;
-      $data['valor2'] = $valor2;
-      $data['valor3'] = $valor3;
-      $data['valor4'] = $valor4;
-      $data['valor5'] = $valor5;
-      $data['valor6'] = $valor6;
-      $data['valor7'] = $valor7;
+      $data['recaudos'] = $recaudos;
 
 
       $html = view('pdf.informederecaudos',$data)->render();
@@ -4881,10 +3969,17 @@ public function PdfInformeCartera(Request $request){
       $telefono_nota = $notaria->telefono_nota;
       $email = $notaria->email;
       $nombre_notario = $notaria->nombre_notario;
-      $identificacion_not = $notaria->identificacion_not;
-     
-      $fecha1 = $request->session()->get('fecha1');
-      $fecha2 = $request->session()->get('fecha2');
+      $identificacion_not = $notaria->identificacion_not;     
+      
+
+      if (!$request->user()->roles->pluck('name')->intersect(['administrador', 'avanzado'])->count()) {
+        $fecha1 = date('Y-m-d');
+        $fecha2 = date('Y-m-d');       
+      } else {
+        $fecha1 = $request->session()->get('fecha1');
+        $fecha2 = $request->session()->get('fecha2');
+      }   
+
 
       /*CONSULTA PARA FACTURAS DE CONTADO Y  CREDITO*/
 
@@ -5413,8 +4508,8 @@ public function PdfInformeCartera(Request $request){
         $atributo = $atri['nombre_concep'];
         $totalatributo = 'total'.$atri['atributo'];
         $hojas = 'hojas'.$atri['atributo'];
-
-        if($conceptos->$totalatributo > 0){
+        
+        if (isset($conceptos->$totalatributo) && $conceptos->$totalatributo > 0) {
           $total = $conceptos->$totalatributo;
           $canthoja = $conceptos->$hojas;
           
@@ -6167,8 +5262,8 @@ public function Cuenta_de_Cobro(Request $request){
         $reteica_otor = $factura_otor->deduccion_reteica;
         $subtotal1_otor = $factura_otor->total_derechos + $factura_otor->total_conceptos;
         $fecha_fact = Carbon::parse($factura_otor->fecha_fact)->format('Y-m-d');
-        $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('h-i-s');
-        $hora_cufe = Carbon::parse($factura_otor->updated_at)->format('h:i:s');
+        $hora_fact = Carbon::parse($factura_otor->fecha_fact)->format('H:i:s');
+        $hora_cufe = Carbon::parse($factura_otor->updated_at)->format('H:i:s');
         $derechos_otor = $factura_otor->total_derechos;
         $identificacioncli1_otor = $factura_otor->a_nombre_de;
         $id_radica =  $factura_otor->id_radica;
@@ -6235,7 +5330,7 @@ public function Cuenta_de_Cobro(Request $request){
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
         $num_esc = $esc->num_esc;
-        $fecha_esc = $esc->fecha_esc;
+        $fecha_esc = $esc->created_at;
       }
 
 
@@ -6509,358 +5604,11 @@ public function Cuenta_de_Cobro(Request $request){
       $mpdf->SetDisplayMode('fullpage');
       $mpdf->WriteHTML($html_otor);
       $mpdf->Output($namefile,"I");
-    }else{//Para radicación con una sola factura
-      $facturas = Factura::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
-
-
-      foreach ($facturas as $factura) {
-        $total_iva = $factura->total_iva;
-        $total_rtf = $factura->total_rtf;
-        $total_reteconsumo = $factura->total_reteconsumo;
-        $total_aporteespecial = $factura->total_aporteespecial;
-        $total_impuesto_timbre = $factura->total_impuesto_timbre;
-        $total_timbrec = $factura->total_timbrec;
-        $total_fondo = $factura->total_fondo;
-        $total_super = $factura->total_super;
-        $total_fact = $factura->total_fact;
-        $reteiva = $factura->deduccion_reteiva;
-        $retertf = $factura->deduccion_retertf;
-        $reteica = $factura->deduccion_reteica;
-        $subtotal1 = round($factura->total_derechos + $factura->total_conceptos);
-        $fecha_fact = Carbon::parse($factura->fecha_fact)->format('Y-m-d');
-        $hora_cufe = Carbon::parse($factura->updated_at)->format('h:i:s');
-        $hora_fact = Carbon::parse($factura->fecha_fact)->format('h:i:s');
-        $derechos = round($factura->total_derechos);
-        $identificacioncli1 = $factura->a_nombre_de;
-        $id_radica = $factura->id_radica;
-        $cuf = $factura->cufe;
-        $forma_pago = $factura->credito_fact;
-        $a_cargo_de = $factura->a_cargo_de;
-        $detalle_acargo_de = $factura->detalle_acargo_de;
-      }
-
-      /*Medios de Pago*/
-      
-      $mediodepago = '';
-      
-      $Medpago = Mediosdepago::where("prefijo","=",$prefijo_fact)->where("id_fact","=",$num_fact)->get();
-      foreach ($Medpago as $med) {
-        $efectivo = $med->efectivo;
-        $cheque = $med->cheque;
-        $consignacion_bancaria = $med->consignacion_bancaria;
-        $pse = $med->pse;
-        $transferencia_bancaria = $med->transferencia_bancaria;
-        $tarjeta_credito = $med->tarjeta_credito;
-        $tarjeta_debito = $med->tarjeta_debito;
-      }
-
-      if($efectivo > 0){
-        $mediodepago = 'Efectivo';
-      }
-
-      if($cheque > 0){
-        $mediodepago = $mediodepago.', '.'Cheque';
-      }
-
-       if($consignacion_bancaria > 0){
-          $mediodepago = $mediodepago.', '.'Consig_banc';
-      }
-
-     
-      if($pse > 0){
-        $mediodepago = $mediodepago.', '.'Pse';
-      }
-
-      if($transferencia_bancaria > 0){
-        $mediodepago = $mediodepago.', '.'Transfe_banca';
-      }
-
-      if($tarjeta_credito > 0){
-        $mediodepago = $mediodepago.', '.'Tarj_cred';
-      }
-
-      if($tarjeta_debito > 0){
-        $mediodepago = $mediodepago.', '.'Tarj_deb';
-      }
 
 
      
-      if($forma_pago == true){
-        $formadepago = "Credito";
-
-      }else if($forma_pago == false){
-        $formadepago = "Contado";
-      }
-
-      $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
-      foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
-        $fecha_esc = $esc->fecha_esc;
-      }
-
-      
-      $protocolista = Protocolistas_copias_view::where('num_esc', $num_esc)
-      ->where('anio_esc', $anio_trabajo)
-      ->get();
-      foreach ($protocolista as $value) {
-        $nameprotocolista = $value['nombre_proto'];
-      }
-
-      $raw = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-        direccion_cli");
-      $cliente = Cliente::where('identificacion_cli', $identificacioncli1)->select($raw)->get();
-      foreach ($cliente as $key => $cli) {
-        $nombrecli1 = $cli['fullname'];
-        $direccioncli1 = $cli['direccion_cli'];
-      }
-
-      $raw_acargo = \DB::raw("CONCAT(pmer_nombrecli, ' ', sgndo_nombrecli, ' ', pmer_apellidocli, ' ', sgndo_apellidocli, empresa) as fullname,
-        direccion_cli");
-      $a_cargo = Cliente::where('identificacion_cli', $a_cargo_de)->select($raw_acargo)->get();
-      foreach ($a_cargo as $key => $acar) {
-        $nombrecli_acargo_de = $acar['fullname'];
-      }
-
-
-      /***************Principales************/
-
-      $raw1 = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
-      $principales = Principalesfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raw1)->take(2)->get()->toArray();
-      $contprincipales = count ($principales, 0);
-
-      /***************Secundarios***************/
-
-      $raws = \DB::raw("identificacion_cli1, CONCAT(pmer_nombre_cli1, ' ', sgndo_nombre_cli1, ' ', pmer_apellido_cli1, ' ', sgndo_apellido_cli1, empresa_cli1) as nombre_cli1,
-        identificacion_cli2, CONCAT(pmer_nombre_cli2, ' ', sgndo_nombre_cli2, ' ', pmer_apellido_cli2, ' ', sgndo_apellido_cli2, empresa_cli2) as nombre_cli2");
-      $secundarios = Secundariosfact_view::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->select($raws)->take(5)->get()->toArray();
-      $contsecundarios = count ($secundarios, 0);
-
-                
-      $actos = Actoscuantia::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->orderBy('id_actoperrad','asc')->take(30)->get()->toArray();
-      $contactos = count ($actos, 0);
-      $conceptos = Liq_concepto::where('id_radica', $id_radica)->where('anio_radica', $anio_trabajo)->get()->toArray();
-
-      $atributos = Concepto::all();
-      $atributos = $atributos->sortBy('id_concep');
-      $i = 1;
-
-      foreach ($conceptos as $key => $conc) {
-        foreach ($atributos as $key => $atri) {
-          $atributo = $atri['nombre_concep'];
-          $totalatributo = 'total'.$atri['atributo'];
-          $hojasatributo = 'hojas'.$atri['atributo'];
-          if($conc[$totalatributo] > 0){
-            $dataconcept[$i]['concepto'] = $atributo;
-            $dataconcept[$i]['cantidad'] = $conc[$hojasatributo];
-            $dataconcept[$i]['total'] = $conc[$totalatributo];
-            $i = $i + 1;
-          }
-
-        }
-      }
-      $contdataconcept = count ($dataconcept, 0);
-
-      $nit = $notaria->nit;
-      $nombre_nota = strtoupper($notaria->nombre_nota);
-      $direccion_nota = $notaria->direccion_nota;
-      $telefono_nota = $notaria->telefono_nota;
-      $email = $notaria->email;
-      $nombre_notario = $notaria->nombre_notario;
-      $resolucion = $notaria->resolucion;
-      $piepagina_fact = $notaria->piepagina_fact;
-
-
-      # =====================================
-      # =           CUFE y QRCODE           =
-      # =====================================
-
-      $ID = $prefijo_fact.$num_fact;
-      $codImp1 = '01'; //IVA
-      $valImp1 = $total_iva;
-      $codImp2 = '04'; //Impuesto al consumo bolsa no se genera para nuestro caso
-      $valImp2 = 0.00;
-      $codImp3 = '03'; //ICA
-      $valImp3 = $reteica;
-      $valTot  = $total_fact;
-      $NitOfe  = $nit;//Nit Notaría
-      $NumAdq  = $identificacioncli1;
-      $ingresos = $subtotal1;
-      $ClTec   = '266669c6-4b51-429d-aedb-da51c8270516'; //Clave tecnica, se encuentra en el portal de la pactura electronica que nos provve la dian
-      $TipoAmbiente = '2'; //1=AmbienteProduccion , 2: AmbientePruebas
-
-      $cufe = trim($cuf);
-
-      //$UUID = hash('sha384', $cufe); //se deja vacio mientras tanto
-
-      //$QRCode = $cufe;
-
-      $urlDIAN = "https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey={$cufe}";
-
-      $factura = trim($prefijo_fact) . '-' . trim($num_fact);
-
-      $QRCode = "NIT: {$nit}\n"
-              . "FACTURA: {$factura}\n"
-              . "FECHA: {$fecha_fact}\n"
-              . "VALOR: {$total_fact}\n"
-              . "CUFE: {$cufe}\n"
-              . "URL: {$urlDIAN}";
-
-      $iva = "Somos Responsables de IVA\nNo hacer Reteica, somos Autoretedores de ica";
-      $data['nit'] = $nit;
-      $data['nombre_nota'] = $nombre_nota;
-      $data['direccion_nota'] = $direccion_nota;
-      $data['telefono_nota'] = $telefono_nota;
-      $data['email'] = $email;
-      $data['nombre_notario'] = $nombre_notario;
-      $data['resolucion'] = $resolucion;
-      $data['piepagina_fact'] = $piepagina_fact;
-      $data['IVA'] = $iva;
-      $data['prefijo_fact'] = $prefijo_fact;
-      $data['num_fact'] = $num_fact;
-      $data['num_esc'] = $num_esc;
-      $data['identificacioncli1'] = $identificacioncli1;
-      $data['nombrecli1'] = $nombrecli1;
-      $data['direccioncli1'] = $direccioncli1;
-      $data['fecha_fact'] = $fecha_fact;
-      $data['fecha_esc'] = $fecha_esc;
-      $data['hora_fact'] = $hora_fact;
-      $data['hora_cufe'] = $hora_cufe;
-      $data['principales'] = $principales;
-      $data['contprincipales'] = $contprincipales;
-      $data['secundarios'] = $secundarios;
-      $data['contsecundarios'] = $contsecundarios;
-      $data['actos'] = $actos;
-      $data['contactos'] = $contactos;
-      $data['derechos'] = $derechos;
-      $data['dataconcept'] = $dataconcept;
-      $data['contdataconcept'] = $contdataconcept;
-      $data['subtotal1'] = $subtotal1;
-      $data['total_fact'] = $total_fact;
-      $data['QRCode'] = $QRCode;
-      $data['cufe'] = $cufe;$data['titulo'] = "Factura de Venta No.";
-      $data['protocolista'] = $nameprotocolista;
-      $data['id_radica'] = $id_radica;
-      $data['formadepago'] = $formadepago;
-      $data['a_cargo_de'] = $a_cargo_de;
-      $data['nombrecli_acargo_de'] = $nombrecli_acargo_de;
-      $data['detalle_acargo_de'] = $detalle_acargo_de;
-      $data['mediodepago'] = $mediodepago;
-      $data['fecha_impresion'] = $fecha_impresion;
-
-      $j = 0;
-      if($total_super > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Superintendencia de Notariado";
-        $terceros[$j]['total'] = $total_super;
-      }
-      if($total_fondo > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Fondo Nacional de Notariado";
-        $terceros[$j]['total'] = $total_fondo;
-      }
-      if($total_rtf > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Retención en la Fuente";
-        $terceros[$j]['total'] = $total_rtf;
-      }
-      if($total_reteconsumo > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Impuesto al Consumo";
-        $terceros[$j]['total'] = $total_reteconsumo;
-      }
-      if($total_aporteespecial > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Aporte Especial";
-        $terceros[$j]['total'] = $total_aporteespecial;
-      }
-      if($total_impuesto_timbre > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Impuesto Timbre";
-        $terceros[$j]['total'] = $total_impuesto_timbre;
-      }
-      if($total_timbrec > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Timbre Decreto 175";
-        $terceros[$j]['total'] = $total_timbrec;
-      }
-      if($total_iva > 0){
-        $j = $j + 1;
-        $terceros[$j]['concepto'] = "Iva(".$porcentaje_iva."%)";
-        $terceros[$j]['total'] = round($total_iva);
-      }
-
-      $contterceros = count ($terceros, 0);
-      $data['terceros'] = $terceros;
-      $data['contterceros'] = $contterceros;
-
-      $totalterceros = $total_iva + $total_rtf + $total_reteconsumo + $total_fondo + $total_super + $total_impuesto_timbre;
-      $data['totalterceros'] = round($totalterceros);
-
-
-      $k = 0;
-      if($reteiva > 0){
-        $k = $k + 1;
-        $deducciones[$k]['concepto'] = "ReteIva 15%";
-        $deducciones[$k]['total'] = $reteiva;
-      }
-      if($retertf > 0){
-        $k = $k + 1;
-        $deducciones[$k]['concepto'] = "ReteFuente 11%";
-        $deducciones[$k]['total'] = $retertf;
-      }
-      if($reteica > 0){
-        $k = $k + 1;
-        $deducciones[$k]['concepto'] = "ReteIca 6.6/1000";
-        $deducciones[$k]['total'] = $reteica;
-      }
-
-      if (isset($deducciones)){ //Si está definida la variable
-        $contdeducciones = count ($deducciones, 0);
-        $data['deducciones'] = $deducciones;
-        $data['contdeducciones'] = $contdeducciones;
-
-        $totaldeducciones = $reteiva + $retertf + $reteica;
-        $data['totaldeducciones'] = round($totaldeducciones);
-      }
-
-      $html = view('pdf.generarcopia',$data)->render();
-
-      $namefile = 'notacredito_n13_'.$num_fact.'.pdf';
-
-      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
-      $fontDirs = $defaultConfig['fontDir'];
-
-      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
-      $fontData = $defaultFontConfig['fontdata'];
-      $mpdf = new Mpdf([
-        'fontDir' => array_merge($fontDirs, [
-          public_path() . '/fonts',
-        ]),
-        'fontdata' => $fontData + [
-          'arial' => [
-            'R' => 'arial.ttf',
-            'B' => 'arialbd.ttf',
-          ],
-        ],
-        'default_font' => 'arial',
-          // "format" => "Letter en mm",
-        "format" => 'Letter',
-        'margin_bottom' => 10,
-      ]);
-
-      $mpdf->SetHTMLFooter('
-        <table width="100%">
-        <tr>
-        <td align="center"><font size="1">'.$piepagina_fact.'</font></td>
-        </tr>
-        </table>');
-      $mpdf->defaultfooterfontsize=2;
-      $mpdf->SetTopMargin(5);
-      $mpdf->SetDisplayMode('fullpage');
-      $mpdf->WriteHTML($html);
-      $mpdf->Output($namefile,"I");
     }
+   
   }
 
   public function PdfLiquidacion(Request $request){
@@ -8272,12 +7020,14 @@ public function Cuenta_de_Cobro(Request $request){
       $totalsaldo = 0;
       $totaldepositoboleta = 0;
       $totaldepositoregistro = 0;
+      $totaldepositoescritura = 0;
 
       foreach ($Actas_deposito  as $key => $ad) {
         $totaldepositos += $ad['deposito_act'];
         $totalsaldo += $ad['saldo'];
         $totaldepositoboleta += $ad['deposito_boleta'];
         $totaldepositoregistro += $ad['deposito_registro'];
+        $totaldepositoescritura += $ad['deposito_escrituras'];
       }
 
      
@@ -8292,6 +7042,7 @@ public function Cuenta_de_Cobro(Request $request){
       $data['nombre_notario'] = $nombre_notario;
       $data['totaldepositoboleta'] = $totaldepositoboleta;
       $data['totaldepositoregistro'] = $totaldepositoregistro;
+      $data['totaldepositoescritura'] = $totaldepositoescritura;
       $data['depositos'] = $Actas_deposito;
       $data['totaldepositos'] = round($totaldepositos);
       $data['totalsaldo'] = round($totalsaldo);
@@ -8333,7 +7084,7 @@ public function Cuenta_de_Cobro(Request $request){
     }
 
 
-     public function EgresosDiarios(Request $request){
+    public function ActasCreditoPdf(Request $request){
       $notaria = Notaria::find(1);
       $nit = $notaria->nit;
       $nombre_nota = strtoupper($notaria->nombre_nota);
@@ -8341,43 +7092,42 @@ public function Cuenta_de_Cobro(Request $request){
       $telefono_nota = $notaria->telefono_nota;
       $email = $notaria->email;
       $nombre_notario = $notaria->nombre_notario;
-      $identificacion_not = $notaria->identificacion_not;
-      
 
       $fecha1 = $request->session()->get('fecha1');
       $fecha2 = $request->session()->get('fecha2');
-      $opcionreporte = $request->session()->get('opcionreporte');
+      $identificacion = isset($request->identificacion) ? $request->identificacion : $request->session()->get('identificacion_cli');
 
-      $fecha_reporte =  $fecha1." A ". $fecha2;
+
+
+      $fecha_reporte = $fecha1 . " A " . $fecha2;
       $fecha_impresion = date("d/m/Y");
+      $nombre_reporte_sess = $request->session()->get('nombre_reporte');
+      $nombre_reporte = $nombre_reporte_sess ? $nombre_reporte_sess : 'Informe Actas a Crédito';
 
-      if($opcionreporte == 'completo'){
-      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
-      ->whereDate('fecha_egreso', '<=', $fecha2)
-      ->orderBy('id_act')
-      ->get()->toArray();
-    }else if($opcionreporte == 'maycero'){
-      $Actas_egreso = Actas_deposito_egreso_view::whereDate('fecha_egreso', '>=', $fecha1)
-      ->whereDate('fecha_egreso', '<=', $fecha2)
-      ->where('nuevo_saldo', '>', 0)
-      ->orderBy('id_act')
-      ->get()->toArray();
-    }
+      $query = Actas_deposito_view::whereDate('fecha', '>=', $fecha1)
+        ->whereDate('fecha', '<=', $fecha2)
+        ->where('credito_act', 1)
+        ->where('anulada', 0);
 
-
-      $totaldepositos = 0;
-      $totalegresos = 0;
-      $totalsaldo = 0;
-
-      foreach ($Actas_egreso  as $key => $ad) {
-        //$totaldepositos += $ad['deposito_act'];
-        $totalegresos += $ad['egreso_egr'];
-        //$totalsaldo += $ad['saldo'];
+      if (!empty($identificacion)) {
+        $query->where('identificacion_cli', $identificacion);
       }
 
-     
+      $Actas_deposito = $query->orderBy('id_act')->get()->toArray();
 
-      $nombre_reporte = $request->session()->get('nombre_reporte');
+      $totaldepositos = 0;
+      $totalsaldo = 0;
+      $totaldepositoboleta = 0;
+      $totaldepositoregistro = 0;
+      $totaldepositoescritura = 0;
+
+      foreach ($Actas_deposito as $key => $ad) {
+        $totaldepositos += $ad['deposito_act'];
+        $totalsaldo += $ad['saldo'];
+        $totaldepositoboleta += $ad['deposito_boleta'];
+        $totaldepositoregistro += $ad['deposito_registro'];
+        $totaldepositoescritura += (isset($ad['deposito_escrituras']) ? $ad['deposito_escrituras'] : 0);
+      }
 
       $data['nit'] = $nit;
       $data['nombre_nota'] = $nombre_nota;
@@ -8385,17 +7135,20 @@ public function Cuenta_de_Cobro(Request $request){
       $data['telefono_nota'] = $telefono_nota;
       $data['email'] = $email;
       $data['nombre_notario'] = $nombre_notario;
-      $data['egresos'] = $Actas_egreso;
-      //$data['totaldepositos'] = round($totaldepositos);
-      $data['totalegresos'] = round($totalegresos);
-      //$data['totalsaldo'] = round($totalsaldo);
+      $data['totaldepositoboleta'] = $totaldepositoboleta;
+      $data['totaldepositoregistro'] = $totaldepositoregistro;
+      $data['totaldepositoescritura'] = $totaldepositoescritura;
+      $data['depositos'] = $Actas_deposito;
+      $data['totaldepositos'] = round($totaldepositos);
+      $data['totalsaldo'] = round($totalsaldo);
       $data['nombre_reporte'] = $nombre_reporte;
       $data['fecha_reporte'] = $fecha_reporte;
       $data['fecha_impresion'] = $fecha_impresion;
-      
-      $html = view('pdf.relaciondeegresosdiarios',$data)->render();
+      $data['identificacion'] = $identificacion;
 
-      $namefile = $nombre_reporte.$fecha_reporte.'.pdf';
+      $html = view('pdf.actascreditopdf', $data)->render();
+
+      $namefile = 'ActasCredito_' . $fecha_reporte . '.pdf';
 
       $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
       $fontDirs = $defaultConfig['fontDir'];
@@ -8413,7 +7166,94 @@ public function Cuenta_de_Cobro(Request $request){
           ],
         ],
         'default_font' => 'arial',
-        //"format" => [216, 140],//TODO: Media Carta
+        "format" => 'Letter-L',
+        'margin_bottom' => 10,
+      ]);
+
+      $mpdf->defaultfooterfontsize = 2;
+      $mpdf->SetTopMargin(5);
+      $mpdf->SetDisplayMode('fullpage');
+      $mpdf->WriteHTML($html);
+      $mpdf->Output($namefile, "I");
+    }
+
+
+     public function EgresosDiarios(Request $request){
+
+      $notaria = Notaria::find(1);
+      $nit = $notaria->nit;
+      $nombre_nota = strtoupper($notaria->nombre_nota);
+      $direccion_nota = $notaria->direccion_nota;
+      $telefono_nota = $notaria->telefono_nota;
+      $email = $notaria->email;
+      $nombre_notario = $notaria->nombre_notario;
+
+      $fecha1 = $request->session()->get('fecha1');
+      $fecha2 = $request->session()->get('fecha2');
+      $opcionreporte = $request->session()->get('opcionreporte') ?: 'completo';
+
+      $fecha_reporte =  $fecha1." A ". $fecha2;
+      $fecha_impresion = date("d/m/Y");
+
+      // Usar la misma lógica del informe en pantalla
+      $reportesController = new ReportesController();
+      $flatData = $reportesController->obtenerDatosInformeEgresosDiarios($fecha1, $fecha2, $opcionreporte);
+
+      // Convertir objetos a arrays con los campos que espera la vista
+      $Actas_egreso = [];
+      $totalegresos = 0;
+      foreach ($flatData as $row) {
+        $egreso = is_object($row) ? (array) $row : $row;
+        $totalegresos += (float) (isset($egreso['egreso_egr']) ? $egreso['egreso_egr'] : 0);
+        $Actas_egreso[] = [
+          'id_act'            => isset($egreso['id_act']) ? $egreso['id_act'] : '',
+          'fecha_egreso'      => isset($egreso['fecha_egreso']) ? $egreso['fecha_egreso'] : '',
+          'identificacion_cli'=> isset($egreso['identificacion_cli']) ? $egreso['identificacion_cli'] : '',
+          'nombre'            => isset($egreso['nombre']) ? $egreso['nombre'] : '',
+          'saldo_de_deposito' => isset($egreso['deposito_act']) ? $egreso['deposito_act'] : 0,
+          'egreso_egr'        => isset($egreso['egreso_egr']) ? $egreso['egreso_egr'] : 0,
+          'nuevo_saldo'       => isset($egreso['saldo_final']) ? $egreso['saldo_final'] : 0,
+          'observaciones_egr' => isset($egreso['observaciones_egr']) ? $egreso['observaciones_egr'] : '',
+          'descripcion_tip'   => isset($egreso['concepto_egreso']) ? $egreso['concepto_egreso'] : '',
+          'id_fact'           => isset($egreso['factura']) ? $egreso['factura'] : '',
+          'id_radica'         => isset($egreso['id_radica']) ? $egreso['id_radica'] : '',
+        ];
+      }
+
+      $nombre_reporte = $request->session()->get('nombre_reporte');
+
+      $data['nit'] = $nit;
+      $data['nombre_nota'] = $nombre_nota;
+      $data['direccion_nota'] = $direccion_nota;
+      $data['telefono_nota'] = $telefono_nota;
+      $data['email'] = $email;
+      $data['nombre_notario'] = $nombre_notario;
+      $data['egresos'] = $Actas_egreso;
+      $data['totalegresos'] = round($totalegresos);
+      $data['nombre_reporte'] = $nombre_reporte ?: 'Relacion de Egresos';
+      $data['fecha_reporte'] = $fecha_reporte;
+      $data['fecha_impresion'] = $fecha_impresion;
+      
+      $html = view('pdf.relaciondeegresosdiarios',$data)->render();
+
+      $namefile = ($nombre_reporte ?: 'EgresosDiarios').$fecha_reporte.'.pdf';
+
+      $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+      $fontDirs = $defaultConfig['fontDir'];
+
+      $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+      $fontData = $defaultFontConfig['fontdata'];
+      $mpdf = new Mpdf([
+        'fontDir' => array_merge($fontDirs, [
+          public_path() . '/fonts',
+        ]),
+        'fontdata' => $fontData + [
+          'arial' => [
+            'R' => 'arial.ttf',
+            'B' => 'arialbd.ttf',
+          ],
+        ],
+        'default_font' => 'arial',
         "format" => 'Letter-L',
         'margin_bottom' => 10,
       ]);
@@ -9412,4 +8252,201 @@ public function Cuenta_de_Cobro(Request $request){
         return $this->miles($c).$cadena.(($x > 0)?$this->miles($x):'');
       }
     }
-  }
+
+    public function ActasPorIdentificacionPdf(Request $request) {
+        $notaria = Notaria::find(1);
+        $nit = $notaria->nit;
+        $nombre_nota = strtoupper($notaria->nombre_nota);
+        $direccion_nota = $notaria->direccion_nota;
+        $telefono_nota = $notaria->telefono_nota;
+        $email = $notaria->email;
+        $nombre_notario = $notaria->nombre_notario;
+
+        $fecha1 = $request->fecha1 ?: $request->session()->get('fecha1');
+        $fecha2 = $request->fecha2 ?: $request->session()->get('fecha2');
+        $identificacion = $request->identificacion ?: $request->session()->get('identificacion_cli');
+        $estado_acta = $request->estado_acta ?: $request->session()->get('estado_acta');
+
+        if (empty($fecha1) || empty($fecha2)) {
+            return "Filtros de fecha requeridos";
+        }
+
+        // Formatear fechas para asegurar compatibilidad de consulta
+       
+        $f1 = date("Y-m-d", strtotime($fecha1)); //Convierte Fecha a YYYY-mm-dd
+        $f2 = date("Y-m-d", strtotime($fecha2));
+
+        $query = Actas_deposito_view::leftJoin('escrituras', function($join) {
+                $join->on('actas_deposito_view.id_radica', '=', 'escrituras.id_radica')
+                     ->on('actas_deposito_view.anio_radica', '=', 'escrituras.anio_radica');
+            })
+            ->leftJoin('facturas', function($join) {
+                $join->on('actas_deposito_view.id_radica', '=', 'facturas.id_radica')
+                     ->on('actas_deposito_view.anio_radica', '=', 'facturas.anio_radica')
+                     ->where('facturas.nota_credito', false);
+            })
+            ->whereDate('actas_deposito_view.fecha', '>=', $f1)
+            ->whereDate('actas_deposito_view.fecha', '<=', $f2)
+            ->select('actas_deposito_view.*', 'escrituras.num_esc', 'facturas.id_fact');
+
+        if (!empty($identificacion)) {
+            $query->where('actas_deposito_view.identificacion_cli', $identificacion);
+        }
+
+        if (!empty($estado_acta)) {
+            if ($estado_acta == 'con_saldo') {
+                $query->where('actas_deposito_view.saldo', '>', 1);
+            } elseif ($estado_acta == 'anuladas') {
+                $query->where('actas_deposito_view.anulada', '=', true);
+            }
+        }
+
+        $Informe = $query->orderBy('actas_deposito_view.id_act')->get();
+
+        $total_deposito = 0;
+        $total_boleta = 0;
+        $total_registro = 0;
+        $total_escritura = 0;
+        $total_saldo = 0;
+
+        foreach ($Informe as $item) {
+            $total_deposito += $item->deposito_act;
+            $total_boleta += $item->deposito_boleta;
+            $total_registro += $item->deposito_registro;
+            $total_escritura += $item->deposito_escrituras;
+            $total_saldo += $item->saldo;
+        }
+
+        $data = [
+            'nit' => $nit,
+            'nombre_nota' => $nombre_nota,
+            'direccion_nota' => $direccion_nota,
+            'telefono_nota' => $telefono_nota,
+            'email' => $email,
+            'nombre_notario' => $nombre_notario,
+            'informe' => $Informe,
+            'fecha_reporte' => $f1 . " A " . $f2,
+            'fecha_impresion' => date("d/m/Y"),
+            'nombre_reporte' => "REPORTE DE ACTAS POR IDENTIFICACION",
+            'total_deposito' => $total_deposito,
+            'total_boleta' => $total_boleta,
+            'total_registro' => $total_registro,
+            'total_escritura' => $total_escritura,
+            'total_saldo' => $total_saldo,
+            'identificacion_filtro' => $identificacion
+        ];
+
+        $html = view('pdf.actasporidentificacion', $data)->render();
+        $namefile = 'ReporteActasPorIdentificacion.pdf';
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'Letter-L',
+            'margin_bottom' => 10,
+        ]);
+
+        $mpdf->SetTopMargin(5);
+        $mpdf->SetDisplayMode('fullpage');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($namefile, "I");
+    }
+
+
+     public function Escrituras_Por_Acto_PDF(Request $request)
+    {
+        try {
+            $fecha1_raw = $request->get('fecha1');
+            $fecha2_raw = $request->get('fecha2');
+            $actos = $request->get('actos');
+
+            $fecha1 = $this->parseDate($fecha1_raw);
+            $fecha2 = $this->parseDate($fecha2_raw);
+
+            if (empty($actos) || in_array('TODOS', (array)$actos)) {
+                $actos_list = DB::table('actos')->pluck('id_acto')->toArray();
+                $nombre_acto_filtro = 'TODOS LOS ACTOS (REPORTE GENERAL)';
+            } else {
+                $actos_list = is_array($actos) ? $actos : explode(',', $actos);
+                $nombre_acto_filtro = DB::table('actos')->whereIn('id_acto', $actos_list)->pluck('nombre_acto')->implode(', ');
+            }
+
+            if (empty($actos_list)) $actos_list = array(-1);
+            $actos_formatted = implode(",", array_map('intval', $actos_list));
+
+            $sql = "
+              SELECT DISTINCT ON (apr.id_radica, apr.anio_radica, a.id_acto)
+                  e.num_esc AS escritura,
+                  apr.id_radica,
+                  apr.anio_radica,
+                  a.id_acto,
+                  a.nombre_acto,
+                  e.fecha_esc::text AS fecha_escritura,
+                  f.id_fact,
+                  f.total_fact,
+                  TRIM(COALESCE(cli1.pmer_nombrecli,'') || ' ' || COALESCE(cli1.sgndo_nombrecli,'') || ' ' || COALESCE(cli1.pmer_apellidocli,'') || ' ' || COALESCE(cli1.sgndo_apellidocli,'')) AS otorgante,
+                  TRIM(COALESCE(cli2.pmer_nombrecli,'') || ' ' || COALESCE(cli2.sgndo_nombrecli,'') || ' ' || COALESCE(cli2.pmer_apellidocli,'') || ' ' || COALESCE(cli2.sgndo_apellidocli,'')) AS compareciente
+              FROM actos_persona_radica apr
+              INNER JOIN actos a ON apr.id_acto = a.id_acto
+              LEFT JOIN escrituras e ON e.id_radica::text = apr.id_radica::text AND e.anio_radica = apr.anio_radica
+              LEFT JOIN facturas f ON f.id_radica::text = apr.id_radica::text AND f.anio_radica = apr.anio_radica AND f.nota_credito = false
+              LEFT JOIN clientes cli1 ON cli1.identificacion_cli = apr.identificacion_cli
+              LEFT JOIN clientes cli2 ON cli2.identificacion_cli = apr.identificacion_cli2
+              WHERE
+                  apr.id_acto IN ($actos_formatted)
+                  AND e.num_esc IS NOT NULL
+                  AND e.fecha_esc::date BETWEEN ? AND ?
+              ORDER BY apr.id_radica, apr.anio_radica, a.id_acto, e.num_esc ASC NULLS LAST;
+            ";
+
+            $Reporte = DB::select($sql, array($fecha1, $fecha2));
+            $notaria  = Notaria::find(1);
+
+            $nombre_reporte = 'REPORTE DE ESCRITURAS POR ACTO NOTARIAL';
+            $fecha_reporte = $fecha1 . ' al ' . $fecha2;
+            $fecha_impresion = date('d/m/Y H:i:s');
+            $nit = $notaria->nit;
+            $nombre_notario = $notaria->nombre_notario;
+            $nombre_nota = $notaria->nombre_nota;
+            $direccion_nota = $notaria->direccion_nota;
+            $email = $notaria->email;
+
+            $html = view('pdf.escrituras_por_acto', compact(
+                'Reporte', 'fecha1', 'fecha2', 'notaria', 'nombre_acto_filtro',
+                'nombre_reporte', 'fecha_reporte', 'fecha_impresion', 'nit',
+                'nombre_notario', 'nombre_nota', 'direccion_nota', 'email'
+            ))->render();
+
+            $mpdf = new Mpdf([
+                'format'        => 'Letter-L',
+                'margin_top'    => 10,
+                'margin_bottom' => 10,
+                'margin_left'   => 10,
+                'margin_right'  => 10,
+            ]);
+
+            $mpdf->WriteHTML($html);
+            return $mpdf->Output('reporte_escrituras_por_acto.pdf', 'I');
+
+        } catch (\Exception $e) {
+            return "Error al generar PDF: " . $e->getMessage();
+        }
+    }
+
+
+     private function parseDate($dateStr)
+    {
+        $d = str_replace('/', '-', (string)$dateStr);
+        $arr = explode('-', $d);
+        if (count($arr) == 3) {
+            // Si el segundo elemento es mayor a 12, es mm/dd/yyyy
+            if ((int)$arr[1] > 12) {
+                return $arr[2].'-'.$arr[0].'-'.$arr[1];
+            }
+            // Por defecto dd-mm-yyyy => Y-m-d
+            return $arr[2].'-'.$arr[1].'-'.$arr[0];
+        }
+        return date('Y-m-d', strtotime($d));
+    }
+
+
+}

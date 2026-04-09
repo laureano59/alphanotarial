@@ -38,6 +38,8 @@ class LiqconceptosController extends Controller
      */
     public function store(Request $request)
     {
+
+    
       if($request->ajax()){
         $liq_conceptos = new Liq_concepto();
         $anio_trabajo = Notaria::find(1)->anio_trabajo;
@@ -59,7 +61,8 @@ class LiqconceptosController extends Controller
               $total = 'total'.$valor['atributo'];
               $liq_conceptos->$atributo = $request->input($atributo);
               $liq_conceptos->$total = $request->input($id_concep);
-            }
+              
+            }            
             
             $liq_conceptos->totalconceptos = $request->input('totalconceptos');
             $liq_conceptos->id_radica = $id_radica;

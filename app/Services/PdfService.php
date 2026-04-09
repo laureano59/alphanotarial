@@ -121,6 +121,7 @@ class PdfService
     $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
     foreach ($escrituras as $esc) {
         $num_esc = $esc->num_esc;
+        $fecha_esc = $esc->fecha_esc;
     }
 
 
@@ -250,6 +251,7 @@ $ID = $prefijo_fact.$num_fact;
       $data_otor['prefijo_fact'] = $prefijo_fact;
       $data_otor['num_fact'] = $num_fact;
       $data_otor['num_esc'] = $num_esc;
+      $data_otor['fecha_esc'] = $fecha_esc;
       $data_otor['identificacioncli1'] = $identificacioncli1_otor;
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
@@ -478,7 +480,8 @@ if($forma_pago == true){
 
 $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
 foreach ($escrituras as $esc) {
-    $num_esc = $esc->num_esc;
+    $num_esc    = $esc->num_esc;
+    $fecha_esc  = $esc->fecha_esc;    
 }
 
 
@@ -602,6 +605,7 @@ $ID = $prefijo_fact.$num_fact;
       $data['prefijo_fact'] = $prefijo_fact;
       $data['num_fact'] = $num_fact;
       $data['num_esc'] = $num_esc;
+      $data['fecha_esc'] = $fecha_esc;
       $data['identificacioncli1'] = $identificacioncli1;
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;
@@ -1081,7 +1085,8 @@ public function GenerarCopiaNotaCredito($num_fact, $directorio){
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
+        $num_esc    = $esc->num_esc;
+        $fecha_esc  = $esc->fecha_esc;
       }
 
       /********************PROTOCOLISTA***********************/
@@ -1193,6 +1198,7 @@ public function GenerarCopiaNotaCredito($num_fact, $directorio){
       $data_otor['prefijo_fact'] = $prefijo_fact;
       $data_otor['num_fact'] = $num_fact;
       $data_otor['num_esc'] = $num_esc;
+      $data_otor['fecha_esc'] = $fecha_esc;
       $data_otor['identificacioncli1'] = $identificacioncli1_otor;
       $data_otor['nombrecli1'] = $nombrecli1_otor;
       $data_otor['direccioncli1'] = $direccioncli1_otor;
@@ -1366,7 +1372,8 @@ public function GenerarCopiaNotaCredito($num_fact, $directorio){
 
       $escrituras = Escritura::where("id_radica","=",$id_radica)->where("anio_esc","=",$anio_trabajo)->get();
       foreach ($escrituras as $esc) {
-        $num_esc = $esc->num_esc;
+        $num_esc    = $esc->num_esc;
+        $fecha_esc  = $esc->fecha_esc;
       }
 
        /********************PROTOCOLISTA***********************/
@@ -1468,6 +1475,7 @@ public function GenerarCopiaNotaCredito($num_fact, $directorio){
       $data['prefijo_fact'] = $prefijo_fact;
       $data['num_fact'] = $num_fact;
       $data['num_esc'] = $num_esc;
+      $data['fecha_esc'] = $fecha_esc;
       $data['identificacioncli1'] = $identificacioncli1;
       $data['nombrecli1'] = $nombrecli1;
       $data['direccioncli1'] = $direccioncli1;

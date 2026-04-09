@@ -296,13 +296,13 @@ $("#agregaritem").click(function() {
 
     if(identificacion_cli1 != '' && formapago != null){
       if(cantidad != '' && cantidad != null){
-        if(gv_registro == 1){
+        /*if(gv_registro == 1){
           if(id_registro == ''){
-            alert("El Id_registro es obligatorio");
+            //alert("El Id_registro es obligatorio");
           } else{
             Validar_agregar_items(identificacion_cli1, formapago, cantidad);
           }
-        }
+        }*/
 
         if(gv_registro == 0){
           Validar_agregar_items(identificacion_cli1, formapago, cantidad);
@@ -599,7 +599,7 @@ var gv_registro = 0;
 
 
 document.getElementById('id_concepto').addEventListener('change', function() {
-    let selectedValue = this.value; // Obtiene el valor seleccionado
+   /* let selectedValue = this.value; // Obtiene el valor seleccionado
           
     if(selectedValue == 2  || selectedValue == 19){   
      
@@ -612,6 +612,6 @@ document.getElementById('id_concepto').addEventListener('change', function() {
       $("#mostrarnumregistro").fadeOut();
       //document.getElementById("idregistro").value = '0';
       gv_registro = 0;
-    }
+    }*/
    
 });

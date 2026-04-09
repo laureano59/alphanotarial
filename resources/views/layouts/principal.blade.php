@@ -62,344 +62,28 @@
 			</div>
 
 
-
-
-
 			<nav role="navigation" class="navbar-menu pull-left collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Reportes
-							&nbsp;
-							<i class="ace-icon fa fa-angle-down bigger-110"></i>
-						</a>
+    		<ul class="nav navbar-nav">
+       		 @foreach($menus as $menu)
+            	<li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    {{ $menu->nombre }}
+                    &nbsp;
+                    <i class="ace-icon fa fa-angle-down bigger-110"></i>
+                </a>
 
-						<ul id="reportes-menu" class="dropdown-menu dropdown-light-blue dropdown-caret">
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informes Administrativos
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="mensualcaja">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación de Facturas Mensuales 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="estadisticonotarial">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Estadístico Notarial 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="relacionnotascreditomensual">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación Notas Crédito Mensual
-										</a>
-									</li>
-									
-									<li>
-										<a href="javascript://" id="ingresosporconceptomensual">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Conceptos
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informerecaudos">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Recaudos 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="ingresporescrituradores">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Ingresos por Escrituradores
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="retefuentesaplicadas">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe Retefuentes Aplicadas
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informederetefuentes">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe Retefuentes
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informeimptimbre">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe Timbre
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informedegastos">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Gastos
-										</a>
-									</li>
-								</ul>
-							</li>
+                @if($menu->childrenRecursive->count())
+                    <ul id="reportes-menu" class="dropdown-menu dropdown-light-blue dropdown-caret">
+                        @include('layouts.partials.menu-items', ['items' => $menu->childrenRecursive])
+                    </ul>
+                @endif
+            </li>
+        @endforeach
+    </ul>
+</nav>
 
 
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informes de Caja
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="diariocaja">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación de Facturas Diarias 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="relacionnotascreditodiario">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación Nota Crédito Diario 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="ingresosporconcepto">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación de Facturas Diarias por Conceptos 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informerecaudosdiario">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación de Facturas Diarias por Recaudos 
-										</a>
-									</li>
-								</ul>
-							</li>
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informes de Escrituración
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="actos_notariales_escritura">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Actos Jurídicos Notariales  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="enlaces">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Enlaces  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="libroindice">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Libro Índice de Escrituras  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="librorelaciondeescrituras">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Libro Relación de Escrituras  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="ron">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Reporte de Operaciones Notariales (RON)  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="escrisinfact">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Escrituras pendientes de Factura 
-										</a>
-									</li>
-								</ul>
-							</li>
-
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informes de Cartera
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="informecarteracliente">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación Cartera por Cliente  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informecarterames">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación Cartera por Mes  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informecarterafacturasactivas">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Relación Cartera Facturas Activas 
-										</a>
-									</li>
-
-								</ul>
-							</li>
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informe de Bonos
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="cuentasdecobrogeneradas">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Cuentas de cobro generadas  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="carterabonoscliente">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Trazabilidad X Cliente  
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informecarterabonomes">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Trazabilidad X Fecha 
-										</a>
-									</li>
-									<li>
-										<a href="javascript://" id="informecarterabonosactiva">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Cartera Bonos  
-										</a>
-									</li>
-								</ul>
-							</li>
-
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Certificados
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="certificadortf">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Retención en la Fuente antes del 8-07-2025    
-										</a>
-									</li>
-
-									<li>
-										<a href="javascript://" id="certificadostf">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Retención en la Fuente   
-										</a>
-									</li>
-
-
-								</ul>
-							</li>
-
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Actas de Depósito
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="informedepositos">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Depósitos    
-										</a>
-									</li>
-
-									<li>
-										<a href="javascript://" id="informeegresos">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Egresos     
-										</a>
-									</li>
-
-								</ul>
-							</li>
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informes para la DIAN
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="informeingresos_dian">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Ingresos por Cliente     
-										</a>
-									</li>
-
-									<li>
-										<a href="javascript://" id="enajenaciones">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Informe de Enajenaciones      
-										</a>
-									</li>
-
-								</ul>
-							</li>
-
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Informes consolidados
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="consolidadocaja">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Consolidado de Caja 
-										</a>
-									</li>
-								</ul>
-							</li>
-
-							<li style="position: relative;">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									<i class="ace-icon fa fa-angle-down bigger-110 blue"></i>
-									Interfaz contable
-								</a>
-								<ul class="dropdown-menu" style="position: absolute; left: 100%; top: 0;">
-									<li>
-										<a href="javascript://" id="interfazdatax">
-											<i class="ace-icon fa fa-file-text-o bigger-110 green"></i>
-											Data X 
-										</a>
-									</li>
-								</ul>
-							</li>
-
-
-						</ul>
-					</li>
-				</ul>
-			</nav>
+			
 
 			<div class="navbar-header pull-left">
 				<a href="/ayuda" class="navbar-brand">
@@ -430,8 +114,14 @@
 
 							<li>
 								<a href="/panelroles">
-									<i class="ace-icon fa fa-user"></i>
+									<i class="ace-icon fa fa-key"></i>
 									Administrar Roles
+								</a>
+							</li>
+							<li>
+								<a href="/panelmenus">
+									<i class="ace-icon fa fa-bars"></i>
+									Administrar Menú
 								</a>
 							</li>
 
@@ -483,6 +173,14 @@
 				       <b class="arrow"></b>
 				     </li>-->
 
+				      <li>
+				     	<a href= "http://mi-aplicacion:8080" target="_blank">
+				     		<i class="menu-icon"><img src="{{ asset('images/cotiza.png') }}" width="30 px" height="30 px"></i>
+				     		<span class="menu-text"> Cotizar </span>
+				     		<b class="arrow fa fa-angle-down"></b>
+				     	</a>
+				     </li>
+
 				     <li>
 				     	<a href="/cartera">
 				     		<i class="menu-icon"><img src="{{ asset('images/facturacion.png') }}" width="30 px" height="30 px"></i>
@@ -527,6 +225,14 @@
 				     	<a href="/consultas">
 				     		<i class="menu-icon"><img src="{{ asset('images/lupa.png') }}" width="30 px" height="30 px"></i>
 				     		<span class="menu-text"> Consultar </span>
+				     	</a>
+				     	<b class="arrow"></b>
+				     </li>
+
+				     <li>
+				     	<a href="/consulta_especializada">
+				     		<i class="menu-icon"><img src="{{ asset('images/analisis.png') }}" width="30 px" height="30 px"></i>
+				     		<span class="menu-text"> Cons. Especializada </span>
 				     	</a>
 				     	<b class="arrow"></b>
 				     </li>

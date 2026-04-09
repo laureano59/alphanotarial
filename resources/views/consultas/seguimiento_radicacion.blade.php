@@ -3,13 +3,19 @@
 @section('titulo_link', 'Panel de Control')
 @section('content')
 
-<div class="page-header">
-
-    <h1>
-        Rastrear Radicación<span id="radi"></span>
-
-    </h1>
-</div><!-- /.page-header -->
+<!-- HEADER MODERNO -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg border-0" style="border-radius:20px; background: linear-gradient(135deg,#1e3c72,#2a5298);">
+                <div class="card-body text-white text-center">
+                    <h2 class="mb-0" style="font-weight:600; letter-spacing:1px; color: #FFF;">
+                        🔎 Rastrear Radicación <span id="radi"></span>
+                    </h2>
+                    <small class="opacity-75" style="color: #FFF;">Sistema inteligente de consulta notarial</small>
+                </div>
+            </div>
+        </div>
+    </div>
 <div class="row">
     <div class="col-xs-4">
         <div class="control-group">
@@ -113,38 +119,87 @@
 
 <br>
 
-    <div class="row">
-    <div class="col-xs-12">
-      <table id="radicaciones" class="table table-striped table-bordered" style="width:100%">
-        <thead>
-            <tr>
-                <th>No.Radi</th>
-                <th>Fecha_Rad</th>
-                <th>Usuario</th>
-                <th>Protocolista</th>
-                <th>No.Fact</th>
-                <th>Fecha_Fact</th>
-                <th>No.Escr</th>
-                <th>Fecha_Esc</th>
-                <th>Otorgante</th>
-                <th>Nombre_otorgante</th>
-                <th>Compareciente</th>
-                <th>Nombre_compareciente</th>
-                <th>Acto</th>
-            </tr>
-        </thead>
-        <tbody id="data_seguimiento">
-        </tbody>
-    </table>
+  <!-- TABLA RESULTADOS -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-lg border-0" style="border-radius:20px;">
+                <div class="card-header bg-white border-0">
+                    <h5 class="fw-bold text-primary">📊 Resultados de la Consulta</h5>
+                </div>
 
+                <div class="card-body">
+                    <table id="radicaciones" 
+                           class="table table-hover table-striped table-bordered"
+                           style="width:100%">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>No.Radi</th>
+                                <th>Fecha_Rad</th>
+                                <th>Usuario</th>
+                                <th>Protocolista</th>
+                                <th>No.Fact</th>
+                                <th>Fecha_Fact</th>
+                                <th>No.Escr</th>
+                                <th>Fecha_Esc</th>
+                                <th>Otorgante</th>
+                                <th>Nombre_otorgante</th>
+                                <th>Compareciente</th>
+                                <th>Nombre_compareciente</th>
+                                <th>Acto</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data_seguimiento">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+
 
 @endsection
 
 @section('csslau')
+<style>
 
+.card {
+    transition: all 0.3s ease;
+}
 
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.filtro-item {
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.filtro-item:hover {
+    background: rgba(42,82,152,0.08);
+    cursor: pointer;
+}
+
+#buscar_info {
+    border-radius: 12px;
+    padding: 10px 15px;
+}
+
+.btn {
+    border-radius: 12px;
+}
+
+table.dataTable thead {
+    font-size: 13px;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: rgba(42,82,152,0.08) !important;
+}
+
+</style>
 @endsection
 
 @section('scripts')

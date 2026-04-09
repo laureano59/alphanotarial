@@ -36,12 +36,16 @@ $("#GuardarActaDeposito").click(function() {
     var identificacion_cli, id_tip, proyecto, deposito_act, id_radica,
     efectivo, cheque, tarjeta_credito, tarjeta_debito, pse, num_cheque, num_tarjetacredito,
     observaciones_act, codigo_ban, anio_fiscal, transferencia_bancaria, 
-    boleta, registro, validar_suma;
+    boleta, registro, validar_suma, escritura, tipo_deposito;
 
     validar_suma = 0;
 
-    boleta   = $("#depo_bol_hid").val();
-    registro = $("#depo_reg_hid").val();
+    boleta    = $("#depo_bol_hid").val();
+    registro  = $("#depo_reg_hid").val();
+    escritura = $("#depoesc_hid").val();
+
+    tipo_deposito = $("#id_tip").val();
+    
 
     identificacion_cli = $("#identificacion_cli1").val();
     id_tip = $("#id_tip option:selected").val();
@@ -79,6 +83,7 @@ $("#GuardarActaDeposito").click(function() {
                 "deposito_act": deposito_act,
                 "boleta": boleta,
                 "registro": registro,
+                "escritura": escritura,
                 "id_radica": id_radica,
                 "anio_fiscal": anio_fiscal,
                 "efectivo": efectivo,
@@ -90,7 +95,8 @@ $("#GuardarActaDeposito").click(function() {
                 "num_cheque": num_cheque,
                 "num_tarjetacredito": num_tarjetacredito,
                 "observaciones_act": observaciones_act,
-                "codigo_ban": codigo_ban
+                "codigo_ban": codigo_ban,
+                "tipo_deposito": tipo_deposito
             };
 
             var route = "/actas_deposito";
@@ -302,7 +308,7 @@ $("#GuardarEgreso").click(function() {
 document.getElementById('id_tip').addEventListener('change', function() {
     let selectedValue = this.value; // Obtiene el valor seleccionado
           
-    if(selectedValue == 2){
+    if(selectedValue == 2 || selectedValue == 6){
         $('#modalbolyreg').modal('show');
     }else{
         $("#depo_bol_hid").val(0);

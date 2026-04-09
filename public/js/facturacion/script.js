@@ -394,6 +394,7 @@ $("#guardarfacturaunica").click(function() {
                   var opcion = "F1";
                   var num_fact = id_fact;
                   var route = "/enviarfactura";
+                  //var route = "/enviarfacturaxml";
                   var token = $("#token").val();
                   var type = 'GET';
                   var datos = {
@@ -634,7 +635,8 @@ $("#guardarfacturamultiple").click(async function() {
 
                             var opcion = "F1";
                             var num_fact = id_fact;
-                            var route = "/enviarfactura";
+                            //var route = "/enviarfactura";
+                            var route = "/enviarfacturaxml";
                             var token = $("#token").val();
                             var type = 'GET';
                             var datos = {

@@ -39,8 +39,104 @@ $("#ingresporescrituradores").click(function(){
 
 });
 
+$("#act_id_rep, #informe_actas_credito, #informe_actas_identificacion").click(function(){
+  var opcion = 38; // Usar la misma opción (RelacionActasIdentificacion) para todos
+  var reporte = "Informe de Actas a Crédito por cliente";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
 
+$("#generarreporte_actasporidentificacion, #generarreporte_actascredito").click(function(){
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var identificacion = $("#identificacion_cli").val();
+  var estado_acta = $('input:radio[name=estado_acta]:checked').val() || 'todas';
+  if (fecha1 == '' || fecha2 == '') {
+    alert('Seleccione un rango de fecha.');
+    return;
+  }
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2,
+    "identificacion": identificacion,
+    "estado_acta": estado_acta
+  };
+  var route = "/reporte_actas_identificacion";
+  var token = $("#token").val();
+  var type = 'GET';
 
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informe = info.depositos;
+    if (document.getElementById('datos')) {
+      CargarInformeActasPorIdentificacion(informe);
+    } else if (document.getElementById('data')) {
+      CargarInformeActasCredito(informe);
+    }
+  });
+});
+
+function urlExportActasIdentificacionExcelPdf() {
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var identificacion = $("#identificacion_cli").val() || '';
+  var estado_acta = $('input:radio[name=estado_acta]:checked').val() || 'todas';
+  if (fecha1 == '' || fecha2 == '') {
+    alert('Seleccione un rango de fecha.');
+    return null;
+  }
+  return {
+    fecha1: fecha1,
+    fecha2: fecha2,
+    identificacion: identificacion,
+    estado_acta: estado_acta
+  };
+}
+
+function esInformeActasCreditoPorCliente() {
+  var titulo = $(".page-header h1").text() || "";
+  titulo = titulo.toLowerCase();
+  return titulo.indexOf("actas a crédito por cliente") !== -1 ||
+         titulo.indexOf("actas a credito por cliente") !== -1;
+}
+
+$("#exportar_excel_actas_identificacion, #exportar_excel_actascredito").click(function(e){
+  e.preventDefault();
+  var p = urlExportActasIdentificacionExcelPdf();
+  if (!p) return;
+
+  var esReporteCredito = esInformeActasCreditoPorCliente() || $(this).attr("id") === "exportar_excel_actascredito";
+  var estadoExportar = esReporteCredito ? "credito" : p.estado_acta;
+  var rutaExportar = esReporteCredito ? "/reporte_actas_credito_excel" : "/reporte_actas_identificacion_excel";
+
+  var url = rutaExportar + "?fecha1=" + encodeURIComponent(p.fecha1)
+    + "&fecha2=" + encodeURIComponent(p.fecha2)
+    + "&identificacion=" + encodeURIComponent(p.identificacion)
+    + "&estado_acta=" + encodeURIComponent(estadoExportar);
+  window.open(url, "_blank");
+});
+
+$("#imprimir_pdf_actas_identificacion, #imprimir_pdf_actascredito").click(function(e){
+  e.preventDefault();
+  var p = urlExportActasIdentificacionExcelPdf();
+  if (!p) return;
+  var url = "/reporte_actas_identificacion_pdf?fecha1=" + encodeURIComponent(p.fecha1)
+    + "&fecha2=" + encodeURIComponent(p.fecha2)
+    + "&identificacion=" + encodeURIComponent(p.identificacion)
+    + "&estado_acta=" + encodeURIComponent(p.estado_acta);
+  window.open(url, "_blank");
+});
 
 $("#imprimiringresosporescrituradores").click(function(){
   if (document.querySelector('input[name="seleccion"]:checked')) {
@@ -421,6 +517,24 @@ $("#mensualcaja").click(function(){
   })
 });
 
+$("#ingresosexcedentes").click(function(){
+  var opcion = 40;
+  var reporte = "Relación de ingresos de excedentes otros periodos";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
 $("#actos_notariales_escritura").click(function(){
   var opcion = 2;
   var reporte = "Informe de Actos Notariales por Escritura";
@@ -680,7 +794,47 @@ $("#informecarterabonosactiva").click(function(){
 $("#interfazdatax").click(function(){
 
   var opcion = 34;
-  var reporte = "Interfaz contable Data X";
+  var reporte = "Interfaz contable Data X Escrituras";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+
+});
+
+$("#interfazdataxcjrapida").click(function(){
+
+  var opcion = 35;  
+  var reporte = "Interfaz contable Data X Caja Rápida";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+
+});
+
+$("#interfazdataxactasdepo").click(function(){
+
+  var opcion = 36;  
+  var reporte = "Interfaz contable Data X Actas de Depósito";
   var route = "/cargartiporeporte";
   var token = $("#token").val();
   var type = 'GET';
@@ -702,6 +856,9 @@ $("#generararchivodatax").click(function(){
   const checkbox = document.querySelector('input[name="encabezado"]:checked');
   const valorSeleccionado = checkbox ? checkbox.value : null;
 
+  const checkboxnc = document.querySelector('input[name="notacreditoescr"]:checked');
+  const valorSeleccionadonc = checkboxnc ? checkboxnc.value : null;
+
 
   var route = "/cargarfechas";
   var token = $("#token").val();
@@ -714,10 +871,51 @@ $("#generararchivodatax").click(function(){
     "opcionreporte": valorSeleccionado
   };
 
+  if (valorSeleccionadonc === 'on') {
+    url = "/exceldataxnc";  
+  } else {
+      url = "/exceldatax";  
+  }
+
   __ajax(route, token, type, datos)
     .done( function( info ){
-      if(info.validar == 1){
-        var url = "/exceldatax";
+      if(info.validar == 1){       
+        $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      }
+    })
+  
+});
+
+$("#generararchivodataxcajarapida").click(function(){
+  var url;
+
+  const checkbox = document.querySelector('input[name="encabezado"]:checked');
+  const valorSeleccionado = checkbox ? checkbox.value : null;
+
+  const checkboxnc = document.querySelector('input[name="notacreditocr"]:checked');
+  const valorSeleccionadonc = checkboxnc ? checkboxnc.value : null;
+
+  
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2,
+    "opcionreporte": valorSeleccionado
+  };
+
+  if (valorSeleccionadonc === 'on') {
+    url = "/exceldataxCajarapidaNC";  
+  } else {
+      url = "/exceldataxCajarapida";  
+  }
+
+  __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){        
         $("<a>").attr("href", url).attr("target", "_blank")[0].click();
       }
     })
@@ -725,6 +923,33 @@ $("#generararchivodatax").click(function(){
 });
 
 
+$("#generararchivodataxactasdepo").click(function(){
+  
+  const checkbox = document.querySelector('input[name="encabezado"]:checked');
+  const valorSeleccionado = checkbox ? checkbox.value : null;  
+
+  
+  var route = "/cargarfechas";
+  var token = $("#token").val();
+  var type = 'GET';
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var datos = {
+    "fecha1": fecha1,
+    "fecha2": fecha2,
+    "opcionreporte": valorSeleccionado
+  };
+
+  var url = "/exceldataxactasdepo";
+
+  __ajax(route, token, type, datos)
+    .done( function( info ){
+      if(info.validar == 1){        
+        $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+      }
+    })
+  
+});
 
 
 $("#informecarteracliente").click(function(){
@@ -1156,6 +1381,8 @@ $("#generarreportecarterames").click(function(){
       opcionreporte = "maycero";
     }else if (seleccion == 'completo') {
       opcionreporte = "completo";
+    }else if (seleccion == 'credito') {
+      opcionreporte = "credito";
     }
 
     if($("#start").val() == '' || $("#end").val() == ''){
@@ -1265,8 +1492,10 @@ $("#generarreportecarteracliente").click(function(){
 
 $("#generarreportecarterafacturasactivas").click(function(){
   var opcionreporte = '';
+  var identificacion_cli = $("#identificacion_cli").val();
   var datos = {
-    "opcionreporte": opcionreporte
+    "opcionreporte": opcionreporte,
+    "identificacion_cli": identificacion_cli
   };
   var route = "/informecartera";
   var token = $("#token").val();
@@ -1452,6 +1681,7 @@ $("#generarreportecajadiarioporconceptos").click(function(){
 
 
 $("#generarinformederecaudos").click(function(){
+
   var fecha1 = $("#start").val();
   var fecha2 = $("#end").val();
 
@@ -1459,64 +1689,50 @@ $("#generarinformederecaudos").click(function(){
     "fecha1": fecha1,
     "fecha2": fecha2
   };
+
   var route = "/informerecaudos";
   var token = $("#token").val();
   var type = 'GET';
 
   __ajax(route, token, type, datos)
-  .done( function( info ){
-    document.getElementById('valor1').innerHTML = formatNumbderechos(info.valor1);
-    document.getElementById('valor1b').innerHTML = formatNumbderechos(info.valor1);
-    document.getElementById('valor2').innerHTML = formatNumbderechos(info.valor2);
-    document.getElementById('valor3').innerHTML = formatNumbderechos(info.valor3);
-    document.getElementById('valor4').innerHTML = formatNumbderechos(info.valor4);
-    document.getElementById('valor5').innerHTML = formatNumbderechos(info.valor5);
-    document.getElementById('valor6').innerHTML = formatNumbderechos(info.valor6);
-    document.getElementById('valor7').innerHTML = formatNumbderechos(info.valor7);
+  .done(function(info){
 
-    document.getElementById('ran1escr').innerHTML = (info.ran1escr);
-    document.getElementById('ran2escr').innerHTML = info.ran2escr;
-    document.getElementById('ran3escr').innerHTML = info.ran3escr;
-    document.getElementById('ran4escr').innerHTML = info.ran4escr;
-    document.getElementById('ran5escr').innerHTML = info.ran5escr;
-    document.getElementById('ran6escr').innerHTML = info.ran6escr;
-    document.getElementById('sincescr').innerHTML = info.sincescr;
-    document.getElementById('excescr').innerHTML = info.excescr;
+    let data = info.recaudos;
 
-    document.getElementById('ran1super').innerHTML = formatNumbderechos(info.ran1super);
-    document.getElementById('ran2super').innerHTML = formatNumbderechos(info.ran2super);
-    document.getElementById('ran3super').innerHTML = formatNumbderechos(info.ran3super);
-    document.getElementById('ran4super').innerHTML = formatNumbderechos(info.ran4super);
-    document.getElementById('ran5super').innerHTML = formatNumbderechos(info.ran5super);
-    document.getElementById('ran6super').innerHTML = formatNumbderechos(info.ran6super);
-    document.getElementById('sincsuper').innerHTML = formatNumbderechos(info.sincsuper);
-    document.getElementById('excsuper').innerHTML = formatNumbderechos(info.excsuper);
+    let filas = [
+        {pref: "sinc", tarifa: "valor1"},
+        {pref: "exc", tarifa: "valor1b"},
+        {pref: "ran1", tarifa: "valor2"},
+        {pref: "ran2", tarifa: "valor3"},
+        {pref: "ran3", tarifa: "valor4"},
+        {pref: "ran4", tarifa: "valor5"},
+        {pref: "ran5", tarifa: "valor6"},
+        {pref: "ran6", tarifa: "valor7"},
+    ];
 
-    document.getElementById('ran1fondo').innerHTML = formatNumbderechos(info.ran1fondo);
-    document.getElementById('ran2fondo').innerHTML = formatNumbderechos(info.ran2fondo);
-    document.getElementById('ran3fondo').innerHTML = formatNumbderechos(info.ran3fondo);
-    document.getElementById('ran4fondo').innerHTML = formatNumbderechos(info.ran4fondo);
-    document.getElementById('ran5fondo').innerHTML = formatNumbderechos(info.ran5fondo);
-    document.getElementById('ran6fondo').innerHTML = formatNumbderechos(info.ran6fondo);
-    document.getElementById('sincfondo').innerHTML = formatNumbderechos(info.sincfondo);
-    document.getElementById('excfondo').innerHTML = formatNumbderechos(info.excfondo);
+    filas.forEach((fila, i) => {
 
-    document.getElementById('ran1total').innerHTML = formatNumbderechos(info.ran1total);
-    document.getElementById('ran2total').innerHTML = formatNumbderechos(info.ran2total);
-    document.getElementById('ran3total').innerHTML = formatNumbderechos(info.ran3total);
-    document.getElementById('ran4total').innerHTML = formatNumbderechos(info.ran4total);
-    document.getElementById('ran5total').innerHTML = formatNumbderechos(info.ran5total);
-    document.getElementById('ran6total').innerHTML = formatNumbderechos(info.ran6total);
-    document.getElementById('sinctotal').innerHTML = formatNumbderechos(info.sinctotal);
-    document.getElementById('exctotal').innerHTML = formatNumbderechos(info.exctotal);
+        let d = data[i];
 
-    document.getElementById('total_escrituras').innerHTML = info.total_escrituras;
-    document.getElementById('total_recaudos').innerHTML = formatNumbderechos(info.total_recaudos);
+        $("#" + fila.pref + "escr").text(d.cant_escr);
 
-    document.getElementById('total_super').innerHTML = formatNumbderechos(info.total_super);
-    document.getElementById('total_fondo').innerHTML = formatNumbderechos(info.total_fondo);
+        $("#" + fila.pref + "super").text(formatNumbderechos(parseFloat(d.total_super || 0)));
+        $("#" + fila.pref + "fondo").text(formatNumbderechos(parseFloat(d.total_fondo || 0)));
 
-  })
+        $("#" + fila.tarifa).text(formatNumbderechos(parseFloat(d.tarifa || 0)));
+
+        $("#" + fila.pref + "total").text(formatNumbderechos(parseFloat(d.total || 0)));
+    });
+
+    let t = data[8];
+
+    $("#total_escrituras").text(t.cant_escr);
+    $("#total_super").text(formatNumbderechos(parseFloat(t.total_super || 0)));
+    $("#total_fondo").text(formatNumbderechos(parseFloat(t.total_fondo || 0)));
+    $("#total_recaudos").text(formatNumbderechos(parseFloat(t.total || 0)));
+
+  });
+
 });
 
 $("#generarreporte_conceptos").click(function(){
@@ -1598,6 +1814,11 @@ $("#generar_ron").click(function(){
 
 $("#excelcarteraclientebonos").click(function(){
   var url = "/excelcarteraclientebonos";
+  $("<a>").attr("href", url).attr("target", "_blank")[0].click();
+});
+
+$("#generarreporteespecial").click(function(){
+  var url = "/cajadiarioespecial";
   $("<a>").attr("href", url).attr("target", "_blank")[0].click();
 });
 
@@ -1703,6 +1924,43 @@ $("#informeegresos").click(function(){
   })
 });
 
+$("#trazabilidad_egreso").click(function(){
+  var opcion = 41;
+  var reporte = "Trazabilidad de Egreso";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
+
+$("#pruebafer").click(function(){
+  var opcion = 37;
+  var reporte = "Prueba Fer";
+  var route = "/cargartiporeporte";
+  var token = $("#token").val();
+  var type = 'GET';
+  var datos = {
+    "opcionreporte": opcion,
+    "reporte": reporte
+  };
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    if(info.validar == 1){
+      location.href="/reportes";
+    }
+  })
+});
+
 
 $("#cuentasdecobrogeneradas").click(function(){
   var opcion = 30;
@@ -1762,40 +2020,132 @@ $("#generarreporte_depositos").click(function(){
 });
 
 
-$("#generarreporte_egresos").click(function(){
+function obtenerParametrosInformeEgresos() {
   if (document.querySelector('input[name="seleccion"]:checked')) {
     var opcionreporte = '';
     var seleccion = $('input:radio[name=seleccion]:checked').val();
     if (seleccion == 'maycero') {
       opcionreporte = "maycero";
-    }else if (seleccion == 'completo') {
+    } else if (seleccion == 'completo') {
       opcionreporte = "completo";
+    } else if (seleccion == 'credito') {
+      opcionreporte = "credito";
     }
 
     if($("#start").val() == '' || $("#end").val() == ''){
       alert("Todos los campos son necesarios");
+      return null;
     }else{
 
       var fecha1 = $("#start").val();
       var fecha2 = $("#end").val();
-      var datos = {
+      var identificacion = ($("#identificacion_cli").val() || '').trim();
+      return {
         "fecha1": fecha1,
         "fecha2": fecha2,
-        "opcionreporte": opcionreporte
+        "opcionreporte": opcionreporte,
+        "identificacion": identificacion
       };
-      var route = "/reporte_egresos";
-      var token = $("#token").val();
-      var type = 'GET';
-
-      __ajax(route, token, type, datos)
-      .done( function( info ){
-        var informe = info.egresos;
-        CargarInformeEgresos(informe);
-      })
     }
   }else{
     alert("Seleccione tipo de informe");
+    return null;
   }
+}
+
+$("#generarreporte_egresos").off("click").on("click", function(){
+  var datos = obtenerParametrosInformeEgresos();
+  if (!datos) return;
+
+  var route = "/reporte_egresos";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, datos)
+  .done( function( info ){
+    var informe = info.egresos;
+    CargarInformeEgresos(informe);
+  });
+});
+
+$("#exportar_excel_egresos").off("click").on("click", function(e){
+  e.preventDefault();
+  var datos = obtenerParametrosInformeEgresos();
+  if (!datos) return;
+
+  var url = "/reporte_egresos_excel?fecha1=" + encodeURIComponent(datos.fecha1)
+    + "&fecha2=" + encodeURIComponent(datos.fecha2)
+    + "&opcionreporte=" + encodeURIComponent(datos.opcionreporte)
+    + "&identificacion=" + encodeURIComponent(datos.identificacion);
+
+  window.open(url, "_blank");
+});
+
+$('a[href="/relaciondeegresosdiariospdf"]').off("click").on("click", function(e){
+  var datos = obtenerParametrosInformeEgresos();
+  if (!datos) {
+    e.preventDefault();
+    return;
+  }
+  var url = "/relaciondeegresosdiariospdf?fecha1=" + encodeURIComponent(datos.fecha1)
+    + "&fecha2=" + encodeURIComponent(datos.fecha2)
+    + "&opcionreporte=" + encodeURIComponent(datos.opcionreporte)
+    + "&identificacion=" + encodeURIComponent(datos.identificacion);
+  $(this).attr("href", url);
+});
+
+function obtenerParametrosTrazabilidadEgreso() {
+  var fecha1 = $("#start").val();
+  var fecha2 = $("#end").val();
+  var identificacion = ($("#identificacion_cli").val() || '').trim();
+  var tipo_acta = $('input:radio[name=tipo_acta_egreso]:checked').val() || 'todas';
+  if (fecha1 == '' || fecha2 == '') {
+    alert('Seleccione un rango de fecha.');
+    return null;
+  }
+  return {
+    fecha1: fecha1,
+    fecha2: fecha2,
+    identificacion: identificacion,
+    tipo_acta: tipo_acta
+  };
+}
+
+$("#generarreporte_trazabilidadegreso").off("click").on("click", function(e){
+  e.preventDefault();
+  var p = obtenerParametrosTrazabilidadEgreso();
+  if (!p) return;
+
+  var route = "/reporte_trazabilidad_egreso";
+  var token = $("#token").val();
+  var type = 'GET';
+
+  __ajax(route, token, type, p)
+  .done( function( info ){
+    CargarTrazabilidadEgreso(info.trazabilidad || []);
+  });
+});
+
+$("#exportar_excel_trazabilidadegreso").off("click").on("click", function(e){
+  e.preventDefault();
+  var p = obtenerParametrosTrazabilidadEgreso();
+  if (!p) return;
+  var url = "/reporte_trazabilidad_egreso_excel?fecha1=" + encodeURIComponent(p.fecha1)
+    + "&fecha2=" + encodeURIComponent(p.fecha2)
+    + "&identificacion=" + encodeURIComponent(p.identificacion)
+    + "&tipo_acta=" + encodeURIComponent(p.tipo_acta);
+  window.open(url, "_blank");
+});
+
+$("#imprimir_pdf_trazabilidadegreso").off("click").on("click", function(e){
+  e.preventDefault();
+  var p = obtenerParametrosTrazabilidadEgreso();
+  if (!p) return;
+  var url = "/reporte_trazabilidad_egreso_pdf?fecha1=" + encodeURIComponent(p.fecha1)
+    + "&fecha2=" + encodeURIComponent(p.fecha2)
+    + "&identificacion=" + encodeURIComponent(p.identificacion)
+    + "&tipo_acta=" + encodeURIComponent(p.tipo_acta);
+  window.open(url, "_blank");
 });
 
 

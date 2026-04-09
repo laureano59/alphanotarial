@@ -53,6 +53,8 @@ class EinvoiceController extends Controller
 {
   public function index(Request $request){
 
+
+
     $notaria = Notaria::find(1);
     $IdSoftware = $notaria->SoftwareId;
     $pinfactDian = $notaria->pin;
@@ -88,6 +90,8 @@ class EinvoiceController extends Controller
     $numfact = $request->num_fact;
     $opcion1 = $request->opcion;
     $retransmitir = $request->retransmitir;
+
+
 
     if (is_null($retransmitir) || $retransmitir === '') {
       $retransmitir = '0';    
@@ -357,7 +361,7 @@ class EinvoiceController extends Controller
     //$MediodePago = $med->codigo_med;
   //}
 
-  $Medio_pago = //Medios_pago::find($MediodePago);
+  //$Medio_pago = //Medios_pago::find($MediodePago);
   $paymentmethod = 10; //$Medio_pago->codigo_med;
 
   $InvoiceAuthorization = $NumAutorizacionDian;
@@ -773,14 +777,36 @@ class EinvoiceController extends Controller
     # =           Recoge lo que devuelve la API           =
     # =====================================================
 
-    foreach ($res as $key => $value) {
+    /*foreach ($res as $key => $value) {
       $cuf = $value['cufe'];
       $status = $value['status'];
       $status_description = $value['status_description'];
       $email_cliente = $value['emailfe'];
       $AttachedDocument = $value['fexml'];
       $numerofactura = $value['number'];
-    }
+    }*/
+
+     if (is_array($res) || is_iterable($res)) {
+        foreach ($res as $key => $value) {
+            // Si la API responde pero no trae la llave 'status', se vuelve false
+            $status = $value['status'] ?? false; 
+        
+            $cuf = $value['cufe'] ?? null;
+            $status_description = $value['status_description'] ?? 'Sin descripción';
+            $email_cliente = $value['emailfe'] ?? null;
+            $AttachedDocument = $value['fexml'] ?? null;
+            $numerofactura = $value['number'] ?? null;
+        }
+      } else {
+        // Si $res no es un arreglo (ej: se cayó el internet o la API devolvió un error grave)
+        $status = false;
+        $status_description = 'Error de conexión o respuesta inválida de la DIAN';
+        $cuf = null;
+        $email_cliente = null;
+        $AttachedDocument = null;
+        $numerofactura = null;
+      }
+
     
     
 
@@ -807,7 +833,7 @@ class EinvoiceController extends Controller
         $factura->status_factelectronica = '1';
         $factura->save();
 
-        if($retransmitir == '1'){
+        //if($retransmitir == '1'){
             # ===========================================
             # =       Almacena AttachedDocument         =
             # ===========================================        
@@ -820,14 +846,14 @@ class EinvoiceController extends Controller
             $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);
             $factura->status_envio_email = '1';
             $factura->save();
-        }
+       // }
       }else if($opcion == 'NC'){
         $nota_c = Notas_credito_factura::where("prefijo_ncf","=",$Prefix)->find($numerofactura);
         $nota_c->cufe = $cf;
         $nota_c->status_factelectronica = '1';
         $nota_c->save();
 
-        if($retransmitir == '1'){
+        //if($retransmitir == '1'){
             # ===========================================
             # =       Almacena AttachedDocument         =
             # ===========================================
@@ -838,7 +864,7 @@ class EinvoiceController extends Controller
             $archivo = $this->Comprimir_Zip($directorio, $numfact, $opcion);
             $nombre_fact =  $numfact.'_'.$opcion;
             $this->Enviar_mail($nombre_fact, $titulo, $archivo, $email_cliente);               
-        }
+       // }
       }
       
     }else{

@@ -59,9 +59,11 @@
             <th><font size="2">Acta #</font></th>
             <th><font size="2">Fecha</font></th>
             <th><font size="2">Identificación</font></th>
+            <th><font size="2">Tipo</font></th>
             <th><font size="2">Nombre</font></th>
             <th><font size="2">Boleta</font></th>
             <th><font size="2">Registro</font></th>
+            <th><font size="2">Escritura</font></th>
             <th><font size="2">Depósito</font></th>
             <th><font size="2">Saldo</font></th>
             <th><font size="2">Observaciones</font></th>
@@ -91,6 +93,10 @@
             </td>
 
             <td>
+                <font size="2">{{ $item['descripcion_tip'] }}</font>
+            </td>
+
+            <td>
                 <font size="2">{{ $item['nombre'] }}</font>
             </td>
 
@@ -100,6 +106,10 @@
 
              <td align="right">
                 <font size="2">{{ number_format($item['deposito_registro'], 2) }}</font>
+            </td>
+
+             <td align="right">
+                <font size="2">{{ number_format($item['deposito_escrituras'], 2) }}</font>
             </td>
 
             <td align="right">
@@ -124,7 +134,10 @@
                 @endphp
         @endforeach
         <tr>
-            <td>
+           
+             <td>
+            </td>
+             <td>
             </td>
             <td>
             </td>
@@ -138,6 +151,9 @@
             </td>
              <td align="right">
                 <font size="2"><b>{{ number_format($totaldepositoregistro, 2) }}</b></font>
+            </td>
+             <td align="right">
+                <font size="2"><b>{{ number_format($totaldepositoescritura, 2) }}</b></font>
             </td>
             <td align="right">
                 <font size="2"><b>{{ number_format($totaldepositos, 2) }}</b></font>

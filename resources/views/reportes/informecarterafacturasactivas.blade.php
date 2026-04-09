@@ -33,6 +33,10 @@
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
                         </a>
                     </span>
+
+                     <span class="nav-search widget-toolbar">
+                        <input type="text" id="identificacion_cli" placeholder="Escribir No.Identificación" class="nav-search-input" />
+                    </span>
                      
                 </div>
             </div>

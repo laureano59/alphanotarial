@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Notas_credito_factura;
 use App\Notaria;
 use App\Bono;
+use App\Detalle_derechos_factura;
 
 class NotascreditofacturaController extends Controller
 {
@@ -84,6 +85,14 @@ class NotascreditofacturaController extends Controller
             $bono->status = true;
             $bono->save();
         }
+
+
+        /******************Se Anula el detalle de detalle_derechos_factura para que el saldo restante no afecte*******************/
+
+         $detalle_derechos_factura = Detalle_derechos_factura::where("prefijo","=",$prefijo_fact)->find($id_fact);
+         $detalle_derechos_factura->status_nc = true;
+         $detalle_derechos_factura->save();
+
 
         return response()->json([
           "validar"=>1,

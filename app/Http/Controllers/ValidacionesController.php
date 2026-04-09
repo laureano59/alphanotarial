@@ -20,6 +20,7 @@ use App\Tarifa;
 use App\Facturascajarapida;
 use App\Detalle_cajarapidafacturas;
 use App\Reportados;
+use Carbon\Carbon;
 
 class ValidacionesController extends Controller
 {
@@ -45,7 +46,7 @@ class ValidacionesController extends Controller
             }
             if($validar == ''){
               return response()->json([
-                 "validar"=> "2"//TODO:Significa que la Radicación está lista para liquidar
+                 "validar"=> "2"//Significa que la Radicación está lista para liquidar
                ]);
             }else if($validar == 'ok'){
               return response()->json([
@@ -164,6 +165,8 @@ class ValidacionesController extends Controller
             $request->session()->put('num_esc', $num_esc);//TODO:Session para escritura
             $request->session()->put('fecha_esc', $fecha_esc);//TODO:Session fecha para escritura
           }
+
+          $fecha_fact = Carbon::parse($fecha_fact)->format('d/m/Y');
 
           return response()->json([
              "validar"=>1,
@@ -650,9 +653,11 @@ class ValidacionesController extends Controller
             ->where('anio_radica', $anio_radica)
             ->select($raw2)->get()->toArray();
 
+
           foreach ($total2 as $key => $to2) {
             $total_liquidacion = $to2['grantotalliq'];
           }
+          
 
           if($total_factura > $total_liquidacion){
             $totalgeneral = $total_factura - $total_liquidacion;

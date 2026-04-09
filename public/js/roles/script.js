@@ -49,7 +49,7 @@ document.getElementById('id_usuario').addEventListener('change', function() {
 
 function CargarRoles(data){
 
-    for (let i = 1; i <= 60; i++) {
+    for (let i = 1; i <= 61; i++) {
         let checkbox = document.getElementById(i);
         if (checkbox) {
             checkbox.checked = false;

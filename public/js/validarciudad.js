@@ -1,6 +1,7 @@
 $("#departamento").change(function() {
 
     var id_depa = $("#departamento").val();
+    console.log(id_depa);
     var datos = {
         "id_depa": id_depa
     };

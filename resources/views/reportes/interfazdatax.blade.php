@@ -20,6 +20,13 @@
           <span class="lbl bigger-120"> Con Encabezado</span>
         </label>
     </div>
+
+     <div class="radio">
+        <label>
+          <input class="form-check-input" type="checkbox" id="encabezado" name="notacreditoescr">
+          <span class="lbl bigger-120"> Marcar solo para nota crédito</span>
+        </label>
+    </div>
 </div>
 
 <div class="row">

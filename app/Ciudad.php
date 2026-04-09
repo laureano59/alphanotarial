@@ -8,4 +8,7 @@ class Ciudad extends Model
 {
   protected $table = 'ciudad';
   protected $primaryKey = 'id_ciud';
+
+  public $incrementing = false;
+  protected $keyType = 'string';
 }

@@ -65,192 +65,39 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Sin Cuantia</td>
-                <td align="center">{{$sincescr}}</td>
-                <td align="right">
-                    {{number_format($sincsuper, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($sincfondo, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($valor1, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($sinctotal, 2)}}
-                </td>
-            </tr>
 
-            <tr>
-                <td>Excenta</td>
-                <td align="center">
-                    {{$excescr}}
-                </td>
-                <td align="right">
-                    {{number_format($excsuper, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($excfondo, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($valor1, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($exctotal, 2)}} 
-                </td>
-            </tr>
-            <tr>
-                <td>$0 A $100,000,000</td>
-                <td align="center">
-                    {{$ran1escr}} 
-                </td>
-                <td align="right">
-                    {{number_format($ran1super, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($ran1fondo, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($valor2, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($ran1total, 2)}} 
-                </td>
-            </tr>
+            <tbody>
+                @foreach($recaudos as $item)
+                    @if($item->rango !== 'TOTALES')
+                        <tr>
+                            <td>{{ $item->rango }}</td>
+                            <td style="text-align: center;">{{ $item->cant_escr }}</td>
+                            <td style="text-align: right;">{{ number_format((float)$item->total_super, 2) }}</td>
+                            <td style="text-align: right;">{{ number_format((float)$item->total_fondo, 2) }}</td>
+                            <td style="text-align: right;">
+                            {{ $item->tarifa !== null ? number_format((float)$item->tarifa, 2) : '' }}
+                            </td>
+                            <td style="text-align: right;">{{ number_format((float)$item->total, 2) }}</td>
+                        </tr>
+                    @endif
+                @endforeach
 
-            <tr>
-                <td>$100,000,001 A $300,000,000</td>
-                <td align="center">
-                    {{$ran2escr}} 
-                </td>
-                <td align="right">
-                    {{number_format($ran2super, 2)}} 
-                </td>
-                <td align="right">
-                    {{number_format($ran2fondo, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($valor3, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran2total, 2)}}
-                </td>
-            </tr>
+                {{-- FILA DE TOTALES --}}
+                @php
+                $totales = collect($recaudos)->firstWhere('rango', 'TOTALES');
+                @endphp
 
-            <tr>
-                <td>$300,000,001 A $500,000,000</td>
-                <td align="center">
-                    {{$ran3escr}}
-                </td>
-                <td align="right">
-                    {{number_format($ran3super, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran3fondo, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($valor4, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran3total, 2)}}
-                </td>
-            </tr>
-
-            <tr>
-                <td>$500,000,001 A $1,000,000,000</td>
-                <td align="center">
-                    {{$ran4escr}}
-                </td>
-                <td align="right">
-                    {{number_format($ran4super, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran4fondo, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($valor5, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran4total, 2)}}
-                </td>
-            </tr>
-
-            <tr>
-                <td>$1,000,000,001 A $1,500,000,000</td>
-                <td align="center">
-                    {{$ran5escr}}
-                </td>
-                <td align="right">
-                    {{number_format($ran5super, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran5fondo, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($valor6, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran5total, 2)}}
-                </td>
-            </tr>
-
-            <tr>
-                <td>DE $1,500,000,001 En adelante</td>
-                <td align="center">
-                    {{$ran6escr}}
-                </td>
-                <td align="right">
-                    {{number_format($ran6super, 2)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran6fondo)}}
-                </td>
-                <td align="right">
-                    {{number_format($valor7)}}
-                </td>
-                <td align="right">
-                    {{number_format($ran6total, 2)}}
-                </td>
-            </tr>
-
-            <tr>
-                <td>--------------------------------------------</td>
-                <td align="center">
-                    ----------------------------
-                </td>
-                <td align="center">
-                    ----------------------------
-                </td>
-                <td align="center">
-                    -----------------------------
-                </td>
-                <td>-----------------------------</td>
-                <td align="center">
-                    -----------------------------
-                </td>
-            </tr>
-
-
-            <tr>
-                <td><b>Totales</b></td>
-                <td align="center">
-                    <b>{{$total_escrituras}}</b>
-                </td>
-                <td align="right">
-                    <b>{{number_format($total_super, 2)}}</b>
-                </td>
-                <td align="right">
-                    <b>{{number_format($total_fondo, 2)}}</b>
-                </td>
-                <td align="right"><b>Total Recaudos:</b></td>
-                <td align="right">
-                    <b>{{number_format($total_recaudos, 2)}}</b>
-                </td>
-            </tr>
-
-
-         
+                @if($totales)
+                    <tr style="font-weight: bold; background-color: #f2f2f2;">
+                        <td>{{ $totales->rango }}</td>
+                        <td style="text-align: center;">{{ $totales->cant_escr }}</td>
+                        <td style="text-align: right;">{{ number_format((float)$totales->total_super, 2) }}</td>
+                        <td style="text-align: right;">{{ number_format((float)$totales->total_fondo, 2) }}</td>
+                        <td></td>
+                        <td style="text-align: right;">{{ number_format((float)$totales->total, 2) }}</td>
+                    </tr>
+                @endif
+            </tbody>         
         </tbody>
     </table>
             

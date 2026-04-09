@@ -24,12 +24,12 @@ class JobenviaremailController extends Controller
                               ->whereDate('fecha_fact', '<=', $fecha_factura)
                               ->get();                            
 
-          foreach ($facturas as $ft) {
-               if($ft->status_envio_email == '0'){
-                    $cufe          = $ft->cufe;
-                    $numfact       = $ft->id_fact;
-                    $anio_trabajo  = $ft->anio_radica;
-                    $a_nombre_de   = $ft->a_nombre_de;
+          //foreach ($facturas as $ft) {
+               //if($ft->status_envio_email == '0'){
+                    $cufe          = 'aa48855821735fba7dd84f603b0169d621fcce3ae27e5dab7a48cea3374c59bccda806bfa7b7657ed55437b2c9dcdbf1';//$ft->cufe;
+                    $numfact       = 21718;//$ft->id_fact;
+                    $anio_trabajo  = 2025;//$ft->anio_radica;
+                    $a_nombre_de   = '94535626';//$ft->a_nombre_de;
                     $opcion        = 'F1';
                     $titulo        = "FACTURA No.";
 
@@ -55,11 +55,11 @@ class JobenviaremailController extends Controller
                     $ft->status_envio_email = '1';
                     $ft->save();
 
-                    var_dump($ft->status_envio_email);               
+                    //var_dump($ft->status_envio_email);               
 
 
-               }
-          }          
+               //}
+          //}          
      }
 
 

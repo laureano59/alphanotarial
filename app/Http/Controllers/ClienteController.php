@@ -38,6 +38,7 @@ class ClienteController extends Controller
      */
     public function store(Request $request)
     {
+
         $Clientes = new Cliente();
         $tipodocumento = $request->input('id_tipoident');
         $id = $request->input('identificacion_cli');
@@ -112,8 +113,9 @@ class ClienteController extends Controller
 
        $Departamentos = Departamento::all();
        $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
-       $TipoIdentificaciones = Tipoidentificacion::all();
+       $TipoIdentificaciones = Tipoidentificacion::all();       
 
+       
         $Actividad_economica = Actividad_economica::All();
         $Actividad_economica = $Actividad_economica->sortBy('actividad');
 

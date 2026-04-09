@@ -244,7 +244,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
          '</tr>'+
         '<tr>' +
         '<td>' +
-        '<font size="2"><b>Total Retención</b></font>' +
+        '<font size="2"><b>Total RetenciÃƒÂ³n</b></font>' +
         '</td>' +
         '<td>' +
         formatNumbderechos(Math.round(total_retencion)) +
@@ -503,7 +503,7 @@ deduccion_retertf_credito, total_fact_credito, bonos_es) {
 
         '<tr>' +
         '<td>' +
-        '<font size="2"><b>Total Retención</b></font>' +
+        '<font size="2"><b>Total RetenciÃƒÂ³n</b></font>' +
         '</td>' +
         '<td>' +
         formatNumbderechos(Math.round(total_retencion_otros)) +
@@ -1158,7 +1158,7 @@ function CargarInformeCajadiario_rapida(data, contado, credito, facturadores){
 
           '<tr>' +
            '<td>' +
-          'Crédito' +
+          'CrÃƒÂ©dito' +
           '</td>' +
           '<td>' +
           formatNumbderechos(credito_subtotal)+
@@ -1251,16 +1251,69 @@ function CargarInformeCajadiario_rapida_conceptos(data){
       document.getElementById('data_tabla').innerHTML = htmlTags;
 }
 
-function CargarInformeDepositos(data){
+function CargarInformeActasCredito(data){
     var totaldepositos = 0;
     var totaldepositosboleta = 0;
     var totaldepositosregistro = 0;
+    var totaldepositosescritura = 0;
     var totalsaldo = 0;
     var htmlTags = '';
   for (item in data) {
     totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
     totaldepositosboleta = totaldepositosboleta + parseFloat(data[item].deposito_boleta);
     totaldepositosregistro = totaldepositosregistro + parseFloat(data[item].deposito_registro);
+    totaldepositosescritura += parseFloat(data[item].deposito_escrituras) || 0;
+    totalsaldo = totalsaldo + parseFloat(data[item].saldo);
+    
+    var anulada_estado = (data[item].anulada == 1 || data[item].anulada == true || data[item].anulada === 't') ? 'Anulada' : 'Activa';
+    var credito_estado = data[item].credito_act == 1 ? 'Crédito' : 'Normal';
+    var num_esc = data[item].num_esc || '';
+    var id_fact = data[item].id_fact || '';
+
+    htmlTags +=
+          '<tr>' +
+          '<td>' + data[item].fecha + '</td>' +
+          '<td>' + (data[item].id_radica || '') + '</td>' +
+          '<td>' + data[item].id_act + '</td>' +
+          '<td>' + num_esc + '</td>' +
+          '<td>' + id_fact + '</td>' +
+          '<td>' + data[item].identificacion_cli + ' ' + (data[item].nombre || '') + '</td>' +
+          '<td align="right">$' + formatNumbderechos(data[item].deposito_act) + '</td>' +
+          '<td align="right">$' + formatNumbderechos(data[item].deposito_boleta) + '</td>' +
+          '<td align="right">$' + formatNumbderechos(data[item].deposito_registro) + '</td>' +
+          '<td align="right">$' + formatNumbderechos(data[item].deposito_escrituras || 0) + '</td>' +
+          '<td align="right">$' + formatNumbderechos(data[item].saldo) + '</td>' +
+          '<td>' + credito_estado + '</td>' +
+          '<td>' + anulada_estado + '</td>' +
+          '<td>' + (data[item].observaciones_act || '') + '</td>' +
+          '</tr>';
+  }
+
+  htmlTags += '<tr><td colspan="6" align="right"><b>Totales:</b></td>' +
+    '<td align="right"><b>$' + formatNumbderechos(totaldepositos) + '</b></td>' +
+    '<td align="right"><b>$' + formatNumbderechos(totaldepositosboleta) + '</b></td>' +
+    '<td align="right"><b>$' + formatNumbderechos(totaldepositosregistro) + '</b></td>' +
+    '<td align="right"><b>$' + formatNumbderechos(totaldepositosescritura) + '</b></td>' +
+    '<td align="right"><b>$' + formatNumbderechos(totalsaldo) + '</b></td>' +
+    '<td colspan="3"></td></tr>';
+
+  document.getElementById('data').innerHTML = htmlTags;
+}
+
+
+function CargarInformeDepositos(data){
+    var totaldepositos = 0;
+    var totaldepositosboleta = 0;
+    var totaldepositosregistro = 0;
+    var totaldepositosescritura = 0;
+    var totalsaldo = 0;
+    var htmlTags = '';
+  for (item in data) {
+    totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
+    totaldepositosboleta = totaldepositosboleta + parseFloat(data[item].deposito_boleta);
+    totaldepositosregistro = totaldepositosregistro + parseFloat(data[item].deposito_registro);
+    //totaldepositosescritura = totaldepositosescritura + parseFloat(data[item].deposito_escrituras);
+    totaldepositosescritura += parseFloat(data[item].deposito_escrituras) || 0;
     totalsaldo = totalsaldo + parseFloat(data[item].saldo);
     htmlTags +=
           '<tr>' +
@@ -1274,6 +1327,9 @@ function CargarInformeDepositos(data){
           data[item].identificacion_cli +
           '</td>' +
            '<td>' +
+          data[item].descripcion_tip +
+          '</td>' +
+           '<td>' +
           data[item].nombre +
           '</td>' +
            '<td align="right">' +
@@ -1281,6 +1337,9 @@ function CargarInformeDepositos(data){
           '</td>' +
            '<td align="right">' +
           formatNumbderechos(data[item].deposito_registro) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].deposito_escrituras) +
           '</td>' +
           '<td align="right">' +
           formatNumbderechos(data[item].deposito_act) +
@@ -1306,6 +1365,8 @@ function CargarInformeDepositos(data){
           '<td>' +
           '</td>' +
           '<td>' +
+          '</td>' +
+          '<td>' +
           '<b>Totales:</b>'+
           '</td>' +
            '<td align="right"><b>' +
@@ -1313,6 +1374,9 @@ function CargarInformeDepositos(data){
           '</b></td>' +
            '<td align="right"><b>' +
           formatNumbderechos(totaldepositosregistro) +
+          '</b></td>' +
+          '<td align="right"><b>' +
+          formatNumbderechos(totaldepositosescritura) +
           '</b></td>' +
           '<td align="right"><b>' +
           formatNumbderechos(totaldepositos) +
@@ -1329,80 +1393,261 @@ function CargarInformeDepositos(data){
       document.getElementById('data').innerHTML = htmlTags;
 }
 
-function CargarInformeEgresos(data){
-    
-    var totalegresos = 0;
+
+function CargarInformeActasPorIdentificacion(data){
+    var totaldepositos = 0;
+    var totaldepositosboleta = 0;
+    var totaldepositosregistro = 0;
+    var totaldepositosescritura = 0;
+    var totalsaldo = 0;
     var htmlTags = '';
+    var tbody = document.getElementById('datos');
+    if (!tbody) {
+        return;
+    }
+
+    var identificacionFilter = $("#identificacion_cli").val();
+    var showClienteColumn = (identificacionFilter === "" || identificacionFilter === undefined);
+
+    if (!showClienteColumn && data && data.length > 0) {
+        var elNombre = document.getElementById('nombre_cliente_reporte');
+        if (elNombre) {
+            elNombre.innerText = 'Cliente: ' + data[0].identificacion_cli + ' ' + (data[0].nombre || '');
+        }
+        $("#th_cliente").hide();
+    } else {
+        var elNombre2 = document.getElementById('nombre_cliente_reporte');
+        if (elNombre2) {
+            elNombre2.innerText = '';
+        }
+        $("#th_cliente").show();
+    }
+
+    if (!data || !data.length) {
+        tbody.innerHTML = '';
+        return;
+    }
+
   for (item in data) {
-   
-    totalegresos = totalegresos + parseFloat(data[item].egreso_egr);
+    if (!Object.prototype.hasOwnProperty.call(data, item)) {
+        continue;
+    }
+    totaldepositos = totaldepositos + parseFloat(data[item].deposito_act);
+    totaldepositosboleta = totaldepositosboleta + parseFloat(data[item].deposito_boleta);
+    totaldepositosregistro = totaldepositosregistro + parseFloat(data[item].deposito_registro);
+    totaldepositosescritura += parseFloat(data[item].deposito_escrituras) || 0;
+    totalsaldo = totalsaldo + parseFloat(data[item].saldo);
+
+    var ca = data[item].credito_act;
+    var estado = (ca == 1 || ca === true || ca === '1' || ca === 't' || ca === 'true') ? 'Crédito' : 'Normal';
+    var an = data[item].anulada;
+    var activa = (an == 1 || an === true || an === '1' || an === 't' || an === 'true') ? 'Anulada' : 'Activa';
+
     htmlTags +=
           '<tr>' +
            '<td>' +
-          data[item].id_act +
+          data[item].fecha +
           '</td>' +
           '<td>' +
-          data[item].fecha_egreso +
+          data[item].id_radica +
           '</td>' +
            '<td>' +
-          data[item].identificacion_cli +
+          data[item].id_act +
           '</td>' +
            '<td>' +
-          data[item].nombre +
+          (data[item].num_esc || '') +
           '</td>' +
-          '<td align="right">' +
-          formatNumbderechos(data[item].saldo_de_deposito) +
+           '<td>' +
+          (data[item].id_fact || '') +
           '</td>' +
-          '<td align="right">' +
-          formatNumbderechos(data[item].egreso_egr) +
+          (showClienteColumn ? ('<td>' + data[item].identificacion_cli + ' ' + (data[item].nombre || '') + '</td>') : '') +
+           '<td align="right">' +
+          formatNumbderechos(data[item].deposito_act) +
           '</td>' +
            '<td align="right">' +
-          formatNumbderechos(data[item].nuevo_saldo) +
+          formatNumbderechos(data[item].deposito_boleta) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].deposito_registro) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].deposito_escrituras) +
+          '</td>' +
+           '<td align="right">' +
+          formatNumbderechos(data[item].saldo) +
           '</td>' +
            '<td>' +
-          data[item].observaciones_egr +
+          estado +
           '</td>' +
            '<td>' +
-          data[item].descripcion_tip +
+          activa +
           '</td>' +
-           '<td>' +
-          data[item].id_fact +
-          '</td>' +
-           '<td>' +
-          data[item].id_radica +
+          '<td>' +
+          (data[item].observaciones_act || '') +
           '</td>' +
           '</tr>';
       }
 
-       htmlTags +=
-       '<tr>' +
-          '<td>' +
-          '</td>' +
-          '<td>' +
-          '</td>' +
-          '<td>' +
-          '</td>' +
+      var blankCells = '';
+      var numCells = showClienteColumn ? 5 : 4;
+      for (var i = 0; i < numCells; i++) {
+          blankCells += '<td></td>';
+      }
+
+      htmlTags +=
+       '<tr>' + blankCells +
           '<td>' +
           '<b>Totales:</b>'+
           '</td>' +
           '<td align="right"><b>' +
-         
-          '</b></td>' +
-          '<td align="right"><b>' +
-          formatNumbderechos(totalegresos) +
+          formatNumbderechos(totaldepositos) +
           '</b></td>' +
            '<td align="right"><b>' +
-          
+          formatNumbderechos(totaldepositosboleta) +
+          '</b></td>' +
+           '<td align="right"><b>' +
+          formatNumbderechos(totaldepositosregistro) +
+          '</b></td>' +
+           '<td align="right"><b>' +
+          formatNumbderechos(totaldepositosescritura) +
+          '</b></td>' +
+           '<td align="right"><b>' +
+          formatNumbderechos(totalsaldo) +
           '</b></td>' +
           '<td>' +
           '</td>' +
           '<td>' +
-          '</td>'+
-           '<td>' +
+          '</td>' +
+          '<td>' +
           '</td>'+
           '</tr>';
 
-      document.getElementById('data').innerHTML = htmlTags;
+      tbody.innerHTML = htmlTags;
+}
+
+
+/** Relación de egresos y Trazabilidad de egreso: mismo layout agrupado por acta. */
+function renderEgresosAgrupadosPorActa(data, tbodyId) {
+    var htmlTags = '';
+    var totalegresos = 0;
+
+    if (!data || data.length === 0) {
+      document.getElementById(tbodyId).innerHTML = '<tr><td>No hay informacion para los filtros seleccionados.</td></tr>';
+      return;
+    }
+
+    for (var item in data) {
+      if (!data.hasOwnProperty(item)) continue;
+      var acta = data[item];
+      var egresos = acta.egresos || [];
+      var egresosHtml = '';
+
+      for (var i = 0; i < egresos.length; i++) {
+        var e = egresos[i];
+        totalegresos += parseFloat(e.egreso_egr || 0);
+        egresosHtml +=
+          '<tr style="background:#f3f8ff;">' +
+            '<td>' + (e.id_egr || '') + '</td>' +
+            '<td>' + (e.fecha_egreso || '') + '</td>' +
+            '<td>' + (e.id_con || '') + '</td>' +
+            '<td>' + (e.concepto_egreso || '') + '</td>' +
+            '<td>' + (e.factura || '') + '</td>' +
+            '<td align="right">' + formatNumbderechos(e.egreso_egr || 0) + '</td>' +
+            '<td align="right">' + formatNumbderechos(e.descuento_boleta || 0) + '</td>' +
+            '<td align="right">' + formatNumbderechos(e.descuento_registro || 0) + '</td>' +
+            '<td align="right">' + formatNumbderechos(e.descuento_escritura || 0) + '</td>' +
+            '<td align="right">' + formatNumbderechos(e.saldo_final || 0) + '</td>' +
+            '<td>' + (e.observaciones_egr || '') + '</td>' +
+          '</tr>';
+      }
+
+      htmlTags +=
+        '<tr>' +
+          '<td colspan="11">' +
+            '<table class="table table-bordered" style="margin-bottom:8px;">' +
+              '<tr style="background:#eef6ea;">' +
+                '<td><b>Acta:</b> ' + (acta.id_act || '') + '</td>' +
+                '<td><b>Fecha Acta:</b> ' + (acta.fecha_acta || '') + '</td>' +
+                '<td><b>Rad:</b> ' + (acta.id_radica || '') + '</td>' +
+                '<td><b>Identificacion:</b> ' + (acta.identificacion_cli || '') + '</td>' +
+                '<td><b>Cliente:</b> ' + (acta.nombre || '') + '</td>' +
+                '<td><b>Estado:</b> ' + (acta.credito_estado || 'NORMAL') + '</td>' +
+                '<td><b>Concepto Base:</b> ' + (acta.concepto_base || 'Acta') + '</td>' +
+              '</tr>' +
+              '<tr style="background:#eef6ea;">' +
+                '<td><b>Valor Acta:</b> $' + formatNumbderechos(acta.deposito_act || 0) + '</td>' +
+                '<td><b>Boleta:</b> $' + formatNumbderechos(acta.deposito_boleta || 0) + '</td>' +
+                '<td><b>Registro:</b> $' + formatNumbderechos(acta.deposito_registro || 0) + '</td>' +
+                '<td><b>Escritura:</b> $' + formatNumbderechos(acta.deposito_escrituras || 0) + '</td>' +
+                '<td colspan="2"><b>Egresos:</b> ' + egresos.length + '</td>' +
+              '</tr>' +
+            '</table>' +
+            '<table class="table table-bordered table-striped" style="margin-bottom:16px;">' +
+              '<thead>' +
+                '<tr style="background:#dce9f7;">' +
+                  '<th>No. Egreso</th>' +
+                  '<th>Fecha</th>' +
+                  '<th>Id_Con</th>' +
+                  '<th>Concepto Egreso</th>' +
+                  '<th>Factura</th>' +
+                  '<th>Valor</th>' +
+                  '<th>Desc. Boleta</th>' +
+                  '<th>Desc. Registro</th>' +
+                  '<th>Desc. Escritura</th>' +
+                  '<th>Saldo</th>' +
+                  '<th>Observacion</th>' +
+                '</tr>' +
+              '</thead>' +
+              '<tbody>' + egresosHtml + '</tbody>' +
+            '</table>' +
+          '</td>' +
+        '</tr>';
+    }
+
+      '<tr><td colspan="11">' +
+        '<table class="table" style="margin-top:8px;"><tr>' +
+        '<td><b>Totales egresos (valor):</b></td>' +
+        '<td align="right"><b>' + formatNumbderechos(totalegresos) + '</b></td>' +
+        '</tr></table>' +
+      '</td></tr>';
+
+    document.getElementById(tbodyId).innerHTML = htmlTags;
+}
+
+function CargarInformeEgresos(data) {
+  var htmlTags = '';
+  var totalegresos = 0;
+  for (var item in data) {
+    if (!data.hasOwnProperty(item)) continue;
+    totalegresos += parseFloat(data[item].egreso_egr || 0);
+    htmlTags +=
+      '<tr>' +
+      '<td>' + (data[item].id_act || '') + '</td>' +
+      '<td>' + (data[item].fecha_egreso || '') + '</td>' +
+      '<td>' + (data[item].identificacion_cli || '') + '</td>' +
+      '<td>' + (data[item].nombre || '') + '</td>' +
+      '<td align="right">' + formatNumbderechos(data[item].deposito_act || 0) + '</td>' +
+      '<td align="right">' + formatNumbderechos(data[item].egreso_egr || 0) + '</td>' +
+      '<td align="right">' + formatNumbderechos(data[item].saldo_final || 0) + '</td>' +
+      '<td>' + (data[item].observaciones_egr || '') + '</td>' +
+      '<td>' + (data[item].concepto_egreso || '') + '</td>' +
+      '<td>' + (data[item].factura || '') + '</td>' +
+      '<td>' + (data[item].id_radica || '') + '</td>' +
+      '</tr>';
+  }
+
+  htmlTags +=
+    '<tr>' +
+    '<td colspan="5" align="right"><b>TOTAL:</b></td>' +
+    '<td align="right"><b>' + formatNumbderechos(totalegresos) + '</b></td>' +
+    '<td colspan="5"></td>' +
+    '</tr>';
+
+  document.getElementById('data').innerHTML = htmlTags;
+}
+
+function CargarTrazabilidadEgreso(data){
+    renderEgresosAgrupadosPorActa(data, 'data_trazabilidadegreso');
 }
 
 function CargarEscrSinFact(data){
@@ -1424,5 +1669,3 @@ function CargarEscrSinFact(data){
 
       document.getElementById('data').innerHTML = htmlTags;
 }
-
-

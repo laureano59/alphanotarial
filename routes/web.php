@@ -15,16 +15,18 @@
 Route::get('/', function () { return view('welcome'); });
 
 
-// Gestión de Radicación y Liquidación
+// GestiÃ³n de RadicaciÃ³n y LiquidaciÃ³n
 Route::resource('radicacion', 'RadicacionController');
-Route::resource('liquidacion', 'LiqderechoController');
+Route::resource('liquidacion', 'LiquidacionController');
 Route::resource('liqderechos', 'LiqderechoController');
 Route::resource('liqconceptos', 'LiqconceptosController');
 Route::resource('liqrecaudos', 'LiqrecaudosController');
 Route::resource('panelroles', 'RollesController');
+Route::resource('panelmenus', 'MenuController');
+Route::get('menucreate', 'MenuController@create');
 
 
-// Gestión de Facturación
+// GestiÃ³n de FacturaciÃ³n
 Route::resource('facturacion', 'FacturacionController');
 Route::resource('factura_acargo_de', 'EditaracargodeController');
 Route::resource('facturaelectronica', 'FacturaelectronicaController');
@@ -37,46 +39,46 @@ Route::resource('detallefacturacajarapida', 'DetallefacturascajarapidaController
 Route::resource('registro', 'RegistroController');
 
 
-// Gestión de Clientes y Otorgantes
+// GestiÃ³n de Clientes y Otorgantes
 Route::resource('clientes', 'ClienteController');
 Route::resource('otorgante', 'OtorganteController');
 Route::resource('compareciente', 'ComparecienteController');
 
-// Gestión de Actas de Depósito y Egresos
+// GestiÃ³n de Actas de DepÃ³sito y Egresos
 Route::resource('actas_deposito', 'ActasdepositoController');
 Route::resource('depositos', 'ActasdepositoController');
 Route::resource('egresos', 'EgresoactasdepositoController');
 Route::resource('actasdeposito', 'OpcionesdeactasController');
 Route::resource('egreso', 'EgresoactasdepositoController');
 
-// Gestión de Reportes y Consultas
+// GestiÃ³n de Reportes y Consultas
 Route::resource('reportes', 'ReportesController');
 Route::resource('consultas', 'ConsultasController');
 Route::resource('cartera', 'CarteraController');
 Route::resource('bonos', 'BonosController');
-Route::resource('cuentadecobro', 'BonosController'); // Parece ser un recurso de bonos también
+Route::resource('cuentadecobro', 'BonosController'); // Parece ser un recurso de bonos tambiÃ©n
 Route::resource('seguimientoescrituras', 'SeguimientoController');
 Route::resource('consulta_cajarapida', 'ConsultacajarapidaController');
 
 Route::get('datax', 'ReportesController@datax');
 
-// Gestión de Caja Rápida
+// GestiÃ³n de Caja RÃ¡pida
 Route::resource('cajarapida', 'CajarapidaController');
 Route::resource('cpanelcajarapida', 'Panel_cajarapidaController');
 Route::resource('notacreditocajarapida', 'NotacreditocajarapidaController');
 Route::resource('carteracacajarapida', 'CarteracajarapidaController');
 Route::resource('guardarbasecajarapida', 'BasecajarapidaController');
 
-// Gestión de Certificados
+// GestiÃ³n de Certificados
 Route::resource('cpanelcertificados', 'CertificadosController');
 Route::resource('guardarcertificadortf', 'Certificado_rtfController');
 
-// Gestión de Escrituración y Protocolistas
+// GestiÃ³n de EscrituraciÃ³n y Protocolistas
 Route::resource('escrituracion', 'EscrituraController');
 Route::resource('actosradica', 'ActosclienteradicaController');
 Route::resource('panel_protocolistas', 'ProtocolistasController');
 
-// Gestión de Mantenimiento y Configuración
+// GestiÃ³n de Mantenimiento y ConfiguraciÃ³n
 Route::resource('mantenimiento', 'MantenimientoController');
 Route::resource('configuracion', 'ConfiguracionController');
 Route::resource('configurarfechas', 'ConfigurarfechasController');
@@ -88,7 +90,7 @@ Route::resource('ayuda', 'ayudaController');
 
 // Rutas Get
 
-// Rutas de Búsqueda y Validación
+// Rutas de BÃºsqueda y ValidaciÃ³n
 Route::get('buscarencajarapida', 'ConsultacajarapidaController@Consulta_CajaRapida');
 Route::get('retefuenteporvendedor', 'validacionesController@Porcentaje_Rtf_Vendedores');
 Route::get('liberarradicacion', 'RadicacionController@Liberar_Radicacion');
@@ -117,7 +119,7 @@ Route::get('validarreportados', 'ValidacionesController@ExisteReportado');
 Route::get('anular_gasto', 'Gastos_notariaController@Anular_gasto');
 
 
-// Rutas de Edición y Actualización
+// Rutas de EdiciÃ³n y ActualizaciÃ³n
 Route::get('editar_acargo_de_factura', 'FacturacionController@A_cargo_De');
 Route::get('editar_acargo_de', 'FacturacionController@Update_a_cargo_de_Editar');
 Route::get('anularacta', 'ActasdepositoController@Anular');
@@ -126,6 +128,16 @@ Route::get('cargarroles', 'RollesController@CargarRoles');
 
 // Rutas de Carga de Datos
 Route::get('factderechos', 'FacturacionController@DerechosLiquidados');
+Route::post('sumasaldosderechosliq', 'FacturacionController@SumaSaldosDerechos');
+Route::post('sumasaldosconceptosliq', 'FacturacionController@SumaSaldosConceptos');
+Route::post('validarfactura', 'FacturacionController@Validaciones');
+
+
+
+Route::post('CalcularIvaDerechos', 'FacturacionController@CalcularIva_Derechos');
+Route::post('CalcularIvaConceptos', 'FacturacionController@CalcularIvaConceptos');
+
+Route::post('sumasaldosrecaudos', 'FacturacionController@SumaSaldosRecaudos');
 Route::get('almacena', 'ValidacionesController@ValidarCalidadDestino');
 Route::get('agregaritemcajarapida', 'AgregaritemcajarapidaController@AgregarItemCajaRapida');
 Route::get('mostrarliq', 'LiqderechoController@Cargar_Derechos');
@@ -141,6 +153,7 @@ Route::get('principales', 'PrincipalesController@existecliente');
 Route::get('derechos', 'LiqderechoController@derechos');
 Route::get('recaudos', 'RecaudosController@Recaudos');
 Route::get('tarifas', 'TarifasController@Tarifas');
+Route::get('retenciones', 'TarifasController@Retenciones');
 Route::get('ciudad', 'CiudadController@ciudad');
 Route::get('cargarbonos', 'BonosController@CargarBonos');
 Route::get('cargarfacturanotadebito', 'NotasdebitoController@CargarFactura');
@@ -170,18 +183,40 @@ Route::get('generarreportecajadiario', 'ReportesController@Informe_cajadiario_ra
 Route::get('informecarterabonos', 'ReportesController@Informe_Cartera_Bonos');
 Route::get('reporte_depositos', 'ReportesController@Relaciondepositosdiarios');
 Route::get('reporte_egresos', 'ReportesController@Relacionegresosdiarios');
+Route::get('reporte_trazabilidad_egreso', 'ReportesController@ReporteTrazabilidadEgreso');
+Route::get('reporte_actas_credito', 'ReportesController@RelacionActasCredito');
+Route::get('reporte_actas_credito_pdf', 'PdfController@ActasCreditoPdf');
+Route::get('reporte_actas_credito_excel', 'ReportesController@ExcelActasCredito');
+Route::get('informe_actas_identificacion_v', 'ReportesController@DirectInformeActasIdentificacion');
+Route::get('reporte_actas_identificacion', 'ReportesController@RelacionActasIdentificacion');
+Route::get('reporte_actas_identificacion_excel', 'ReportesController@ExcelActasIdentificacion');
+Route::get('reporte_actas_identificacion_pdf', 'PdfController@ActasPorIdentificacionPdf');
+Route::get('ingresos_excedentes_otros_periodos', 'ReportesController@IngresosExcedentesOtrosPeriodos');
+Route::get('ingresos_excedentes_excel', 'ReportesController@ExcelIngresosExcedentes');
+Route::get('ingresos_excedentes_pdf', 'PdfController@IngresosExcedentesPdf');
 Route::get('cuentas_cobro_generadas', 'ReportesController@Cuentas_Cobro_Generadas');
 Route::get('generarreportecajadiarioporconceptos', 'ReportesController@Informe_cajadiario_rapida_conceptos');
 Route::get('informe_ron', 'ReportesController@Ron');
 Route::get('generar_informe_ingresos_dian', 'ReportesController@Reporte_ingresos_Dian');
 Route::get('informe_enejenaciones_dian', 'ReportesController@Reporte_enejenaciones_Dian');
 
-// Rutas de Exportación a Excel
+// Rutas de ExportaciÃ³n a Excel
 Route::get('excelcarteraclientebonos', 'ReportesController@ExcelcarteraClienteBonos');
 Route::get('excelcarterafechabonos', 'ReportesController@ExcelCarteraFechaBonos');
 Route::get('excelcarteraclientebonosacti', 'ReportesController@ExcelCarteraClienteBonosActi');
+Route::get('reporte_egresos_excel', 'ReportesController@ExcelEgresosDiarios');
+Route::get('reporte_trazabilidad_egreso_excel', 'ReportesController@ExcelTrazabilidadEgreso');
+
+Route::get('cajadiarioespecial', 'ReportesController@CajadiarioEspecial');
 
 Route::get('exceldatax', 'ReportesController@ExcelDataX');
+Route::get('exceldataxnc', 'ReportesController@ExcelDataXNC');
+
+Route::get('exceldataxCajarapida', 'ReportesController@ExcelDataXCajaRapida');
+Route::get('exceldataxCajarapidaNC', 'ReportesController@ExceldataxCajarapidaNC');
+Route::get('exceldataxactasdepo', 'ReportesController@ExcelDataXActasDepo');
+
+
 
 Route::get('excelnotascredito', 'ReportesController@ExcelNotasCredito');
 Route::get('excelretencionesaplicadas', 'ReportesController@ExcelReteaplicada');
@@ -191,16 +226,18 @@ Route::get('exnotcredcajarap', 'ReportesController@ExcelNotasCreditoCajaRapida')
 
 
 
-// Rutas de Envío de Correos y XML
+// Rutas de EnvÃ­o de Correos y XML
 Route::get('enviarcorreocajrap', 'EnviaremailController@EnviarCorreo');
 Route::get('enviarcorreescr', 'EnviaremailController@EnviarCorreoEscr');
 Route::get('enviarfactura', 'EinvoiceController@index');
+
+Route::get('enviarfacturaxml', 'FelectronicaescriturasController@index');
 Route::get('enviarfacturacajarapida', 'EnvoicecajarapidaController@index');
 Route::get('enviarnotadebito', 'EinvoicenotadebitoController@index');
 Route::get('enviarfacturas','JobenviaremailController@Enviarfactura');
 Route::get('generarxml', 'GenerarxmlController@GenerarXml');
 
-// Rutas de Generación de PDF
+// Rutas de GeneraciÃ³n de PDF
 Route::get('certificado_impuesto_timbre', 'PdfController@Certificado_impuesto_timbre');
 Route::get('recibogastospdf', 'PdfController@ReciboGastosNotaria');
 Route::get('informedegastos', 'PdfController@Informedegastos');
@@ -208,6 +245,7 @@ Route::get('escripendtfactpdf', 'PdfController@Escrituras_Sin_Factura');
 Route::get('relacionnotacreditocajarapida', 'PdfController@RelacionNotaCreditoCajaRapidaPdf');
 Route::get('relaciondepositosdiariospdf','PdfController@DepositosDiarios');
 Route::get('relaciondeegresosdiariospdf','PdfController@EgresosDiarios');
+Route::get('reporte_trazabilidad_egreso_pdf','PdfController@TrazabilidadEgresoPdf');
 Route::get('imprimirconsolidadocajapdf','PdfController@ConsolidadoCaja');
 Route::get('certificadortf','PdfController@PdfCertificadoRetecncionenlaFuente');
 Route::get('copiacertificadortf','PdfController@PdfCopiaCertificadoRetecncionenlaFuente');
@@ -242,13 +280,22 @@ Route::get('relacionporconceptospdf', 'PdfController@PdfRelaciondeFacturasPorCon
 Route::get('printinformecarterabonos', 'PdfController@PdfInformeCartera_Bonos');
 Route::get('informederecaudospdf', 'PdfController@PdfInformeRecaudos');
 Route::get('Imprimircomprobante_Egreso', 'PdfController@PdfComprobante_Egreso');
+Route::get('getescrituras_por_acto', 'ReportesController@getEscriturasPorActo');
+Route::get('pdf_escrituras_por_acto', 'PdfController@Escrituras_Por_Acto_PDF');
+Route::get('excel_escrituras_por_acto', 'ReportesController@ExcelEscriturasPorActo');
 
 // Rutas de Seguimiento
 Route::get('seguimiento', 'ConsultasController@Consultar');
 Route::get('seguimiento_secun', 'ConsultasController@Consultar_secun');
 Route::get('seguimiento_escr', 'SeguimientoController@Seguimiento_escrituras');
 
-// Rutas de Autenticación (mantener al final como en el original)
+// Rutas de Consulta Especializada
+Route::get('consulta_especializada', 'ConsultaEspecializadaController@index');
+Route::get('consulta_especializada/buscar', 'ConsultaEspecializadaController@buscar');
+Route::get('consulta_especializada/excel', 'ConsultaEspecializadaController@exportExcel');
+Route::get('consulta_especializada/pdf', 'ConsultaEspecializadaController@exportPdf');
+
+// Rutas de AutenticaciÃ³n (mantener al final como en el original)
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 //Auth::routes();

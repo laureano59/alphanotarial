@@ -45,16 +45,25 @@
             <div class="widget-box">
                 <div class="widget-header">
                     <h4 class="widget-title">Ingresar Rango de Fecha</h4>
+
+                     <span class="widget-toolbar">
+                        <a href="#" data-action="settings" id="generarreporteespecial">
+                            <i><img src="{{ asset('images/icoexcel.png') }}" width="28 px" height="28 px" title="Descargar Reporte Especial"></i>
+                        </a>
+                    </span>
+                    
                     <span class="widget-toolbar">
                         <a target="_blank" href="/cajadiariopdf">
                             <i><img src="{{ asset('images/impresora.png') }}" width="28 px" height="28 px" title="Imprimir Reporte"></i>
                         </a>
                     </span>
+
                     <span class="widget-toolbar">
                         <a href="#" data-action="settings" id="generarreporte">
                             <i><img src="{{ asset('images/buscar.png') }}" width="28 px" height="28 px" title="Generar Reporte"></i>
                         </a>
                     </span>
+
                     <span class="nav-search widget-toolbar">
                         <div class="input-daterange input-group">
                             <input type="text" class="input-sm form-control" name="start" id="start" />
@@ -63,7 +72,7 @@
                             </span>
                             <input type="text" class="input-sm form-control" name="end" id="end" />
                         </div>
-                    </span>
+                    </span>                    
                 </div>
             </div>
         </form>

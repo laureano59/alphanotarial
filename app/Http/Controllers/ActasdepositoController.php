@@ -28,8 +28,12 @@ class ActasdepositoController extends Controller
       $anio_trabajo = Notaria::find(1)->anio_trabajo;
       $id_radica = $request->session()->get('key');
       $TipoIdentificaciones = Tipoidentificacion::all();
-      $TipoDeposito = Tipo_acta_deposito::all();
-      $TipoDeposito = $TipoDeposito->sortBy('descripcion_tip');
+      //$TipoDeposito = Tipo_acta_deposito::all();
+      //$TipoDeposito = $TipoDeposito->sortBy('descripcion_tip');
+      $TipoDeposito = Tipo_acta_deposito::whereIn('id_tip', [2, 6])
+                        ->orderBy('descripcion_tip')
+                        ->get();
+                        
       $Departamentos = Departamento::all();
       $Departamentos = $Departamentos->sortBy('nombre_depa'); //TODO:Ordenar por nombre
       $Banco = Banco::all();
@@ -58,8 +62,9 @@ class ActasdepositoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request)  
     {
+         
       $anio_radica = $request->anio_fiscal;//Notaria::find(1)->anio_trabajo;
       $id_radica = $request->input('id_radica');
       $fecha_manual = Notaria::find(1)->fecha_acta;
@@ -107,6 +112,15 @@ class ActasdepositoController extends Controller
         }
 
 
+        $tipo_deposito = $request->tipo_deposito;
+
+        if($tipo_deposito == 6){
+            $credito = true;
+        }else{
+            $credito = false;
+        }
+
+
         /*if($request->id_tip == 2 || $request->id_tip == 3){
             if($id_radica === '' || is_null($id_radica) || $anio_radica === '' || is_null($anio_radica)){
                     return response()->json([
@@ -126,6 +140,7 @@ class ActasdepositoController extends Controller
       $actas_deposito->deposito_act             = $request->deposito_act;
       $actas_deposito->deposito_boleta          = $request->boleta;
       $actas_deposito->deposito_registro        = $request->registro;
+      $actas_deposito->deposito_escrituras      = $request->escritura;
       $actas_deposito->saldo                    = $request->deposito_act;
       $actas_deposito->observaciones_act        = $request->observaciones_act;
       $actas_deposito->efectivo                 = $efectivo;
@@ -137,6 +152,7 @@ class ActasdepositoController extends Controller
       $actas_deposito->tarjeta_debito           = $tarjeta_debito;
       $actas_deposito->num_tarjetacredito       = $request->num_tarjetacredito;
       $actas_deposito->num_cheque               = $request->num_cheque;
+      $actas_deposito->credito_act              = $credito;
       $actas_deposito->usuario                  = auth()->user()->name;
       $actas_deposito->save();
       $id_act = $actas_deposito->id_act;

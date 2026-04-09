@@ -24,15 +24,11 @@
     </div>
 
     <div style="flex: 1 0 50%; box-sizing: border-box; padding: 10px; text-align: center;">
-        <h3>3. Modulo de Facturación Parte 1</h3>
-        <iframe src="https://drive.google.com/file/d/1IHg6Ci-t_jVZAQ_yPBf5lit6iwdUqNWY/preview" width="300" height="150" allow="autoplay" allowfullscreen></iframe>
+        <h3>3. Nuevo Modulo de Facturación</h3>
+        <iframe src="https://drive.google.com/file/d/1c3kUVlCNafrfgSNiAzVypTPTtI6bbouj/preview" width="300" height="150" allow="autoplay" allowfullscreen></iframe>
     </div>
 
-    <div style="flex: 1 0 50%; box-sizing: border-box; padding: 10px; text-align: center;">
-        <h3>4. Modulo de Facturación parte 2</h3>
-        <iframe src="https://drive.google.com/file/d/1IK3lhrTZEYemVVWHQVsagnKlnJE8R_kK/preview" width="300" height="150" allow="autoplay" allowfullscreen></iframe>
-    </div>
-
+    
 
     <div style="flex: 1 0 50%; box-sizing: border-box; padding: 10px; text-align: center;">
         <h3>5. Modulo Cuentas de Cobro</h3>
